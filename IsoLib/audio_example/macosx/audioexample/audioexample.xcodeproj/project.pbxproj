@@ -1,0 +1,301 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CB9CF5FA0AD3359500F8F722 /* liblibisomediafile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CB9CF5F90AD3359500F8F722 /* liblibisomediafile.a */; };
+		CB9CF5FB0AD3359500F8F722 /* liblibisomediafile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CB9CF5F90AD3359500F8F722 /* liblibisomediafile.a */; };
+		CBDE4C9807B439A400BC3011 /* makeAudioMovieSample.c in Sources */ = {isa = PBXBuildFile; fileRef = CBDE4C9707B439A400BC3011 /* makeAudioMovieSample.c */; };
+		CBDE4C9A07B439AC00BC3011 /* playAudioMovieSample.c in Sources */ = {isa = PBXBuildFile; fileRef = CBDE4C9907B439AC00BC3011 /* playAudioMovieSample.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8DD76FAF0486AB0100D96B5E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		8DD76FB20486AB0100D96B5E /* MakeAudioMovie */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MakeAudioMovie; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB9CF5F90AD3359500F8F722 /* liblibisomediafile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibisomediafile.a; path = ../../../libisomediafile/macosx/libisomediafile/build/Debug/liblibisomediafile.a; sourceTree = SOURCE_ROOT; };
+		CBDE4C9507B4396E00BC3011 /* PlayAudioMovie */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PlayAudioMovie; sourceTree = BUILT_PRODUCTS_DIR; };
+		CBDE4C9707B439A400BC3011 /* makeAudioMovieSample.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = makeAudioMovieSample.c; path = ../../src/makeAudioMovieSample.c; sourceTree = SOURCE_ROOT; };
+		CBDE4C9907B439AC00BC3011 /* playAudioMovieSample.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = playAudioMovieSample.c; path = ../../src/playAudioMovieSample.c; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8DD76FAD0486AB0100D96B5E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB9CF5FA0AD3359500F8F722 /* liblibisomediafile.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CBDE4C9307B4396E00BC3011 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB9CF5FB0AD3359500F8F722 /* liblibisomediafile.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* audioexample */ = {
+			isa = PBXGroup;
+			children = (
+				CB9CF5F90AD3359500F8F722 /* liblibisomediafile.a */,
+				08FB7795FE84155DC02AAC07 /* Source */,
+				C6A0FF2B0290797F04C91782 /* Documentation */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = audioexample;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				CBDE4C9707B439A400BC3011 /* makeAudioMovieSample.c */,
+				CBDE4C9907B439AC00BC3011 /* playAudioMovieSample.c */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8DD76FB20486AB0100D96B5E /* MakeAudioMovie */,
+				CBDE4C9507B4396E00BC3011 /* PlayAudioMovie */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C6A0FF2B0290797F04C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8DD76FA90486AB0100D96B5E /* MakeAudioMovie */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CB5BCAA10A2E30930047AF98 /* Build configuration list for PBXNativeTarget "MakeAudioMovie" */;
+			buildPhases = (
+				8DD76FAB0486AB0100D96B5E /* Sources */,
+				8DD76FAD0486AB0100D96B5E /* Frameworks */,
+				8DD76FAF0486AB0100D96B5E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MakeAudioMovie;
+			productInstallPath = "$(HOME)/bin";
+			productName = audioexample;
+			productReference = 8DD76FB20486AB0100D96B5E /* MakeAudioMovie */;
+			productType = "com.apple.product-type.tool";
+		};
+		CBDE4C9407B4396E00BC3011 /* PlayAudioMovie */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CB5BCAA50A2E30930047AF98 /* Build configuration list for PBXNativeTarget "PlayAudioMovie" */;
+			buildPhases = (
+				CBDE4C9207B4396E00BC3011 /* Sources */,
+				CBDE4C9307B4396E00BC3011 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PlayAudioMovie;
+			productName = PlayAudioMovie;
+			productReference = CBDE4C9507B4396E00BC3011 /* PlayAudioMovie */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = CB5BCAA90A2E30930047AF98 /* Build configuration list for PBXProject "audioexample" */;
+			compatibilityVersion = "Xcode 2.4";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* audioexample */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8DD76FA90486AB0100D96B5E /* MakeAudioMovie */,
+				CBDE4C9407B4396E00BC3011 /* PlayAudioMovie */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8DD76FAB0486AB0100D96B5E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CBDE4C9807B439A400BC3011 /* makeAudioMovieSample.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CBDE4C9207B4396E00BC3011 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CBDE4C9A07B439AC00BC3011 /* playAudioMovieSample.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		CB5BCAA20A2E30930047AF98 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = (
+					"${SRCROOT}/../../../libisomediafile/src",
+					"${SRCROOT}/../../../libisomediafile/macosx",
+				);
+				INSTALL_PATH = "$(HOME)/bin";
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../../libisomediafile/macosx/libisomediafile/build/Debug";
+				PRODUCT_NAME = MakeAudioMovie;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		CB5BCAA30A2E30930047AF98 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				HEADER_SEARCH_PATHS = (
+					"${SRCROOT}/../../../libisomediafile/src",
+					"${SRCROOT}/../../../libisomediafile/macosx",
+				);
+				INSTALL_PATH = "$(HOME)/bin";
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../../libisomediafile/macosx/libisomediafile/build/Debug";
+				PRODUCT_NAME = MakeAudioMovie;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		CB5BCAA60A2E30930047AF98 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = (
+					"${SRCROOT}/../../../libisomediafile/src",
+					"${SRCROOT}/../../../libisomediafile/macosx",
+				);
+				INSTALL_PATH = /usr/local/bin;
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../../libisomediafile/macosx/libisomediafile/build/Debug";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = PlayAudioMovie;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		CB5BCAA70A2E30930047AF98 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				HEADER_SEARCH_PATHS = (
+					"${SRCROOT}/../../../libisomediafile/src",
+					"${SRCROOT}/../../../libisomediafile/macosx",
+				);
+				INSTALL_PATH = /usr/local/bin;
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../../libisomediafile/macosx/libisomediafile/build/Debug";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = PlayAudioMovie;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		CB5BCAAA0A2E30930047AF98 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		CB5BCAAB0A2E30930047AF98 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CB5BCAA10A2E30930047AF98 /* Build configuration list for PBXNativeTarget "MakeAudioMovie" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB5BCAA20A2E30930047AF98 /* Debug */,
+				CB5BCAA30A2E30930047AF98 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		CB5BCAA50A2E30930047AF98 /* Build configuration list for PBXNativeTarget "PlayAudioMovie" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB5BCAA60A2E30930047AF98 /* Debug */,
+				CB5BCAA70A2E30930047AF98 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		CB5BCAA90A2E30930047AF98 /* Build configuration list for PBXProject "audioexample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB5BCAAA0A2E30930047AF98 /* Debug */,
+				CB5BCAAB0A2E30930047AF98 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

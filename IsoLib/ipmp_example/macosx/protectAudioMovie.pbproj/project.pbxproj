@@ -1,0 +1,161 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 38;
+	objects = {
+		F618F39203577B2B01CA2334 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F618F39303577B2B01CA2334 = {
+			buildActionMask = 2147483647;
+			files = (
+				F618F39903577B3301CA2334,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F618F39403577B2B01CA2334 = {
+			buildActionMask = 2147483647;
+			files = (
+				F618F39A03577B3301CA2334,
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F618F39503577B2B01CA2334 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXRezBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F618F39603577B2B01CA2334 = {
+			buildPhases = (
+				F618F39203577B2B01CA2334,
+				F618F39303577B2B01CA2334,
+				F618F39403577B2B01CA2334,
+				F618F39503577B2B01CA2334,
+			);
+			buildSettings = {
+				HEADER_SEARCH_PATHS = "../../libisomediafile/macosx ../../libisomediafile/src";
+				LIBRARY_SEARCH_PATHS = ../../libisomediafile/macosx/libisomediafile/build;
+				OPTIMIZATION_CFLAGS = "";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = protectAudioMovie;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+			};
+			dependencies = (
+			);
+			isa = PBXToolTarget;
+			name = protectAudioMovie;
+			productInstallPath = /usr/local/bin;
+			productName = protectAudioMovie;
+			productReference = F618F39703577B2B01CA2334;
+			shouldUseHeadermap = 0;
+		};
+		F618F39703577B2B01CA2334 = {
+			isa = PBXExecutableFileReference;
+			path = protectAudioMovie;
+			refType = 3;
+		};
+		F618F39903577B3301CA2334 = {
+			fileRef = F61DBBA3035421BC01A8000C;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F618F39A03577B3301CA2334 = {
+			fileRef = F61DBBA5035421D801A8000C;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F61DBBA3035421BC01A8000C = {
+			isa = PBXFileReference;
+			name = protectAudioMovie.c;
+			path = ../src/protectAudioMovie.c;
+			refType = 2;
+		};
+		F61DBBA5035421D801A8000C = {
+			isa = PBXFileReference;
+			name = libisomediafile.a;
+			path = ../../libisomediafile/macosx/libisomediafile/build/libisomediafile.a;
+			refType = 2;
+		};
+		F689B53E0351FB0D01A8000C = {
+			buildStyles = (
+				F689B5400351FB0D01A8000C,
+				F689B5410351FB0D01A8000C,
+			);
+			isa = PBXProject;
+			mainGroup = F689B53F0351FB0D01A8000C;
+			productRefGroup = F68A1C970351FC8301A8000C;
+			projectDirPath = "";
+			targets = (
+				F618F39603577B2B01CA2334,
+			);
+		};
+		F689B53F0351FB0D01A8000C = {
+			children = (
+				F68A1C930351FBCE01A8000C,
+				F68A1C950351FC1701A8000C,
+				F68A1C970351FC8301A8000C,
+			);
+			isa = PBXGroup;
+			refType = 4;
+		};
+		F689B5400351FB0D01A8000C = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			isa = PBXBuildStyle;
+			name = Development;
+		};
+		F689B5410351FB0D01A8000C = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			isa = PBXBuildStyle;
+			name = Deployment;
+		};
+		F68A1C930351FBCE01A8000C = {
+			children = (
+				F61DBBA3035421BC01A8000C,
+			);
+			isa = PBXGroup;
+			name = Sources;
+			refType = 4;
+		};
+		F68A1C950351FC1701A8000C = {
+			children = (
+				F61DBBA5035421D801A8000C,
+			);
+			isa = PBXGroup;
+			name = Librairie;
+			refType = 4;
+		};
+		F68A1C970351FC8301A8000C = {
+			children = (
+				F618F39703577B2B01CA2334,
+			);
+			isa = PBXGroup;
+			name = Products;
+			refType = 4;
+		};
+	};
+	rootObject = F689B53E0351FB0D01A8000C;
+}

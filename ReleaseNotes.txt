@@ -1,0 +1,248 @@
+Release notes Jan 2008
+
+a) Fixed a couple of bugs referencing freed memory (thanks to Coding Tech.)
+
+b) fixed some compile warnings and errors on Linux
+
+c) fixed some compilation issues on Mac OS X 'Leopard'
+
+d) fixed some cases of calculating samples in track readers
+
+
+Release notes Aug 2007
+
+a) support for the sample dependency table
+
+b) fixed bug in movie fragments where ftyp atoms were getting written with fragments;  not sure when it was introduced.
+
+Release notes Apr 2007
+
+a) track references now cope with general references on reading and writing (previously, only known reference types could be read)
+
+Release notes Jan 2007
+
+a) fixed a bug where the 'isom' brand was incorrectly added to files without a movie atom
+
+b) added ISONewMetaMovie and ISOAddMetaItemWithID for general meta-structured files.
+
+c) much surgery on the support for sample entries, to handle several embedded atoms rather than just one
+
+d) support for more 3G files
+
+Release notes Sept 2006
+
+a) Updated ISMASecurity.c to handle ISMA salt values.  Some bug fixes and cross-platform compilations issues.  New file ISMASaltAtom.c
+
+b) Makefile for MINGW32 for the library (thanks to Stefan from FhG).
+
+c) Lots of new functions to support meta-boxes (atoms), with updated documentation (which also covers some older functions that seemed to have missed getting documented).  Also 'NewMPEG21' to make an MPEG-21 file.
+
+d) The extension atom parameter to ISONewGeneralSampleDescription is now a GenericAtom.
+
+e) Support for AVC sample entries added.  Now much easier to work with AVC.
+
+f) Optimizations and memory leak fix, thanks to Coding Technologies.  Four atoms no longer reallocate memory every time a sample is added; the input stream machinery was leaking when streams were closed; and files that start with 8 zeroes (which parse successfully as a single atom of type NULL) are now rejected, since they contain neither an ftyp or moov atom.
+
+g) Please note that going ahead, though I will maintain the Linux, FreeBSD, and Solaris makefiles, I probably will not check these builds (or the new MINGW32). If you find bugs, or compiler warnings or errors, please let me know.
+
+h) Fixed a bug in the Mac OS X file mapping where data that was larger than the window wasn't handled.
+
+i) Added support for timed meta-data tracks (Thanks, Michael)
+
+
+Release notes August 2006
+
+a) Much work on handling files over 4GB.  The ChunkLargeOffset atom file is no longer needed (the ChunkOffsetAtom handles both 32bit and 64bit offsets).  Many internal changes to make sizes etc. 64 bit.  Only Mac OS X has a SimpleFileMapping that will handle >4GB files, by mapping around them;  note that these files cannot be re-written (yet).  You can force making >4GB files (have a look at MediaDataAtom).
+
+
+Release notes June 2006
+
+a) Added support for sample groups; see documentation
+
+b) fixed a bug adding encrypted samples when written to another file
+
+c) fixed a bug that sometimes affected offsetted handles
+
+d) made it easier to add 'foreign' and UUID atoms;  see MP4NewForeignAtom, MP4NewUUIDAtom, and MP4AddAtomToMovie and MP4AddAtomToTrack
+
+e) [INCOMPATIBLE CHANGE] fixed some errors in the MP4TrackReader when there were edit lists.  Unfortunately it is now true that the outDTS and outCTS may be negative, in the case where the AU is the first AU and the edit starts in the middle of it.  So their type has changed from unsigned to signed.  This enables one to detect the 'AAC pre-roll' and end-trimming cases. If the DTS is -ve, or overlaps the end of the previous AU (i.e. previous DTS + previous duration), then discard that amount of samples from the front of the AU.  If the duration is less than the normal AU duration, discard from the end of the AU.  (Theoretically, both may occur).
+
+f) slightly easier to make non-MPEG tracks.  New function ISONewGeneralSampleDescription.  But this function is subject to change as we work on the atoms that go into these other sample descriptions (the last parameter may not stay as a handle, so supply NULL for now).
+
+g) Integrated some of the improvements from the 3GPP community (ongoing work)
+
+h) Fixed a few missing equivalents and their documentation (again).
+
+
+
+Release Notes Feb 2005
+
+a) equivalents defined for ISOOpenMovieNormal, ISOOpenMovieDebug, ISOOpenMovieInPlace, ISOGetMovieDuration, ISOGetTrackDuration
+
+b) New facility in handles, to set an offset;  offsets can be used when encrypting/decrypting.  Essentially you can set a handle to point a little way into the allocated space, and then 'back it up' when you want to use that space.
+
+c) Basic ISMACrypt support;  new functions to transform sample entries;  note that we don't do the encryption (that is your problem);  see ISMATransformSampleEntry and ISMAUnTransformSampleEntry.  These might provide a starting point for OMA 2.0 support.
+
+d) Fixed movie-fragment sequence number checking on read
+
+e) Fixed a bug in the PaddingBits atom where it could overwrite memory
+
+f) fixed a bug where a failed read of a movie would leak memory
+
+
+
+
+Release notes Oct 2004
+
+a) Added some missing documentation for get movie/track duration.
+
+b) Fixed a bug in reading padding bits atoms with odd numbers of entries.
+
+c) Some missing equivalents (ISO/MP4) were also added.
+
+
+
+Release notes jul 2003
+
+a) Bug fix in getTrackOffset;  not returning zero when that was the right answer.
+
+b) Bug fix to the vmhd flags.
+
+c) fixed a number of compiler warnings and errors (thanks again, Ralph)
+
+d) improved handle support (you can now offset handles to leave space at the front for later use, for example)
+
+e) handle 64-bit chunk offset atoms better (read files which use them OK)
+
+f) better handling of edit lists, some bug fixes in that area
+
+g) MP4NewMovie will now create an OD, not an IOD, in the IOD atom, if all the profiles are 0 (which is a forbidden value), and will create no IOD atom at all if the Object Descriptor ID supplied is 0 (also a forbidden value).  This makes it easy to create a greater variety of files.
+
+h) INCOMPATIBLE CHANGE!!  Previously, if a sample had no recorded padding bits information, then 0 was returned (if requested) as the padding value.  But 0 is a legal pad value, and so it was not possible to distinguish "this sample is not padded" from "this sample didn't have any padding recorded".  Now if there is no recorded padding the value 0xF8 is returned, which (being large) clearly exceeds the 0-7 possible legal values for padding.  The creation functions do NOT check for this value;  it is your responsibility to check for this and not pass it through.
+
+i) A missing equivalence defining ISOAddMediaSamplesPad was inserted
+
+j) An error in adding IPMP track references was corrected (an OR should have been an AND) which caused crashes under some circumstances.
+
+
+
+Release notes Oct 2002:
+
+
+This is a major update of the ISO Media File reference library.  In this release we are pleased to welcome the IPMP support donated by ResonateMP4.  
+
+One fix below which worries me is that MP4InsertMediaIntoTrack was not converting the mediaDuration to the movie timescale, contrary to the documentation.  I fixed this, but maybe I broke some software...
+
+Here's all the fixes in a list:
+
+
+a) free atoms can now be found and discarded almost anywhere;  this means the software copes, for example, with files with free atoms inside edit atoms.  The software is probably more liberal than the specification in this respect;  be careful.  Free atoms are now mostly discarded on reading.
+
+b) empty free atoms (8 bytes long) are also handled on reading and no longer cause a crash.
+
+c) I believe that empty durations in movie fragments are handled correctly.  This hasn't been fully verified.
+
+d) edit lists can now be found in base movies with fragments, so that e.g. track start offsets can be in the base movie.
+
+e) there is a fix to finding a sample by time (it was wrong when chunks had multiple samples).
+
+f) edit atoms with no included list are correctly treated as if they were not present.
+
+g) the movie duration is now calculated in 64 bits, which means non-trivial-lengthed movies should be OK.
+
+h) for those in the 3GPP world, a nod of support:  new3gppmovie
+
+i) we no longer crash if asked for the IOD of a movie which doesn't have one.
+
+j) the IPMP support, as noted above.
+
+k) builds for CW5, 7, and 8 (carbon), and project builder under OS X.
+
+l) MP4 InsertMediaIntoTrack converts the mediaDuration to the Movie timescale now (as documented).
+
+-- (2nd drop of the experimental software)
+
+m) the ftyp for the motion jpeg 2000 was wrong, and a JP2 Header incorrectly present at top level.  This would only be correct with a JP2 Codestream also at top level (a parallel still image).
+
+n) now fixed for missing prototypes, and checked on solaris, freebsd and linux (library and audio example)
+
+* * * * *
+
+Release notes from Oct 2001:
+
+Here is the extent of the trouble I may be causing.  Comments gratefully received.
+
+
+Intended improvements:
+
+a) Implemented the new 'compact' sample size table (requested for audio).  See the function ISOSetSampleSizeField.
+
+b) Implemented the Padding bits sample table atom (also for audio).  See ISOAddMediaSamplesPad, ISOAddMediaSampleReferencePad, MP4GetIndMediaSampleWithPad, GetMediaSampleWithPad, MP4TrackReaderGetNextAccessUnitWithPad
+
+c) (Biggie) Implemented movie fragments.  See ISOStartMovieFragment, ISOSetTrackFragmentDefaults.  Fragmented movies can be both created and read.  When read, the movie is de-fragmented so that it can be iterated over.  Combined with the work on writing movies that have been read in (see below), this means a movie can be simply de-fragmented back to disk.
+
+d) Implemented reading an atom with size==0 meaning atom goes to end of file.
+
+e) Improved the QT support a little;  QT files made by the library can now be read by QT without modification.  Also, the library probably copes with a counted (pascal) string in a hdlr atom, where a C (null-terminated) string ought to be.
+
+f) Made the file-type atom occur in all files, not just MJ2 files.  See ISOSetMovieBrand, ISOSetMovieCompatibleBrand, ISOGetMovieBrand, ISOIsMovieCompatibleBrand.
+
+g) (The other biggie).  Changed the way that samples are extracted from movies that are read in, so that it's now possible to write out a file after reading it in, without scrodding all the chunk offsets.  Instead of reading sample data from the file mapping data pointer, it's now read from the read-in mdats.  Chunk offsets are adjusted, and all the mdats are merged into one.  No attempt is made to purge unused space in the mdats, however.  This means that the filemappinginputstream could be closed after reading the atoms in;  I have not worked out where to do this.  Note:  if you supply the flag MP4OpenMovieInPlace to OpenMovieFile, then the media data will be read from the input file (as before);  however, such files cannot be re-written to disk.  This is not yet optimal;  the media data is read from disk into memory, and then thrown away;  it ought to be skipped.
+
+h) If there is an extra byte in the SLConfigDescriptor, because we're reading a systems V1 file, skip it.  (The matching change to ignore OCRFlag in ESDescriptors doesn't seem like it ought to be part of the permanent source).
+
+i) Improved the handling of top-level atoms;  those that can occur are saved, and free space is tossed.
+
+j) Fixed the reading of the sample-to-chunk table to handle run-length compressed tables, and improved the writing of such tables also.
+
+k) Added make files for Pmake on freebsd (Makefile.pmk) and Solaris make (Makefile.sol).
+
+l) Made the library compile without warning under strict Ansi C, with only the warning for 'long long' suppressed (thanks, Ralph).
+
+m) Fixed a leak in getMovieInitialObjectDescriptor -- the ESD list was not freed, as it shared structure with stuff we needed to keep.  There's now a copydescriptor function, so the sharing is gone, and the list is correctly freed.
+
+n) For those wanting to track memory leaks, there is an alternative implementation on the Mac for MP4Handle.c, in MacHandle.c, which uses regular Mac handle routines (e.g. by using ZoneRanger 'watch for leaks').
+
+o) Also fixed a few leaks with memory input streams not being closed.  There are no known leaks at the moment (though I doubt that there are no leaks).
+
+p) Now compiles without warning if -Wmissing-prototypes is set;  prototypes all fixed.
+
+q) Fixed some errors in the fragment stuff.  You can now call SetTrackFragmentdefaults before you add any samples.
+
+
+Questions:
+
+Does anyone rely on being able to create free-space atoms in the library, or on being able to read them?  It seems that their contents at least should be tossed on reading, and they should not write anything out when a file is written.  Comments?
+
+
+Changes in the project:
+
+These files are no longer needed and should be removed from builds:
+	ISOMovieFile.c
+	MJ2MovieFile.c
+	QTMovieFile.c
+
+These files are new:
+	TrackFragmentAtom.c
+	MovieFragmentAtom.c
+	TrackFragmentHeaderAtom.c
+	MovieExtendsAtom.c
+	TrackFragmentRunAtom.c
+	TrackExtendsAtom.c
+	MovieFragmentHeaderAtom.c
+	PaddingBitsAtom.c
+
+* * * *
+
+
+It is hosted at
+
+loc.apple.com
+
+as an FTP file.  Logon as either sc29wg01 (JPEG) or sc29wg11 (MPEG) using the standard (latest) passwords.  
+
+My thanks go to the original creator and maintainer, Mike Coleman.
+
+Make media files and prosper!
+
+Dave Singer
