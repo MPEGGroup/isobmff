@@ -1,3 +1,23 @@
+Release notes Jan 2011
+
+a) better tracing output from sample groups and movie fragments
+
+b) handle atoms that have more data than the parser used
+
+c) correctly calculate track runs sizes based off the flags (even if we don't recognize them all, as per spec.)
+
+
+Release Notes August 2010
+
+a) Added support for the simpler moof-relative addressing in movie fragments, and fix the more complicated case
+
+b) be more tolerant of unknown atoms in a few places
+
+c) be more tolerant of 'empty' sample tables in movies (so that merging movie fragments into it works)
+
+d) fixed some minor cases of not calculating field sizes right
+
+
 Release notes Jan 2008
 
 a) Fixed a couple of bugs referencing freed memory (thanks to Coding Tech.)
