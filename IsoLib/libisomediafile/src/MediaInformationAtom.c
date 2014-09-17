@@ -429,6 +429,25 @@ static MP4Err setfieldsize( struct MP4MediaInformationAtom* self, u32 fieldsize 
    return err;
 }
 
+static MP4Err extendLastSampleDuration( struct MP4MediaInformationAtom *self, u32 duration )
+{
+	MP4Err                  err;
+	MP4SampleTableAtomPtr   stbl;
+	
+	err     = MP4NoErr;
+	
+	stbl    = (MP4SampleTableAtomPtr) self->sampleTable;
+	if ( stbl == NULL )
+		BAILWITHERROR( MP4InvalidMediaErr );
+    
+    err     = stbl->extendLastSampleDuration( stbl, duration );
+    
+bail:
+	TEST_RETURN( err );
+    
+	return err;
+}
+
 static MP4Err addSamples( struct MP4MediaInformationAtom *self, MP4Handle sampleH, 
 					u32 sampleCount, MP4Handle durationsH, MP4Handle sizesH,
 					MP4Handle sampleEntryH,
@@ -581,6 +600,23 @@ static MP4Err getSampleDependency( struct MP4MediaInformationAtom *self, u32 sam
    return err;
 }
 
+static MP4Err setSampleEntry( struct MP4MediaInformationAtom *self, MP4AtomPtr entry )
+{
+    MP4Err err;
+	MP4SampleTableAtomPtr stbl;
+	
+	err = MP4NoErr;
+	
+	stbl = (MP4SampleTableAtomPtr) self->sampleTable;
+	assert( stbl );
+    assert( stbl->setSampleEntry );
+    err = stbl->setSampleEntry( stbl, entry ); if (err) goto bail;
+bail:
+    TEST_RETURN( err );
+    
+    return err;
+}
+
 static MP4Err mdatMoved( struct MP4MediaInformationAtom *self, u64 mdatBase, u64 mdatEnd, s32 mdatOffset )
 {
 	MP4DataInformationAtomPtr   dinf;
@@ -661,29 +697,31 @@ MP4Err MP4CreateMediaInformationAtom( MP4MediaInformationAtomPtr *outAtom )
 
 	err = MP4CreateBaseAtom( (MP4AtomPtr) self );
 	if ( err ) goto bail;
-	self->type					= MP4MediaInformationAtomType;
-	self->name					= "media information";
-	self->createFromInputStream	= (cisfunc) createFromInputStream;
-	self->destroy				= destroy;
-	self->closeDataHandler		= closeDataHandler;
-	self->openDataHandler		= openDataHandler;
-	self->setupNewMedia			= setupNewMedia;
-	self->getMediaDuration		= getMediaDuration;
+	self->type                      = MP4MediaInformationAtomType;
+	self->name                      = "media information";
+	self->createFromInputStream     = (cisfunc) createFromInputStream;
+	self->destroy                   = destroy;
+	self->closeDataHandler          = closeDataHandler;
+	self->openDataHandler           = openDataHandler;
+	self->setupNewMedia             = setupNewMedia;
+	self->getMediaDuration          = getMediaDuration;
 	err = MP4MakeLinkedList( &self->atomList ); if (err) goto bail;	
-	self->calculateSize         = calculateSize;
-	self->serialize             = serialize;
-	self->addSamples			= addSamples;
-	self->setfieldsize          = setfieldsize;
-	self->mdatMoved				= mdatMoved;
-	self->mdatArrived			= mdatArrived;
-	self->addSampleReference	= addSampleReference;
-	self->testDataEntry			= testDataEntry;
-	self->addGroupDescription	= addGroupDescription;
-	self->mapSamplestoGroup		= mapSamplestoGroup;
-	self->getSampleGroupMap		= getSampleGroupMap;
-	self->getGroupDescription	= getGroupDescription;
-	self->getSampleDependency	= getSampleDependency;
-	self->setSampleDependency	= setSampleDependency;
+	self->calculateSize             = calculateSize;
+	self->serialize                 = serialize;
+	self->addSamples                = addSamples;
+	self->setfieldsize              = setfieldsize;
+	self->mdatMoved                 = mdatMoved;
+	self->mdatArrived               = mdatArrived;
+	self->addSampleReference        = addSampleReference;
+	self->testDataEntry             = testDataEntry;
+	self->addGroupDescription       = addGroupDescription;
+	self->mapSamplestoGroup         = mapSamplestoGroup;
+	self->getSampleGroupMap         = getSampleGroupMap;
+	self->getGroupDescription       = getGroupDescription;
+	self->getSampleDependency       = getSampleDependency;
+	self->setSampleDependency       = setSampleDependency;
+    self->extendLastSampleDuration	= extendLastSampleDuration;
+    self->setSampleEntry            = setSampleEntry;
 	
 	*outAtom = self;
 bail:

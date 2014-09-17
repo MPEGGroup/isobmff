@@ -97,7 +97,7 @@ bail:
 	return err;
 }
 
-static MP4Err maketrackfragments (struct MP4MovieExtendsAtom *self, MP4MovieFragmentAtomPtr moof, MP4MovieAtomPtr moov, MP4MediaDataAtomPtr mdat )
+static MP4Err maketrackfragments (struct MP4MovieExtendsAtom *self, MP4MovieFragmentAtomPtr moof, MP4MovieAtomPtr moov, MP4MediaDataAtomPtr mdat, u32 delay )
 {
     u32 trackIdx;
 	u32 i;
@@ -108,23 +108,44 @@ static MP4Err maketrackfragments (struct MP4MovieExtendsAtom *self, MP4MovieFrag
 	MP4GetListEntryCount( self->atomList, &trackCount );
 	for( i = 0, trackIdx = 0; i < trackCount; i++ )
 	{
-		MP4TrackExtendsAtomPtr trex;
-		MP4TrackFragmentAtomPtr traf;
-		MP4TrackFragmentHeaderAtomPtr tfhd;
-		
+		MP4TrackExtendsAtomPtr              trex;
+		MP4TrackFragmentAtomPtr             traf;
+		MP4TrackFragmentHeaderAtomPtr       tfhd;
+        MP4TrackFragmentDecodeTimeAtomPtr   tfdt;
+        
 		err = MP4GetListEntry( self->atomList, i, (char **) &trex ); if (err) goto bail;
 		
 		err = MP4CreateTrackFragmentAtom( &traf ); if (err) goto bail;
 		err = MP4CreateTrackFragmentHeaderAtom( &tfhd ); if (err) goto bail;
+        err = MP4CreateTrackFragmentDecodeTimeAtom( &tfdt ); if (err) goto bail;
 		
 		traf->tfhd = (MP4AtomPtr) tfhd;
+        traf->tfdt = (MP4AtomPtr) tfdt;
+        traf->trex = (MP4AtomPtr) trex;
 		traf->mdat = mdat;
 		
 		traf->default_sample_description_index = trex->default_sample_description_index;
 		traf->default_sample_duration = trex->default_sample_duration;
 		traf->default_sample_size = trex->default_sample_size;
 		traf->default_sample_flags = trex->default_sample_flags;
-		
+        
+        if (trex->isInitialMediaDecodeTimeAdded == 0)
+        {
+            MP4MediaAtomPtr                     mdia;
+            MP4Track                            trak;
+            u64                                 initialMediaDuration;
+            
+            err = moov->getTrackMedia( moov, trex->trackID, (MP4AtomPtr*) &mdia ); if (err) goto bail;
+            err = MP4GetMediaTrack( (MP4Media) mdia, &trak ); if (err) goto bail;
+            err = MP4GetMediaDuration( (MP4Media) mdia, &initialMediaDuration ); if (err) goto bail;
+            
+            trex->baseMediaDecodeTime           = initialMediaDuration;
+            trex->isInitialMediaDecodeTimeAdded = 1;
+        }
+        
+        trex->baseMediaDecodeTime += delay;
+        tfdt->baseMediaDecodeTime = trex->baseMediaDecodeTime;
+        
 		tfhd->trackID = trex->trackID;
 		tfhd->sample_description_index = trex->default_sample_description_index;
 		/* if we ever allow flipping of sample descriptions, this should be copied from the

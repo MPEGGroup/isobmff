@@ -38,6 +38,7 @@ static void destroy( MP4AtomPtr s )
 	DESTROY_ATOM_LIST_F( atomList );
 	DESTROY_ATOM_LIST_F( groupList );
 	(self->tfhd)->destroy( (MP4AtomPtr) (self->tfhd) );
+    (self->tfdt)->destroy( (MP4AtomPtr) (self->tfdt) );
 
 	if ( self->super )
 		self->super->destroy( s );
@@ -56,10 +57,11 @@ static MP4Err addAtom( MP4TrackFragmentAtomPtr self, MP4AtomPtr atom )
 	if ( self == 0 )
 		BAILWITHERROR( MP4BadParamErr );
 	switch (atom->type) {
-		case MP4TrackFragmentHeaderAtomType:	self->tfhd = atom; break;
-		case MP4TrackRunAtomType:				err = MP4AddListEntry( atom, self->atomList ); break;
-		case MP4SampletoGroupAtomType:			err = MP4AddListEntry( atom, self->groupList ); break;
-		/* default:								BAILWITHERROR( MP4BadDataErr ) */
+		case MP4TrackFragmentHeaderAtomType:        self->tfhd = atom; break;
+        case MP4TrackFragmentDecodeTimeAtomType:    self->tfdt = atom; break;
+		case MP4TrackRunAtomType:                   err = MP4AddListEntry( atom, self->atomList ); break;
+		case MP4SampletoGroupAtomType:              err = MP4AddListEntry( atom, self->groupList ); break;
+		/* default:                                 BAILWITHERROR( MP4BadDataErr ) */
 	}
 bail:
 	TEST_RETURN( err );
@@ -129,9 +131,13 @@ static MP4Err addSamples( struct MP4MediaInformationAtom *s, MP4Handle sampleH,
 	u32 i;
 	u32* decodes;
 	MP4TrackFragmentAtomPtr self;
+    MP4TrackExtendsAtomPtr trex;
+    
 		
 	self = (MP4TrackFragmentAtomPtr) s;
 	
+    trex = (MP4TrackExtendsAtomPtr) self->trex;
+    
 	if (sampleEntryH != NULL) BAILWITHERROR( MP4BadDataErr )
 	
 	if ((self->samples_use_mdat == 0) || (self->samples_use_mdat == 1)) self->samples_use_mdat = 1;
@@ -160,6 +166,8 @@ static MP4Err addSamples( struct MP4MediaInformationAtom *s, MP4Handle sampleH,
 	for (i=0, entry=trun->entries; i<sampleCount; i++, entry++) 
 	{
 		entry->sample_duration = ( (i>=duration_count) ? durations[0] : durations[i] );
+        trex->baseMediaDecodeTime += entry->sample_duration;
+        
 		entry->sample_size     = ( (i>=size_count)     ?     sizes[0] :     sizes[i] );
 		entry->sample_flags =
 			( (padsH == NULL) ? 0 : (((u8*) padsH)[i])<<17 ) +
@@ -207,8 +215,11 @@ static MP4Err addSampleReference( struct MP4MediaInformationAtom *s, u64 dataOff
 	u32 i;
 	MP4TrackFragmentAtomPtr self;
 	MP4TrackFragmentHeaderAtomPtr tfhd;
+    MP4TrackExtendsAtomPtr trex;
 		
 	self = (MP4TrackFragmentAtomPtr) s;
+    
+    trex = (MP4TrackExtendsAtomPtr) self->trex;
 	
 	if (sampleEntryH != NULL) BAILWITHERROR( MP4BadDataErr )
 	
@@ -235,6 +246,8 @@ static MP4Err addSampleReference( struct MP4MediaInformationAtom *s, u64 dataOff
 	for (i=0, entry=trun->entries; i<sampleCount; i++, entry++) 
 	{
 		entry->sample_duration = ( (i>=duration_count) ? durations[0] : durations[i] );
+        trex->baseMediaDecodeTime += entry->sample_duration;
+        
 		entry->sample_size     = ( (i>=size_count)     ?     sizes[0] :     sizes[i] );
 		entry->sample_flags =
 			( (padsH == NULL) ? 0 : (((u8*) padsH)[i])<<13 ) +
@@ -274,6 +287,7 @@ static MP4Err serialize( struct MP4Atom* s, char* buffer )
 		err = MP4SerializeCommonBaseAtomFields( s, buffer ); if (err) goto bail;
     	buffer += self->bytesWritten;	
     	SERIALIZE_ATOM( tfhd );
+        SERIALIZE_ATOM( tfdt );
 		
     	SERIALIZE_ATOM_LIST( atomList );
 		SERIALIZE_ATOM_LIST( groupList );
@@ -291,13 +305,16 @@ static MP4Err calculateSize( struct MP4Atom* s )
 	MP4Err err;
 	MP4TrackFragmentAtomPtr self = (MP4TrackFragmentAtomPtr) s;
 	MP4TrackFragmentHeaderAtomPtr tfhd;
+    MP4TrackFragmentDecodeTimeAtomPtr tfdt;
+    
 	u32 tfhd_flags;
 	u32 i;
 	u32 atomListSize;
 
 	err = MP4NoErr;
 	
-	tfhd = (MP4TrackFragmentHeaderAtomPtr) self->tfhd;  
+	tfhd = (MP4TrackFragmentHeaderAtomPtr) self->tfhd;
+    tfdt = (MP4TrackFragmentDecodeTimeAtomPtr) self->tfdt;
 
 	tfhd->default_sample_duration = 0;
 	tfhd->default_sample_flags    = 0;
@@ -357,6 +374,7 @@ static MP4Err calculateSize( struct MP4Atom* s )
 
 		err = MP4CalculateBaseAtomFieldSize( s ); if (err) goto bail;
 		ADD_ATOM_SIZE( tfhd );
+        ADD_ATOM_SIZE( tfdt );
 		ADD_ATOM_LIST_SIZE( atomList );
 		ADD_ATOM_LIST_SIZE( groupList );
 	}

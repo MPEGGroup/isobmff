@@ -411,6 +411,10 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
 		case MP4TrackFragmentHeaderAtomType:
 			err = MP4CreateTrackFragmentHeaderAtom( (MP4TrackFragmentHeaderAtomPtr*) &newAtom );
 			break;
+            
+        case MP4TrackFragmentDecodeTimeAtomType:
+			err = MP4CreateTrackFragmentDecodeTimeAtom( (MP4TrackFragmentDecodeTimeAtomPtr*) &newAtom );
+			break;
 			
 		case MP4TrackRunAtomType:
 			err = MP4CreateTrackRunAtom( (MP4TrackRunAtomPtr*) &newAtom );

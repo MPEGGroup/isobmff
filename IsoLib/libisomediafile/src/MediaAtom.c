@@ -242,6 +242,23 @@ static 	MP4Err addSamples( struct MP4MediaAtom *self, MP4Handle sampleH, u32 sam
    return err;
 }
 
+static 	MP4Err extendLastSampleDuration( struct MP4MediaAtom *self, u32 duration )
+{
+    MP4Err                      err;
+    MP4MediaInformationAtomPtr  minf;
+    
+    err     = MP4NoErr;
+    minf    = (MP4MediaInformationAtomPtr) self->information;
+    assert( minf );
+    assert( minf->extendLastSampleDuration );
+    
+    err     = minf->extendLastSampleDuration( minf, duration ); if (err) goto bail;
+bail:
+    TEST_RETURN( err );
+    
+    return err;
+}
+
 static MP4Err addGroupDescription(struct MP4MediaAtom *self, u32 groupType, MP4Handle description, u32 *index )
 {
    MP4Err err;
@@ -338,6 +355,22 @@ static MP4Err getSampleDependency( struct MP4MediaAtom *self, u32 sampleNumber, 
    return err;
 }
 
+static MP4Err setSampleEntry( struct MP4MediaAtom *self, MP4AtomPtr entry )
+{
+    MP4Err err;
+    MP4MediaInformationAtomPtr minf;
+	
+    err = MP4NoErr;
+    minf = (MP4MediaInformationAtomPtr) self->information;
+    assert( minf );
+    assert( minf->setSampleEntry );
+    err = minf->setSampleEntry( minf, entry ); if (err) goto bail;
+bail:
+    TEST_RETURN( err );
+    
+    return err;
+}
+
 static MP4Err serialize( struct MP4Atom* s, char* buffer )
 {
    MP4Err err;
@@ -388,27 +421,30 @@ MP4Err MP4CreateMediaAtom( MP4MediaAtomPtr *outAtom )
 
    err = MP4CreateBaseAtom( (MP4AtomPtr) self );
    if ( err ) goto bail;
-   self->type = MP4MediaAtomType;
-   self->name                = "media";
-   self->createFromInputStream = (cisfunc) createFromInputStream;
-   self->destroy             = destroy;
+   self->type                       = MP4MediaAtomType;
+   self->name                       = "media";
+   self->createFromInputStream      = (cisfunc) createFromInputStream;
+   self->destroy                    = destroy;
    err = MP4MakeLinkedList( &self->atomList ); if (err) goto bail;
-   self->calculateSize         = calculateSize;
-   self->serialize             = serialize;
-   self->addSamples = addSamples;
-   self->calculateDuration = calculateDuration;
-   self->setfieldsize  = setfieldsize;
-   self->setupNew = setupNew;
-   self->mdatMoved = mdatMoved;
-   self->addSampleReference = addSampleReference;
-   self->settrackfragment = settrackfragment;
-   self->addGroupDescription = addGroupDescription;
-   self->mapSamplestoGroup = mapSamplestoGroup;
-   self->getSampleGroupMap = getSampleGroupMap;
-   self->getGroupDescription = getGroupDescription;
+   self->calculateSize              = calculateSize;
+   self->serialize                  = serialize;
+   self->addSamples                 = addSamples;
+   self->calculateDuration          = calculateDuration;
+   self->setfieldsize               = setfieldsize;
+   self->setupNew                   = setupNew;
+   self->mdatMoved                  = mdatMoved;
+   self->addSampleReference         = addSampleReference;
+   self->settrackfragment           = settrackfragment;
+   self->addGroupDescription        = addGroupDescription;
+   self->mapSamplestoGroup          = mapSamplestoGroup;
+   self->getSampleGroupMap          = getSampleGroupMap;
+   self->getGroupDescription        = getGroupDescription;
    
-   self->setSampleDependency = setSampleDependency;
-   self->getSampleDependency = getSampleDependency;
+   self->setSampleDependency        = setSampleDependency;
+   self->getSampleDependency        = getSampleDependency;
+    
+   self->extendLastSampleDuration   = extendLastSampleDuration;
+   self->setSampleEntry             = setSampleEntry;
 
    *outAtom = self;
   bail:

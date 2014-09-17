@@ -167,10 +167,10 @@ bail:
 }
 
 int bitcount(int v) {
-	unsigned int c; // c accumulates the total bits set in v
+	unsigned int c; /* c accumulates the total bits set in v */
 	for (c = 0; v; c++)
 	{
-		v &= v - 1; // clear the least significant bit set
+		v &= v - 1; /* clear the least significant bit set */
 	}
 	return c;
 }

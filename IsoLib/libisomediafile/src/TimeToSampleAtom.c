@@ -135,6 +135,30 @@ bail:
 	return err;
 }
 
+static MP4Err extendLastSampleDuration( struct MP4TimeToSampleAtom *self, u32 duration )
+{
+	MP4Err       err;
+    sttsEntryPtr current;
+	
+	err     = MP4NoErr;
+	current = (sttsEntryPtr) self->currentEntry;
+    
+    if (current->sampleCount == 1)
+    {
+        current->sampleDuration += duration;
+    }
+    else
+    {
+        current->sampleCount--;
+        err = addSample(self, current->sampleDuration + duration); if (err) goto bail;
+    }
+	
+bail:
+	TEST_RETURN( err );
+    
+	return err;
+}
+
 static MP4Err getTimeForSampleNumber( MP4AtomPtr s, u32 sampleNumber, u64 *outSampleCTS, s32 *outSampleDuration )
 {
 	MP4Err err;
@@ -391,16 +415,17 @@ MP4Err MP4CreateTimeToSampleAtom( MP4TimeToSampleAtomPtr *outAtom )
 	if ( err ) goto bail;
 	
 	err = MP4MakeLinkedList( &self->entryList ); if (err) goto bail;
-	self->type = MP4TimeToSampleAtomType;
-	self->name                = "time to sample";
-	self->createFromInputStream = (cisfunc) createFromInputStream;
-	self->destroy             = destroy;
-	self->findSamples         = findSamples;
-	self->getTimeForSampleNumber = getTimeForSampleNumber;
-	self->calculateSize         = calculateSize;
-	self->serialize             = serialize;
-	self->getTotalDuration = getTotalDuration;
-	self->addSamples = addSamples;
+	self->type                      = MP4TimeToSampleAtomType;
+	self->name                      = "time to sample";
+	self->createFromInputStream     = (cisfunc) createFromInputStream;
+	self->destroy                   = destroy;
+	self->findSamples               = findSamples;
+	self->getTimeForSampleNumber    = getTimeForSampleNumber;
+	self->calculateSize             = calculateSize;
+	self->serialize                 = serialize;
+	self->getTotalDuration          = getTotalDuration;
+	self->addSamples                = addSamples;
+    self->extendLastSampleDuration  = extendLastSampleDuration;
 	*outAtom = self;
 bail:
 	TEST_RETURN( err );

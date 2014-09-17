@@ -130,6 +130,18 @@ static MP4Err mergeFragments( struct MP4MovieFragmentAtom* self, MP4MovieAtomPtr
 		err = MP4GetMediaTrack( (MP4Media) mdia, &trak ); if (err) goto bail;
 		
 		err = MP4GetMediaDuration( (MP4Media) mdia, &initialMediaDuration ); if (err) goto bail;
+        
+        if ( traf->tfdt )
+        {
+            MP4TrackFragmentDecodeTimeAtomPtr tfdt;
+            tfdt = (MP4TrackFragmentDecodeTimeAtomPtr) traf->tfdt;
+            
+            if ( tfdt->baseMediaDecodeTime  < initialMediaDuration )
+                BAILWITHERROR( MP4InvalidMediaErr );
+            
+            if ( tfdt->baseMediaDecodeTime  > initialMediaDuration )
+                err = mdia->extendLastSampleDuration( mdia, tfdt->baseMediaDecodeTime - initialMediaDuration ); if (err) goto bail;
+        }
 
 		if ( (tfhd_flags & tfhd_duration_is_empty) ) /* BAILWITHERROR( MP4NotImplementedErr ) */
 		{

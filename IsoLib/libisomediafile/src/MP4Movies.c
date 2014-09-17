@@ -247,7 +247,7 @@ MP4_EXTERN ( MP4Err ) MergeMovieFragments( MP4PrivateMovieRecordPtr movie )
 			}
 				
 		
-		moof->mergeFragments( moof, (MP4MovieAtomPtr) (movie->moovAtomPtr) );
+		err = moof->mergeFragments( moof, (MP4MovieAtomPtr) (movie->moovAtomPtr) ); if (err) goto bail;
 	}
 	DESTROY_ATOM_LIST_V( movie->movieFragments )
 	moov = (MP4MovieAtomPtr) movie->moovAtomPtr;

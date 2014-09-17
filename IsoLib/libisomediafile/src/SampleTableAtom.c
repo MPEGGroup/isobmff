@@ -220,6 +220,25 @@ bail:
 	return err;
 }
 
+static 	MP4Err extendLastSampleDuration( struct MP4SampleTableAtom *self, u32 duration )
+{
+    MP4Err                  err;
+	MP4TimeToSampleAtomPtr  stts;
+    
+    err     = MP4NoErr;
+    stts    = (MP4TimeToSampleAtomPtr) self->TimeToSample;
+    
+    if ( stts == NULL )
+        BAILWITHERROR( MP4InvalidMediaErr );
+
+    stts->extendLastSampleDuration( stts, duration );
+    
+bail:
+	TEST_RETURN( err );
+    
+	return err;
+}
+
 static MP4Err addSamples( struct MP4SampleTableAtom *self,
                           u32 sampleCount, u64 sampleOffset, MP4Handle durationsH,
                           MP4Handle sizesH, MP4Handle compositionOffsetsH, 
@@ -592,23 +611,24 @@ MP4Err MP4CreateSampleTableAtom( MP4SampleTableAtomPtr *outAtom )
 	self->type = MP4SampleTableAtomType;
 	self->name                = "sample table";
 	err = MP4MakeLinkedList( &self->atomList ); if (err) goto bail;
-	self->createFromInputStream        = (cisfunc) createFromInputStream;
-	self->destroy                      = destroy;
-	self->calculateSize                = calculateSize;
-	self->calculateDuration            = calculateDuration;
-	self->setSampleEntry               = setSampleEntry;
-	self->serialize                    = serialize;
-	self->getCurrentDataReferenceIndex = getCurrentDataReferenceIndex;
-	self->addSamples                   = addSamples;
-	self->setupNew                     = setupNew;
-	self->setfieldsize                 = setfieldsize;
-	self->getCurrentSampleEntryIndex   = getCurrentSampleEntryIndex;
-	self->setDefaultSampleEntry		   = setDefaultSampleEntry;
+	self->createFromInputStream         = (cisfunc) createFromInputStream;
+	self->destroy                       = destroy;
+	self->calculateSize                 = calculateSize;
+	self->calculateDuration             = calculateDuration;
+	self->setSampleEntry                = setSampleEntry;
+	self->serialize                     = serialize;
+	self->getCurrentDataReferenceIndex  = getCurrentDataReferenceIndex;
+    self->extendLastSampleDuration      = extendLastSampleDuration;
+	self->addSamples                    = addSamples;
+	self->setupNew                      = setupNew;
+	self->setfieldsize                  = setfieldsize;
+	self->getCurrentSampleEntryIndex    = getCurrentSampleEntryIndex;
+	self->setDefaultSampleEntry         = setDefaultSampleEntry;
 	
-	self->addGroupDescription		   = addGroupDescription;
-	self->mapSamplestoGroup			   = mapSamplestoGroup;
-	self->getSampleGroupMap			   = getSampleGroupMap;
-	self->getGroupDescription		   = getGroupDescription;
+	self->addGroupDescription           = addGroupDescription;
+	self->mapSamplestoGroup             = mapSamplestoGroup;
+	self->getSampleGroupMap             = getSampleGroupMap;
+	self->getGroupDescription           = getGroupDescription;
 	
 	self->setSampleDependency			= setSampleDependency;
 	self->getSampleDependency			= getSampleDependency;

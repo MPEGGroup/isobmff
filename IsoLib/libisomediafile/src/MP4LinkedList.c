@@ -211,7 +211,7 @@ MP4Err MP4DeleteListEntry( MP4LinkedList list, u32 itemNumber )
 		list->tail = previous;
 
 	list->foundEntryNumber = 0;
-	list->foundEntry = entry;
+	list->foundEntry = list->head;
 	list->entryCount -= 1;
 
 bail:

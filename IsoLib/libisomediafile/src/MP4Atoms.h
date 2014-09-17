@@ -93,6 +93,7 @@ enum
 	MP4MovieFragmentHeaderAtomType         = MP4_FOUR_CHAR_CODE( 'm', 'f', 'h', 'd' ),
 	MP4TrackFragmentAtomType               = MP4_FOUR_CHAR_CODE( 't', 'r', 'a', 'f' ),
 	MP4TrackFragmentHeaderAtomType         = MP4_FOUR_CHAR_CODE( 't', 'f', 'h', 'd' ),
+    MP4TrackFragmentDecodeTimeAtomType     = MP4_FOUR_CHAR_CODE( 't', 'f', 'd', 't' ),
 	MP4TrackRunAtomType    		           = MP4_FOUR_CHAR_CODE( 't', 'r', 'u', 'n' ),
 	
 	MP4SampleGroupDescriptionAtomType		= MP4_FOUR_CHAR_CODE( 's', 'g', 'p', 'd' ),
@@ -398,6 +399,9 @@ typedef struct MP4MediaAtom
 
 	MP4Err (*setSampleDependency)( struct MP4MediaAtom *self, s32 sample_index, MP4Handle dependencies  );
 	MP4Err (*getSampleDependency)( struct MP4MediaAtom *self, u32 sampleNumber, u8* dependency  );
+    
+    MP4Err (*extendLastSampleDuration)( struct MP4MediaAtom *self, u32 duration );
+    MP4Err (*setSampleEntry)( struct MP4MediaAtom *self, MP4AtomPtr entry );
 	
 	MP4AtomPtr mediaTrack;
 	MP4AtomPtr mediaHeader;
@@ -459,6 +463,8 @@ typedef struct MP4MediaInformationAtom
 	MP4Err (*getSampleGroupMap)(struct MP4MediaInformationAtom *self, u32 groupType, u32 sample_number, u32* group_index );
 	MP4Err (*getGroupDescription)(struct MP4MediaInformationAtom *self, u32 groupType, u32 index, MP4Handle description );
 	MP4Err (*getSampleDependency)( struct MP4MediaInformationAtom *self, u32 sampleNumber, u8* dependency  );
+    MP4Err (*extendLastSampleDuration)( struct MP4MediaInformationAtom *self, u32 duration  );
+    MP4Err (*setSampleEntry)( struct MP4MediaInformationAtom *self, MP4AtomPtr entry );
 
 	MP4AtomPtr dataInformation;
 	MP4AtomPtr sampleTable;
@@ -577,6 +583,7 @@ typedef struct MP4SampleTableAtom
 	MP4Err (*calculateDuration)( struct MP4SampleTableAtom *self, u32 *outDuration );
 	MP4Err (*setSampleEntry)( struct MP4SampleTableAtom *self, MP4AtomPtr entry );
 	MP4Err (*getCurrentDataReferenceIndex)( struct MP4SampleTableAtom *self, u32 *outDataReferenceIndex );
+    MP4Err (*extendLastSampleDuration)( struct MP4SampleTableAtom *self, u32 duration );
 	MP4Err (*addSamples)( struct MP4SampleTableAtom *self,
 							u32 sampleCount, u64 sampleOffset, MP4Handle durationsH,
 							MP4Handle sizesH, MP4Handle compositionOffsetsH, 
@@ -623,7 +630,8 @@ typedef struct MP4TimeToSampleAtom
 							u32 *outSampleNumber, s32 *outSampleDuration );
 	MP4Err (*getTotalDuration)( struct MP4TimeToSampleAtom *self, u32 *outDuration );
 	MP4Err (*addSamples)( struct MP4TimeToSampleAtom *self, u32 sampleCount, MP4Handle durationsH );
-	
+    MP4Err (*extendLastSampleDuration)( struct MP4TimeToSampleAtom *self, u32 duration );
+    
 	MP4LinkedList entryList;
 	void *currentEntry;
 	void *foundEntry;
@@ -993,7 +1001,7 @@ typedef struct MP4MovieExtendsAtom
 	MP4_FULL_ATOM
 	MP4LinkedList atomList;		/* track extends list */
 	MP4Err (*addAtom)( struct MP4MovieExtendsAtom *self, MP4AtomPtr atom );
-	MP4Err (*maketrackfragments) (struct MP4MovieExtendsAtom *self, MP4MovieFragmentAtomPtr moof, MP4MovieAtomPtr moov, MP4MediaDataAtomPtr mdat );
+	MP4Err (*maketrackfragments) (struct MP4MovieExtendsAtom *self, MP4MovieFragmentAtomPtr moof, MP4MovieAtomPtr moov, MP4MediaDataAtomPtr mdat, u32 delay );
 	MP4Err (*getTrackExtendsAtom)( struct MP4MovieExtendsAtom* self, u32 trackID, MP4AtomPtr *outTrack );
 	MP4Err (*setSampleDescriptionIndexes)( struct MP4MovieExtendsAtom* self, MP4AtomPtr moov );
 } MP4MovieExtendsAtom, *MP4MovieExtendsAtomPtr;
@@ -1002,6 +1010,8 @@ typedef struct MP4TrackExtendsAtom
 {
 	MP4_FULL_ATOM
 	u32 trackID;
+    u8  isInitialMediaDecodeTimeAdded;
+    u32 baseMediaDecodeTime;
 	u32 default_sample_description_index;
 	u32 default_sample_duration;
 	u32 default_sample_size;
@@ -1024,7 +1034,9 @@ typedef struct MP4TrackFragmentAtom
 	MP4_FULL_ATOM
 	COMMON_MINF_ATOM_FIELDS
 	MP4AtomPtr	  tfhd;
-	
+    MP4AtomPtr	  tfdt;
+    MP4AtomPtr    trex;
+    
 	MP4Err (*mergeRuns)( struct MP4TrackFragmentAtom *self, MP4MediaAtomPtr mdia );
 	MP4Err (*calculateDataEnd)( struct MP4TrackFragmentAtom *self, u32* outSize);
 	
@@ -1068,6 +1080,12 @@ enum {
 };
 
 #define trun_all_sample_flags (trun_sample_duration_present + trun_sample_size_present +trun_sample_flags_present + trun_sample_composition_times_present)
+
+typedef struct MP4TrackFragmentDecodeTimeAtom
+{
+	MP4_FULL_ATOM
+	u32 baseMediaDecodeTime;
+} MP4TrackFragmentDecodeTimeAtom, *MP4TrackFragmentDecodeTimeAtomPtr;
 
 typedef struct MP4TrackRunAtom
 {
@@ -1404,6 +1422,7 @@ MP4Err MP4CreateMovieFragmentAtom( MP4MovieFragmentAtomPtr *outAtom );
 MP4Err MP4CreateMovieFragmentHeaderAtom( MP4MovieFragmentHeaderAtomPtr *outAtom );
 MP4Err MP4CreateTrackFragmentAtom( MP4TrackFragmentAtomPtr *outAtom );
 MP4Err MP4CreateTrackFragmentHeaderAtom( MP4TrackFragmentHeaderAtomPtr *outAtom );
+MP4Err MP4CreateTrackFragmentDecodeTimeAtom( MP4TrackFragmentDecodeTimeAtomPtr *outAtom );
 MP4Err MP4CreateTrackRunAtom( MP4TrackRunAtomPtr *outAtom );
 MP4Err MP4CreatePaddingBitsAtom( MP4PaddingBitsAtomPtr *outAtom );
 

@@ -775,7 +775,7 @@ MP4_EXTERN ( MP4Err )
 ISOGetSampleDescriptionType(MP4Handle sampleEntryH, u32 *type);
 
 MP4_EXTERN ( MP4Err )
-ISOStartMovieFragment( MP4Movie theMovie );
+ISOStartMovieFragment( MP4Movie theMovie, u32 delay );
 MP4_EXTERN ( MP4Err ) 
 ISOSetTrackFragmentDefaults( MP4Track theTrack, u32 duration, u32 size, u32 is_sync, u8 pad );
 

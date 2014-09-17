@@ -266,7 +266,7 @@ bail:
 }
 
 ISO_EXTERN ( MP4Err )
-ISOStartMovieFragment( MP4Movie theMovie )
+ISOStartMovieFragment( MP4Movie theMovie, u32 delay )
 {
 	MP4Err MP4CreateMovieFragmentAtom( MP4MovieFragmentAtomPtr *outAtom );
         MP4Err MP4CreateMovieFragmentHeaderAtom( MP4MovieFragmentHeaderAtomPtr *outAtom );
@@ -334,7 +334,7 @@ ISOStartMovieFragment( MP4Movie theMovie )
 	err = MP4CreateMediaDataAtom( &mdat ); if (err) goto bail;
 	movie->mdat = (MP4AtomPtr) mdat;
 	
-	mvex->maketrackfragments( mvex, moof, moov, mdat );
+	mvex->maketrackfragments( mvex, moof, moov, mdat, delay );
 	
 bail:
 	TEST_RETURN( err );

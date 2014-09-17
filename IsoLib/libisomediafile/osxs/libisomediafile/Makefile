@@ -138,7 +138,8 @@ sources = \
 	AMRWPSpecificInfoAtom.c \
 	AMRSpecificInfoAtom.c \
 	H263SpecificInfoAtom.c \
-	SampleDependencyAtom.c
+	SampleDependencyAtom.c \
+	TrackFragmentDecodeTimeAtom.c
 
 
 
