@@ -1,3 +1,14 @@
+Release notes Sep 2014
+
+a) Added support for track fragment decode time
+
+b) Added delay parameter to ISOStartMovieFragment for setting a time offset for the track fragment decode time
+
+c) Fixed a bug in MP4LinkedList
+
+d) Added setSampleEntry to MediaAtom, MediaInformationAtom
+
+
 Release notes Jan 2011
 
 a) better tracing output from sample groups and movie fragments
