@@ -62,6 +62,7 @@ enum
 	MP4MediaDataAtomType                   = MP4_FOUR_CHAR_CODE( 'm', 'd', 'a', 't' ),
 	MP4MediaHeaderAtomType                 = MP4_FOUR_CHAR_CODE( 'm', 'd', 'h', 'd' ),
 	MP4MediaInformationAtomType            = MP4_FOUR_CHAR_CODE( 'm', 'i', 'n', 'f' ),
+    MP4ExtendedLanguageTagAtomType         = MP4_FOUR_CHAR_CODE( 'e', 'l', 'n', 'g' ),
 	MP4MovieAtomType                       = MP4_FOUR_CHAR_CODE( 'm', 'o', 'o', 'v' ),
 	MP4MovieHeaderAtomType                 = MP4_FOUR_CHAR_CODE( 'm', 'v', 'h', 'd' ),
 	MP4ObjectDescriptorAtomType            = MP4_FOUR_CHAR_CODE( 'i', 'o', 'd', 's' ),
@@ -402,11 +403,13 @@ typedef struct MP4MediaAtom
     
     MP4Err (*extendLastSampleDuration)( struct MP4MediaAtom *self, u32 duration );
     MP4Err (*setSampleEntry)( struct MP4MediaAtom *self, MP4AtomPtr entry );
+    MP4Err (*setExtendedLanguageTag)( struct MP4MediaAtom *self, MP4AtomPtr tag );
 	
 	MP4AtomPtr mediaTrack;
 	MP4AtomPtr mediaHeader;
 	MP4AtomPtr handler;
 	MP4AtomPtr information;		/* might be a minf or traf */
+    MP4AtomPtr extendedLanguageTag;
 	MP4LinkedList atomList;
 	MP4AtomPtr	true_minf;
 } MP4MediaAtom, *MP4MediaAtomPtr;
@@ -435,6 +438,13 @@ typedef struct MP4HandlerAtom
 	char *nameUTF8;
 	u32 is_qt;
 } MP4HandlerAtom, *MP4HandlerAtomPtr;
+
+typedef struct MP4ExtendedLanguageTag
+{
+	MP4_FULL_ATOM
+	char *extended_language;
+} MP4ExtendedLanguageTagAtom, *MP4ExtendedLanguageTagAtomPtr;
+
 
 #define COMMON_MINF_ATOM_FIELDS \
 	MP4Err (*addSampleReference)( struct MP4MediaInformationAtom *self, u64 dataOffset, u32 sampleCount, \
@@ -1390,6 +1400,7 @@ MP4Err MP4CreateMediaAtom( MP4MediaAtomPtr *outAtom );
 MP4Err MP4CreateMediaDataAtom( MP4MediaDataAtomPtr *outAtom );
 MP4Err MP4CreateMediaHeaderAtom( MP4MediaHeaderAtomPtr *outAtom );
 MP4Err MP4CreateMediaInformationAtom( MP4MediaInformationAtomPtr *outAtom );
+MP4Err MP4CreateExtendedLanguageTagAtom( MP4ExtendedLanguageTagAtomPtr *outAtom );
 MP4Err MP4CreateMovieAtom( MP4MovieAtomPtr *outAtom );
 MP4Err MP4CreateMovieHeaderAtom( MP4MovieHeaderAtomPtr *outAtom );
 MP4Err MP4CreateObjectDescriptorAtom( MP4ObjectDescriptorAtomPtr *outAtom );

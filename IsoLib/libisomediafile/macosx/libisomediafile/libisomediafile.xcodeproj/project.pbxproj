@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		188041D919CB724F00FAABCE /* ExtendedLanguageTag.c in Sources */ = {isa = PBXBuildFile; fileRef = 188041D819CB724F00FAABCE /* ExtendedLanguageTag.c */; };
 		C6F5636219ABE6BB0010D96F /* TrackFragmentDecodeTimeAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = C6F5636119ABE6BB0010D96F /* TrackFragmentDecodeTimeAtom.c */; };
 		CB43BA9A0AFF4AB800B31580 /* BitRateAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = CB43BA960AFF4AB800B31580 /* BitRateAtom.c */; };
 		CB43BA9B0AFF4AB800B31580 /* AMRWPSpecificInfoAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = CB43BA970AFF4AB800B31580 /* AMRWPSpecificInfoAtom.c */; };
@@ -159,6 +160,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		188041D819CB724F00FAABCE /* ExtendedLanguageTag.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ExtendedLanguageTag.c; path = ../../src/ExtendedLanguageTag.c; sourceTree = "<group>"; };
 		C6F5636119ABE6BB0010D96F /* TrackFragmentDecodeTimeAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = TrackFragmentDecodeTimeAtom.c; path = ../../src/TrackFragmentDecodeTimeAtom.c; sourceTree = "<group>"; };
 		CB43BA960AFF4AB800B31580 /* BitRateAtom.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = BitRateAtom.c; path = ../../src/BitRateAtom.c; sourceTree = SOURCE_ROOT; };
 		CB43BA970AFF4AB800B31580 /* AMRWPSpecificInfoAtom.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = AMRWPSpecificInfoAtom.c; path = ../../src/AMRWPSpecificInfoAtom.c; sourceTree = SOURCE_ROOT; };
@@ -355,6 +357,7 @@
 				CBAD4E5207B2B3F8005AD21E /* EncVisualSampleEntryAtom.c */,
 				CBAD4E5107B2B3F8005AD21E /* ESDAtom.c */,
 				CBAD4E5007B2B3F8005AD21E /* ESUpdateCommand.c */,
+				188041D819CB724F00FAABCE /* ExtendedLanguageTag.c */,
 				CBAD4E4F07B2B3F8005AD21E /* FileMappingDataHandler.c */,
 				CBAD4E4E07B2B3F8005AD21E /* FileMappingDataHandler.h */,
 				CBAD4E3507B2B3F8005AD21E /* FileMappingObject.h */,
@@ -586,6 +589,7 @@
 				CBAD4EA607B2B3F8005AD21E /* UserDataAtom.c in Sources */,
 				CBAD4EA707B2B3F8005AD21E /* UnknownAtom.c in Sources */,
 				CBAD4EA807B2B3F8005AD21E /* TrackReferenceTypeAtom.c in Sources */,
+				188041D919CB724F00FAABCE /* ExtendedLanguageTag.c in Sources */,
 				CBAD4EA907B2B3F8005AD21E /* TrackReferenceAtom.c in Sources */,
 				CBAD4EAA07B2B3F8005AD21E /* TrackHeaderAtom.c in Sources */,
 				CBAD4EAB07B2B3F8005AD21E /* TrackFragmentRunAtom.c in Sources */,

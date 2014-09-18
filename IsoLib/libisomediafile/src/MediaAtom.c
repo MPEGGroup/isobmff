@@ -104,7 +104,13 @@ static MP4Err addAtom( MP4MediaAtomPtr self, MP4AtomPtr atom )
 	  	  BAILWITHERROR( MP4BadDataErr )
 		self->mediaHeader = atom;
 	 break;
-			
+           
+      case MP4ExtendedLanguageTagAtomType:
+        if ( self->extendedLanguageTag )
+            BAILWITHERROR( MP4BadDataErr )
+        self->extendedLanguageTag = atom;
+      break;
+           
       case MP4HandlerAtomType:
 		if ( self->handler )
 			BAILWITHERROR( MP4BadDataErr )
@@ -371,6 +377,18 @@ bail:
     return err;
 }
 
+static MP4Err setExtendedLanguageTag( struct MP4MediaAtom *self, MP4AtomPtr elng )
+{
+    MP4Err err;
+	
+    err = MP4NoErr;
+    err = addAtom( self, elng ); if (err) goto bail;
+bail:
+    TEST_RETURN( err );
+    
+    return err;
+}
+
 static MP4Err serialize( struct MP4Atom* s, char* buffer )
 {
    MP4Err err;
@@ -445,6 +463,8 @@ MP4Err MP4CreateMediaAtom( MP4MediaAtomPtr *outAtom )
     
    self->extendLastSampleDuration   = extendLastSampleDuration;
    self->setSampleEntry             = setSampleEntry;
+   self->setExtendedLanguageTag     = setExtendedLanguageTag;
+   self->extendedLanguageTag        = NULL;
 
    *outAtom = self;
   bail:

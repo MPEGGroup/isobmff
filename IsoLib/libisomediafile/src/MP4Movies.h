@@ -478,6 +478,9 @@ MP4GetMediaHandlerDescription( MP4Media theMedia, u32 *outType, MP4Handle *outNa
 
 MP4_EXTERN ( MP4Err )
 MP4GetMediaLanguage( MP4Media theMedia, char *outThreeCharCode );
+    
+MP4_EXTERN ( MP4Err )
+MP4GetMediaExtendedLanguageTag( MP4Media theMedia, char **extended_language );
 
 /* flags for NextInterestingTime */
 enum
@@ -540,6 +543,9 @@ MP4SampleNumToMediaTime( MP4Media theMedia, u32 sampleNum, u64 *outSampleCTS, u6
 
 MP4_EXTERN ( MP4Err )
 MP4SetMediaLanguage( MP4Media theMedia, char *threeCharCode );
+    
+MP4_EXTERN ( MP4Err )
+MP4SetMediaExtendedLanguageTag( MP4Media theMedia, char *extended_language );
 
 MP4_EXTERN ( MP4Err )
 ISOSetSampleSizeField ( MP4Media theMedia, u32 fieldsize );

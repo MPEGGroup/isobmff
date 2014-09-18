@@ -138,7 +138,8 @@ sources = \
 	AMRSpecificInfoAtom.c \
 	H263SpecificInfoAtom.c \
 	SampleDependencyAtom.c \
-	TrackFragmentDecodeTimeAtom.c
+	TrackFragmentDecodeTimeAtom.c \
+	ExtendedLanguageTag.c
 
 
 

@@ -324,6 +324,31 @@ MP4_EXTERN ( MP4Err ) MP4SetMediaLanguage( MP4Media theMedia, char *threeCharCod
    return err;
 }
 
+MP4_EXTERN ( MP4Err ) MP4SetMediaExtendedLanguageTag ( MP4Media theMedia, char *extended_language )
+{
+    MP4Err err;
+    MP4MediaAtomPtr mdia;
+    MP4ExtendedLanguageTagAtomPtr elng;
+	
+    err = MP4NoErr;
+    if ( (theMedia == NULL) || (extended_language == NULL) )
+    {
+        BAILWITHERROR( MP4BadParamErr );
+    }
+    mdia = (MP4MediaAtomPtr) theMedia;
+    
+    MP4CreateExtendedLanguageTagAtom( &elng );
+    
+    elng->extended_language = calloc(strlen(extended_language) + 1, sizeof(char));
+    strcpy(elng->extended_language, extended_language);
+    
+    mdia->setExtendedLanguageTag(mdia, (MP4AtomPtr) elng);
+bail:
+    TEST_RETURN( err );
+    
+    return err;
+}
+
 MP4_EXTERN ( MP4Err ) MP4GetMediaLanguage( MP4Media theMedia, char *outThreeCharCode )
 {
    MP4Err err;
@@ -348,6 +373,28 @@ MP4_EXTERN ( MP4Err ) MP4GetMediaLanguage( MP4Media theMedia, char *outThreeChar
    TEST_RETURN( err );
 
    return err;
+}
+
+MP4_EXTERN ( MP4Err ) MP4GetMediaExtendedLanguageTag( MP4Media theMedia, char **extended_language )
+{
+    MP4Err err;
+    MP4MediaAtomPtr mdia;
+    MP4ExtendedLanguageTagAtomPtr elng;
+	
+    err = MP4NoErr;
+    if ( (theMedia == NULL) || (extended_language == NULL) )
+    {
+        BAILWITHERROR( MP4BadParamErr );
+    }
+    mdia = (MP4MediaAtomPtr) theMedia;
+    elng = (MP4ExtendedLanguageTagAtomPtr) mdia->extendedLanguageTag;
+    
+    *extended_language = calloc(strlen(elng->extended_language) + 1, sizeof(char));
+    strcpy(*extended_language, elng->extended_language);
+bail:
+    TEST_RETURN( err );
+    
+    return err;
 }
 
 

@@ -201,6 +201,7 @@ typedef ISOMetaItemRecord*	ISOMetaItem;
 #define ISOMediaTimeToSampleNum						MP4MediaTimeToSampleNum
 #define ISOSampleNumToMediaTime						MP4SampleNumToMediaTime
 #define ISOSetMediaLanguage							MP4SetMediaLanguage
+#define ISOSetMediaExtendedLanguageTag				MP4SetMediaExtendedLanguageTag
 #define ISOAddUserData								MP4AddUserData
 #define ISOGetIndUserDataType						MP4GetIndUserDataType
 #define ISOGetMovieUserData							MP4GetMovieUserData

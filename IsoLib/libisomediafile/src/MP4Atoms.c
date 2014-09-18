@@ -357,6 +357,10 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
 		case MP4MediaAtomType:
 			err = MP4CreateMediaAtom( (MP4MediaAtomPtr*) &newAtom );
 			break;
+            
+        case MP4ExtendedLanguageTagAtomType:
+			err = MP4CreateExtendedLanguageTagAtom( (MP4ExtendedLanguageTagAtomPtr*) &newAtom );
+			break;
 			
 		case MP4PaddingBitsAtomType:
 			err = MP4CreatePaddingBitsAtom( (MP4PaddingBitsAtomPtr*) &newAtom );
