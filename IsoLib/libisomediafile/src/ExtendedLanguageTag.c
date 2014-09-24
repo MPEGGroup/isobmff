@@ -54,9 +54,9 @@ static MP4Err serialize( struct MP4Atom* s, char* buffer )
 	MP4ExtendedLanguageTagAtomPtr self = (MP4ExtendedLanguageTagAtomPtr) s;
 	err = MP4NoErr;
 	
-	err = MP4SerializeCommonBaseAtomFields( s, buffer ); if (err) goto bail;
+	err = MP4SerializeCommonFullAtomFields( (MP4FullAtomPtr) s, buffer ); if (err) goto bail;
     buffer += self->bytesWritten;
-    PUTBYTES( self->extended_language, strlen(self->extended_language) * sizeof(char) );
+    PUTBYTES( self->extended_language, strlen(self->extended_language) * sizeof(char) + 1 );
 	assert( self->bytesWritten == self->size );
 bail:
 	TEST_RETURN( err );
@@ -70,9 +70,9 @@ static MP4Err calculateSize( struct MP4Atom* s )
 	MP4ExtendedLanguageTagAtomPtr self = (MP4ExtendedLanguageTagAtomPtr) s;
     
 	err = MP4NoErr;
-	err = MP4CalculateBaseAtomFieldSize( s ); if (err) goto bail;
+	err = MP4CalculateFullAtomFieldSize( (MP4FullAtomPtr) s ); if (err) goto bail;
 	
-    self->size += strlen(self->extended_language) * sizeof(char);
+    self->size += strlen(self->extended_language) * sizeof(char) + 1;
     
 bail:
 	TEST_RETURN( err );
@@ -91,10 +91,9 @@ static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStr
         err = self->super->createFromInputStream( s, proto, (char*) inputStream ); if ( err ) goto bail;
     
     u32 dataSize = self->size - self->bytesRead;
-	self->extended_language = (char*) malloc( dataSize + 1 );
+	self->extended_language = (char*) malloc( dataSize );
 	TESTMALLOC( self->extended_language );
 	GETBYTES( dataSize, extended_language );
-    self->extended_language[dataSize] = '\0';
 bail:
 	TEST_RETURN( err );
     
@@ -109,7 +108,7 @@ MP4Err MP4CreateExtendedLanguageTagAtom( MP4ExtendedLanguageTagAtomPtr *outAtom 
 	self = (MP4ExtendedLanguageTagAtomPtr) calloc( 1, sizeof(MP4ExtendedLanguageTagAtom) );
 	TESTMALLOC( self );
     
-	err = MP4CreateBaseAtom( (MP4AtomPtr) self );
+	err = MP4CreateFullAtom( (MP4AtomPtr) self );
 	if ( err ) goto bail;
 	self->type                  = MP4ExtendedLanguageTagAtomType;
 	self->name                  = "extended language tag";

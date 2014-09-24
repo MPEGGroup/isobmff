@@ -382,12 +382,18 @@ MP4_EXTERN ( MP4Err ) MP4GetMediaExtendedLanguageTag( MP4Media theMedia, char **
     MP4ExtendedLanguageTagAtomPtr elng;
 	
     err = MP4NoErr;
-    if ( (theMedia == NULL) || (extended_language == NULL) )
+    if (theMedia == NULL)
     {
         BAILWITHERROR( MP4BadParamErr );
     }
     mdia = (MP4MediaAtomPtr) theMedia;
     elng = (MP4ExtendedLanguageTagAtomPtr) mdia->extendedLanguageTag;
+    
+    if ( elng == NULL )
+    {
+        *extended_language = NULL;
+        goto bail;
+    }
     
     *extended_language = calloc(strlen(elng->extended_language) + 1, sizeof(char));
     strcpy(*extended_language, elng->extended_language);
