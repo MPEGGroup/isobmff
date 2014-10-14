@@ -1,0 +1,297 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <SccProjectName />
+    <SccLocalPath />
+    <ProjectGuid>{6D52A888-DDBD-4EFA-AC50-B10933DA1835}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>.\Debug\</OutDir>
+    <IntDir>.\Debug\obj\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>.\Release\</OutDir>
+    <IntDir>.\Release\obj\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <MinimalRebuild>true</MinimalRebuild>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>..\..\w32;..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;ISOMP4DLLAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\Debug\obj\</AssemblerListingLocation>
+      <PrecompiledHeaderOutputFile>.\Debug\obj\libisomedia.pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName>.\Debug\obj\</ObjectFileName>
+      <ProgramDataBaseFileName>.\Debug\obj\</ProgramDataBaseFileName>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\Debug\libisomedia.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <RedirectOutputAndErrors>NUL</RedirectOutputAndErrors>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Debug\libisomedia.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <LinkDLL>true</LinkDLL>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>.\Debug\libisomedia.dll</OutputFile>
+      <ImportLibrary>.\Debug\libisomedia.lib</ImportLibrary>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>..\w32;..\..\w32;..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;ISOMP4DLLAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\Release\obj\</AssemblerListingLocation>
+      <BrowseInformation>true</BrowseInformation>
+      <PrecompiledHeaderOutputFile>.\Release\obj\libisomedia.pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName>.\Release\obj\</ObjectFileName>
+      <ProgramDataBaseFileName>.\Release\obj\</ProgramDataBaseFileName>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\Release\libisomedia.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <RedirectOutputAndErrors>NUL</RedirectOutputAndErrors>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Release\libisomedia.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <LinkDLL>true</LinkDLL>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>.\Release\libisomedia.dll</OutputFile>
+      <ImportLibrary>.\Release\libisomedia.lib</ImportLibrary>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\ChannelLayoutAtom.c" />
+    <ClCompile Include="..\..\src\DownMixInstructionsAtom.c" />
+    <ClCompile Include="..\..\src\ExtendedLanguageTag.c" />
+    <ClCompile Include="..\..\src\LoudnessAtom.c" />
+    <ClCompile Include="..\..\src\LoudnessBaseAtom.c" />
+    <ClCompile Include="..\..\src\TrackFragmentDecodeTimeAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\AMRSpecificInfoAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\AMRWPSpecificInfoAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\AudioSampleEntryAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\BaseDescriptor.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\BitRateAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\ChunkOffsetAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\ClockReferenceMediaHeader.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\CopyrightAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\DataEntryURLAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\DataEntryURNAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\DataInformationAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\DataReferenceAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\DecodingOffsetAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\DegradationPriorityAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\EditAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\EditListAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\EncAudioSampleEntryAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\EncVisualSampleEntryAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\ESDAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\ESUpdateCommand.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\FileMappingDataHandler.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\FreeSpaceAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\GenericSampleEntryAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\H263SpecificInfoAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\HandlerAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\HintMediaHeaderAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\IPMPToolUpdateCommand.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\ISMAKMSAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\ISMASaltAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\ISMASampleFormatAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\ISMASecurity.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\ISOMeta.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\ISOSampleDescriptions.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\ItemInfoAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\ItemInfoEntryAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\ItemLocationAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\ItemProtectionAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MdatDataHandler.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MediaAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MediaDataAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MediaHeaderAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MediaInformationAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MemoryFileMappingObject.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MetaAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MJ2BitsPerComponentAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MJ2ColorSpecificationAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MJ2FileTypeAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MJ2HeaderAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MJ2ImageHeaderAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MJ2Movies.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MJ2SignatureAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MovieAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MovieExtendsAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MovieFragmentAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MovieFragmentHeaderAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MovieHeaderAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MovieTracks.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4Atoms.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4Commands.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4DataHandler.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4DecoderConfigDescriptor.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4DefaultCommand.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4DefaultDescriptor.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4Descriptors.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4ESDescriptor.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4ES_ID_IncDescriptor.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4ES_ID_RefDescriptor.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4FileMappingInputStream.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4Handle.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4InitialObjectDescriptor.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4InputStream.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4IPMPDescriptorPointer.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4IPMPInitialize.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4IPMPTool.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4IPMPToolDescriptor.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4IPMPToolList.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4IPMPX.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4IPMPXData.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4IPMPXDefaultData.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4LinkedList.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4Media.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4MemoryInputStream.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4MovieFile.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4Movies.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4ObjectDescriptor.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4ODTrackReader.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4OrdinaryTrackReader.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4SLPacket.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4TrackReader.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4UserData.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MPEGMediaHeaderAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MPEGSampleEntryAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\ObjectDescriptorAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\ObjectDescriptorMediaHeader.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\ODUpdateCommand.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\OriginalFormatAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\PaddingBitsAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\PrimaryItemAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\QTMovies.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\SampleDependencyAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\SampleDescriptionAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\SampleGroupDescriptionAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\SampleSizeAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\SampleTableAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\SampleToChunkAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\SampleToGroupAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\SceneDescriptionMediaHeader.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\SchemeInfoAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\SecurityInfoAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\SecuritySchemeAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\ShadowSyncAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\SLConfigDescriptor.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\SoundMediaHeaderAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\SyncSampleAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\TextMetaSampleEntry.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\TimeToSampleAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\TrackAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\TrackExtendsAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\TrackFragmentAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\TrackFragmentHeaderAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\TrackFragmentRunAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\TrackHeaderAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\TrackReferenceAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\TrackReferenceTypeAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\UnknownAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\UserDataAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\VCConfigAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\VideoMediaHeaderAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\VisualSampleEntryAtom.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\XMLMetaSampleEntry.c" />
+    <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\w32\W32FileMappingObject.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\FileMappingDataHandler.h" />
+    <ClInclude Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\FileMappingObject.h" />
+    <ClInclude Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\ISOMovies.h" />
+    <ClInclude Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MdatDataHandler.h" />
+    <ClInclude Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MJ2Atoms.h" />
+    <ClInclude Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MovieTracks.h" />
+    <ClInclude Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4Atoms.h" />
+    <ClInclude Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4DataHandler.h" />
+    <ClInclude Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4Descriptors.h" />
+    <ClInclude Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4Impl.h" />
+    <ClInclude Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4InputStream.h" />
+    <ClInclude Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4IPMPXData.h" />
+    <ClInclude Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4LinkedList.h" />
+    <ClInclude Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4Movies.h" />
+    <ClInclude Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\MP4TrackReader.h" />
+    <ClInclude Include="\Desktop\svns\trunk\IsoLib\libisomediafile\w32\MP4OSMacros.h" />
+    <ClInclude Include="\Desktop\svns\trunk\IsoLib\libisomediafile\w32\W32FileMappingObject.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
