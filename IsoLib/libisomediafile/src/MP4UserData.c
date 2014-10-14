@@ -134,6 +134,32 @@ bail:
 }
 
 MP4_EXTERN ( MP4Err )
+MP4GetAtomFromUserData( MP4UserData theUserData, MP4GenericAtom *outAtom, u32 userDataType, u32 itemIndex )
+{
+    MP4Err err;
+    MP4UserDataAtomPtr udta;
+    MP4AtomPtr atom;
+    
+    err = MP4NoErr;
+    if ( (theUserData == NULL) || (userDataType == 0) || (itemIndex == 0) )
+    {
+        BAILWITHERROR( MP4BadParamErr );
+    }
+    udta = (MP4UserDataAtomPtr) theUserData;
+    if ( udta->getItem == 0 )
+    {
+        BAILWITHERROR( MP4BadParamErr );
+    }
+    err = udta->getAtom( udta, &atom, userDataType, itemIndex ); if (err) goto bail;
+    
+    *outAtom = (MP4GenericAtom) atom;
+bail:
+    TEST_RETURN( err );
+    
+    return err;
+}
+
+MP4_EXTERN ( MP4Err )
 MP4DeleteUserDataItem( MP4UserData theUserData, u32 userDataType, u32 itemIndex )
 {
 	MP4Err err;

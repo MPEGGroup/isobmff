@@ -208,6 +208,7 @@ typedef ISOMetaItemRecord*	ISOMetaItem;
 #define ISOGetTrackUserData							MP4GetTrackUserData
 #define ISOGetUserDataEntryCount					MP4GetUserDataEntryCount
 #define ISOGetUserDataItem							MP4GetUserDataItem
+#define ISOGetAtomFromUserData							MP4GetAtomFromUserData
 #define ISODeleteUserDataItem						MP4DeleteUserDataItem
 #define ISOGetUserDataTypeCount						MP4GetUserDataTypeCount
 #define ISONewUserData								MP4NewUserData

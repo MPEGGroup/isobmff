@@ -1,12 +1,20 @@
-Release notes Sep 2014
+Release notes Oct 2014
 
 a) Added support for track fragment decode time
 
 b) Added delay parameter to ISOStartMovieFragment for setting a time offset for the track fragment decode time
 
-c) Fixed a bug in MP4LinkedList
+c) Added extended language tag and ISOGetMediaExtendedLanguageTag, ISOSetMediaExtendedLanguageTag
 
-d) Added setSampleEntry to MediaAtom, MediaInformationAtom
+d) Fixed a bug in MP4LinkedList
+
+e) Added setSampleEntry to MediaAtom, MediaInformationAtom
+
+f) Added ChannelLayoutAtom, DownMixInstructionsAtom, LoudnessAtom, LoudnessBaseAtom
+
+g) Added new function MP4GetAtomFromUserData
+
+
 
 
 Release notes Jan 2011

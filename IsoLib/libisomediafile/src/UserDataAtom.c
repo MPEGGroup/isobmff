@@ -197,6 +197,25 @@ bail:
 	return err;
 }
 
+static MP4Err getAtom( struct MP4UserDataAtom *self, MP4AtomPtr *outatom, u32 userDataType, u32 itemIndex )
+{
+    MP4Err err;
+    UserDataMapRecordPtr rec;
+    MP4UnknownAtomPtr atom;
+    
+    err = findEntryForAtomType( self, userDataType, &rec ); if (err) goto bail;
+    if ( rec == 0 )
+    {
+        BAILWITHERROR( MP4BadParamErr );
+    }
+    err = MP4GetListEntry( rec->atomList, itemIndex - 1, (char **) &atom ); if (err) goto bail;
+
+    *outatom = (MP4AtomPtr) atom;
+bail:
+    TEST_RETURN( err );
+    return err;
+}
+
 static MP4Err deleteItem( struct MP4UserDataAtom *self, u32 userDataType, u32 itemIndex )
 {
 	MP4Err err;
@@ -331,12 +350,13 @@ MP4Err MP4CreateUserDataAtom( MP4UserDataAtomPtr *outAtom )
 	err = MP4MakeLinkedList( &self->recordList ); if (err) goto bail;
 	self->calculateSize         = calculateSize;
 	self->serialize             = serialize;
-	self->addUserData = addUserData;
-	self->getEntryCount = getEntryCount;
-	self->getIndType = getIndType;
-	self->getItem = getItem;
-	self->deleteItem = deleteItem;
-	self->getTypeCount = getTypeCount;
+	self->addUserData           = addUserData;
+	self->getEntryCount         = getEntryCount;
+	self->getIndType            = getIndType;
+	self->getItem               = getItem;
+	self->deleteItem            = deleteItem;
+	self->getTypeCount          = getTypeCount;
+    self->getAtom               = getAtom;
 
 	*outAtom = self;
 bail:

@@ -37,6 +37,11 @@ ISOErr MP4GetCurrentTime( u64 *outTime );
 enum
 {
 	MP4AudioSampleEntryAtomType            = MP4_FOUR_CHAR_CODE( 'm', 'p', '4', 'a' ),
+    MP4ChannelLayoutAtomType               = MP4_FOUR_CHAR_CODE( 'c', 'h', 'n', 'l' ),
+    MP4DownMixInstructionsAtomType         = MP4_FOUR_CHAR_CODE( 'd', 'm', 'i', 'x' ),
+    MP4TrackLoudnessInfoAtomType           = MP4_FOUR_CHAR_CODE( 't', 'l', 'o', 'u' ),
+    MP4AlbumLoudnessInfoAtomType           = MP4_FOUR_CHAR_CODE( 'a', 'l', 'o', 'u' ),
+    MP4LoudnessAtomType                    = MP4_FOUR_CHAR_CODE( 'l', 'u', 'd', 't' ),
 	MP4ChunkLargeOffsetAtomType            = MP4_FOUR_CHAR_CODE( 'c', 'o', '6', '4' ),
 	MP4ChunkOffsetAtomType                 = MP4_FOUR_CHAR_CODE( 's', 't', 'c', 'o' ),
 	MP4ClockReferenceMediaHeaderAtomType   = MP4_FOUR_CHAR_CODE( 'c', 'r', 'h', 'd' ),
@@ -693,7 +698,7 @@ typedef struct MP4VisualSampleEntryAtom
 	/* u32			reserved3;         uint(32) = 0x01400f0 */
 	u32			width;
 	u32			height;
-	u32        reserved4;          /* uint(32) = 0x0048000 */
+	u32         reserved4;          /* uint(32) = 0x0048000 */
 	u32			reserved5;			/* uint(32) = 0x0048000 */
 	u32			reserved6; /* uint(32) = 0 */
 	u32			reserved7;           /* uint(16) = 1 */
@@ -716,6 +721,69 @@ typedef struct MP4AudioSampleEntryAtom
 	u32			reserved6; /* uint(16) = 0 */
 	
 } MP4AudioSampleEntryAtom, *MP4AudioSampleEntryAtomPtr;
+
+typedef struct MP4ChannelLayoutDefinedLayout
+{
+    u8      explicit_position;     /* bit(1) */
+    u8      elevation;             /* bit(7) */
+    u8      azimuth;               /* bit(7) */
+    u8      speaker_position;      /* bit(7) */
+} MP4ChannelLayoutDefinedLayout;
+
+typedef struct MP4ChannelLayoutAtom
+{
+    MP4_FULL_ATOM
+    u16             channelCount;           /* comes from the sample entry */
+    u8              stream_structure;
+    u8              definedLayout;
+    MP4LinkedList   definedLayouts;
+    u64             omittedChannelsMap;
+    u8              object_count;
+} MP4ChannelLayoutAtom, *MP4ChannelLayoutAtomPtr;
+
+typedef struct MP4DownMixInstructionsAtom
+{
+    MP4_FULL_ATOM
+    u16     baseChannelCount;           /* comes from the sample entry */
+    u8      targetLayout;               /* uint(8) */
+    u8      reserved;                   /* uint(1) */
+    u8      targetChannelCount;         /* uint(7) */
+    u8      in_stream;                  /* bit(1) */
+    u8      downmix_ID;                 /* uint(7) */
+    u8      *bs_downmix_coefficients;   /* bit(4)[targetChannelCount][baseChannelCount] */
+} MP4DownMixInstructionsAtom, *MP4DownMixInstructionsAtomPtr;
+
+typedef struct MP4LoudnessBaseMeasurement
+{
+    u8      method_definition;            /* uint(8) */
+    u8      method_value;                 /* uint(8) */
+    u8      measurement_system;           /* uint(4) */
+    u8      reliability;                  /* uint(4) */
+} MP4LoudnessBaseMeasurement;
+
+typedef struct MP4LoudnessBaseAtom
+{
+    MP4_FULL_ATOM
+    u8              reserved;                       /* unit(3) = 0 */
+    u8              downmix_ID;                     /* uint(7) */
+    u8              DRC_set_ID;                     /* uint(6) */
+    s16             bs_sample_peak_level;           /* int(12) */
+    s16             bs_true_peak_level;             /* int(12) */
+    u8              measurement_system_for_TP;      /* uint(4) */
+    u8              reliability_for_TP;             /* uint(4) */
+    u8              measurement_count;              /* uint(8) */
+    MP4LinkedList   measurements;
+} MP4LoudnessBaseAtom, *MP4LoudnessBaseAtomPtr;
+
+typedef struct MP4LoudnessAtom
+{
+    MP4_BASE_ATOM
+	MP4LinkedList trackLoudnessInfoList;
+    MP4LinkedList albumLoudnessInfoList;
+    MP4Err (*addAtom)( struct MP4LoudnessAtom *self, MP4AtomPtr atom );
+    MP4Err (*serializeData)( struct MP4Atom *s, char *buffer );
+    MP4Err (*getDataSize)( struct MP4Atom *s, u32 *dataSizeOut );
+} MP4LoudnessAtom, *MP4LoudnessAtomPtr;
 
 typedef struct MP4XMLMetaSampleEntryAtom
 {
@@ -958,6 +1026,7 @@ typedef struct MP4UserDataAtom
 	MP4Err (*getEntryCount) (struct MP4UserDataAtom *self, u32 userDataType, u32 *outCount );
 	MP4Err (*getIndType) (struct MP4UserDataAtom *self, u32 typeIndex, u32 *outType );
 	MP4Err (*getItem) (struct MP4UserDataAtom *self, MP4Handle userDataH, u32 userDataType, u32 itemIndex );
+    MP4Err (*getAtom) (struct MP4UserDataAtom *self, MP4AtomPtr *outatom, u32 userDataType, u32 itemIndex );
 	MP4Err (*deleteItem) (struct MP4UserDataAtom *self, u32 userDataType, u32 itemIndex );
 	MP4Err (*getTypeCount) (struct MP4UserDataAtom *self, u32 *outCount );
 	MP4LinkedList recordList;
@@ -1377,6 +1446,10 @@ MP4Err sampleEntryHToAtomPtr( MP4Handle sampleEntryH, MP4AtomPtr* entryPtr, u32 
 MP4Err atomPtrToSampleEntryH( MP4Handle sampleEntryH, MP4AtomPtr entry );
 
 MP4Err MP4CreateAudioSampleEntryAtom( MP4AudioSampleEntryAtomPtr *outAtom );
+MP4Err MP4CreateChannelLayoutAtom( MP4ChannelLayoutAtomPtr *outAtom );
+MP4Err MP4CreateDownMixInstructionsAtom( MP4DownMixInstructionsAtomPtr *outAtom );
+MP4Err MP4CreateLoudnessBaseAtom( MP4LoudnessBaseAtomPtr *outAtom, u32 type );
+MP4Err MP4CreateLoudnessAtom( MP4LoudnessAtomPtr *outAtom );
 /* MP4Err MP4CreateChunkLargeOffsetAtom( MP4ChunkLargeOffsetAtomPtr *outAtom ); */
 MP4Err MP4CreateChunkOffsetAtom( MP4ChunkOffsetAtomPtr *outAtom );
 MP4Err MP4CreateClockReferenceMediaHeaderAtom( MP4ClockReferenceMediaHeaderAtomPtr *outAtom );

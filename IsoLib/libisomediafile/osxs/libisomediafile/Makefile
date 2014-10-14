@@ -1,11 +1,11 @@
-# $Id: Makefile,v 1.2 2002/09/27 14:37:52 julien Exp $
+# $Id: Makefile,v 1.2 2002/09/27 13:41:22 julien Exp $
 
 
 VPATH = .. ../../src
 
-CFLAGS = -I.. -I../../src -O -g -Wall -W -ansi -Wno-long-long -Wmissing-prototypes
+CFLAGS = -I.. -I../../src -O -g -Wall -W -ansi -pedantic -Wno-long-long -Wmissing-prototypes -DLINUX
 
-CC = cc
+CC = gcc
 
 sources = \
 	AudioSampleEntryAtom.c \
@@ -118,8 +118,8 @@ sources = \
 	EncVisualSampleEntryAtom.c \
 	EncAudioSampleEntryAtom.c \
 	ISMASampleFormatAtom.c \
-	ISMASaltAtom.c \
 	ISMAKMSAtom.c \
+	ISMASaltAtom.c \
 	ISMASecurity.c \
 	SampleGroupDescriptionAtom.c \
 	SampleToGroupAtom.c \
@@ -140,7 +140,12 @@ sources = \
 	H263SpecificInfoAtom.c \
 	SampleDependencyAtom.c \
 	TrackFragmentDecodeTimeAtom.c \
-	ExtendedLanguageTag.c
+	ExtendedLanguageTag.c \
+	ChannelLayoutAtom.c \
+	DownMixInstructionsAtom.c \
+	LoudnessBaseAtom.c \
+	LoudnessAtom.c
+
 
 
 

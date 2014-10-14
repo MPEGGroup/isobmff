@@ -251,7 +251,24 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
 		case MP4AMRWPSampleEntryAtomType:
 			err = MP4CreateAudioSampleEntryAtom( (MP4AudioSampleEntryAtomPtr*) &newAtom );
 			break;
-
+            
+        case MP4ChannelLayoutAtomType:
+			err = MP4CreateChannelLayoutAtom( (MP4ChannelLayoutAtomPtr*) &newAtom );
+			break;
+            
+        case MP4DownMixInstructionsAtomType:
+			err = MP4CreateDownMixInstructionsAtom( (MP4DownMixInstructionsAtomPtr*) &newAtom );
+			break;
+            
+        case MP4TrackLoudnessInfoAtomType:
+        case MP4AlbumLoudnessInfoAtomType:
+			err = MP4CreateLoudnessBaseAtom( (MP4LoudnessBaseAtomPtr*) &newAtom, atomType );
+			break;
+            
+        case MP4LoudnessAtomType:
+			err = MP4CreateLoudnessAtom( (MP4LoudnessAtomPtr*) &newAtom );
+			break;
+            
 		case MP4EncVisualSampleEntryAtomType:
 			err = MP4CreateEncVisualSampleEntryAtom( (MP4EncVisualSampleEntryAtomPtr*) &newAtom );
 			break;

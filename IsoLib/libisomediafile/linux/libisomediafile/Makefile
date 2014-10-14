@@ -140,7 +140,11 @@ sources = \
 	H263SpecificInfoAtom.c \
 	SampleDependencyAtom.c \
 	TrackFragmentDecodeTimeAtom.c \
-	ExtendedLanguageTag.c
+	ExtendedLanguageTag.c \
+	ChannelLayoutAtom.c \
+	DownMixInstructionsAtom.c \
+	LoudnessBaseAtom.c \
+	LoudnessAtom.c
 
 
 

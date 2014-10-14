@@ -679,7 +679,10 @@ MP4GetUserDataEntryCount( MP4UserData theUserData, u32 userDataType, u32 *outCou
 
 MP4_EXTERN ( MP4Err )
 MP4GetUserDataItem( MP4UserData theUserData, MP4Handle dataH, u32 userDataType, u32 itemIndex );
-
+    
+MP4_EXTERN ( MP4Err )
+MP4GetAtomFromUserData( MP4UserData theUserData, MP4GenericAtom *outAtom, u32 userDataType, u32 itemIndex );
+    
 MP4_EXTERN ( MP4Err )
 MP4GetUserDataTypeCount( MP4UserData theUserData, u32 *outCount );
 

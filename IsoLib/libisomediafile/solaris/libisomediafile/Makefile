@@ -1,9 +1,9 @@
-# $Id: Makefile,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
+# $Id: Makefile,v 1.2 2002/09/27 13:41:22 julien Exp $
 
 
 VPATH = .. ../../src
 
-CFLAGS = -I.. -I../../src -O -g -Wall -W -ansi -pedantic -Wno-long-long
+CFLAGS = -I.. -I../../src -O -g -Wall -W -ansi -pedantic -Wno-long-long -Wmissing-prototypes -DLINUX
 
 CC = gcc
 
@@ -28,6 +28,7 @@ sources = \
 	GenericSampleEntryAtom.c \
 	HandlerAtom.c \
 	HintMediaHeaderAtom.c \
+	IPMPToolUpdateCommand.c \
 	MemoryFileMappingObject.c \
 	MdatDataHandler.c \
 	MJ2BitsPerComponentAtom.c \
@@ -51,6 +52,14 @@ sources = \
 	MP4Handle.c \
 	MP4InitialObjectDescriptor.c \
 	MP4InputStream.c \
+	MP4IPMPDescriptorPointer.c \
+	MP4IPMPInitialize.c \
+	MP4IPMPTool.c \
+	MP4IPMPToolDescriptor.c \
+	MP4IPMPToolList.c \
+	MP4IPMPX.c \
+	MP4IPMPXData.c \
+	MP4IPMPXDefaultData.c \
 	MP4LinkedList.c \
 	MP4Media.c \
 	MP4MemoryInputStream.c \
@@ -102,15 +111,6 @@ sources = \
 	TrackExtendsAtom.c \
 	MovieFragmentHeaderAtom.c \
 	PaddingBitsAtom.c \
-	IPMPToolUpdateCommand.c \
-	MP4IPMPInitialize.c \
-	MP4IPMPDescriptorPointer.c \
-	MP4IPMPXData.c \
-	MP4IPMPX.c \
-	MP4IPMPXDefaultData.c \
-	MP4IPMPToolList.c \
-	MP4IPMPToolDescriptor.c \
-	MP4IPMPTool.c \
 	SecuritySchemeAtom.c \
 	SecurityInfoAtom.c \
 	OriginalFormatAtom.c \
@@ -118,8 +118,8 @@ sources = \
 	EncVisualSampleEntryAtom.c \
 	EncAudioSampleEntryAtom.c \
 	ISMASampleFormatAtom.c \
-	ISMASaltAtom.c \
 	ISMAKMSAtom.c \
+	ISMASaltAtom.c \
 	ISMASecurity.c \
 	SampleGroupDescriptionAtom.c \
 	SampleToGroupAtom.c \
@@ -140,7 +140,11 @@ sources = \
 	H263SpecificInfoAtom.c \
 	SampleDependencyAtom.c \
 	TrackFragmentDecodeTimeAtom.c \
-	ExtendedLanguageTag.c
+	ExtendedLanguageTag.c \
+	ChannelLayoutAtom.c \
+	DownMixInstructionsAtom.c \
+	LoudnessBaseAtom.c \
+	LoudnessAtom.c
 
 
 

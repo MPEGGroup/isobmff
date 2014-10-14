@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		188041D919CB724F00FAABCE /* ExtendedLanguageTag.c in Sources */ = {isa = PBXBuildFile; fileRef = 188041D819CB724F00FAABCE /* ExtendedLanguageTag.c */; };
+		188041DB19CB90A800FAABCE /* ChannelLayoutAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = 188041DA19CB90A800FAABCE /* ChannelLayoutAtom.c */; };
+		188041DD19CBA54300FAABCE /* DownMixInstructionsAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = 188041DC19CBA54300FAABCE /* DownMixInstructionsAtom.c */; };
+		188041DF19CC937200FAABCE /* LoudnessBaseAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = 188041DE19CC937200FAABCE /* LoudnessBaseAtom.c */; };
+		188041E119CCA28A00FAABCE /* LoudnessAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = 188041E019CCA28A00FAABCE /* LoudnessAtom.c */; };
 		C6F5636219ABE6BB0010D96F /* TrackFragmentDecodeTimeAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = C6F5636119ABE6BB0010D96F /* TrackFragmentDecodeTimeAtom.c */; };
 		CB43BA9A0AFF4AB800B31580 /* BitRateAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = CB43BA960AFF4AB800B31580 /* BitRateAtom.c */; };
 		CB43BA9B0AFF4AB800B31580 /* AMRWPSpecificInfoAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = CB43BA970AFF4AB800B31580 /* AMRWPSpecificInfoAtom.c */; };
@@ -161,6 +165,10 @@
 
 /* Begin PBXFileReference section */
 		188041D819CB724F00FAABCE /* ExtendedLanguageTag.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ExtendedLanguageTag.c; path = ../../src/ExtendedLanguageTag.c; sourceTree = "<group>"; };
+		188041DA19CB90A800FAABCE /* ChannelLayoutAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ChannelLayoutAtom.c; path = ../../src/ChannelLayoutAtom.c; sourceTree = "<group>"; };
+		188041DC19CBA54300FAABCE /* DownMixInstructionsAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = DownMixInstructionsAtom.c; path = ../../src/DownMixInstructionsAtom.c; sourceTree = "<group>"; };
+		188041DE19CC937200FAABCE /* LoudnessBaseAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = LoudnessBaseAtom.c; path = ../../src/LoudnessBaseAtom.c; sourceTree = "<group>"; };
+		188041E019CCA28A00FAABCE /* LoudnessAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = LoudnessAtom.c; path = ../../src/LoudnessAtom.c; sourceTree = "<group>"; };
 		C6F5636119ABE6BB0010D96F /* TrackFragmentDecodeTimeAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = TrackFragmentDecodeTimeAtom.c; path = ../../src/TrackFragmentDecodeTimeAtom.c; sourceTree = "<group>"; };
 		CB43BA960AFF4AB800B31580 /* BitRateAtom.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = BitRateAtom.c; path = ../../src/BitRateAtom.c; sourceTree = SOURCE_ROOT; };
 		CB43BA970AFF4AB800B31580 /* AMRWPSpecificInfoAtom.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = AMRWPSpecificInfoAtom.c; path = ../../src/AMRWPSpecificInfoAtom.c; sourceTree = SOURCE_ROOT; };
@@ -340,6 +348,10 @@
 				CB43BA980AFF4AB800B31580 /* AMRSpecificInfoAtom.c */,
 				CB43BA970AFF4AB800B31580 /* AMRWPSpecificInfoAtom.c */,
 				CBAD4E9907B2B3F8005AD21E /* AudioSampleEntryAtom.c */,
+				188041DA19CB90A800FAABCE /* ChannelLayoutAtom.c */,
+				188041DC19CBA54300FAABCE /* DownMixInstructionsAtom.c */,
+				188041E019CCA28A00FAABCE /* LoudnessAtom.c */,
+				188041DE19CC937200FAABCE /* LoudnessBaseAtom.c */,
 				CBAD4E6A07B2B3F8005AD21E /* BaseDescriptor.c */,
 				CB43BA960AFF4AB800B31580 /* BitRateAtom.c */,
 				CBAD4E7107B2B3F8005AD21E /* ChunkOffsetAtom.c */,
@@ -602,6 +614,7 @@
 				CBAD4EB207B2B3F8005AD21E /* GenericSampleEntryAtom.c in Sources */,
 				CBAD4EB307B2B3F8005AD21E /* FreeSpaceAtom.c in Sources */,
 				CBAD4EB507B2B3F8005AD21E /* MP4InitialObjectDescriptor.c in Sources */,
+				188041DD19CBA54300FAABCE /* DownMixInstructionsAtom.c in Sources */,
 				CBAD4EB707B2B3F8005AD21E /* IPMPToolUpdateCommand.c in Sources */,
 				CBAD4EB807B2B3F8005AD21E /* HintMediaHeaderAtom.c in Sources */,
 				CBAD4EB907B2B3F8005AD21E /* HandlerAtom.c in Sources */,
@@ -610,6 +623,7 @@
 				CBAD4EBC07B2B3F8005AD21E /* MP4MovieFile.c in Sources */,
 				CBAD4EBD07B2B3F8005AD21E /* MP4MemoryInputStream.c in Sources */,
 				CBAD4EBE07B2B3F8005AD21E /* MP4Media.c in Sources */,
+				188041E119CCA28A00FAABCE /* LoudnessAtom.c in Sources */,
 				CBAD4EBF07B2B3F8005AD21E /* SceneDescriptionMediaHeader.c in Sources */,
 				CBAD4EC007B2B3F8005AD21E /* SampleToChunkAtom.c in Sources */,
 				CBAD4EC107B2B3F8005AD21E /* SampleTableAtom.c in Sources */,
@@ -624,6 +638,7 @@
 				CBAD4ECB07B2B3F8005AD21E /* MdatDataHandler.c in Sources */,
 				CBAD4ECE07B2B3F8005AD21E /* FileMappingDataHandler.c in Sources */,
 				CBAD4ECF07B2B3F8005AD21E /* ESUpdateCommand.c in Sources */,
+				188041DF19CC937200FAABCE /* LoudnessBaseAtom.c in Sources */,
 				CBAD4ED007B2B3F8005AD21E /* ESDAtom.c in Sources */,
 				CBAD4ED107B2B3F8005AD21E /* EncVisualSampleEntryAtom.c in Sources */,
 				CBAD4ED207B2B3F8005AD21E /* TrackFragmentAtom.c in Sources */,
@@ -671,6 +686,7 @@
 				CBAD4F0407B2B3F8005AD21E /* MovieHeaderAtom.c in Sources */,
 				CBAD4F0507B2B3F8005AD21E /* MovieFragmentHeaderAtom.c in Sources */,
 				CBAD4F0607B2B3F8005AD21E /* MovieFragmentAtom.c in Sources */,
+				188041DB19CB90A800FAABCE /* ChannelLayoutAtom.c in Sources */,
 				CBAD4F0707B2B3F8005AD21E /* MovieExtendsAtom.c in Sources */,
 				CBAD4F0807B2B3F8005AD21E /* MovieAtom.c in Sources */,
 				CBAD4F0907B2B3F8005AD21E /* MJ2SignatureAtom.c in Sources */,

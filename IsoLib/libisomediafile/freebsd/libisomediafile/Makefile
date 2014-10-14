@@ -1,8 +1,9 @@
-# $Id: Makefile,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
+# $Id: Makefile,v 1.2 2002/09/27 13:41:22 julien Exp $
+
 
 VPATH = .. ../../src
 
-CFLAGS = -I.. -I../../src -O -g -Wall -W -ansi -pedantic
+CFLAGS = -I.. -I../../src -O -g -Wall -W -ansi -pedantic -Wno-long-long -Wmissing-prototypes -DLINUX
 
 CC = gcc
 
@@ -139,11 +140,14 @@ sources = \
 	H263SpecificInfoAtom.c \
 	SampleDependencyAtom.c \
 	TrackFragmentDecodeTimeAtom.c \
-	ExtendedLanguageTag.c
+	ExtendedLanguageTag.c \
+	ChannelLayoutAtom.c \
+	DownMixInstructionsAtom.c \
+	LoudnessBaseAtom.c \
+	LoudnessAtom.c
 
 
 
- 
 
 objects := $(patsubst %.c,%.o,$(sources))
 
