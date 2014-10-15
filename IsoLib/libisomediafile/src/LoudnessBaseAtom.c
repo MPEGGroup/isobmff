@@ -146,6 +146,7 @@ static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStr
     
     GET8(measurement_count);
     
+	err = MP4MakeLinkedList(&self->measurements); if (err) goto bail;
     for (i = 0; i < self->measurement_count; i++)
     {
         MP4LoudnessBaseMeasurement *measurement;
