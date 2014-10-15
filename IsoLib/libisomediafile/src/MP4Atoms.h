@@ -1080,7 +1080,7 @@ typedef struct MP4MovieExtendsAtom
 	MP4_FULL_ATOM
 	MP4LinkedList atomList;		/* track extends list */
 	MP4Err (*addAtom)( struct MP4MovieExtendsAtom *self, MP4AtomPtr atom );
-	MP4Err (*maketrackfragments) (struct MP4MovieExtendsAtom *self, MP4MovieFragmentAtomPtr moof, MP4MovieAtomPtr moov, MP4MediaDataAtomPtr mdat, u32 delay );
+	MP4Err (*maketrackfragments) (struct MP4MovieExtendsAtom *self, MP4MovieFragmentAtomPtr moof, MP4MovieAtomPtr moov, MP4MediaDataAtomPtr mdat );
 	MP4Err (*getTrackExtendsAtom)( struct MP4MovieExtendsAtom* self, u32 trackID, MP4AtomPtr *outTrack );
 	MP4Err (*setSampleDescriptionIndexes)( struct MP4MovieExtendsAtom* self, MP4AtomPtr moov );
 } MP4MovieExtendsAtom, *MP4MovieExtendsAtomPtr;

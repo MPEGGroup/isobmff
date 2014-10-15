@@ -2,7 +2,7 @@ Release notes Oct 2014
 
 a) Added support for track fragment decode time
 
-b) Added delay parameter to ISOStartMovieFragment for setting a time offset for the track fragment decode time
+b) Added new ISOAddDelayToTrackFragmentDecodeTime function, to introduce delay to base media decode time
 
 c) Added extended language tag and ISOGetMediaExtendedLanguageTag, ISOSetMediaExtendedLanguageTag
 

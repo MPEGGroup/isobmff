@@ -266,7 +266,7 @@ bail:
 }
 
 ISO_EXTERN ( MP4Err )
-ISOStartMovieFragment( MP4Movie theMovie, u32 delay )
+ISOStartMovieFragment( MP4Movie theMovie )
 {
 	MP4Err MP4CreateMovieFragmentAtom( MP4MovieFragmentAtomPtr *outAtom );
         MP4Err MP4CreateMovieFragmentHeaderAtom( MP4MovieFragmentHeaderAtomPtr *outAtom );
@@ -334,10 +334,50 @@ ISOStartMovieFragment( MP4Movie theMovie, u32 delay )
 	err = MP4CreateMediaDataAtom( &mdat ); if (err) goto bail;
 	movie->mdat = (MP4AtomPtr) mdat;
 	
-	mvex->maketrackfragments( mvex, moof, moov, mdat, delay );
+	mvex->maketrackfragments( mvex, moof, moov, mdat );
 	
 bail:
 	TEST_RETURN( err );
 
 	return err;
+}
+
+ISO_EXTERN ( MP4Err )
+ISOAddDelayToTrackFragmentDecodeTime( MP4Movie theMovie, u32 delay )
+{
+    u32                                 i;
+    MP4Err                              err;
+    MP4PrivateMovieRecordPtr            movie;
+    MP4MovieFragmentAtomPtr             moof;
+    MP4AtomPtr                          moofEntry;
+    MP4TrackFragmentAtomPtr             traf;
+    MP4TrackExtendsAtomPtr              trex;
+    MP4TrackFragmentDecodeTimeAtomPtr   tfdt;
+    
+    err                 = MP4NoErr;
+    movie               = (MP4PrivateMovieRecordPtr) theMovie;
+    
+    if (movie->moovAtomPtr->type != MP4MovieFragmentAtomType)
+        BAILWITHERROR(MP4InvalidMediaErr);
+    
+    moof = (MP4MovieFragmentAtomPtr) movie->moovAtomPtr;
+    
+    for (i = 0; i < moof->atomList->entryCount; i++)
+    {
+        MP4GetListEntry(moof->atomList, i, (char **) moofEntry);
+        if (moofEntry->type == MP4TrackFragmentAtomType)
+        {
+            traf = (MP4TrackFragmentAtomPtr) moofEntry;
+            trex = (MP4TrackExtendsAtomPtr) traf->trex;
+            tfdt = (MP4TrackFragmentDecodeTimeAtomPtr) traf->tfdt;
+            trex->baseMediaDecodeTime += delay;
+            tfdt->baseMediaDecodeTime += delay;
+        }
+    }
+    
+
+bail:
+    TEST_RETURN( err );
+    
+    return err;
 }

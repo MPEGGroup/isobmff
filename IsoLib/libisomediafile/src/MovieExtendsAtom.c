@@ -97,7 +97,7 @@ bail:
 	return err;
 }
 
-static MP4Err maketrackfragments (struct MP4MovieExtendsAtom *self, MP4MovieFragmentAtomPtr moof, MP4MovieAtomPtr moov, MP4MediaDataAtomPtr mdat, u32 delay )
+static MP4Err maketrackfragments (struct MP4MovieExtendsAtom *self, MP4MovieFragmentAtomPtr moof, MP4MovieAtomPtr moov, MP4MediaDataAtomPtr mdat )
 {
     u32 trackIdx;
 	u32 i;
@@ -143,7 +143,6 @@ static MP4Err maketrackfragments (struct MP4MovieExtendsAtom *self, MP4MovieFrag
             trex->isInitialMediaDecodeTimeAdded = 1;
         }
         
-        trex->baseMediaDecodeTime += delay;
         tfdt->baseMediaDecodeTime = trex->baseMediaDecodeTime;
         
 		tfhd->trackID = trex->trackID;
