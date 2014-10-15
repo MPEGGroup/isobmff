@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>3D315D7C-C615-408D-BC3C-42E0D7CE3254</string>
+	<key>IDESourceControlProjectName</key>
+	<string>DRC_to_MP4</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>94298a81-5874-47c9-aab8-bfb24faeed7f++4525</key>
+		<string>http://wg11.sc29.org/svn/repos/MPEG-04/Part12-ISO_Base_Media_File_Format/trunk</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>IsoLib/drc_in_isom/macosx/DRC_to_MP4/DRC_to_MP4.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>94298a81-5874-47c9-aab8-bfb24faeed7f++4525</key>
+		<string>../../../../../..</string>
+	</dict>
+	<key>IDESourceControlProjectRepositoryRootDictionary</key>
+	<dict>
+		<key>94298a81-5874-47c9-aab8-bfb24faeed7f++4525</key>
+		<string>http://wg11.sc29.org/svn/repos</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>http://wg11.sc29.org/svn/repos/MPEG-04/Part12-ISO_Base_Media_File_Format/trunk/IsoLib/drc_in_isom/macosx/DRC_to_MP4/DRC_to_MP4.xcodeproj</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>94298a81-5874-47c9-aab8-bfb24faeed7f++4525</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.subversion</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>94298a81-5874-47c9-aab8-bfb24faeed7f++4525</string>
+			<key>IDESourceControlWCCName</key>
+			<string>trunk</string>
+		</dict>
+	</array>
+</dict>
+</plist>

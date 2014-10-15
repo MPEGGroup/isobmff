@@ -1,0 +1,1601 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html>
+<head>
+<title>DRCAtoms</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="generator" content="HeaderDoc">
+<meta name="xcode-display" content="render">
+<style type="text/css"><!--.char {background: #ffffff; color:#0000ff;}.comment {background:#ffffff; color:#236e25}.function {background:#ffffff; color:#000000;}.keyword {background:#ffffff; color:#761550;}.number {background: #ffffff; color:#0000ff;}.param {background:#ffffff; color:#000000;}.preprocessor {background:#ffffff; color:#236e25}.string {background: #ffffff; color:#891315;}.template {background:#ffffff; color:#761550;}.type {background:#ffffff; color:#761550;}.var {background:#ffffff; color:#000000;}body {border: 0px; margin: 0px;}div {font-size: 10pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000;}td {font-size: 10pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000;}span.hd_tocAccessSpace { display: block; font-size: 1px; height: 3px; min-height: 3px; }span.hd_tocGroupSpace { display: block; font-size: 1px; height: 3px; min-height: 3px; }span.hd_tocGroup { display: block; font-weight: bold; font-size: 10pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000; margin-left: 0px; padding-left: 40px; }span.hd_tocGroup + span.hd_tocAccess { padding-top: 5px; }td.toc_contents_text {font-size: 11pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000; }li.tocSubEntry {font-size: 11pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000;}p {font-size: 10pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000;}a:link {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}a:visited {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}a:visited:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}a:active {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}a:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}h2.h2tight { margin-top: 0px; padding-top: 0px; }h1 { margin-top: 13px; padding-top: 0px; }h4 {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: tiny; font-weight: bold;}h5 {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: 10.1pt; font-weight: bold;}pre {text-decoration: none; font-family: Courier, Consolas, monospace; color: #666; font-size: 10pt;}pre a { font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}pre a:link { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}pre a:visited { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}pre a:visited:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}pre a:active { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}pre a:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code {text-decoration: none; font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}code a { font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}code a:link { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code a:visited { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code a:visited:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code a:active { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code a:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt {text-decoration: none; font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}tt a { font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}tt a:link { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt a:visited { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt a:visited:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt a:active { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt a:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}body  {text-decoration: none; font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt; padding-left: 0px; padding-top: 0px; margin-left: 0px; margin-top: 0px; border: none; }#hd_outermost_table { margin-left: 0px; border-spacing: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }#hd_outermost_table > tr { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }#hd_outermost_table > tr > td { border-spacing: 0px; margin-left: 0px; margin-top: 0px; }#hd_outermost_table > tbody > tr { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }#hd_outermost_table > tbody > tr > td { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-top: 3px; }.afterName { display: none; }.list_indent { margin-left: 40px; }.declaration_indent { margin-left: 40px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; min-height: 12px; vertical-align: middle; }.declaration_indent pre { margin-top: 20px; padding-top: 0px; margin-bottom: 20px; padding-bottom: 0px; }.gapBeforeFooter { display: none; }hr { height: 0px; min-height: 0px; border-top: none; border-left: none; border-right: none; border-bottom: 1px solid #909090;}hr.afterHeader { display: none }.param_group_indent { margin-left: 25px; }.param_indent { margin-left: 40px; margin-top: 0px; padding-top: 0px; }.param_indent dl { margin-top: 4px; padding-top: 0px; }dl dd > p:first-child { margin-top: 2px; padding-top: 0px; }.param_indent dl dd > p:first-child { margin-top: 2px; padding-top: 0px; }.group_indent { margin-left: 40px; }.group_desc_indent { margin-left: 20px; }.warning_indent { margin-left: 40px; }.important_indent { margin-left: 40px; }.note_indent { margin-left: 40px; }h3 {       color: #3C4C6C;}.tight {       margin-top: 2px; margin-bottom: 0px;       padding-top: 0px; padding-bottom: 0px;}h3 a {       color: #3C4C6C;	font-size: 16px;	font-style: normal;	font-variant: normal;	font-weight: bold;	height: 0px;	line-height: normal;}.hd_tocAccess { display: block; margin-left: 40px; font-style: italic; font-size: 10px; font-weight: normal; color: #303030; }.tocSubheading { margin-bottom: 4px; }--></style>
+<style><!--
+body {
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+}
+.toc_contents_text {
+    padding-left: 1em;
+    text-indent: -1em;
+}
+
+ul.tocSubEntryList li.tocSubEntry {
+    list-style: none;
+}
+
+#colorbox {
+		display: none;
+}
+.spec_sheet_line {
+		margin-bottom: 1px;
+}
+.collapsible {
+		display: none;
+}
+.toc_leadspace {
+		width: 10; min-width: 10;
+}
+.disclosure_triangle_td {
+		width: 14; min-width: 14;
+		font-size: 10px;
+		vertical-align: middle;
+}
+.specbox td {
+		font-size: 13px;
+}
+.specbox td a {
+		font-size: 13px;
+}
+.specbox td code {
+		font-size: 13px;
+}
+.specbox td tt {
+		font-size: 13px;
+}
+.specbox td pre {
+		font-size: 13px;
+}
+.specbox a {
+		font-size: 12px;
+}
+.disclosure_triangle_td a {
+		text-decoration: none;
+}
+.disclosure_triangle_td a:link {
+		text-decoration: none;
+}
+.disclosure_triangle_td a:active {
+		text-decoration: none;
+}
+.disclosure_triangle_td a:visited:hover {
+		text-decoration: none;
+}
+.disclosure_triangle_td a:hover {
+		text-decoration: none;
+}
+.hd_toc_box {
+		padding-top: 10px;
+		padding-right: 15px;
+}.tocSeparator {
+		margin-top: 15px;
+		padding-bottom: 0px;
+		margin-bottom: 0px;
+}
+.tocSubEntryList {
+		margin-left: 0px;
+		padding-left: 40px;
+		padding-top: 0px;
+		margin-top: 2px;
+		padding-bottom: 0px;
+		margin-bottom: 8px;
+}
+.hd_toc_heading_table {
+		margin-top: 2px;
+		margin-bottom: 2px;
+}
+.hd_toc_entry_table {
+		margin-top: 2px;
+		margin-bottom: 2px;
+}
+.tocSubEntry {
+		margin-left: 0px;
+		padding-left: 0px;
+		margin-top: 0px;
+		margin-bottom: 1px;
+}
+.tocSubEntry a {
+		font-size: 10pt;
+}
+.tocSubheading {
+		padding-left: 14px;
+		margin-left: 0px;
+		margin-top: 5px;
+		padding-top: 0px;
+		font-size: 16px;
+		color: #808080;
+}
+
+#hd_outermost_table { margin-left: 0px; border-spacing: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }
+#hd_outermost_table > tr { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }
+#hd_outermost_table > tr > td { border-spacing: 0px; margin-left: 0px; margin-top: 0px; }
+#hd_outermost_table > tbody > tr { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }
+#hd_outermost_table > tbody > tr > td { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-top: 3px; }
+
+#tocMenu {
+		border-right: 1px solid #c0c0c0;
+		background-color: #f4f4ff;
+		top:0px;
+		left:0px;
+		width:230px;
+		height:100%;
+}
+#bodyContents {
+		width: auto;
+		padding-left: 15px;
+}
+--></style>
+<style id="disable_before_iOS_5"><!--
+#tocMenu {
+		position: fixed;
+		height: 100%;
+		overflow: auto;
+}
+#bodyContents {
+		width: auto;
+		left: 235px;
+		right: 0;
+		padding-left: 15px;
+		position: fixed;
+		height: 100%;
+		overflow-y: scroll;
+}
+--></style>
+<script language="JavaScript" type="text/javascript"><!--
+    if (navigator.platform && (navigator.platform.match(/iPad/) || navigator.platform.match(/iPhone/) || navigator.platform.match(/iPod/))) {
+        if (navigator.userAgent.match(/OS 1(_\d)+/) ||
+            navigator.userAgent.match(/OS 2(_\d)+/) ||
+            navigator.userAgent.match(/OS 3(_\d)+/) ||
+            navigator.userAgent.match(/OS 4(_\d)+/)) {
+                /* Earlier iOS versions require different scrolling gestures with position: fixed. */
+                var del_style_elt = document.getElementById("disable_before_iOS_5");
+                if (del_style_elt) del_style_elt.parentNode.removeChild(del_style_elt);
+        }
+    }
+// --></script><script language="JavaScript" type="text/javascript"><!--
+function getNewHTTPObject()
+{
+        var xmlhttp;
+
+        /** Special IE only code ... */
+        /*@cc_on
+          @if (@_jscript_version >= 5)
+              try
+              {
+                  xmlhttp = new ActiveXObject('Msxml2.XMLHTTP');
+              }
+              catch (e)
+              {
+                  try
+                  {
+                      xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
+                  }
+                  catch (E)
+                  {
+                      xmlhttp = false;
+                  }
+             }
+          @else
+             xmlhttp = false;
+        @end @*/
+
+        /** Every other browser on the planet */
+        if (!xmlhttp && typeof XMLHttpRequest != 'undefined')
+        {
+            try
+            {
+                xmlhttp = new XMLHttpRequest();
+            }
+            catch (e)
+            {
+                xmlhttp = false;
+            }
+        }
+
+        return xmlhttp;
+}
+
+function hidetoc() {
+	var toc = document.getElementById('tocMenu');
+	var src = toc.getAttribute('src');
+	var xhr = getNewHTTPObject();
+	xhr.open('GET', src, true);
+	xhr.onreadystatechange = function() {
+		if(xhr.readyState == 4) {
+			var toc = document.getElementById('tocMenu');
+			toc.innerHTML = xhr.responseText;
+		}
+	}
+	xhr.send(null);
+	var origURL = parent.document.URL;
+	var contentURL = origURL.substring(origURL.indexOf('?')+1, origURL.length);
+	if (contentURL.length == origURL.length) {
+		jumpPos = origURL.substring(origURL.indexOf('#')+1, origURL.length);
+	}
+	if (contentURL == "hidetoc") {
+		var body = document.getElementById('bodyContents');
+		if (toc && body) {
+			toc.style.display = 'none';
+			body.style.marginLeft = '0px';
+		}
+	}
+}
+
+function disclosure_triangle(elt) {
+   var linkelt = elt;
+   while (elt && elt.tagName != 'TABLE') { elt = elt.parentNode;}
+   if (!elt) { return; }
+   while (elt && elt.tagName != 'DIV') { elt = elt.nextSibling;}
+   if (!elt) { return; }
+   if (parseInt(linkelt.getAttribute('state'))) {
+      // It's open.  Close it
+      linkelt.innerHTML = '&#x25B7;';
+      linkelt.setAttribute('state', 0);
+      linkelt.setAttribute('class', 'closed_disclosure_triangle');
+      elt.style.display = 'none';
+   } else {
+      // It's closed.  Open it
+      linkelt.innerHTML = '&#x25BC;';
+      linkelt.setAttribute('state', 1);
+      linkelt.setAttribute('class', 'open_disclosure_triangle');
+      elt.style.display = 'block';
+   }
+}
+--></script><style type="text/css"><!--.char {background: #ffffff; color:#0000ff;}.comment {background:#ffffff; color:#236e25}.function {background:#ffffff; color:#000000;}.keyword {background:#ffffff; color:#761550;}.number {background: #ffffff; color:#0000ff;}.param {background:#ffffff; color:#000000;}.preprocessor {background:#ffffff; color:#236e25}.string {background: #ffffff; color:#891315;}.template {background:#ffffff; color:#761550;}.type {background:#ffffff; color:#761550;}.var {background:#ffffff; color:#000000;}body {border: 0px; margin: 0px;}div {font-size: 10pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000;}td {font-size: 10pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000;}span.hd_tocAccessSpace { display: block; font-size: 1px; height: 3px; min-height: 3px; }span.hd_tocGroupSpace { display: block; font-size: 1px; height: 3px; min-height: 3px; }span.hd_tocGroup { display: block; font-weight: bold; font-size: 10pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000; margin-left: 0px; padding-left: 40px; }span.hd_tocGroup + span.hd_tocAccess { padding-top: 5px; }td.toc_contents_text {font-size: 11pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000; }li.tocSubEntry {font-size: 11pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000;}p {font-size: 10pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000;}a:link {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}a:visited {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}a:visited:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}a:active {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}a:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}h2.h2tight { margin-top: 0px; padding-top: 0px; }h1 { margin-top: 13px; padding-top: 0px; }h4 {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: tiny; font-weight: bold;}h5 {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: 10.1pt; font-weight: bold;}pre {text-decoration: none; font-family: Courier, Consolas, monospace; color: #666; font-size: 10pt;}pre a { font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}pre a:link { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}pre a:visited { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}pre a:visited:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}pre a:active { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}pre a:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code {text-decoration: none; font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}code a { font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}code a:link { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code a:visited { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code a:visited:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code a:active { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code a:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt {text-decoration: none; font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}tt a { font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}tt a:link { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt a:visited { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt a:visited:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt a:active { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt a:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}body  {text-decoration: none; font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt; padding-left: 0px; padding-top: 0px; margin-left: 0px; margin-top: 0px; border: none; }#hd_outermost_table { margin-left: 0px; border-spacing: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }#hd_outermost_table > tr { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }#hd_outermost_table > tr > td { border-spacing: 0px; margin-left: 0px; margin-top: 0px; }#hd_outermost_table > tbody > tr { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }#hd_outermost_table > tbody > tr > td { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-top: 3px; }.afterName { display: none; }.list_indent { margin-left: 40px; }.declaration_indent { margin-left: 40px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; min-height: 12px; vertical-align: middle; }.declaration_indent pre { margin-top: 20px; padding-top: 0px; margin-bottom: 20px; padding-bottom: 0px; }.gapBeforeFooter { display: none; }hr { height: 0px; min-height: 0px; border-top: none; border-left: none; border-right: none; border-bottom: 1px solid #909090;}hr.afterHeader { display: none }.param_group_indent { margin-left: 25px; }.param_indent { margin-left: 40px; margin-top: 0px; padding-top: 0px; }.param_indent dl { margin-top: 4px; padding-top: 0px; }dl dd > p:first-child { margin-top: 2px; padding-top: 0px; }.param_indent dl dd > p:first-child { margin-top: 2px; padding-top: 0px; }.group_indent { margin-left: 40px; }.group_desc_indent { margin-left: 20px; }.warning_indent { margin-left: 40px; }.important_indent { margin-left: 40px; }.note_indent { margin-left: 40px; }h3 {       color: #3C4C6C;}.tight {       margin-top: 2px; margin-bottom: 0px;       padding-top: 0px; padding-bottom: 0px;}h3 a {       color: #3C4C6C;	font-size: 16px;	font-style: normal;	font-variant: normal;	font-weight: bold;	height: 0px;	line-height: normal;}.hd_tocAccess { display: block; margin-left: 40px; font-style: italic; font-size: 10px; font-weight: normal; color: #303030; }.tocSubheading { margin-bottom: 4px; }--></style>
+</head>
+<body bgcolor="#ffffff" onload="hidetoc();">
+<!-- headerDoc=Header;  uid=//apple_ref/doc/header/DRCAtoms.h;   name=DRCAtoms -->
+<a name="//apple_ref/doc/header/DRCAtoms.h"></a>
+<table id="hd_outermost_table" height="100%" width="100%"><tr>
+<td valign="top" id="tocMenu" src="toc.html"></td>
+<td id="bodyContents" valign="top">
+<a name="top"></a>
+<h1><a name="DRCAtoms">DRCAtoms</a></h1>
+<div class="spec_sheet_info_box"><table cellspacing="0" class="specbox">
+<tr>
+<td scope="row"><b>Author:</b></td>
+<td><div style="margin-bottom:1px"><div class="content_text">Armin Trattnig</div></div></td>
+</tr>
+<tr>
+<td scope="row"><b>Version:</b></td>
+<td><div style="margin-bottom:1px"><div class="content_text">1.0</div></div></td>
+</tr>
+<tr>
+<td scope="row"><b>Includes:</b></td>
+<td><div style="margin-bottom:1px"><div class="content_text">
+<!-- a logicalPath="//apple_ref/doc/header/MP4Atoms.h" machineGenerated="true" -->"MP4Atoms.h"<!-- /a -->
+</div></div></td>
+</tr>
+</table></div>
+<h2>Introduction</h2>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/doc/header/DRCAtoms.h;name=start --><p>DRCAtoms defines DRC specific atoms for the file format version of the DRC bitstream as defined
+in ISO/IEC DIS 23003-4.<!-- headerDoc=discussion;uid=//apple_ref/doc/header/DRCAtoms.h;name=end --><!-- end discussion -->
+</p>
+<dl>
+<dt><b>Updated:</b></dt>
+<dd>Friday, September 19, 2014</dd>
+</dl>
+<hr class="afterClassOrHeaderInfo">
+<br><a name="HeaderDoc_functions"></a>
+<h2 class="h2tight">Functions</h2>
+<dl>
+<dt><tt><a href="index.html#//apple_ref/c/func/MP4CreateDRCAtom" target="_top">MP4CreateDRCAtom</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/c/func/MP4CreateDrcAudioSampleEntryAtom" target="_top">MP4CreateDrcAudioSampleEntryAtom</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/c/func/MP4CreateDRCCoefficientBasicAtom" target="_top">MP4CreateDRCCoefficientBasicAtom</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/c/func/MP4CreateDRCCoefficientUniDRCAtom" target="_top">MP4CreateDRCCoefficientUniDRCAtom</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/c/func/MP4CreateDRCInstructionsBasicAtom" target="_top">MP4CreateDRCInstructionsBasicAtom</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/c/func/MP4CreateDRCInstructionsUniDRCAtom" target="_top">MP4CreateDRCInstructionsUniDRCAtom</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/c/func/MP4CreateDRCUniDrcSampleEntryAtom" target="_top">MP4CreateDRCUniDrcSampleEntryAtom</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/c/func/MP4ParseDRCAtom" target="_top">MP4ParseDRCAtom</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/c/func/MP4ParseDRCAtomUsingProtoList" target="_top">MP4ParseDRCAtomUsingProtoList</a></tt></dt>
+<dd></dd>
+</dl>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=func;  uid=//apple_ref/c/func/MP4CreateDRCAtom;   name=MP4CreateDRCAtom --><a name="//apple_ref/c/func/MP4CreateDRCAtom"></a>
+<h3><a name="MP4CreateDRCAtom">MP4CreateDRCAtom</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/func/MP4CreateDRCAtom;name=start --><!-- a logicalPath="//apple_ref/c/cl/MP4Err //apple_ref/c/tdef/MP4Err //apple_ref/c/tag/MP4Err //apple_ref/c/struct/MP4Err //apple_ref/c/intf/MP4Err //apple_ref/doc/anysymbol/MP4Err" machineGenerated="true" --><span class="type">MP4Err</span><!-- /a --> <a machinegenerated="true" href="index.html#//apple_ref/c/func/MP4CreateDRCAtom" logicalPath="//apple_ref/c/instm/MP4CreateDRCAtom //apple_ref/c/clm/MP4CreateDRCAtom //apple_ref/c/intfcm/MP4CreateDRCAtom //apple_ref/c/intfm/MP4CreateDRCAtom //apple_ref/c/func/MP4CreateDRCAtom" target="_top"><span class="function">MP4CreateDRCAtom</span></a> (
+    <!-- a logicalPath="//apple_ref/c/cl/u32 //apple_ref/c/tdef/u32 //apple_ref/c/tag/u32 //apple_ref/c/struct/u32 //apple_ref/c/intf/u32 //apple_ref/doc/anysymbol/u32" machineGenerated="true" --><span class="type">u32</span><!-- /a --> <span class="param">atomType</span>,
+    <!-- a logicalPath="//apple_ref/c/cl/MP4AtomPtr //apple_ref/c/tdef/MP4AtomPtr //apple_ref/c/tag/MP4AtomPtr //apple_ref/c/struct/MP4AtomPtr //apple_ref/c/intf/MP4AtomPtr //apple_ref/doc/anysymbol/MP4AtomPtr" machineGenerated="true" --><span class="type">MP4AtomPtr</span><!-- /a --> <span class="type">*</span><span class="param">outAtom</span> );  <!-- headerDoc=declaration;uid=//apple_ref/c/func/MP4CreateDRCAtom;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/MP4CreateDRCAtom/atomType;   name=atomType -->
+<a name="//apple_ref/doc/functionparam/MP4CreateDRCAtom/atomType"></a>
+<code>atomType</code>
+</dt>
+<dd><p>Type of the atom, which will be created</p></dd>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/MP4CreateDRCAtom/outAtom;   name=outAtom -->
+<a name="//apple_ref/doc/functionparam/MP4CreateDRCAtom/outAtom"></a>
+<code>outAtom</code>
+</dt>
+<dd><p>pointer to a structure, which will be created</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/MP4CreateDRCAtom;name=start --><p>Creates and initializes a atom structure with a certain type, memory will be allocated
+<!-- headerDoc=discussion;uid=//apple_ref/c/func/MP4CreateDRCAtom;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=func;  uid=//apple_ref/c/func/MP4CreateDrcAudioSampleEntryAtom;   name=MP4CreateDrcAudioSampleEntryAtom --><a name="//apple_ref/c/func/MP4CreateDrcAudioSampleEntryAtom"></a>
+<h3><a name="MP4CreateDrcAudioSampleEntryAtom">MP4CreateDrcAudioSampleEntryAtom</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/func/MP4CreateDrcAudioSampleEntryAtom;name=start --><!-- a logicalPath="//apple_ref/c/cl/MP4Err //apple_ref/c/tdef/MP4Err //apple_ref/c/tag/MP4Err //apple_ref/c/struct/MP4Err //apple_ref/c/intf/MP4Err //apple_ref/doc/anysymbol/MP4Err" machineGenerated="true" --><span class="type">MP4Err</span><!-- /a --> <a machinegenerated="true" href="index.html#//apple_ref/c/func/MP4CreateDrcAudioSampleEntryAtom" logicalPath="//apple_ref/c/instm/MP4CreateDrcAudioSampleEntryAtom //apple_ref/c/clm/MP4CreateDrcAudioSampleEntryAtom //apple_ref/c/intfcm/MP4CreateDrcAudioSampleEntryAtom //apple_ref/c/intfm/MP4CreateDrcAudioSampleEntryAtom //apple_ref/c/func/MP4CreateDrcAudioSampleEntryAtom" target="_top"><span class="function">MP4CreateDrcAudioSampleEntryAtom</span></a> (
+    <!-- a logicalPath="//apple_ref/c/cl/MP4AudioSampleEntryAtomPtr //apple_ref/c/tdef/MP4AudioSampleEntryAtomPtr //apple_ref/c/tag/MP4AudioSampleEntryAtomPtr //apple_ref/c/struct/MP4AudioSampleEntryAtomPtr //apple_ref/c/intf/MP4AudioSampleEntryAtomPtr //apple_ref/doc/anysymbol/MP4AudioSampleEntryAtomPtr" machineGenerated="true" --><span class="type">MP4AudioSampleEntryAtomPtr</span><!-- /a --> <span class="type">*</span><span class="param">outAtom</span> );  <!-- headerDoc=declaration;uid=//apple_ref/c/func/MP4CreateDrcAudioSampleEntryAtom;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/MP4CreateDrcAudioSampleEntryAtom/outAtom;   name=outAtom -->
+<a name="//apple_ref/doc/functionparam/MP4CreateDrcAudioSampleEntryAtom/outAtom"></a>
+<code>outAtom</code>
+</dt>
+<dd><p>pointer to MP4AudioSampleEntryAtom structure, which will be created</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/MP4CreateDrcAudioSampleEntryAtom;name=start --><p>Creates and initializes a MP4AudioSampleEntryAtom structure, memory will be allocated
+<!-- headerDoc=discussion;uid=//apple_ref/c/func/MP4CreateDrcAudioSampleEntryAtom;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=func;  uid=//apple_ref/c/func/MP4CreateDRCCoefficientBasicAtom;   name=MP4CreateDRCCoefficientBasicAtom --><a name="//apple_ref/c/func/MP4CreateDRCCoefficientBasicAtom"></a>
+<h3><a name="MP4CreateDRCCoefficientBasicAtom">MP4CreateDRCCoefficientBasicAtom</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/func/MP4CreateDRCCoefficientBasicAtom;name=start --><!-- a logicalPath="//apple_ref/c/cl/MP4Err //apple_ref/c/tdef/MP4Err //apple_ref/c/tag/MP4Err //apple_ref/c/struct/MP4Err //apple_ref/c/intf/MP4Err //apple_ref/doc/anysymbol/MP4Err" machineGenerated="true" --><span class="type">MP4Err</span><!-- /a --> <a machinegenerated="true" href="index.html#//apple_ref/c/func/MP4CreateDRCCoefficientBasicAtom" logicalPath="//apple_ref/c/instm/MP4CreateDRCCoefficientBasicAtom //apple_ref/c/clm/MP4CreateDRCCoefficientBasicAtom //apple_ref/c/intfcm/MP4CreateDRCCoefficientBasicAtom //apple_ref/c/intfm/MP4CreateDRCCoefficientBasicAtom //apple_ref/c/func/MP4CreateDRCCoefficientBasicAtom" target="_top"><span class="function">MP4CreateDRCCoefficientBasicAtom</span></a> (
+    <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/DRCCoefficientBasicAtomPtr" logicalPath="//apple_ref/c/cl/DRCCoefficientBasicAtomPtr //apple_ref/c/tdef/DRCCoefficientBasicAtomPtr" target="_top"><span class="type">DRCCoefficientBasicAtomPtr</span></a> <span class="type">*</span><span class="param">outAtom</span> );  <!-- headerDoc=declaration;uid=//apple_ref/c/func/MP4CreateDRCCoefficientBasicAtom;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/MP4CreateDRCCoefficientBasicAtom/outAtom;   name=outAtom -->
+<a name="//apple_ref/doc/functionparam/MP4CreateDRCCoefficientBasicAtom/outAtom"></a>
+<code>outAtom</code>
+</dt>
+<dd><p>pointer to DRCCoefficientBasicAtom structure, which will be created</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/MP4CreateDRCCoefficientBasicAtom;name=start --><p>Creates and initializes a DRCCoefficientBasicAtom structure, memory will be allocated
+<!-- headerDoc=discussion;uid=//apple_ref/c/func/MP4CreateDRCCoefficientBasicAtom;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=func;  uid=//apple_ref/c/func/MP4CreateDRCCoefficientUniDRCAtom;   name=MP4CreateDRCCoefficientUniDRCAtom --><a name="//apple_ref/c/func/MP4CreateDRCCoefficientUniDRCAtom"></a>
+<h3><a name="MP4CreateDRCCoefficientUniDRCAtom">MP4CreateDRCCoefficientUniDRCAtom</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/func/MP4CreateDRCCoefficientUniDRCAtom;name=start --><!-- a logicalPath="//apple_ref/c/cl/MP4Err //apple_ref/c/tdef/MP4Err //apple_ref/c/tag/MP4Err //apple_ref/c/struct/MP4Err //apple_ref/c/intf/MP4Err //apple_ref/doc/anysymbol/MP4Err" machineGenerated="true" --><span class="type">MP4Err</span><!-- /a --> <a machinegenerated="true" href="index.html#//apple_ref/c/func/MP4CreateDRCCoefficientUniDRCAtom" logicalPath="//apple_ref/c/instm/MP4CreateDRCCoefficientUniDRCAtom //apple_ref/c/clm/MP4CreateDRCCoefficientUniDRCAtom //apple_ref/c/intfcm/MP4CreateDRCCoefficientUniDRCAtom //apple_ref/c/intfm/MP4CreateDRCCoefficientUniDRCAtom //apple_ref/c/func/MP4CreateDRCCoefficientUniDRCAtom" target="_top"><span class="function">MP4CreateDRCCoefficientUniDRCAtom</span></a> (
+    <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/DRCCoefficientUniDRCAtomPtr" logicalPath="//apple_ref/c/cl/DRCCoefficientUniDRCAtomPtr //apple_ref/c/tdef/DRCCoefficientUniDRCAtomPtr" target="_top"><span class="type">DRCCoefficientUniDRCAtomPtr</span></a> <span class="type">*</span><span class="param">outAtom</span> );  <!-- headerDoc=declaration;uid=//apple_ref/c/func/MP4CreateDRCCoefficientUniDRCAtom;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/MP4CreateDRCCoefficientUniDRCAtom/outAtom;   name=outAtom -->
+<a name="//apple_ref/doc/functionparam/MP4CreateDRCCoefficientUniDRCAtom/outAtom"></a>
+<code>outAtom</code>
+</dt>
+<dd><p>pointer to DRCCoefficientUniDRCAtom structure, which will be created</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/MP4CreateDRCCoefficientUniDRCAtom;name=start --><p>Creates and initializes a DRCCoefficientUniDRCAtom structure, memory will be allocated
+<!-- headerDoc=discussion;uid=//apple_ref/c/func/MP4CreateDRCCoefficientUniDRCAtom;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=func;  uid=//apple_ref/c/func/MP4CreateDRCInstructionsBasicAtom;   name=MP4CreateDRCInstructionsBasicAtom --><a name="//apple_ref/c/func/MP4CreateDRCInstructionsBasicAtom"></a>
+<h3><a name="MP4CreateDRCInstructionsBasicAtom">MP4CreateDRCInstructionsBasicAtom</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/func/MP4CreateDRCInstructionsBasicAtom;name=start --><!-- a logicalPath="//apple_ref/c/cl/MP4Err //apple_ref/c/tdef/MP4Err //apple_ref/c/tag/MP4Err //apple_ref/c/struct/MP4Err //apple_ref/c/intf/MP4Err //apple_ref/doc/anysymbol/MP4Err" machineGenerated="true" --><span class="type">MP4Err</span><!-- /a --> <a machinegenerated="true" href="index.html#//apple_ref/c/func/MP4CreateDRCInstructionsBasicAtom" logicalPath="//apple_ref/c/instm/MP4CreateDRCInstructionsBasicAtom //apple_ref/c/clm/MP4CreateDRCInstructionsBasicAtom //apple_ref/c/intfcm/MP4CreateDRCInstructionsBasicAtom //apple_ref/c/intfm/MP4CreateDRCInstructionsBasicAtom //apple_ref/c/func/MP4CreateDRCInstructionsBasicAtom" target="_top"><span class="function">MP4CreateDRCInstructionsBasicAtom</span></a> (
+    <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/DRCInstructionsBasicAtomPtr" logicalPath="//apple_ref/c/cl/DRCInstructionsBasicAtomPtr //apple_ref/c/tdef/DRCInstructionsBasicAtomPtr" target="_top"><span class="type">DRCInstructionsBasicAtomPtr</span></a> <span class="type">*</span><span class="param">outAtom</span> );  <!-- headerDoc=declaration;uid=//apple_ref/c/func/MP4CreateDRCInstructionsBasicAtom;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/MP4CreateDRCInstructionsBasicAtom/outAtom;   name=outAtom -->
+<a name="//apple_ref/doc/functionparam/MP4CreateDRCInstructionsBasicAtom/outAtom"></a>
+<code>outAtom</code>
+</dt>
+<dd><p>pointer to DRCInstructionsBasicAtom structure, which will be created</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/MP4CreateDRCInstructionsBasicAtom;name=start --><p>Creates and initializes a DRCInstructionsBasicAtom structure, memory will be allocated
+<!-- headerDoc=discussion;uid=//apple_ref/c/func/MP4CreateDRCInstructionsBasicAtom;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=func;  uid=//apple_ref/c/func/MP4CreateDRCInstructionsUniDRCAtom;   name=MP4CreateDRCInstructionsUniDRCAtom --><a name="//apple_ref/c/func/MP4CreateDRCInstructionsUniDRCAtom"></a>
+<h3><a name="MP4CreateDRCInstructionsUniDRCAtom">MP4CreateDRCInstructionsUniDRCAtom</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/func/MP4CreateDRCInstructionsUniDRCAtom;name=start --><!-- a logicalPath="//apple_ref/c/cl/MP4Err //apple_ref/c/tdef/MP4Err //apple_ref/c/tag/MP4Err //apple_ref/c/struct/MP4Err //apple_ref/c/intf/MP4Err //apple_ref/doc/anysymbol/MP4Err" machineGenerated="true" --><span class="type">MP4Err</span><!-- /a --> <a machinegenerated="true" href="index.html#//apple_ref/c/func/MP4CreateDRCInstructionsUniDRCAtom" logicalPath="//apple_ref/c/instm/MP4CreateDRCInstructionsUniDRCAtom //apple_ref/c/clm/MP4CreateDRCInstructionsUniDRCAtom //apple_ref/c/intfcm/MP4CreateDRCInstructionsUniDRCAtom //apple_ref/c/intfm/MP4CreateDRCInstructionsUniDRCAtom //apple_ref/c/func/MP4CreateDRCInstructionsUniDRCAtom" target="_top"><span class="function">MP4CreateDRCInstructionsUniDRCAtom</span></a> (
+    <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/DRCInstructionsUniDRCAtomPtr" logicalPath="//apple_ref/c/cl/DRCInstructionsUniDRCAtomPtr //apple_ref/c/tdef/DRCInstructionsUniDRCAtomPtr" target="_top"><span class="type">DRCInstructionsUniDRCAtomPtr</span></a> <span class="type">*</span><span class="param">outAtom</span> );  <!-- headerDoc=declaration;uid=//apple_ref/c/func/MP4CreateDRCInstructionsUniDRCAtom;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/MP4CreateDRCInstructionsUniDRCAtom/outAtom;   name=outAtom -->
+<a name="//apple_ref/doc/functionparam/MP4CreateDRCInstructionsUniDRCAtom/outAtom"></a>
+<code>outAtom</code>
+</dt>
+<dd><p>pointer to DRCInstructionsUniDRCAtom structure, which will be created</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/MP4CreateDRCInstructionsUniDRCAtom;name=start --><p>Creates and initializes a DRCInstructionsUniDRCAtom structure, memory will be allocated
+<!-- headerDoc=discussion;uid=//apple_ref/c/func/MP4CreateDRCInstructionsUniDRCAtom;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=func;  uid=//apple_ref/c/func/MP4CreateDRCUniDrcSampleEntryAtom;   name=MP4CreateDRCUniDrcSampleEntryAtom --><a name="//apple_ref/c/func/MP4CreateDRCUniDrcSampleEntryAtom"></a>
+<h3><a name="MP4CreateDRCUniDrcSampleEntryAtom">MP4CreateDRCUniDrcSampleEntryAtom</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/func/MP4CreateDRCUniDrcSampleEntryAtom;name=start --><!-- a logicalPath="//apple_ref/c/cl/MP4Err //apple_ref/c/tdef/MP4Err //apple_ref/c/tag/MP4Err //apple_ref/c/struct/MP4Err //apple_ref/c/intf/MP4Err //apple_ref/doc/anysymbol/MP4Err" machineGenerated="true" --><span class="type">MP4Err</span><!-- /a --> <a machinegenerated="true" href="index.html#//apple_ref/c/func/MP4CreateDRCUniDrcSampleEntryAtom" logicalPath="//apple_ref/c/instm/MP4CreateDRCUniDrcSampleEntryAtom //apple_ref/c/clm/MP4CreateDRCUniDrcSampleEntryAtom //apple_ref/c/intfcm/MP4CreateDRCUniDrcSampleEntryAtom //apple_ref/c/intfm/MP4CreateDRCUniDrcSampleEntryAtom //apple_ref/c/func/MP4CreateDRCUniDrcSampleEntryAtom" target="_top"><span class="function">MP4CreateDRCUniDrcSampleEntryAtom</span></a> (
+    <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/DRCUniDrcSampleEntryAtomPtr" logicalPath="//apple_ref/c/cl/DRCUniDrcSampleEntryAtomPtr //apple_ref/c/tdef/DRCUniDrcSampleEntryAtomPtr" target="_top"><span class="type">DRCUniDrcSampleEntryAtomPtr</span></a> <span class="type">*</span><span class="param">outAtom</span> );  <!-- headerDoc=declaration;uid=//apple_ref/c/func/MP4CreateDRCUniDrcSampleEntryAtom;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/MP4CreateDRCUniDrcSampleEntryAtom/outAtom;   name=outAtom -->
+<a name="//apple_ref/doc/functionparam/MP4CreateDRCUniDrcSampleEntryAtom/outAtom"></a>
+<code>outAtom</code>
+</dt>
+<dd><p>pointer to DRCUniDrcSampleEntryAtom structure, which will be created</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/MP4CreateDRCUniDrcSampleEntryAtom;name=start --><p>Creates and initializes a DRCUniDrcSampleEntryAtom structure, memory will be allocated
+<!-- headerDoc=discussion;uid=//apple_ref/c/func/MP4CreateDRCUniDrcSampleEntryAtom;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=func;  uid=//apple_ref/c/func/MP4ParseDRCAtom;   name=MP4ParseDRCAtom --><a name="//apple_ref/c/func/MP4ParseDRCAtom"></a>
+<h3><a name="MP4ParseDRCAtom">MP4ParseDRCAtom</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/func/MP4ParseDRCAtom;name=start --><!-- a logicalPath="//apple_ref/c/cl/MP4Err //apple_ref/c/tdef/MP4Err //apple_ref/c/tag/MP4Err //apple_ref/c/struct/MP4Err //apple_ref/c/intf/MP4Err //apple_ref/doc/anysymbol/MP4Err" machineGenerated="true" --><span class="type">MP4Err</span><!-- /a --> <a machinegenerated="true" href="index.html#//apple_ref/c/func/MP4ParseDRCAtom" logicalPath="//apple_ref/c/instm/MP4ParseDRCAtom //apple_ref/c/clm/MP4ParseDRCAtom //apple_ref/c/intfcm/MP4ParseDRCAtom //apple_ref/c/intfm/MP4ParseDRCAtom //apple_ref/c/func/MP4ParseDRCAtom" target="_top"><span class="function">MP4ParseDRCAtom</span></a> (
+    <!-- a logicalPath="//apple_ref/c/cl/MP4InputStreamPtr //apple_ref/c/tdef/MP4InputStreamPtr //apple_ref/c/tag/MP4InputStreamPtr //apple_ref/c/struct/MP4InputStreamPtr //apple_ref/c/intf/MP4InputStreamPtr //apple_ref/doc/anysymbol/MP4InputStreamPtr" machineGenerated="true" --><span class="type">MP4InputStreamPtr</span><!-- /a --> <span class="param">inputStream</span>,
+    <!-- a logicalPath="//apple_ref/c/cl/MP4AtomPtr //apple_ref/c/tdef/MP4AtomPtr //apple_ref/c/tag/MP4AtomPtr //apple_ref/c/struct/MP4AtomPtr //apple_ref/c/intf/MP4AtomPtr //apple_ref/doc/anysymbol/MP4AtomPtr" machineGenerated="true" --><span class="type">MP4AtomPtr</span><!-- /a --> <span class="type">*</span><span class="param">outAtom</span> );  <!-- headerDoc=declaration;uid=//apple_ref/c/func/MP4ParseDRCAtom;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/MP4ParseDRCAtom/inputStream;   name=inputStream -->
+<a name="//apple_ref/doc/functionparam/MP4ParseDRCAtom/inputStream"></a>
+<code>inputStream</code>
+</dt>
+<dd><p>MP4InputStreamPtr (can be found in libisomediafile.a). Data will be read from this stream.</p></dd>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/MP4ParseDRCAtom/outAtom;   name=outAtom -->
+<a name="//apple_ref/doc/functionparam/MP4ParseDRCAtom/outAtom"></a>
+<code>outAtom</code>
+</dt>
+<dd><p>pointer to a structure, which will be created</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/MP4ParseDRCAtom;name=start --><p>Reads an atom from inputStream.
+<!-- headerDoc=discussion;uid=//apple_ref/c/func/MP4ParseDRCAtom;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=func;  uid=//apple_ref/c/func/MP4ParseDRCAtomUsingProtoList;   name=MP4ParseDRCAtomUsingProtoList --><a name="//apple_ref/c/func/MP4ParseDRCAtomUsingProtoList"></a>
+<h3><a name="MP4ParseDRCAtomUsingProtoList">MP4ParseDRCAtomUsingProtoList</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/func/MP4ParseDRCAtomUsingProtoList;name=start --><!-- a logicalPath="//apple_ref/c/cl/MP4Err //apple_ref/c/tdef/MP4Err //apple_ref/c/tag/MP4Err //apple_ref/c/struct/MP4Err //apple_ref/c/intf/MP4Err //apple_ref/doc/anysymbol/MP4Err" machineGenerated="true" --><span class="type">MP4Err</span><!-- /a --> <a machinegenerated="true" href="index.html#//apple_ref/c/func/MP4ParseDRCAtomUsingProtoList" logicalPath="//apple_ref/c/instm/MP4ParseDRCAtomUsingProtoList //apple_ref/c/clm/MP4ParseDRCAtomUsingProtoList //apple_ref/c/intfcm/MP4ParseDRCAtomUsingProtoList //apple_ref/c/intfm/MP4ParseDRCAtomUsingProtoList //apple_ref/c/func/MP4ParseDRCAtomUsingProtoList" target="_top"><span class="function">MP4ParseDRCAtomUsingProtoList</span></a> (
+    <!-- a logicalPath="//apple_ref/c/cl/MP4InputStreamPtr //apple_ref/c/tdef/MP4InputStreamPtr //apple_ref/c/tag/MP4InputStreamPtr //apple_ref/c/struct/MP4InputStreamPtr //apple_ref/c/intf/MP4InputStreamPtr //apple_ref/doc/anysymbol/MP4InputStreamPtr" machineGenerated="true" --><span class="type">MP4InputStreamPtr</span><!-- /a --> <span class="param">inputStream</span>,
+    <!-- a logicalPath="//apple_ref/c/cl/u32 //apple_ref/c/tdef/u32 //apple_ref/c/tag/u32 //apple_ref/c/struct/u32 //apple_ref/c/intf/u32 //apple_ref/doc/anysymbol/u32" machineGenerated="true" --><span class="type">u32</span><!-- /a --> <span class="type">*</span><span class="param">protoList</span>,
+    <!-- a logicalPath="//apple_ref/c/cl/u32 //apple_ref/c/tdef/u32 //apple_ref/c/tag/u32 //apple_ref/c/struct/u32 //apple_ref/c/intf/u32 //apple_ref/doc/anysymbol/u32" machineGenerated="true" --><span class="type">u32</span><!-- /a --> <span class="param">defaultAtom</span>,
+    <!-- a logicalPath="//apple_ref/c/cl/MP4AtomPtr //apple_ref/c/tdef/MP4AtomPtr //apple_ref/c/tag/MP4AtomPtr //apple_ref/c/struct/MP4AtomPtr //apple_ref/c/intf/MP4AtomPtr //apple_ref/doc/anysymbol/MP4AtomPtr" machineGenerated="true" --><span class="type">MP4AtomPtr</span><!-- /a --> <span class="type">*</span><span class="param">outAtom</span> );  <!-- headerDoc=declaration;uid=//apple_ref/c/func/MP4ParseDRCAtomUsingProtoList;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/MP4ParseDRCAtomUsingProtoList/inputStream;   name=inputStream -->
+<a name="//apple_ref/doc/functionparam/MP4ParseDRCAtomUsingProtoList/inputStream"></a>
+<code>inputStream</code>
+</dt>
+<dd><p>MP4InputStreamPtr (can be found in libisomediafile.a). Data will be read from this stream.</p></dd>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/MP4ParseDRCAtomUsingProtoList/protoList;   name=protoList -->
+<a name="//apple_ref/doc/functionparam/MP4ParseDRCAtomUsingProtoList/protoList"></a>
+<code>protoList</code>
+</dt>
+<dd><p>List of atoms, which are valid for being parsed. Can be NULL.</p></dd>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/MP4ParseDRCAtomUsingProtoList/defaultAtom;   name=defaultAtom -->
+<a name="//apple_ref/doc/functionparam/MP4ParseDRCAtomUsingProtoList/defaultAtom"></a>
+<code>defaultAtom</code>
+</dt>
+<dd><p>Prototype of parsed atom. Can be NULL.</p></dd>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/MP4ParseDRCAtomUsingProtoList/outAtom;   name=outAtom -->
+<a name="//apple_ref/doc/functionparam/MP4ParseDRCAtomUsingProtoList/outAtom"></a>
+<code>outAtom</code>
+</dt>
+<dd><p>pointer to a structure, which will be created</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/MP4ParseDRCAtomUsingProtoList;name=start --><p>Reads an atom from inputStream. If type of atom not in protolist it fails.
+<!-- headerDoc=discussion;uid=//apple_ref/c/func/MP4ParseDRCAtomUsingProtoList;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenSections">
+<a name="HeaderDoc_datatypes"></a>
+<h2 class="h2tight">Typedefs</h2>
+<dl>
+<dt><tt><a href="index.html#//apple_ref/c/tdef/DRCCoefficientBasicAtom" target="_top">DRCCoefficientBasicAtom</a></tt></dt>
+<dd><p>Represents a DRCCoefficientBasicAtom.
+</p></dd>
+<dt><tt><a href="index.html#//apple_ref/c/tdef/DRCCoefficientBasicAtomPtr" target="_top">DRCCoefficientBasicAtomPtr</a></tt></dt>
+<dd><p>Points to a DRCCoefficientBasicAtom structure
+</p></dd>
+<dt><tt><a href="index.html#//apple_ref/c/tdef/DRCCoefficientUniDRCAtom" target="_top">DRCCoefficientUniDRCAtom</a></tt></dt>
+<dd><p>Represents a DRCCoefficientUniDRCAtom
+</p></dd>
+<dt><tt><a href="index.html#//apple_ref/c/tdef/DRCCoefficientUniDRCAtomPtr" target="_top">DRCCoefficientUniDRCAtomPtr</a></tt></dt>
+<dd><p>Points to a DRCCoefficientUniDRCAtom structure
+</p></dd>
+<dt><tt><a href="index.html#//apple_ref/c/tdef/DRCCoefficientUniDRCSequence" target="_top">DRCCoefficientUniDRCSequence</a></tt></dt>
+<dd><p>Part of DRCCoefficientUniDRCAtom
+</p></dd>
+<dt><tt><a href="index.html#//apple_ref/c/tdef/DRCCoefficientUniDRCSequenceBandCharacteristic" target="_top">DRCCoefficientUniDRCSequenceBandCharacteristic</a></tt></dt>
+<dd><p>Part of DRCCoefficientUniDRCSequence
+</p></dd>
+<dt><tt><a href="index.html#//apple_ref/c/tdef/DRCCoefficientUniDRCSequenceBandIndex" target="_top">DRCCoefficientUniDRCSequenceBandIndex</a></tt></dt>
+<dd><p>Part of DRCCoefficientUniDRCSequence
+</p></dd>
+<dt><tt><a href="index.html#//apple_ref/c/tdef/DRCInstructionsAdditionalDownMixID" target="_top">DRCInstructionsAdditionalDownMixID</a></tt></dt>
+<dd><p>Part of DRCInstructionsBasicAtom and DRCInstructionsUniDRCAtom
+</p></dd>
+<dt><tt><a href="index.html#//apple_ref/c/tdef/DRCInstructionsBasicAtom" target="_top">DRCInstructionsBasicAtom</a></tt></dt>
+<dd><p>Represents a DRCInstructionsBasicAtom
+</p></dd>
+<dt><tt><a href="index.html#//apple_ref/c/tdef/DRCInstructionsBasicAtomPtr" target="_top">DRCInstructionsBasicAtomPtr</a></tt></dt>
+<dd><p>Points to a DRCInstructionsBasicAtom structure
+</p></dd>
+<dt><tt><a href="index.html#//apple_ref/c/tdef/DRCInstructionsChannelGroupDuckingScaling" target="_top">DRCInstructionsChannelGroupDuckingScaling</a></tt></dt>
+<dd><p>Part of DRCInstructionsUniDRCAtom
+</p></dd>
+<dt><tt><a href="index.html#//apple_ref/c/tdef/DRCInstructionsChannelGroupGainScaling" target="_top">DRCInstructionsChannelGroupGainScaling</a></tt></dt>
+<dd><p>Part of DRCInstructionsUniDRCAtom
+</p></dd>
+<dt><tt><a href="index.html#//apple_ref/c/tdef/DRCInstructionsChannelSequenceIndex" target="_top">DRCInstructionsChannelSequenceIndex</a></tt></dt>
+<dd><p>Part of DRCInstructionsUniDRCAtom
+</p></dd>
+<dt><tt><a href="index.html#//apple_ref/c/tdef/DRCInstructionsUniDRCAtom" target="_top">DRCInstructionsUniDRCAtom</a></tt></dt>
+<dd><p>Represents a DRCInstructionsUniDRCAtom
+</p></dd>
+<dt><tt><a href="index.html#//apple_ref/c/tdef/DRCInstructionsUniDRCAtomPtr" target="_top">DRCInstructionsUniDRCAtomPtr</a></tt></dt>
+<dd><p>Points to a DRCInstructionsUniDRCAtom structure
+</p></dd>
+<dt><tt><a href="index.html#//apple_ref/c/tdef/DRCUniDrcSampleEntryAtom" target="_top">DRCUniDrcSampleEntryAtom</a></tt></dt>
+<dd><p>Represents a DRCUniDrcSampleEntryAtom.
+</p></dd>
+<dt><tt><a href="index.html#//apple_ref/c/tdef/DRCUniDrcSampleEntryAtomPtr" target="_top">DRCUniDrcSampleEntryAtomPtr</a></tt></dt>
+<dd><p>Points to a DRCUniDrcSampleEntryAtom structure
+</p></dd>
+</dl>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=tdef;  uid=//apple_ref/c/tdef/DRCCoefficientBasicAtom;   name=DRCCoefficientBasicAtom --><a name="//apple_ref/c/tdef/DRCCoefficientBasicAtom"></a>
+<h3><a name="DRCCoefficientBasicAtom">DRCCoefficientBasicAtom</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCCoefficientBasicAtom;name=start --><!-- begin abstract --></p>
+<p>Represents a DRCCoefficientBasicAtom.
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCCoefficientBasicAtom;name=end --></p>
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCCoefficientBasicAtom;name=start --><span class="keyword">typedef</span> <span class="keyword">struct</span> <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/DRCCoefficientBasicAtom" logicalPath="//apple_ref/c/cl/DRCCoefficientBasicAtom //apple_ref/c/tdef/DRCCoefficientBasicAtom" target="_top"><span class="type">DRCCoefficientBasicAtom</span></a> { 
+    <a machinegenerated="true" href="index.html#//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/MP4_FULL_ATOM" logicalPath="//apple_ref/c/cl/MP4_FULL_ATOM //apple_ref/c/tdef/MP4_FULL_ATOM //apple_ref/c/tag/MP4_FULL_ATOM //apple_ref/c/struct/MP4_FULL_ATOM //apple_ref/c/intf/MP4_FULL_ATOM //apple_ref/doc/anysymbol/MP4_FULL_ATOM" target="_top"><span class="type">MP4_FULL_ATOM</span></a> <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved //apple_ref/c/data/reserved //apple_ref/c/clconst/reserved " machineGenerated="true" --><span class="var">reserved</span><!-- /a -->; <span class="comment">// bit(4) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/s8 //apple_ref/c/tdef/s8 //apple_ref/c/tag/s8 //apple_ref/c/struct/s8 //apple_ref/c/intf/s8 //apple_ref/doc/anysymbol/s8" machineGenerated="true" --><span class="type">s8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/DRC_location //apple_ref/c/data/DRC_location //apple_ref/c/clconst/DRC_location " machineGenerated="true" --><span class="var">DRC_location</span><!-- /a -->; <span class="comment">// int(5)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/DRC_characteristic //apple_ref/c/data/DRC_characteristic //apple_ref/c/clconst/DRC_characteristic " machineGenerated="true" --><span class="var">DRC_characteristic</span><!-- /a -->; <span class="comment">// uint(7)</span> 
+} <!-- a logicalPath="//apple_ref/c/econst/DRCCoefficientBasicAtom //apple_ref/c/data/DRCCoefficientBasicAtom //apple_ref/c/clconst/DRCCoefficientBasicAtom " machineGenerated="true" --><span class="var">DRCCoefficientBasicAtom</span><!-- /a -->;  <!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCCoefficientBasicAtom;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Fields</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientBasicAtom/MP4_FULL_ATOM;   name=MP4_FULL_ATOM -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientBasicAtom/MP4_FULL_ATOM"></a>
+<code>MP4_FULL_ATOM</code>
+</dt>
+<dd><p>MP4Atoms.h macro to add all fields needed by a full atom</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientBasicAtom/reserved;   name=reserved -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientBasicAtom/reserved"></a>
+<code>reserved</code>
+</dt>
+<dd><p>bit(4) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientBasicAtom/DRC_location;   name=DRC_location -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientBasicAtom/DRC_location"></a>
+<code>DRC_location</code>
+</dt>
+<dd><p>signed int(5) DRC_location;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientBasicAtom/DRC_characteristic;   name=DRC_characteristic -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientBasicAtom/DRC_characteristic"></a>
+<code>DRC_characteristic</code>
+</dt>
+<dd><p>unsigned int(7) DRC_characteristic;</p></dd>
+</dl>
+</div>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=tdef;  uid=//apple_ref/c/tdef/DRCCoefficientBasicAtomPtr;   name=DRCCoefficientBasicAtomPtr --><a name="//apple_ref/c/tdef/DRCCoefficientBasicAtomPtr"></a>
+<h3><a name="DRCCoefficientBasicAtomPtr">DRCCoefficientBasicAtomPtr</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCCoefficientBasicAtomPtr;name=start --><!-- begin abstract --></p>
+<p>Points to a DRCCoefficientBasicAtom structure
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCCoefficientBasicAtomPtr;name=end --></p>
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCCoefficientBasicAtomPtr;name=start --><span class="keyword">typedef</span> <span class="keyword">struct</span> <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/DRCCoefficientBasicAtom" logicalPath="//apple_ref/c/cl/DRCCoefficientBasicAtom //apple_ref/c/tdef/DRCCoefficientBasicAtom" target="_top"><span class="type">DRCCoefficientBasicAtom</span></a> <span class="type">*</span><!-- a logicalPath="//apple_ref/c/econst/DRCCoefficientBasicAtomPtr //apple_ref/c/data/DRCCoefficientBasicAtomPtr //apple_ref/c/clconst/DRCCoefficientBasicAtomPtr " machineGenerated="true" --><span class="var">DRCCoefficientBasicAtomPtr</span><!-- /a -->;  <!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCCoefficientBasicAtomPtr;name=end --></pre>
+</div>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=tdef;  uid=//apple_ref/c/tdef/DRCCoefficientUniDRCAtom;   name=DRCCoefficientUniDRCAtom --><a name="//apple_ref/c/tdef/DRCCoefficientUniDRCAtom"></a>
+<h3><a name="DRCCoefficientUniDRCAtom">DRCCoefficientUniDRCAtom</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCCoefficientUniDRCAtom;name=start --><!-- begin abstract --></p>
+<p>Represents a DRCCoefficientUniDRCAtom
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCCoefficientUniDRCAtom;name=end --></p>
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCCoefficientUniDRCAtom;name=start --><span class="keyword">typedef</span> <span class="keyword">struct</span> <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/DRCCoefficientUniDRCAtom" logicalPath="//apple_ref/c/cl/DRCCoefficientUniDRCAtom //apple_ref/c/tdef/DRCCoefficientUniDRCAtom" target="_top"><span class="type">DRCCoefficientUniDRCAtom</span></a> { 
+    <a machinegenerated="true" href="index.html#//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/MP4_FULL_ATOM" logicalPath="//apple_ref/c/cl/MP4_FULL_ATOM //apple_ref/c/tdef/MP4_FULL_ATOM //apple_ref/c/tag/MP4_FULL_ATOM //apple_ref/c/struct/MP4_FULL_ATOM //apple_ref/c/intf/MP4_FULL_ATOM //apple_ref/doc/anysymbol/MP4_FULL_ATOM" target="_top"><span class="type">MP4_FULL_ATOM</span></a> <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved1 //apple_ref/c/data/reserved1 //apple_ref/c/clconst/reserved1 " machineGenerated="true" --><span class="var">reserved1</span><!-- /a -->; <span class="comment">// bit(2) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/s8 //apple_ref/c/tdef/s8 //apple_ref/c/tag/s8 //apple_ref/c/struct/s8 //apple_ref/c/intf/s8 //apple_ref/doc/anysymbol/s8" machineGenerated="true" --><span class="type">s8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/DRC_location //apple_ref/c/data/DRC_location //apple_ref/c/clconst/DRC_location " machineGenerated="true" --><span class="var">DRC_location</span><!-- /a -->; <span class="comment">// int(5)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/drc_frame_size_present //apple_ref/c/data/drc_frame_size_present //apple_ref/c/clconst/drc_frame_size_present " machineGenerated="true" --><span class="var">drc_frame_size_present</span><!-- /a -->; <span class="comment">// bit(1)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved2 //apple_ref/c/data/reserved2 //apple_ref/c/clconst/reserved2 " machineGenerated="true" --><span class="var">reserved2</span><!-- /a -->; <span class="comment">// bit(1)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u16 //apple_ref/c/tdef/u16 //apple_ref/c/tag/u16 //apple_ref/c/struct/u16 //apple_ref/c/intf/u16 //apple_ref/doc/anysymbol/u16" machineGenerated="true" --><span class="type">u16</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/bs_drc_frame_size //apple_ref/c/data/bs_drc_frame_size //apple_ref/c/clconst/bs_drc_frame_size " machineGenerated="true" --><span class="var">bs_drc_frame_size</span><!-- /a -->; <span class="comment">// uint(15)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved3 //apple_ref/c/data/reserved3 //apple_ref/c/clconst/reserved3 " machineGenerated="true" --><span class="var">reserved3</span><!-- /a -->; <span class="comment">// bit(2) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/sequence_count //apple_ref/c/data/sequence_count //apple_ref/c/clconst/sequence_count " machineGenerated="true" --><span class="var">sequence_count</span><!-- /a -->; <span class="comment">// uint(6)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/MP4LinkedList //apple_ref/c/tdef/MP4LinkedList //apple_ref/c/tag/MP4LinkedList //apple_ref/c/struct/MP4LinkedList //apple_ref/c/intf/MP4LinkedList //apple_ref/doc/anysymbol/MP4LinkedList" machineGenerated="true" --><span class="type">MP4LinkedList</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/sequences //apple_ref/c/data/sequences //apple_ref/c/clconst/sequences " machineGenerated="true" --><span class="var">sequences</span><!-- /a -->; <span class="comment">// List of DRCCoefficientUniDRCSequences</span> 
+} <!-- a logicalPath="//apple_ref/c/econst/DRCCoefficientUniDRCAtom //apple_ref/c/data/DRCCoefficientUniDRCAtom //apple_ref/c/clconst/DRCCoefficientUniDRCAtom " machineGenerated="true" --><span class="var">DRCCoefficientUniDRCAtom</span><!-- /a -->;  <!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCCoefficientUniDRCAtom;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Fields</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCAtom/MP4_FULL_ATOM;   name=MP4_FULL_ATOM -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCAtom/MP4_FULL_ATOM"></a>
+<code>MP4_FULL_ATOM</code>
+</dt>
+<dd><p>MP4Atoms.h macro to add all fields needed by a full atom</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCAtom/reserved1;   name=reserved1 -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCAtom/reserved1"></a>
+<code>reserved1</code>
+</dt>
+<dd><p>bit(2) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCAtom/DRC_location;   name=DRC_location -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCAtom/DRC_location"></a>
+<code>DRC_location</code>
+</dt>
+<dd><p>signed int(5) DRC_location;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCAtom/drc_frame_size_present;   name=drc_frame_size_present -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCAtom/drc_frame_size_present"></a>
+<code>drc_frame_size_present</code>
+</dt>
+<dd><p>bit(1) drc_frame_size_present;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCAtom/reserved2;   name=reserved2 -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCAtom/reserved2"></a>
+<code>reserved2</code>
+</dt>
+<dd><p>bit(1) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCAtom/bs_drc_frame_size;   name=bs_drc_frame_size -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCAtom/bs_drc_frame_size"></a>
+<code>bs_drc_frame_size</code>
+</dt>
+<dd><p>unsigned int(15) bs_drc_frame_size;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCAtom/reserved3;   name=reserved3 -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCAtom/reserved3"></a>
+<code>reserved3</code>
+</dt>
+<dd><p>bit(2) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCAtom/sequence_count;   name=sequence_count -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCAtom/sequence_count"></a>
+<code>sequence_count</code>
+</dt>
+<dd><p>unsigned int(6) sequence_count;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCAtom/sequences;   name=sequences -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCAtom/sequences"></a>
+<code>sequences</code>
+</dt>
+<dd><p>List of DRCCoefficientUniDRCSequences</p></dd>
+</dl>
+</div>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=tdef;  uid=//apple_ref/c/tdef/DRCCoefficientUniDRCAtomPtr;   name=DRCCoefficientUniDRCAtomPtr --><a name="//apple_ref/c/tdef/DRCCoefficientUniDRCAtomPtr"></a>
+<h3><a name="DRCCoefficientUniDRCAtomPtr">DRCCoefficientUniDRCAtomPtr</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCCoefficientUniDRCAtomPtr;name=start --><!-- begin abstract --></p>
+<p>Points to a DRCCoefficientUniDRCAtom structure
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCCoefficientUniDRCAtomPtr;name=end --></p>
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCCoefficientUniDRCAtomPtr;name=start --><span class="keyword">typedef</span> <span class="keyword">struct</span> <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/DRCCoefficientUniDRCAtom" logicalPath="//apple_ref/c/cl/DRCCoefficientUniDRCAtom //apple_ref/c/tdef/DRCCoefficientUniDRCAtom" target="_top"><span class="type">DRCCoefficientUniDRCAtom</span></a> <span class="type">*</span><!-- a logicalPath="//apple_ref/c/econst/DRCCoefficientUniDRCAtomPtr //apple_ref/c/data/DRCCoefficientUniDRCAtomPtr //apple_ref/c/clconst/DRCCoefficientUniDRCAtomPtr " machineGenerated="true" --><span class="var">DRCCoefficientUniDRCAtomPtr</span><!-- /a -->;  <!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCCoefficientUniDRCAtomPtr;name=end --></pre>
+</div>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=tdef;  uid=//apple_ref/c/tdef/DRCCoefficientUniDRCSequence;   name=DRCCoefficientUniDRCSequence --><a name="//apple_ref/c/tdef/DRCCoefficientUniDRCSequence"></a>
+<h3><a name="DRCCoefficientUniDRCSequence">DRCCoefficientUniDRCSequence</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCCoefficientUniDRCSequence;name=start --><!-- begin abstract --></p>
+<p>Part of DRCCoefficientUniDRCAtom
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCCoefficientUniDRCSequence;name=end --></p>
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCCoefficientUniDRCSequence;name=start --><span class="keyword">typedef</span> <span class="keyword">struct</span> <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/DRCCoefficientUniDRCSequence" logicalPath="//apple_ref/c/cl/DRCCoefficientUniDRCSequence //apple_ref/c/tdef/DRCCoefficientUniDRCSequence" target="_top"><span class="type">DRCCoefficientUniDRCSequence</span></a> { 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved1 //apple_ref/c/data/reserved1 //apple_ref/c/clconst/reserved1 " machineGenerated="true" --><span class="var">reserved1</span><!-- /a -->; <span class="comment">// bit(2) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/gain_coding_profile //apple_ref/c/data/gain_coding_profile //apple_ref/c/clconst/gain_coding_profile " machineGenerated="true" --><span class="var">gain_coding_profile</span><!-- /a -->; <span class="comment">// uint(2)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/gain_interpolation_type //apple_ref/c/data/gain_interpolation_type //apple_ref/c/clconst/gain_interpolation_type " machineGenerated="true" --><span class="var">gain_interpolation_type</span><!-- /a -->; <span class="comment">// uint(1)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/full_frame //apple_ref/c/data/full_frame //apple_ref/c/clconst/full_frame " machineGenerated="true" --><span class="var">full_frame</span><!-- /a -->; <span class="comment">// uint(1)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/time_alignment //apple_ref/c/data/time_alignment //apple_ref/c/clconst/time_alignment " machineGenerated="true" --><span class="var">time_alignment</span><!-- /a -->; <span class="comment">// uint(1)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/time_delta_min_present //apple_ref/c/data/time_delta_min_present //apple_ref/c/clconst/time_delta_min_present " machineGenerated="true" --><span class="var">time_delta_min_present</span><!-- /a -->; <span class="comment">// bit(1)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved2 //apple_ref/c/data/reserved2 //apple_ref/c/clconst/reserved2 " machineGenerated="true" --><span class="var">reserved2</span><!-- /a -->; <span class="comment">// bit(5) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u16 //apple_ref/c/tdef/u16 //apple_ref/c/tag/u16 //apple_ref/c/struct/u16 //apple_ref/c/intf/u16 //apple_ref/doc/anysymbol/u16" machineGenerated="true" --><span class="type">u16</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/bs_time_delta_min //apple_ref/c/data/bs_time_delta_min //apple_ref/c/clconst/bs_time_delta_min " machineGenerated="true" --><span class="var">bs_time_delta_min</span><!-- /a -->; <span class="comment">// uint(11)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved3 //apple_ref/c/data/reserved3 //apple_ref/c/clconst/reserved3 " machineGenerated="true" --><span class="var">reserved3</span><!-- /a -->; <span class="comment">// bit(3) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/band_count //apple_ref/c/data/band_count //apple_ref/c/clconst/band_count " machineGenerated="true" --><span class="var">band_count</span><!-- /a -->; <span class="comment">// uint(4)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/drc_band_type //apple_ref/c/data/drc_band_type //apple_ref/c/clconst/drc_band_type " machineGenerated="true" --><span class="var">drc_band_type</span><!-- /a -->; <span class="comment">// uint(1)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/MP4LinkedList //apple_ref/c/tdef/MP4LinkedList //apple_ref/c/tag/MP4LinkedList //apple_ref/c/struct/MP4LinkedList //apple_ref/c/intf/MP4LinkedList //apple_ref/doc/anysymbol/MP4LinkedList" machineGenerated="true" --><span class="type">MP4LinkedList</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/bandCharacteristics //apple_ref/c/data/bandCharacteristics //apple_ref/c/clconst/bandCharacteristics " machineGenerated="true" --><span class="var">bandCharacteristics</span><!-- /a -->; <span class="comment">// List of DRCCoefficientUniDRCSequenceBandCharacteristics</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/MP4LinkedList //apple_ref/c/tdef/MP4LinkedList //apple_ref/c/tag/MP4LinkedList //apple_ref/c/struct/MP4LinkedList //apple_ref/c/intf/MP4LinkedList //apple_ref/doc/anysymbol/MP4LinkedList" machineGenerated="true" --><span class="type">MP4LinkedList</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/bandIndexes //apple_ref/c/data/bandIndexes //apple_ref/c/clconst/bandIndexes " machineGenerated="true" --><span class="var">bandIndexes</span><!-- /a -->; <span class="comment">// List of DRCCoefficientUniDRCSequenceBandIndex</span> 
+} <!-- a logicalPath="//apple_ref/c/econst/DRCCoefficientUniDRCSequence //apple_ref/c/data/DRCCoefficientUniDRCSequence //apple_ref/c/clconst/DRCCoefficientUniDRCSequence " machineGenerated="true" --><span class="var">DRCCoefficientUniDRCSequence</span><!-- /a -->;  <!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCCoefficientUniDRCSequence;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Fields</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/reserved1;   name=reserved1 -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/reserved1"></a>
+<code>reserved1</code>
+</dt>
+<dd><p>bit(2) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/gain_coding_profile;   name=gain_coding_profile -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/gain_coding_profile"></a>
+<code>gain_coding_profile</code>
+</dt>
+<dd><p>unsigned int(2) gain_coding_profile;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/gain_interpolation_type;   name=gain_interpolation_type -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/gain_interpolation_type"></a>
+<code>gain_interpolation_type</code>
+</dt>
+<dd><p>unsigned int(1) gain_interpolation_type;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/full_frame;   name=full_frame -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/full_frame"></a>
+<code>full_frame</code>
+</dt>
+<dd><p>unsigned int(1) full_frame;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/time_alignment;   name=time_alignment -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/time_alignment"></a>
+<code>time_alignment</code>
+</dt>
+<dd><p>unsigned int(1) time_alignment;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/time_delta_min_present;   name=time_delta_min_present -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/time_delta_min_present"></a>
+<code>time_delta_min_present</code>
+</dt>
+<dd><p>bit(1) time_delta_min_present;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/reserved2;   name=reserved2 -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/reserved2"></a>
+<code>reserved2</code>
+</dt>
+<dd><p>bit(5) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/bs_time_delta_min;   name=bs_time_delta_min -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/bs_time_delta_min"></a>
+<code>bs_time_delta_min</code>
+</dt>
+<dd><p>unsigned int(11) bs_time_delta_min;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/reserved3;   name=reserved3 -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/reserved3"></a>
+<code>reserved3</code>
+</dt>
+<dd><p>bit(3) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/band_count;   name=band_count -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/band_count"></a>
+<code>band_count</code>
+</dt>
+<dd><p>unsigned int(4) band_count; // must be &gt;= 1</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/drc_band_type;   name=drc_band_type -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/drc_band_type"></a>
+<code>drc_band_type</code>
+</dt>
+<dd><p>unsigned int(1) drc_band_type;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/bandCharacteristics;   name=bandCharacteristics -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/bandCharacteristics"></a>
+<code>bandCharacteristics</code>
+</dt>
+<dd><p>List of DRCCoefficientUniDRCSequenceBandCharacteristics</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/bandIndexes;   name=bandIndexes -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequence/bandIndexes"></a>
+<code>bandIndexes</code>
+</dt>
+<dd><p>List of DRCCoefficientUniDRCSequenceBandIndex</p></dd>
+</dl>
+</div>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=tdef;  uid=//apple_ref/c/tdef/DRCCoefficientUniDRCSequenceBandCharacteristic;   name=DRCCoefficientUniDRCSequenceBandCharacteristic --><a name="//apple_ref/c/tdef/DRCCoefficientUniDRCSequenceBandCharacteristic"></a>
+<h3><a name="DRCCoefficientUniDRCSequenceBandCharacteristic">DRCCoefficientUniDRCSequenceBandCharacteristic</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCCoefficientUniDRCSequenceBandCharacteristic;name=start --><!-- begin abstract --></p>
+<p>Part of DRCCoefficientUniDRCSequence
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCCoefficientUniDRCSequenceBandCharacteristic;name=end --></p>
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCCoefficientUniDRCSequenceBandCharacteristic;name=start --><span class="keyword">typedef</span> <span class="keyword">struct</span> <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/DRCCoefficientUniDRCSequenceBandCharacteristic" logicalPath="//apple_ref/c/cl/DRCCoefficientUniDRCSequenceBandCharacteristic //apple_ref/c/tdef/DRCCoefficientUniDRCSequenceBandCharacteristic" target="_top"><span class="type">DRCCoefficientUniDRCSequenceBandCharacteristic</span></a> { 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved //apple_ref/c/data/reserved //apple_ref/c/clconst/reserved " machineGenerated="true" --><span class="var">reserved</span><!-- /a -->; <span class="comment">// bit(1) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/DRC_characteristic //apple_ref/c/data/DRC_characteristic //apple_ref/c/clconst/DRC_characteristic " machineGenerated="true" --><span class="var">DRC_characteristic</span><!-- /a -->; <span class="comment">// uint(7)</span> 
+} <!-- a logicalPath="//apple_ref/c/econst/DRCCoefficientUniDRCSequenceBandCharacteristic //apple_ref/c/data/DRCCoefficientUniDRCSequenceBandCharacteristic //apple_ref/c/clconst/DRCCoefficientUniDRCSequenceBandCharacteristic " machineGenerated="true" --><span class="var">DRCCoefficientUniDRCSequenceBandCharacteristic</span><!-- /a -->;  <!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCCoefficientUniDRCSequenceBandCharacteristic;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Fields</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequenceBandCharacteristic/reserved;   name=reserved -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequenceBandCharacteristic/reserved"></a>
+<code>reserved</code>
+</dt>
+<dd><p>bit(1) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequenceBandCharacteristic/DRC_characteristic;   name=DRC_characteristic -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequenceBandCharacteristic/DRC_characteristic"></a>
+<code>DRC_characteristic</code>
+</dt>
+<dd><p>unsigned int(7) DRC_characteristic;</p></dd>
+</dl>
+</div>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=tdef;  uid=//apple_ref/c/tdef/DRCCoefficientUniDRCSequenceBandIndex;   name=DRCCoefficientUniDRCSequenceBandIndex --><a name="//apple_ref/c/tdef/DRCCoefficientUniDRCSequenceBandIndex"></a>
+<h3><a name="DRCCoefficientUniDRCSequenceBandIndex">DRCCoefficientUniDRCSequenceBandIndex</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCCoefficientUniDRCSequenceBandIndex;name=start --><!-- begin abstract --></p>
+<p>Part of DRCCoefficientUniDRCSequence
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCCoefficientUniDRCSequenceBandIndex;name=end --></p>
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCCoefficientUniDRCSequenceBandIndex;name=start --><span class="keyword">typedef</span> <span class="keyword">struct</span> <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/DRCCoefficientUniDRCSequenceBandIndex" logicalPath="//apple_ref/c/cl/DRCCoefficientUniDRCSequenceBandIndex //apple_ref/c/tdef/DRCCoefficientUniDRCSequenceBandIndex" target="_top"><span class="type">DRCCoefficientUniDRCSequenceBandIndex</span></a> { 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved1 //apple_ref/c/data/reserved1 //apple_ref/c/clconst/reserved1 " machineGenerated="true" --><span class="var">reserved1</span><!-- /a -->; <span class="comment">// bit(4) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/crossover_freq_index //apple_ref/c/data/crossover_freq_index //apple_ref/c/clconst/crossover_freq_index " machineGenerated="true" --><span class="var">crossover_freq_index</span><!-- /a -->; <span class="comment">// uint(4)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved2 //apple_ref/c/data/reserved2 //apple_ref/c/clconst/reserved2 " machineGenerated="true" --><span class="var">reserved2</span><!-- /a -->; <span class="comment">// bit(6) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u16 //apple_ref/c/tdef/u16 //apple_ref/c/tag/u16 //apple_ref/c/struct/u16 //apple_ref/c/intf/u16 //apple_ref/doc/anysymbol/u16" machineGenerated="true" --><span class="type">u16</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/start_sub_band_index //apple_ref/c/data/start_sub_band_index //apple_ref/c/clconst/start_sub_band_index " machineGenerated="true" --><span class="var">start_sub_band_index</span><!-- /a -->; <span class="comment">// uint(10)</span> 
+} <!-- a logicalPath="//apple_ref/c/econst/DRCCoefficientUniDRCSequenceBandIndex //apple_ref/c/data/DRCCoefficientUniDRCSequenceBandIndex //apple_ref/c/clconst/DRCCoefficientUniDRCSequenceBandIndex " machineGenerated="true" --><span class="var">DRCCoefficientUniDRCSequenceBandIndex</span><!-- /a -->;  <!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCCoefficientUniDRCSequenceBandIndex;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Fields</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequenceBandIndex/reserved;   name=reserved -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequenceBandIndex/reserved"></a>
+<code>reserved</code>
+</dt>
+<dd>
+<p>bit(4) reserved = 0;
+</p>
+<p>bit(6) reserved = 0;</p>
+</dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequenceBandIndex/crossover_freq_index;   name=crossover_freq_index -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequenceBandIndex/crossover_freq_index"></a>
+<code>crossover_freq_index</code>
+</dt>
+<dd><p>unsigned int(4) crossover_freq_index;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequenceBandIndex/start_sub_band_index;   name=start_sub_band_index -->
+<a name="//apple_ref/doc/typedeffield/DRCCoefficientUniDRCSequenceBandIndex/start_sub_band_index"></a>
+<code>start_sub_band_index</code>
+</dt>
+<dd><p>unsigned int(10) start_sub_band_index;</p></dd>
+</dl>
+</div>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=tdef;  uid=//apple_ref/c/tdef/DRCInstructionsAdditionalDownMixID;   name=DRCInstructionsAdditionalDownMixID --><a name="//apple_ref/c/tdef/DRCInstructionsAdditionalDownMixID"></a>
+<h3><a name="DRCInstructionsAdditionalDownMixID">DRCInstructionsAdditionalDownMixID</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCInstructionsAdditionalDownMixID;name=start --><!-- begin abstract --></p>
+<p>Part of DRCInstructionsBasicAtom and DRCInstructionsUniDRCAtom
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCInstructionsAdditionalDownMixID;name=end --></p>
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCInstructionsAdditionalDownMixID;name=start --><span class="keyword">typedef</span> <span class="keyword">struct</span> <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/DRCInstructionsAdditionalDownMixID" logicalPath="//apple_ref/c/cl/DRCInstructionsAdditionalDownMixID //apple_ref/c/tdef/DRCInstructionsAdditionalDownMixID" target="_top"><span class="type">DRCInstructionsAdditionalDownMixID</span></a> { 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved //apple_ref/c/data/reserved //apple_ref/c/clconst/reserved " machineGenerated="true" --><span class="var">reserved</span><!-- /a -->; <span class="comment">// bit(1) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/additional_dowmix_ID //apple_ref/c/data/additional_dowmix_ID //apple_ref/c/clconst/additional_dowmix_ID " machineGenerated="true" --><span class="var">additional_dowmix_ID</span><!-- /a -->; <span class="comment">// uint(7)</span> 
+} <!-- a logicalPath="//apple_ref/c/econst/DRCInstructionsAdditionalDownMixID //apple_ref/c/data/DRCInstructionsAdditionalDownMixID //apple_ref/c/clconst/DRCInstructionsAdditionalDownMixID " machineGenerated="true" --><span class="var">DRCInstructionsAdditionalDownMixID</span><!-- /a -->;  <!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCInstructionsAdditionalDownMixID;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Fields</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsAdditionalDownMixID/reserved;   name=reserved -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsAdditionalDownMixID/reserved"></a>
+<code>reserved</code>
+</dt>
+<dd><p>bit(1) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsAdditionalDownMixID/additional_dowmix_ID;   name=additional_dowmix_ID -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsAdditionalDownMixID/additional_dowmix_ID"></a>
+<code>additional_dowmix_ID</code>
+</dt>
+<dd><p>unsigned int(7) additional_dowmix_ID;</p></dd>
+</dl>
+</div>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=tdef;  uid=//apple_ref/c/tdef/DRCInstructionsBasicAtom;   name=DRCInstructionsBasicAtom --><a name="//apple_ref/c/tdef/DRCInstructionsBasicAtom"></a>
+<h3><a name="DRCInstructionsBasicAtom">DRCInstructionsBasicAtom</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCInstructionsBasicAtom;name=start --><!-- begin abstract --></p>
+<p>Represents a DRCInstructionsBasicAtom
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCInstructionsBasicAtom;name=end --></p>
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCInstructionsBasicAtom;name=start --><span class="keyword">typedef</span> <span class="keyword">struct</span> <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/DRCInstructionsBasicAtom" logicalPath="//apple_ref/c/cl/DRCInstructionsBasicAtom //apple_ref/c/tdef/DRCInstructionsBasicAtom" target="_top"><span class="type">DRCInstructionsBasicAtom</span></a> { 
+    <a machinegenerated="true" href="index.html#//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/MP4_FULL_ATOM" logicalPath="//apple_ref/c/cl/MP4_FULL_ATOM //apple_ref/c/tdef/MP4_FULL_ATOM //apple_ref/c/tag/MP4_FULL_ATOM //apple_ref/c/struct/MP4_FULL_ATOM //apple_ref/c/intf/MP4_FULL_ATOM //apple_ref/doc/anysymbol/MP4_FULL_ATOM" target="_top"><span class="type">MP4_FULL_ATOM</span></a> <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved1 //apple_ref/c/data/reserved1 //apple_ref/c/clconst/reserved1 " machineGenerated="true" --><span class="var">reserved1</span><!-- /a -->; <span class="comment">// bit(3) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/DRC_set_ID //apple_ref/c/data/DRC_set_ID //apple_ref/c/clconst/DRC_set_ID " machineGenerated="true" --><span class="var">DRC_set_ID</span><!-- /a -->; <span class="comment">// uint(6)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/s8 //apple_ref/c/tdef/s8 //apple_ref/c/tag/s8 //apple_ref/c/struct/s8 //apple_ref/c/intf/s8 //apple_ref/doc/anysymbol/s8" machineGenerated="true" --><span class="type">s8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/DRC_location //apple_ref/c/data/DRC_location //apple_ref/c/clconst/DRC_location " machineGenerated="true" --><span class="var">DRC_location</span><!-- /a -->; <span class="comment">// int(5)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/downmix_ID //apple_ref/c/data/downmix_ID //apple_ref/c/clconst/downmix_ID " machineGenerated="true" --><span class="var">downmix_ID</span><!-- /a -->; <span class="comment">// uint(7)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/additional_dowmix_ID_count //apple_ref/c/data/additional_dowmix_ID_count //apple_ref/c/clconst/additional_dowmix_ID_count " machineGenerated="true" --><span class="var">additional_dowmix_ID_count</span><!-- /a -->; <span class="comment">// uint(3)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/MP4LinkedList //apple_ref/c/tdef/MP4LinkedList //apple_ref/c/tag/MP4LinkedList //apple_ref/c/struct/MP4LinkedList //apple_ref/c/intf/MP4LinkedList //apple_ref/doc/anysymbol/MP4LinkedList" machineGenerated="true" --><span class="type">MP4LinkedList</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/additionalDownMixIDs //apple_ref/c/data/additionalDownMixIDs //apple_ref/c/clconst/additionalDownMixIDs " machineGenerated="true" --><span class="var">additionalDownMixIDs</span><!-- /a -->; <span class="comment">// List of DRCInstructionsAdditionalDownMixIDs</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u16 //apple_ref/c/tdef/u16 //apple_ref/c/tag/u16 //apple_ref/c/struct/u16 //apple_ref/c/intf/u16 //apple_ref/doc/anysymbol/u16" machineGenerated="true" --><span class="type">u16</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/DRC_set_effect //apple_ref/c/data/DRC_set_effect //apple_ref/c/clconst/DRC_set_effect " machineGenerated="true" --><span class="var">DRC_set_effect</span><!-- /a -->; <span class="comment">// bit(16)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved2 //apple_ref/c/data/reserved2 //apple_ref/c/clconst/reserved2 " machineGenerated="true" --><span class="var">reserved2</span><!-- /a -->; <span class="comment">// bit(7) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/limiter_peak_target_present //apple_ref/c/data/limiter_peak_target_present //apple_ref/c/clconst/limiter_peak_target_present " machineGenerated="true" --><span class="var">limiter_peak_target_present</span><!-- /a -->; <span class="comment">// bit(1)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/bs_limiter_peak_target //apple_ref/c/data/bs_limiter_peak_target //apple_ref/c/clconst/bs_limiter_peak_target " machineGenerated="true" --><span class="var">bs_limiter_peak_target</span><!-- /a -->; <span class="comment">// uint(8)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved3 //apple_ref/c/data/reserved3 //apple_ref/c/clconst/reserved3 " machineGenerated="true" --><span class="var">reserved3</span><!-- /a -->; <span class="comment">// bit(7) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/DRC_set_target_loudness_present //apple_ref/c/data/DRC_set_target_loudness_present //apple_ref/c/clconst/DRC_set_target_loudness_present " machineGenerated="true" --><span class="var">DRC_set_target_loudness_present</span><!-- /a -->; <span class="comment">// bit(1)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved4 //apple_ref/c/data/reserved4 //apple_ref/c/clconst/reserved4 " machineGenerated="true" --><span class="var">reserved4</span><!-- /a -->; <span class="comment">// bit(4) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/bs_DRC_set_target_loudness_value_upper //apple_ref/c/data/bs_DRC_set_target_loudness_value_upper //apple_ref/c/clconst/bs_DRC_set_target_loudness_value_upper " machineGenerated="true" --><span class="var">bs_DRC_set_target_loudness_value_upper</span><!-- /a -->; <span class="comment">// uint(6)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/bs_DRC_set_target_loudness_value_lower //apple_ref/c/data/bs_DRC_set_target_loudness_value_lower //apple_ref/c/clconst/bs_DRC_set_target_loudness_value_lower " machineGenerated="true" --><span class="var">bs_DRC_set_target_loudness_value_lower</span><!-- /a -->; <span class="comment">// uint(6)</span> 
+} <!-- a logicalPath="//apple_ref/c/econst/DRCInstructionsBasicAtom //apple_ref/c/data/DRCInstructionsBasicAtom //apple_ref/c/clconst/DRCInstructionsBasicAtom " machineGenerated="true" --><span class="var">DRCInstructionsBasicAtom</span><!-- /a -->;  <!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCInstructionsBasicAtom;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Fields</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/MP4_FULL_ATOM;   name=MP4_FULL_ATOM -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/MP4_FULL_ATOM"></a>
+<code>MP4_FULL_ATOM</code>
+</dt>
+<dd><p>MP4Atoms.h macro to add all fields needed by a full atom</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/reserved1;   name=reserved1 -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/reserved1"></a>
+<code>reserved1</code>
+</dt>
+<dd><p>bit(3) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/DRC_set_ID;   name=DRC_set_ID -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/DRC_set_ID"></a>
+<code>DRC_set_ID</code>
+</dt>
+<dd><p>unsigned int(6) DRC_set_ID;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/DRC_location;   name=DRC_location -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/DRC_location"></a>
+<code>DRC_location</code>
+</dt>
+<dd><p>signed int(5) DRC_location;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/downmix_ID;   name=downmix_ID -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/downmix_ID"></a>
+<code>downmix_ID</code>
+</dt>
+<dd><p>unsigned int(7) downmix_ID;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/additional_dowmix_ID_count;   name=additional_dowmix_ID_count -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/additional_dowmix_ID_count"></a>
+<code>additional_dowmix_ID_count</code>
+</dt>
+<dd><p>unsigned int(3) additional_downmix_ID_count;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/additionalDownMixIDs;   name=additionalDownMixIDs -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/additionalDownMixIDs"></a>
+<code>additionalDownMixIDs</code>
+</dt>
+<dd><p>List of DRCInstructionsAdditionalDownMixIDs</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/DRC_set_effect;   name=DRC_set_effect -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/DRC_set_effect"></a>
+<code>DRC_set_effect</code>
+</dt>
+<dd><p>bit(16) DRC_set_effect;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/reserved2;   name=reserved2 -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/reserved2"></a>
+<code>reserved2</code>
+</dt>
+<dd><p>bit(7) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/limiter_peak_target_present;   name=limiter_peak_target_present -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/limiter_peak_target_present"></a>
+<code>limiter_peak_target_present</code>
+</dt>
+<dd><p>bit(1) limiter_peak_target_present;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/bs_limiter_peak_target;   name=bs_limiter_peak_target -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/bs_limiter_peak_target"></a>
+<code>bs_limiter_peak_target</code>
+</dt>
+<dd><p>unsigned int(8) bs_limiter_peak_target;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/reserved3;   name=reserved3 -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/reserved3"></a>
+<code>reserved3</code>
+</dt>
+<dd><p>bit(7) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/DRC_set_target_loudness_present;   name=DRC_set_target_loudness_present -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/DRC_set_target_loudness_present"></a>
+<code>DRC_set_target_loudness_present</code>
+</dt>
+<dd><p>bit(1) DRC_set_target_loudness_present;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/reserved4;   name=reserved4 -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/reserved4"></a>
+<code>reserved4</code>
+</dt>
+<dd><p>bit(4) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/bs_DRC_set_target_loudness_value_upper;   name=bs_DRC_set_target_loudness_value_upper -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/bs_DRC_set_target_loudness_value_upper"></a>
+<code>bs_DRC_set_target_loudness_value_upper</code>
+</dt>
+<dd><p>unsigned int(6) bs_DRC_set_target_loudness_value_upper;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/bs_DRC_set_target_loudness_value_lower;   name=bs_DRC_set_target_loudness_value_lower -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsBasicAtom/bs_DRC_set_target_loudness_value_lower"></a>
+<code>bs_DRC_set_target_loudness_value_lower</code>
+</dt>
+<dd><p>unsigned int(6) bs_DRC_set_target_loudness_value_lower;</p></dd>
+</dl>
+</div>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=tdef;  uid=//apple_ref/c/tdef/DRCInstructionsBasicAtomPtr;   name=DRCInstructionsBasicAtomPtr --><a name="//apple_ref/c/tdef/DRCInstructionsBasicAtomPtr"></a>
+<h3><a name="DRCInstructionsBasicAtomPtr">DRCInstructionsBasicAtomPtr</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCInstructionsBasicAtomPtr;name=start --><!-- begin abstract --></p>
+<p>Points to a DRCInstructionsBasicAtom structure
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCInstructionsBasicAtomPtr;name=end --></p>
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCInstructionsBasicAtomPtr;name=start --><span class="keyword">typedef</span> <span class="keyword">struct</span> <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/DRCInstructionsBasicAtom" logicalPath="//apple_ref/c/cl/DRCInstructionsBasicAtom //apple_ref/c/tdef/DRCInstructionsBasicAtom" target="_top"><span class="type">DRCInstructionsBasicAtom</span></a> <span class="type">*</span><!-- a logicalPath="//apple_ref/c/econst/DRCInstructionsBasicAtomPtr //apple_ref/c/data/DRCInstructionsBasicAtomPtr //apple_ref/c/clconst/DRCInstructionsBasicAtomPtr " machineGenerated="true" --><span class="var">DRCInstructionsBasicAtomPtr</span><!-- /a -->;  <!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCInstructionsBasicAtomPtr;name=end --></pre>
+</div>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=tdef;  uid=//apple_ref/c/tdef/DRCInstructionsChannelGroupDuckingScaling;   name=DRCInstructionsChannelGroupDuckingScaling --><a name="//apple_ref/c/tdef/DRCInstructionsChannelGroupDuckingScaling"></a>
+<h3><a name="DRCInstructionsChannelGroupDuckingScaling">DRCInstructionsChannelGroupDuckingScaling</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCInstructionsChannelGroupDuckingScaling;name=start --><!-- begin abstract --></p>
+<p>Part of DRCInstructionsUniDRCAtom
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCInstructionsChannelGroupDuckingScaling;name=end --></p>
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCInstructionsChannelGroupDuckingScaling;name=start --><span class="keyword">typedef</span> <span class="keyword">struct</span> <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/DRCInstructionsChannelGroupDuckingScaling" logicalPath="//apple_ref/c/cl/DRCInstructionsChannelGroupDuckingScaling //apple_ref/c/tdef/DRCInstructionsChannelGroupDuckingScaling" target="_top"><span class="type">DRCInstructionsChannelGroupDuckingScaling</span></a> { 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved1 //apple_ref/c/data/reserved1 //apple_ref/c/clconst/reserved1 " machineGenerated="true" --><span class="var">reserved1</span><!-- /a -->; <span class="comment">// bit(7) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/ducking_scaling_present //apple_ref/c/data/ducking_scaling_present //apple_ref/c/clconst/ducking_scaling_present " machineGenerated="true" --><span class="var">ducking_scaling_present</span><!-- /a -->; <span class="comment">// bit(1)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved2 //apple_ref/c/data/reserved2 //apple_ref/c/clconst/reserved2 " machineGenerated="true" --><span class="var">reserved2</span><!-- /a -->; <span class="comment">// bit(4) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/bs_ducking_scaling //apple_ref/c/data/bs_ducking_scaling //apple_ref/c/clconst/bs_ducking_scaling " machineGenerated="true" --><span class="var">bs_ducking_scaling</span><!-- /a -->; <span class="comment">// bit(4)</span> 
+} <!-- a logicalPath="//apple_ref/c/econst/DRCInstructionsChannelGroupDuckingScaling //apple_ref/c/data/DRCInstructionsChannelGroupDuckingScaling //apple_ref/c/clconst/DRCInstructionsChannelGroupDuckingScaling " machineGenerated="true" --><span class="var">DRCInstructionsChannelGroupDuckingScaling</span><!-- /a -->;  <!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCInstructionsChannelGroupDuckingScaling;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Fields</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsChannelGroupDuckingScaling/reserved1;   name=reserved1 -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsChannelGroupDuckingScaling/reserved1"></a>
+<code>reserved1</code>
+</dt>
+<dd><p>bit(7) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsChannelGroupDuckingScaling/ducking_scaling_present;   name=ducking_scaling_present -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsChannelGroupDuckingScaling/ducking_scaling_present"></a>
+<code>ducking_scaling_present</code>
+</dt>
+<dd><p>bit(1) ducking_scaling_present;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsChannelGroupDuckingScaling/reserved2;   name=reserved2 -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsChannelGroupDuckingScaling/reserved2"></a>
+<code>reserved2</code>
+</dt>
+<dd><p>bit(4) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsChannelGroupDuckingScaling/bs_ducking_scaling;   name=bs_ducking_scaling -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsChannelGroupDuckingScaling/bs_ducking_scaling"></a>
+<code>bs_ducking_scaling</code>
+</dt>
+<dd><p>bit(4) bs_ducking_scaling;</p></dd>
+</dl>
+</div>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=tdef;  uid=//apple_ref/c/tdef/DRCInstructionsChannelGroupGainScaling;   name=DRCInstructionsChannelGroupGainScaling --><a name="//apple_ref/c/tdef/DRCInstructionsChannelGroupGainScaling"></a>
+<h3><a name="DRCInstructionsChannelGroupGainScaling">DRCInstructionsChannelGroupGainScaling</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCInstructionsChannelGroupGainScaling;name=start --><!-- begin abstract --></p>
+<p>Part of DRCInstructionsUniDRCAtom
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCInstructionsChannelGroupGainScaling;name=end --></p>
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCInstructionsChannelGroupGainScaling;name=start --><span class="keyword">typedef</span> <span class="keyword">struct</span> <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/DRCInstructionsChannelGroupGainScaling" logicalPath="//apple_ref/c/cl/DRCInstructionsChannelGroupGainScaling //apple_ref/c/tdef/DRCInstructionsChannelGroupGainScaling" target="_top"><span class="type">DRCInstructionsChannelGroupGainScaling</span></a> { 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved1 //apple_ref/c/data/reserved1 //apple_ref/c/clconst/reserved1 " machineGenerated="true" --><span class="var">reserved1</span><!-- /a -->; <span class="comment">// bit(7) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/gain_scaling_present //apple_ref/c/data/gain_scaling_present //apple_ref/c/clconst/gain_scaling_present " machineGenerated="true" --><span class="var">gain_scaling_present</span><!-- /a -->; <span class="comment">// bit(1)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/bs_attenuation_scaling //apple_ref/c/data/bs_attenuation_scaling //apple_ref/c/clconst/bs_attenuation_scaling " machineGenerated="true" --><span class="var">bs_attenuation_scaling</span><!-- /a -->; <span class="comment">// uint(4)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/bs_amplification_scaling //apple_ref/c/data/bs_amplification_scaling //apple_ref/c/clconst/bs_amplification_scaling " machineGenerated="true" --><span class="var">bs_amplification_scaling</span><!-- /a -->; <span class="comment">// uint(4)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved2 //apple_ref/c/data/reserved2 //apple_ref/c/clconst/reserved2 " machineGenerated="true" --><span class="var">reserved2</span><!-- /a -->; <span class="comment">// bit(7) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/gain_offset_present //apple_ref/c/data/gain_offset_present //apple_ref/c/clconst/gain_offset_present " machineGenerated="true" --><span class="var">gain_offset_present</span><!-- /a -->; <span class="comment">// bit(1)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved3 //apple_ref/c/data/reserved3 //apple_ref/c/clconst/reserved3 " machineGenerated="true" --><span class="var">reserved3</span><!-- /a -->; <span class="comment">// bit(2)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/bs_gain_offset //apple_ref/c/data/bs_gain_offset //apple_ref/c/clconst/bs_gain_offset " machineGenerated="true" --><span class="var">bs_gain_offset</span><!-- /a -->; <span class="comment">// bit(6)</span> 
+} <!-- a logicalPath="//apple_ref/c/econst/DRCInstructionsChannelGroupGainScaling //apple_ref/c/data/DRCInstructionsChannelGroupGainScaling //apple_ref/c/clconst/DRCInstructionsChannelGroupGainScaling " machineGenerated="true" --><span class="var">DRCInstructionsChannelGroupGainScaling</span><!-- /a -->;  <!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCInstructionsChannelGroupGainScaling;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Fields</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsChannelGroupGainScaling/reserved1;   name=reserved1 -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsChannelGroupGainScaling/reserved1"></a>
+<code>reserved1</code>
+</dt>
+<dd><p>bit(7) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsChannelGroupGainScaling/gain_scaling_present;   name=gain_scaling_present -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsChannelGroupGainScaling/gain_scaling_present"></a>
+<code>gain_scaling_present</code>
+</dt>
+<dd><p>bit(1) gain_scaling_present;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsChannelGroupGainScaling/bs_attenuation_scaling;   name=bs_attenuation_scaling -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsChannelGroupGainScaling/bs_attenuation_scaling"></a>
+<code>bs_attenuation_scaling</code>
+</dt>
+<dd><p>uint(4) bs_attenuation_scaling = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsChannelGroupGainScaling/bs_amplification_scaling;   name=bs_amplification_scaling -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsChannelGroupGainScaling/bs_amplification_scaling"></a>
+<code>bs_amplification_scaling</code>
+</dt>
+<dd><p>uint(4) bs_amplification_scaling;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsChannelGroupGainScaling/reserved2;   name=reserved2 -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsChannelGroupGainScaling/reserved2"></a>
+<code>reserved2</code>
+</dt>
+<dd><p>bit(7) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsChannelGroupGainScaling/gain_offset_present;   name=gain_offset_present -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsChannelGroupGainScaling/gain_offset_present"></a>
+<code>gain_offset_present</code>
+</dt>
+<dd><p>bit(1) gain_offset_present;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsChannelGroupGainScaling/reserved3;   name=reserved3 -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsChannelGroupGainScaling/reserved3"></a>
+<code>reserved3</code>
+</dt>
+<dd><p>bit(2) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsChannelGroupGainScaling/bs_gain_offset;   name=bs_gain_offset -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsChannelGroupGainScaling/bs_gain_offset"></a>
+<code>bs_gain_offset</code>
+</dt>
+<dd><p>bit(6) bs_gain_offset;</p></dd>
+</dl>
+</div>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=tdef;  uid=//apple_ref/c/tdef/DRCInstructionsChannelSequenceIndex;   name=DRCInstructionsChannelSequenceIndex --><a name="//apple_ref/c/tdef/DRCInstructionsChannelSequenceIndex"></a>
+<h3><a name="DRCInstructionsChannelSequenceIndex">DRCInstructionsChannelSequenceIndex</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCInstructionsChannelSequenceIndex;name=start --><!-- begin abstract --></p>
+<p>Part of DRCInstructionsUniDRCAtom
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCInstructionsChannelSequenceIndex;name=end --></p>
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCInstructionsChannelSequenceIndex;name=start --><span class="keyword">typedef</span> <span class="keyword">struct</span> <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/DRCInstructionsChannelSequenceIndex" logicalPath="//apple_ref/c/cl/DRCInstructionsChannelSequenceIndex //apple_ref/c/tdef/DRCInstructionsChannelSequenceIndex" target="_top"><span class="type">DRCInstructionsChannelSequenceIndex</span></a> { 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved //apple_ref/c/data/reserved //apple_ref/c/clconst/reserved " machineGenerated="true" --><span class="var">reserved</span><!-- /a -->; <span class="comment">// bit(2) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/bs_sequence_index //apple_ref/c/data/bs_sequence_index //apple_ref/c/clconst/bs_sequence_index " machineGenerated="true" --><span class="var">bs_sequence_index</span><!-- /a -->; <span class="comment">// uint(6)</span> 
+} <!-- a logicalPath="//apple_ref/c/econst/DRCInstructionsChannelSequenceIndex //apple_ref/c/data/DRCInstructionsChannelSequenceIndex //apple_ref/c/clconst/DRCInstructionsChannelSequenceIndex " machineGenerated="true" --><span class="var">DRCInstructionsChannelSequenceIndex</span><!-- /a -->;  <!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCInstructionsChannelSequenceIndex;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Fields</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsChannelSequenceIndex/reserved;   name=reserved -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsChannelSequenceIndex/reserved"></a>
+<code>reserved</code>
+</dt>
+<dd><p>bit(2) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsChannelSequenceIndex/bs_sequence_index;   name=bs_sequence_index -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsChannelSequenceIndex/bs_sequence_index"></a>
+<code>bs_sequence_index</code>
+</dt>
+<dd><p>unsigned int(6) bs_sequence_index;</p></dd>
+</dl>
+</div>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=tdef;  uid=//apple_ref/c/tdef/DRCInstructionsUniDRCAtom;   name=DRCInstructionsUniDRCAtom --><a name="//apple_ref/c/tdef/DRCInstructionsUniDRCAtom"></a>
+<h3><a name="DRCInstructionsUniDRCAtom">DRCInstructionsUniDRCAtom</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCInstructionsUniDRCAtom;name=start --><!-- begin abstract --></p>
+<p>Represents a DRCInstructionsUniDRCAtom
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCInstructionsUniDRCAtom;name=end --></p>
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCInstructionsUniDRCAtom;name=start --><span class="keyword">typedef</span> <span class="keyword">struct</span> <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/DRCInstructionsUniDRCAtom" logicalPath="//apple_ref/c/cl/DRCInstructionsUniDRCAtom //apple_ref/c/tdef/DRCInstructionsUniDRCAtom" target="_top"><span class="type">DRCInstructionsUniDRCAtom</span></a> { 
+    <a machinegenerated="true" href="index.html#//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/MP4_FULL_ATOM" logicalPath="//apple_ref/c/cl/MP4_FULL_ATOM //apple_ref/c/tdef/MP4_FULL_ATOM //apple_ref/c/tag/MP4_FULL_ATOM //apple_ref/c/struct/MP4_FULL_ATOM //apple_ref/c/intf/MP4_FULL_ATOM //apple_ref/doc/anysymbol/MP4_FULL_ATOM" target="_top"><span class="type">MP4_FULL_ATOM</span></a> <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved1 //apple_ref/c/data/reserved1 //apple_ref/c/clconst/reserved1 " machineGenerated="true" --><span class="var">reserved1</span><!-- /a -->; <span class="comment">// bit(3) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/DRC_set_ID //apple_ref/c/data/DRC_set_ID //apple_ref/c/clconst/DRC_set_ID " machineGenerated="true" --><span class="var">DRC_set_ID</span><!-- /a -->; <span class="comment">// uint(6)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/s8 //apple_ref/c/tdef/s8 //apple_ref/c/tag/s8 //apple_ref/c/struct/s8 //apple_ref/c/intf/s8 //apple_ref/doc/anysymbol/s8" machineGenerated="true" --><span class="type">s8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/DRC_location //apple_ref/c/data/DRC_location //apple_ref/c/clconst/DRC_location " machineGenerated="true" --><span class="var">DRC_location</span><!-- /a -->; <span class="comment">// int(5)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/downmix_ID //apple_ref/c/data/downmix_ID //apple_ref/c/clconst/downmix_ID " machineGenerated="true" --><span class="var">downmix_ID</span><!-- /a -->; <span class="comment">// uint(7)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/additional_dowmix_ID_count //apple_ref/c/data/additional_dowmix_ID_count //apple_ref/c/clconst/additional_dowmix_ID_count " machineGenerated="true" --><span class="var">additional_dowmix_ID_count</span><!-- /a -->; <span class="comment">// uint(3)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/MP4LinkedList //apple_ref/c/tdef/MP4LinkedList //apple_ref/c/tag/MP4LinkedList //apple_ref/c/struct/MP4LinkedList //apple_ref/c/intf/MP4LinkedList //apple_ref/doc/anysymbol/MP4LinkedList" machineGenerated="true" --><span class="type">MP4LinkedList</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/additionalDownMixIDs //apple_ref/c/data/additionalDownMixIDs //apple_ref/c/clconst/additionalDownMixIDs " machineGenerated="true" --><span class="var">additionalDownMixIDs</span><!-- /a -->; <span class="comment">// List of DRCInstructionsAdditionalDownMixIDs</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u16 //apple_ref/c/tdef/u16 //apple_ref/c/tag/u16 //apple_ref/c/struct/u16 //apple_ref/c/intf/u16 //apple_ref/doc/anysymbol/u16" machineGenerated="true" --><span class="type">u16</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/DRC_set_effect //apple_ref/c/data/DRC_set_effect //apple_ref/c/clconst/DRC_set_effect " machineGenerated="true" --><span class="var">DRC_set_effect</span><!-- /a -->; <span class="comment">// bit(16)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved2 //apple_ref/c/data/reserved2 //apple_ref/c/clconst/reserved2 " machineGenerated="true" --><span class="var">reserved2</span><!-- /a -->; <span class="comment">// bit(7) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/limiter_peak_target_present //apple_ref/c/data/limiter_peak_target_present //apple_ref/c/clconst/limiter_peak_target_present " machineGenerated="true" --><span class="var">limiter_peak_target_present</span><!-- /a -->; <span class="comment">// bit(1)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/bs_limiter_peak_target //apple_ref/c/data/bs_limiter_peak_target //apple_ref/c/clconst/bs_limiter_peak_target " machineGenerated="true" --><span class="var">bs_limiter_peak_target</span><!-- /a -->; <span class="comment">// uint(8)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved3 //apple_ref/c/data/reserved3 //apple_ref/c/clconst/reserved3 " machineGenerated="true" --><span class="var">reserved3</span><!-- /a -->; <span class="comment">// bit(7) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/DRC_set_target_loudness_present //apple_ref/c/data/DRC_set_target_loudness_present //apple_ref/c/clconst/DRC_set_target_loudness_present " machineGenerated="true" --><span class="var">DRC_set_target_loudness_present</span><!-- /a -->; <span class="comment">// bit(1)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved4 //apple_ref/c/data/reserved4 //apple_ref/c/clconst/reserved4 " machineGenerated="true" --><span class="var">reserved4</span><!-- /a -->; <span class="comment">// bit(4) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/bs_DRC_set_target_loudness_value_upper //apple_ref/c/data/bs_DRC_set_target_loudness_value_upper //apple_ref/c/clconst/bs_DRC_set_target_loudness_value_upper " machineGenerated="true" --><span class="var">bs_DRC_set_target_loudness_value_upper</span><!-- /a -->; <span class="comment">// uint(6)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/bs_DRC_set_target_loudness_value_lower //apple_ref/c/data/bs_DRC_set_target_loudness_value_lower //apple_ref/c/clconst/bs_DRC_set_target_loudness_value_lower " machineGenerated="true" --><span class="var">bs_DRC_set_target_loudness_value_lower</span><!-- /a -->; <span class="comment">// uint(6)</span>  
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved5 //apple_ref/c/data/reserved5 //apple_ref/c/clconst/reserved5 " machineGenerated="true" --><span class="var">reserved5</span><!-- /a -->; <span class="comment">// bit(1) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/depends_on_DRC_set //apple_ref/c/data/depends_on_DRC_set //apple_ref/c/clconst/depends_on_DRC_set " machineGenerated="true" --><span class="var">depends_on_DRC_set</span><!-- /a -->; <span class="comment">// uint(3)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/no_independent_use //apple_ref/c/data/no_independent_use //apple_ref/c/clconst/no_independent_use " machineGenerated="true" --><span class="var">no_independent_use</span><!-- /a -->; <span class="comment">// bit(1)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/reserved6 //apple_ref/c/data/reserved6 //apple_ref/c/clconst/reserved6 " machineGenerated="true" --><span class="var">reserved6</span><!-- /a -->; <span class="comment">// bit(1) = 0</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/channel_count //apple_ref/c/data/channel_count //apple_ref/c/clconst/channel_count " machineGenerated="true" --><span class="var">channel_count</span><!-- /a -->; <span class="comment">// uint(8)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/MP4LinkedList //apple_ref/c/tdef/MP4LinkedList //apple_ref/c/tag/MP4LinkedList //apple_ref/c/struct/MP4LinkedList //apple_ref/c/intf/MP4LinkedList //apple_ref/doc/anysymbol/MP4LinkedList" machineGenerated="true" --><span class="type">MP4LinkedList</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/channelSequenceIndexes //apple_ref/c/data/channelSequenceIndexes //apple_ref/c/clconst/channelSequenceIndexes " machineGenerated="true" --><span class="var">channelSequenceIndexes</span><!-- /a -->; <span class="comment">// List of DRCInstructionsChannelSequenceIndexes</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/channel_group_count //apple_ref/c/data/channel_group_count //apple_ref/c/clconst/channel_group_count " machineGenerated="true" --><span class="var">channel_group_count</span><!-- /a -->; <span class="comment">// uint(8)</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/MP4LinkedList //apple_ref/c/tdef/MP4LinkedList //apple_ref/c/tag/MP4LinkedList //apple_ref/c/struct/MP4LinkedList //apple_ref/c/intf/MP4LinkedList //apple_ref/doc/anysymbol/MP4LinkedList" machineGenerated="true" --><span class="type">MP4LinkedList</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/channelGroupDuckingScalings //apple_ref/c/data/channelGroupDuckingScalings //apple_ref/c/clconst/channelGroupDuckingScalings " machineGenerated="true" --><span class="var">channelGroupDuckingScalings</span><!-- /a -->; <span class="comment">// List of DRCInstructionsChannelGroupDuckingScalings</span> 
+    <!-- a logicalPath="//apple_ref/c/cl/MP4LinkedList //apple_ref/c/tdef/MP4LinkedList //apple_ref/c/tag/MP4LinkedList //apple_ref/c/struct/MP4LinkedList //apple_ref/c/intf/MP4LinkedList //apple_ref/doc/anysymbol/MP4LinkedList" machineGenerated="true" --><span class="type">MP4LinkedList</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/channelGroupGainScalings //apple_ref/c/data/channelGroupGainScalings //apple_ref/c/clconst/channelGroupGainScalings " machineGenerated="true" --><span class="var">channelGroupGainScalings</span><!-- /a -->; <span class="comment">// List of DRCInstructionsChannelGroupGainScaling</span> 
+} <!-- a logicalPath="//apple_ref/c/econst/DRCInstructionsUniDRCAtom //apple_ref/c/data/DRCInstructionsUniDRCAtom //apple_ref/c/clconst/DRCInstructionsUniDRCAtom " machineGenerated="true" --><span class="var">DRCInstructionsUniDRCAtom</span><!-- /a -->;  <!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCInstructionsUniDRCAtom;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Fields</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/MP4_FULL_ATOM;   name=MP4_FULL_ATOM -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/MP4_FULL_ATOM"></a>
+<code>MP4_FULL_ATOM</code>
+</dt>
+<dd><p>MP4Atoms.h macro to add all fields needed by a full atom</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/reserved1;   name=reserved1 -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/reserved1"></a>
+<code>reserved1</code>
+</dt>
+<dd><p>bit(3) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/DRC_set_ID;   name=DRC_set_ID -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/DRC_set_ID"></a>
+<code>DRC_set_ID</code>
+</dt>
+<dd><p>unsigned int(6) DRC_set_ID;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/DRC_location;   name=DRC_location -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/DRC_location"></a>
+<code>DRC_location</code>
+</dt>
+<dd><p>signed int(5) DRC_location;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/downmix_ID;   name=downmix_ID -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/downmix_ID"></a>
+<code>downmix_ID</code>
+</dt>
+<dd><p>unsigned int(7) downmix_ID;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/additional_dowmix_ID_count;   name=additional_dowmix_ID_count -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/additional_dowmix_ID_count"></a>
+<code>additional_dowmix_ID_count</code>
+</dt>
+<dd><p>unsigned int(3) additional_downmix_ID_count;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/additionalDownMixIDs;   name=additionalDownMixIDs -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/additionalDownMixIDs"></a>
+<code>additionalDownMixIDs</code>
+</dt>
+<dd><p>List of DRCInstructionsAdditionalDownMixIDs</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/DRC_set_effect;   name=DRC_set_effect -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/DRC_set_effect"></a>
+<code>DRC_set_effect</code>
+</dt>
+<dd><p>bit(16) DRC_set_effect;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/reserved2;   name=reserved2 -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/reserved2"></a>
+<code>reserved2</code>
+</dt>
+<dd><p>bit(7) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/limiter_peak_target_present;   name=limiter_peak_target_present -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/limiter_peak_target_present"></a>
+<code>limiter_peak_target_present</code>
+</dt>
+<dd><p>bit(1) limiter_peak_target_present;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/bs_limiter_peak_target;   name=bs_limiter_peak_target -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/bs_limiter_peak_target"></a>
+<code>bs_limiter_peak_target</code>
+</dt>
+<dd><p>unsigned int(8) bs_limiter_peak_target;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/reserved3;   name=reserved3 -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/reserved3"></a>
+<code>reserved3</code>
+</dt>
+<dd><p>bit(7) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/DRC_set_target_loudness_present;   name=DRC_set_target_loudness_present -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/DRC_set_target_loudness_present"></a>
+<code>DRC_set_target_loudness_present</code>
+</dt>
+<dd><p>bit(1) DRC_set_target_loudness_present;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/reserved4;   name=reserved4 -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/reserved4"></a>
+<code>reserved4</code>
+</dt>
+<dd><p>bit(4) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/bs_DRC_set_target_loudness_value_upper;   name=bs_DRC_set_target_loudness_value_upper -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/bs_DRC_set_target_loudness_value_upper"></a>
+<code>bs_DRC_set_target_loudness_value_upper</code>
+</dt>
+<dd><p>unsigned int(6) bs_DRC_set_target_loudness_value_upper;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/bs_DRC_set_target_loudness_value_lower;   name=bs_DRC_set_target_loudness_value_lower -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/bs_DRC_set_target_loudness_value_lower"></a>
+<code>bs_DRC_set_target_loudness_value_lower</code>
+</dt>
+<dd><p>unsigned int(6) bs_DRC_set_target_loudness_value_lower;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/reserved5;   name=reserved5 -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/reserved5"></a>
+<code>reserved5</code>
+</dt>
+<dd><p>bit(1) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/depends_on_DRC_set;   name=depends_on_DRC_set -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/depends_on_DRC_set"></a>
+<code>depends_on_DRC_set</code>
+</dt>
+<dd><p>unsigned int(6) depends_on_DRC_set;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/no_independent_use;   name=no_independent_use -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/no_independent_use"></a>
+<code>no_independent_use</code>
+</dt>
+<dd><p>bit(1) no_independent_use;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/reserved6;   name=reserved6 -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/reserved6"></a>
+<code>reserved6</code>
+</dt>
+<dd><p>bit(1) reserved = 0;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/channel_count;   name=channel_count -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/channel_count"></a>
+<code>channel_count</code>
+</dt>
+<dd><p>unsigned int(8) channel_count;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/channelSequenceIndexes;   name=channelSequenceIndexes -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/channelSequenceIndexes"></a>
+<code>channelSequenceIndexes</code>
+</dt>
+<dd><p>List of DRCInstructionsChannelSequenceIndexes</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/channel_group_count;   name=channel_group_count -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/channel_group_count"></a>
+<code>channel_group_count</code>
+</dt>
+<dd><p>unsigned int(8) channel_group_count;</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/channelGroupDuckingScalings;   name=channelGroupDuckingScalings -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/channelGroupDuckingScalings"></a>
+<code>channelGroupDuckingScalings</code>
+</dt>
+<dd><p>List of DRCInstructionsChannelGroupDuckingScalings</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/channelGroupGainScalings;   name=channelGroupGainScalings -->
+<a name="//apple_ref/doc/typedeffield/DRCInstructionsUniDRCAtom/channelGroupGainScalings"></a>
+<code>channelGroupGainScalings</code>
+</dt>
+<dd><p>List of DRCInstructionsChannelGroupGainScaling</p></dd>
+</dl>
+</div>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=tdef;  uid=//apple_ref/c/tdef/DRCInstructionsUniDRCAtomPtr;   name=DRCInstructionsUniDRCAtomPtr --><a name="//apple_ref/c/tdef/DRCInstructionsUniDRCAtomPtr"></a>
+<h3><a name="DRCInstructionsUniDRCAtomPtr">DRCInstructionsUniDRCAtomPtr</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCInstructionsUniDRCAtomPtr;name=start --><!-- begin abstract --></p>
+<p>Points to a DRCInstructionsUniDRCAtom structure
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCInstructionsUniDRCAtomPtr;name=end --></p>
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCInstructionsUniDRCAtomPtr;name=start --><span class="keyword">typedef</span> <span class="keyword">struct</span> <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/DRCInstructionsUniDRCAtom" logicalPath="//apple_ref/c/cl/DRCInstructionsUniDRCAtom //apple_ref/c/tdef/DRCInstructionsUniDRCAtom" target="_top"><span class="type">DRCInstructionsUniDRCAtom</span></a> <span class="type">*</span><!-- a logicalPath="//apple_ref/c/econst/DRCInstructionsUniDRCAtomPtr //apple_ref/c/data/DRCInstructionsUniDRCAtomPtr //apple_ref/c/clconst/DRCInstructionsUniDRCAtomPtr " machineGenerated="true" --><span class="var">DRCInstructionsUniDRCAtomPtr</span><!-- /a -->;  <!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCInstructionsUniDRCAtomPtr;name=end --></pre>
+</div>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=tdef;  uid=//apple_ref/c/tdef/DRCUniDrcSampleEntryAtom;   name=DRCUniDrcSampleEntryAtom --><a name="//apple_ref/c/tdef/DRCUniDrcSampleEntryAtom"></a>
+<h3><a name="DRCUniDrcSampleEntryAtom">DRCUniDrcSampleEntryAtom</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCUniDrcSampleEntryAtom;name=start --><!-- begin abstract --></p>
+<p>Represents a DRCUniDrcSampleEntryAtom.
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCUniDrcSampleEntryAtom;name=end --></p>
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCUniDrcSampleEntryAtom;name=start --><span class="keyword">typedef</span> <span class="keyword">struct</span> <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/DRCUniDrcSampleEntryAtom" logicalPath="//apple_ref/c/cl/DRCUniDrcSampleEntryAtom //apple_ref/c/tdef/DRCUniDrcSampleEntryAtom" target="_top"><span class="type">DRCUniDrcSampleEntryAtom</span></a> { 
+    <a machinegenerated="true" href="index.html#//apple_ref/doc/typedeffield/DRCUniDrcSampleEntryAtom/MP4_BASE_ATOM" logicalPath="//apple_ref/c/cl/MP4_BASE_ATOM //apple_ref/c/tdef/MP4_BASE_ATOM //apple_ref/c/tag/MP4_BASE_ATOM //apple_ref/c/struct/MP4_BASE_ATOM //apple_ref/c/intf/MP4_BASE_ATOM //apple_ref/doc/anysymbol/MP4_BASE_ATOM" target="_top"><span class="type">MP4_BASE_ATOM</span></a> <!-- a logicalPath="//apple_ref/c/econst/COMMON_SAMPLE_ENTRY_FIELDS //apple_ref/c/data/COMMON_SAMPLE_ENTRY_FIELDS //apple_ref/c/clconst/COMMON_SAMPLE_ENTRY_FIELDS " machineGenerated="true" --><span class="var">COMMON_SAMPLE_ENTRY_FIELDS</span><!-- /a --> 
+} <!-- a logicalPath="//apple_ref/c/econst/DRCUniDrcSampleEntryAtom //apple_ref/c/data/DRCUniDrcSampleEntryAtom //apple_ref/c/clconst/DRCUniDrcSampleEntryAtom " machineGenerated="true" --><span class="var">DRCUniDrcSampleEntryAtom</span><!-- /a -->;  <!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCUniDrcSampleEntryAtom;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Fields</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCUniDrcSampleEntryAtom/MP4_BASE_ATOM;   name=MP4_BASE_ATOM -->
+<a name="//apple_ref/doc/typedeffield/DRCUniDrcSampleEntryAtom/MP4_BASE_ATOM"></a>
+<code>MP4_BASE_ATOM</code>
+</dt>
+<dd><p>MP4Atoms.h macro to add all fields needed by a base atom</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/DRCUniDrcSampleEntryAtom/COMMON_SAMPLE_ENTRY_FIELDS;   name=COMMON_SAMPLE_ENTRY_FIELDS -->
+<a name="//apple_ref/doc/typedeffield/DRCUniDrcSampleEntryAtom/COMMON_SAMPLE_ENTRY_FIELDS"></a>
+<code>COMMON_SAMPLE_ENTRY_FIELDS</code>
+</dt>
+<dd><p>Fields used by a generic sample entry</p></dd>
+</dl>
+</div>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=tdef;  uid=//apple_ref/c/tdef/DRCUniDrcSampleEntryAtomPtr;   name=DRCUniDrcSampleEntryAtomPtr --><a name="//apple_ref/c/tdef/DRCUniDrcSampleEntryAtomPtr"></a>
+<h3><a name="DRCUniDrcSampleEntryAtomPtr">DRCUniDrcSampleEntryAtomPtr</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCUniDrcSampleEntryAtomPtr;name=start --><!-- begin abstract --></p>
+<p>Points to a DRCUniDrcSampleEntryAtom structure
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/DRCUniDrcSampleEntryAtomPtr;name=end --></p>
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCUniDrcSampleEntryAtomPtr;name=start --><span class="keyword">typedef</span> <span class="keyword">struct</span> <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/DRCUniDrcSampleEntryAtom" logicalPath="//apple_ref/c/cl/DRCUniDrcSampleEntryAtom //apple_ref/c/tdef/DRCUniDrcSampleEntryAtom" target="_top"><span class="type">DRCUniDrcSampleEntryAtom</span></a> <span class="type">*</span><!-- a logicalPath="//apple_ref/c/econst/DRCUniDrcSampleEntryAtomPtr //apple_ref/c/data/DRCUniDrcSampleEntryAtomPtr //apple_ref/c/clconst/DRCUniDrcSampleEntryAtomPtr " machineGenerated="true" --><span class="var">DRCUniDrcSampleEntryAtomPtr</span><!-- /a -->;  <!-- headerDoc=declaration;uid=//apple_ref/c/tdef/DRCUniDrcSampleEntryAtomPtr;name=end --></pre>
+</div>
+<hr class="betweenSections">
+<a name="HeaderDoc_enums"></a>
+<h2 class="h2tight">Enumerated Types</h2>
+<dl>
+<dt><tt><a href="index.html#//apple_ref/c/tag/DRC" target="_top">DRC</a></tt></dt>
+<dd><p>Extends the list of atom types from MP4Atoms.h with atoms used with drc data
+</p></dd>
+</dl>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=tag;  uid=//apple_ref/c/tag/DRC;   name=DRC --><a name="//apple_ref/c/tag/DRC"></a>
+<h3><a name="DRC">DRC</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/c/tag/DRC;name=start --><!-- begin abstract --></p>
+<p>Extends the list of atom types from MP4Atoms.h with atoms used with drc data
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/c/tag/DRC;name=end --></p>
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/tag/DRC;name=start --><span class="keyword">enum</span> { 
+    <!-- a logicalPath="//apple_ref/c/econst/DRCTrackReferenceAtomType //apple_ref/c/data/DRCTrackReferenceAtomType //apple_ref/c/clconst/DRCTrackReferenceAtomType " machineGenerated="true" --><span class="var">DRCTrackReferenceAtomType</span><!-- /a --> = <!-- a logicalPath="//apple_ref/c/instm/MP4_FOUR_CHAR_CODE //apple_ref/c/clm/MP4_FOUR_CHAR_CODE //apple_ref/c/intfcm/MP4_FOUR_CHAR_CODE //apple_ref/c/intfm/MP4_FOUR_CHAR_CODE //apple_ref/c/func/MP4_FOUR_CHAR_CODE //apple_ref/c/ftmplt/MP4_FOUR_CHAR_CODE //apple_ref/c/defn/MP4_FOUR_CHAR_CODE //apple_ref/c/macro/MP4_FOUR_CHAR_CODE //apple_ref/doc/anysymbol/MP4_FOUR_CHAR_CODE" machineGenerated="true" --><span class="function">MP4_FOUR_CHAR_CODE</span><!-- /a -->(
+        '<span class="char">a</span>',
+        '<span class="char">d</span>',
+        '<span class="char">r</span>',
+        '<span class="char">c</span>' ), 
+    <a machinegenerated="true" href="index.html#//apple_ref/c/econst/DRCUniDrcSampleEntryAtomType" logicalPath="//apple_ref/c/econst/DRCUniDrcSampleEntryAtomType" target="_top"><span class="var">DRCUniDrcSampleEntryAtomType</span></a> = <!-- a logicalPath="//apple_ref/c/instm/MP4_FOUR_CHAR_CODE //apple_ref/c/clm/MP4_FOUR_CHAR_CODE //apple_ref/c/intfcm/MP4_FOUR_CHAR_CODE //apple_ref/c/intfm/MP4_FOUR_CHAR_CODE //apple_ref/c/func/MP4_FOUR_CHAR_CODE //apple_ref/c/ftmplt/MP4_FOUR_CHAR_CODE //apple_ref/c/defn/MP4_FOUR_CHAR_CODE //apple_ref/c/macro/MP4_FOUR_CHAR_CODE //apple_ref/doc/anysymbol/MP4_FOUR_CHAR_CODE" machineGenerated="true" --><span class="function">MP4_FOUR_CHAR_CODE</span><!-- /a -->(
+        '<span class="char">u</span>',
+        '<span class="char">n</span>',
+        '<span class="char">i</span>',
+        '<span class="char">d</span>' ), 
+    <a machinegenerated="true" href="index.html#//apple_ref/c/econst/DRCCoefficientBasicAtomType" logicalPath="//apple_ref/c/econst/DRCCoefficientBasicAtomType" target="_top"><span class="var">DRCCoefficientBasicAtomType</span></a> = <!-- a logicalPath="//apple_ref/c/instm/MP4_FOUR_CHAR_CODE //apple_ref/c/clm/MP4_FOUR_CHAR_CODE //apple_ref/c/intfcm/MP4_FOUR_CHAR_CODE //apple_ref/c/intfm/MP4_FOUR_CHAR_CODE //apple_ref/c/func/MP4_FOUR_CHAR_CODE //apple_ref/c/ftmplt/MP4_FOUR_CHAR_CODE //apple_ref/c/defn/MP4_FOUR_CHAR_CODE //apple_ref/c/macro/MP4_FOUR_CHAR_CODE //apple_ref/doc/anysymbol/MP4_FOUR_CHAR_CODE" machineGenerated="true" --><span class="function">MP4_FOUR_CHAR_CODE</span><!-- /a -->(
+        '<span class="char">u</span>',
+        '<span class="char">d</span>',
+        '<span class="char">c</span>',
+        '<span class="char">1</span>' ), 
+    <a machinegenerated="true" href="index.html#//apple_ref/c/econst/DRCInstructionsBasicAtomType" logicalPath="//apple_ref/c/econst/DRCInstructionsBasicAtomType" target="_top"><span class="var">DRCInstructionsBasicAtomType</span></a> = <!-- a logicalPath="//apple_ref/c/instm/MP4_FOUR_CHAR_CODE //apple_ref/c/clm/MP4_FOUR_CHAR_CODE //apple_ref/c/intfcm/MP4_FOUR_CHAR_CODE //apple_ref/c/intfm/MP4_FOUR_CHAR_CODE //apple_ref/c/func/MP4_FOUR_CHAR_CODE //apple_ref/c/ftmplt/MP4_FOUR_CHAR_CODE //apple_ref/c/defn/MP4_FOUR_CHAR_CODE //apple_ref/c/macro/MP4_FOUR_CHAR_CODE //apple_ref/doc/anysymbol/MP4_FOUR_CHAR_CODE" machineGenerated="true" --><span class="function">MP4_FOUR_CHAR_CODE</span><!-- /a -->(
+        '<span class="char">u</span>',
+        '<span class="char">d</span>',
+        '<span class="char">i</span>',
+        '<span class="char">1</span>' ), 
+    <a machinegenerated="true" href="index.html#//apple_ref/c/econst/DRCCoefficientUniDRCAtomType" logicalPath="//apple_ref/c/econst/DRCCoefficientUniDRCAtomType" target="_top"><span class="var">DRCCoefficientUniDRCAtomType</span></a> = <!-- a logicalPath="//apple_ref/c/instm/MP4_FOUR_CHAR_CODE //apple_ref/c/clm/MP4_FOUR_CHAR_CODE //apple_ref/c/intfcm/MP4_FOUR_CHAR_CODE //apple_ref/c/intfm/MP4_FOUR_CHAR_CODE //apple_ref/c/func/MP4_FOUR_CHAR_CODE //apple_ref/c/ftmplt/MP4_FOUR_CHAR_CODE //apple_ref/c/defn/MP4_FOUR_CHAR_CODE //apple_ref/c/macro/MP4_FOUR_CHAR_CODE //apple_ref/doc/anysymbol/MP4_FOUR_CHAR_CODE" machineGenerated="true" --><span class="function">MP4_FOUR_CHAR_CODE</span><!-- /a -->(
+        '<span class="char">u</span>',
+        '<span class="char">d</span>',
+        '<span class="char">c</span>',
+        '<span class="char">2</span>' ), 
+    <a machinegenerated="true" href="index.html#//apple_ref/c/econst/DRCInstructionsUniDRCAtomType" logicalPath="//apple_ref/c/econst/DRCInstructionsUniDRCAtomType" target="_top"><span class="var">DRCInstructionsUniDRCAtomType</span></a> = <!-- a logicalPath="//apple_ref/c/instm/MP4_FOUR_CHAR_CODE //apple_ref/c/clm/MP4_FOUR_CHAR_CODE //apple_ref/c/intfcm/MP4_FOUR_CHAR_CODE //apple_ref/c/intfm/MP4_FOUR_CHAR_CODE //apple_ref/c/func/MP4_FOUR_CHAR_CODE //apple_ref/c/ftmplt/MP4_FOUR_CHAR_CODE //apple_ref/c/defn/MP4_FOUR_CHAR_CODE //apple_ref/c/macro/MP4_FOUR_CHAR_CODE //apple_ref/doc/anysymbol/MP4_FOUR_CHAR_CODE" machineGenerated="true" --><span class="function">MP4_FOUR_CHAR_CODE</span><!-- /a -->(
+        '<span class="char">u</span>',
+        '<span class="char">d</span>',
+        '<span class="char">i</span>',
+        '<span class="char">2</span>' ) 
+};  <!-- headerDoc=declaration;uid=//apple_ref/c/tag/DRC;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Constants</font></h5>
+<div class="param_indent">
+<dl>
+<dt><a name="//apple_ref/c/econst/DRCUniDrcSampleEntryAtomType"><code>DRCUniDrcSampleEntryAtomType</code></a></dt>
+<dd><p>Type for DRCUniDrcSampleEntry. "unid"</p></dd>
+<dt><a name="//apple_ref/c/econst/DRCCoefficientBasicAtomType"><code>DRCCoefficientBasicAtomType</code></a></dt>
+<dd><p>Type for DRCCoefficientBasic. "udc1"</p></dd>
+<dt><a name="//apple_ref/c/econst/DRCInstructionsBasicAtomType"><code>DRCInstructionsBasicAtomType</code></a></dt>
+<dd><p>Type for DRCInstructionsBasic. "udi1"</p></dd>
+<dt><a name="//apple_ref/c/econst/DRCCoefficientUniDRCAtomType"><code>DRCCoefficientUniDRCAtomType</code></a></dt>
+<dd><p>Type for DRCCoefficientUniDRC. "udc2"</p></dd>
+<dt><a name="//apple_ref/c/econst/DRCInstructionsUniDRCAtomType"><code>DRCInstructionsUniDRCAtomType</code></a></dt>
+<dd><p>Type for DRCInstructionsUniDRC. "udi2"</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/tag/DRC;name=start --><p>Atoms</p>
+<!-- headerDoc=discussion;uid=//apple_ref/c/tag/DRC;name=end --><!-- end discussion -->
+<p class="gapBeforeFooter">&nbsp;</p>
+<hr class="afterFooter">
+<div class="hd_copyright_and_timestamp">
+<p class="hd_copyright">&copy; Apple
+ </p>
+<p class="hd_timestamp">Last Updated: Friday, September 19, 2014
+</p>
+</div>
+</td>
+</tr></table>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>DAA2AE15-95BC-4F5D-9311-AB5826BB17D4</string>
+	<key>IDESourceControlProjectName</key>
+	<string>audioexample</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>0A87EE67-0520-46A2-A819-871AB0AC61CD</key>
+		<string>http://wg11.sc29.org/svn/repos/MPEG-04/Part12-ISO_Base_Media_File_Format/trunk/IsoLib</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>audio_example/macosx/audioexample/audioexample.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>0A87EE67-0520-46A2-A819-871AB0AC61CD</key>
+		<string>../../../../..</string>
+	</dict>
+	<key>IDESourceControlProjectRepositoryRootDictionary</key>
+	<dict>
+		<key>0A87EE67-0520-46A2-A819-871AB0AC61CD</key>
+		<string>http://wg11.sc29.org/svn/repos</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>http://wg11.sc29.org/svn/repos/MPEG-04/Part12-ISO_Base_Media_File_Format/trunk/IsoLib/audio_example/macosx/audioexample/audioexample.xcodeproj</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>0A87EE67-0520-46A2-A819-871AB0AC61CD</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryBranchesRelativeLocationKey</key>
+			<string>MPEG-04/Part12-ISO_Base_Media_File_Format/branches</string>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.subversion</string>
+			<key>IDESourceControlRepositoryTagsRelativeLocationKey</key>
+			<string>MPEG-04/Part12-ISO_Base_Media_File_Format/tags</string>
+			<key>IDESourceControlRepositoryTrunkRelativeLocationKey</key>
+			<string>MPEG-04/Part12-ISO_Base_Media_File_Format/trunk</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>0A87EE67-0520-46A2-A819-871AB0AC61CD</string>
+			<key>IDESourceControlWCCName</key>
+			<string>IsoLib</string>
+		</dict>
+	</array>
+</dict>
+</plist>

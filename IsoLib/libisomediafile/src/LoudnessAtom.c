@@ -101,8 +101,9 @@ static MP4Err getDataSize( struct MP4Atom* s, u32 *dataSizeOut )
     u32                 baseAtomFieldSize;
     MP4LoudnessAtomPtr  self;
     
-    self->size = 0;
+    
     self = (MP4LoudnessAtomPtr) s;
+    self->size = 0;
     err = MP4NoErr;
     err = MP4CalculateBaseAtomFieldSize( (MP4AtomPtr) s ); if (err) goto bail;
     

@@ -1,0 +1,671 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html>
+<head>
+<title>WAVData</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="generator" content="HeaderDoc">
+<meta name="xcode-display" content="render">
+<style type="text/css"><!--.char {background: #ffffff; color:#0000ff;}.comment {background:#ffffff; color:#236e25}.function {background:#ffffff; color:#000000;}.keyword {background:#ffffff; color:#761550;}.number {background: #ffffff; color:#0000ff;}.param {background:#ffffff; color:#000000;}.preprocessor {background:#ffffff; color:#236e25}.string {background: #ffffff; color:#891315;}.template {background:#ffffff; color:#761550;}.type {background:#ffffff; color:#761550;}.var {background:#ffffff; color:#000000;}body {border: 0px; margin: 0px;}div {font-size: 10pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000;}td {font-size: 10pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000;}span.hd_tocAccessSpace { display: block; font-size: 1px; height: 3px; min-height: 3px; }span.hd_tocGroupSpace { display: block; font-size: 1px; height: 3px; min-height: 3px; }span.hd_tocGroup { display: block; font-weight: bold; font-size: 10pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000; margin-left: 0px; padding-left: 40px; }span.hd_tocGroup + span.hd_tocAccess { padding-top: 5px; }td.toc_contents_text {font-size: 11pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000; }li.tocSubEntry {font-size: 11pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000;}p {font-size: 10pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000;}a:link {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}a:visited {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}a:visited:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}a:active {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}a:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}h2.h2tight { margin-top: 0px; padding-top: 0px; }h1 { margin-top: 13px; padding-top: 0px; }h4 {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: tiny; font-weight: bold;}h5 {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: 10.1pt; font-weight: bold;}pre {text-decoration: none; font-family: Courier, Consolas, monospace; color: #666; font-size: 10pt;}pre a { font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}pre a:link { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}pre a:visited { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}pre a:visited:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}pre a:active { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}pre a:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code {text-decoration: none; font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}code a { font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}code a:link { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code a:visited { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code a:visited:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code a:active { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code a:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt {text-decoration: none; font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}tt a { font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}tt a:link { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt a:visited { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt a:visited:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt a:active { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt a:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}body  {text-decoration: none; font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt; padding-left: 0px; padding-top: 0px; margin-left: 0px; margin-top: 0px; border: none; }#hd_outermost_table { margin-left: 0px; border-spacing: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }#hd_outermost_table > tr { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }#hd_outermost_table > tr > td { border-spacing: 0px; margin-left: 0px; margin-top: 0px; }#hd_outermost_table > tbody > tr { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }#hd_outermost_table > tbody > tr > td { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-top: 3px; }.afterName { display: none; }.list_indent { margin-left: 40px; }.declaration_indent { margin-left: 40px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; min-height: 12px; vertical-align: middle; }.declaration_indent pre { margin-top: 20px; padding-top: 0px; margin-bottom: 20px; padding-bottom: 0px; }.gapBeforeFooter { display: none; }hr { height: 0px; min-height: 0px; border-top: none; border-left: none; border-right: none; border-bottom: 1px solid #909090;}hr.afterHeader { display: none }.param_group_indent { margin-left: 25px; }.param_indent { margin-left: 40px; margin-top: 0px; padding-top: 0px; }.param_indent dl { margin-top: 4px; padding-top: 0px; }dl dd > p:first-child { margin-top: 2px; padding-top: 0px; }.param_indent dl dd > p:first-child { margin-top: 2px; padding-top: 0px; }.group_indent { margin-left: 40px; }.group_desc_indent { margin-left: 20px; }.warning_indent { margin-left: 40px; }.important_indent { margin-left: 40px; }.note_indent { margin-left: 40px; }h3 {       color: #3C4C6C;}.tight {       margin-top: 2px; margin-bottom: 0px;       padding-top: 0px; padding-bottom: 0px;}h3 a {       color: #3C4C6C;	font-size: 16px;	font-style: normal;	font-variant: normal;	font-weight: bold;	height: 0px;	line-height: normal;}.hd_tocAccess { display: block; margin-left: 40px; font-style: italic; font-size: 10px; font-weight: normal; color: #303030; }.tocSubheading { margin-bottom: 4px; }--></style>
+<style><!--
+body {
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+}
+.toc_contents_text {
+    padding-left: 1em;
+    text-indent: -1em;
+}
+
+ul.tocSubEntryList li.tocSubEntry {
+    list-style: none;
+}
+
+#colorbox {
+		display: none;
+}
+.spec_sheet_line {
+		margin-bottom: 1px;
+}
+.collapsible {
+		display: none;
+}
+.toc_leadspace {
+		width: 10; min-width: 10;
+}
+.disclosure_triangle_td {
+		width: 14; min-width: 14;
+		font-size: 10px;
+		vertical-align: middle;
+}
+.specbox td {
+		font-size: 13px;
+}
+.specbox td a {
+		font-size: 13px;
+}
+.specbox td code {
+		font-size: 13px;
+}
+.specbox td tt {
+		font-size: 13px;
+}
+.specbox td pre {
+		font-size: 13px;
+}
+.specbox a {
+		font-size: 12px;
+}
+.disclosure_triangle_td a {
+		text-decoration: none;
+}
+.disclosure_triangle_td a:link {
+		text-decoration: none;
+}
+.disclosure_triangle_td a:active {
+		text-decoration: none;
+}
+.disclosure_triangle_td a:visited:hover {
+		text-decoration: none;
+}
+.disclosure_triangle_td a:hover {
+		text-decoration: none;
+}
+.hd_toc_box {
+		padding-top: 10px;
+		padding-right: 15px;
+}.tocSeparator {
+		margin-top: 15px;
+		padding-bottom: 0px;
+		margin-bottom: 0px;
+}
+.tocSubEntryList {
+		margin-left: 0px;
+		padding-left: 40px;
+		padding-top: 0px;
+		margin-top: 2px;
+		padding-bottom: 0px;
+		margin-bottom: 8px;
+}
+.hd_toc_heading_table {
+		margin-top: 2px;
+		margin-bottom: 2px;
+}
+.hd_toc_entry_table {
+		margin-top: 2px;
+		margin-bottom: 2px;
+}
+.tocSubEntry {
+		margin-left: 0px;
+		padding-left: 0px;
+		margin-top: 0px;
+		margin-bottom: 1px;
+}
+.tocSubEntry a {
+		font-size: 10pt;
+}
+.tocSubheading {
+		padding-left: 14px;
+		margin-left: 0px;
+		margin-top: 5px;
+		padding-top: 0px;
+		font-size: 16px;
+		color: #808080;
+}
+
+#hd_outermost_table { margin-left: 0px; border-spacing: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }
+#hd_outermost_table > tr { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }
+#hd_outermost_table > tr > td { border-spacing: 0px; margin-left: 0px; margin-top: 0px; }
+#hd_outermost_table > tbody > tr { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }
+#hd_outermost_table > tbody > tr > td { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-top: 3px; }
+
+#tocMenu {
+		border-right: 1px solid #c0c0c0;
+		background-color: #f4f4ff;
+		top:0px;
+		left:0px;
+		width:230px;
+		height:100%;
+}
+#bodyContents {
+		width: auto;
+		padding-left: 15px;
+}
+--></style>
+<style id="disable_before_iOS_5"><!--
+#tocMenu {
+		position: fixed;
+		height: 100%;
+		overflow: auto;
+}
+#bodyContents {
+		width: auto;
+		left: 235px;
+		right: 0;
+		padding-left: 15px;
+		position: fixed;
+		height: 100%;
+		overflow-y: scroll;
+}
+--></style>
+<script language="JavaScript" type="text/javascript"><!--
+    if (navigator.platform && (navigator.platform.match(/iPad/) || navigator.platform.match(/iPhone/) || navigator.platform.match(/iPod/))) {
+        if (navigator.userAgent.match(/OS 1(_\d)+/) ||
+            navigator.userAgent.match(/OS 2(_\d)+/) ||
+            navigator.userAgent.match(/OS 3(_\d)+/) ||
+            navigator.userAgent.match(/OS 4(_\d)+/)) {
+                /* Earlier iOS versions require different scrolling gestures with position: fixed. */
+                var del_style_elt = document.getElementById("disable_before_iOS_5");
+                if (del_style_elt) del_style_elt.parentNode.removeChild(del_style_elt);
+        }
+    }
+// --></script><script language="JavaScript" type="text/javascript"><!--
+function getNewHTTPObject()
+{
+        var xmlhttp;
+
+        /** Special IE only code ... */
+        /*@cc_on
+          @if (@_jscript_version >= 5)
+              try
+              {
+                  xmlhttp = new ActiveXObject('Msxml2.XMLHTTP');
+              }
+              catch (e)
+              {
+                  try
+                  {
+                      xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
+                  }
+                  catch (E)
+                  {
+                      xmlhttp = false;
+                  }
+             }
+          @else
+             xmlhttp = false;
+        @end @*/
+
+        /** Every other browser on the planet */
+        if (!xmlhttp && typeof XMLHttpRequest != 'undefined')
+        {
+            try
+            {
+                xmlhttp = new XMLHttpRequest();
+            }
+            catch (e)
+            {
+                xmlhttp = false;
+            }
+        }
+
+        return xmlhttp;
+}
+
+function hidetoc() {
+	var toc = document.getElementById('tocMenu');
+	var src = toc.getAttribute('src');
+	var xhr = getNewHTTPObject();
+	xhr.open('GET', src, true);
+	xhr.onreadystatechange = function() {
+		if(xhr.readyState == 4) {
+			var toc = document.getElementById('tocMenu');
+			toc.innerHTML = xhr.responseText;
+		}
+	}
+	xhr.send(null);
+	var origURL = parent.document.URL;
+	var contentURL = origURL.substring(origURL.indexOf('?')+1, origURL.length);
+	if (contentURL.length == origURL.length) {
+		jumpPos = origURL.substring(origURL.indexOf('#')+1, origURL.length);
+	}
+	if (contentURL == "hidetoc") {
+		var body = document.getElementById('bodyContents');
+		if (toc && body) {
+			toc.style.display = 'none';
+			body.style.marginLeft = '0px';
+		}
+	}
+}
+
+function disclosure_triangle(elt) {
+   var linkelt = elt;
+   while (elt && elt.tagName != 'TABLE') { elt = elt.parentNode;}
+   if (!elt) { return; }
+   while (elt && elt.tagName != 'DIV') { elt = elt.nextSibling;}
+   if (!elt) { return; }
+   if (parseInt(linkelt.getAttribute('state'))) {
+      // It's open.  Close it
+      linkelt.innerHTML = '&#x25B7;';
+      linkelt.setAttribute('state', 0);
+      linkelt.setAttribute('class', 'closed_disclosure_triangle');
+      elt.style.display = 'none';
+   } else {
+      // It's closed.  Open it
+      linkelt.innerHTML = '&#x25BC;';
+      linkelt.setAttribute('state', 1);
+      linkelt.setAttribute('class', 'open_disclosure_triangle');
+      elt.style.display = 'block';
+   }
+}
+--></script><style type="text/css"><!--.char {background: #ffffff; color:#0000ff;}.comment {background:#ffffff; color:#236e25}.function {background:#ffffff; color:#000000;}.keyword {background:#ffffff; color:#761550;}.number {background: #ffffff; color:#0000ff;}.param {background:#ffffff; color:#000000;}.preprocessor {background:#ffffff; color:#236e25}.string {background: #ffffff; color:#891315;}.template {background:#ffffff; color:#761550;}.type {background:#ffffff; color:#761550;}.var {background:#ffffff; color:#000000;}body {border: 0px; margin: 0px;}div {font-size: 10pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000;}td {font-size: 10pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000;}span.hd_tocAccessSpace { display: block; font-size: 1px; height: 3px; min-height: 3px; }span.hd_tocGroupSpace { display: block; font-size: 1px; height: 3px; min-height: 3px; }span.hd_tocGroup { display: block; font-weight: bold; font-size: 10pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000; margin-left: 0px; padding-left: 40px; }span.hd_tocGroup + span.hd_tocAccess { padding-top: 5px; }td.toc_contents_text {font-size: 11pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000; }li.tocSubEntry {font-size: 11pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000;}p {font-size: 10pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000;}a:link {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}a:visited {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}a:visited:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}a:active {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}a:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}h2.h2tight { margin-top: 0px; padding-top: 0px; }h1 { margin-top: 13px; padding-top: 0px; }h4 {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: tiny; font-weight: bold;}h5 {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: 10.1pt; font-weight: bold;}pre {text-decoration: none; font-family: Courier, Consolas, monospace; color: #666; font-size: 10pt;}pre a { font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}pre a:link { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}pre a:visited { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}pre a:visited:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}pre a:active { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}pre a:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code {text-decoration: none; font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}code a { font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}code a:link { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code a:visited { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code a:visited:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code a:active { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code a:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt {text-decoration: none; font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}tt a { font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}tt a:link { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt a:visited { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt a:visited:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt a:active { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt a:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}body  {text-decoration: none; font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt; padding-left: 0px; padding-top: 0px; margin-left: 0px; margin-top: 0px; border: none; }#hd_outermost_table { margin-left: 0px; border-spacing: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }#hd_outermost_table > tr { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }#hd_outermost_table > tr > td { border-spacing: 0px; margin-left: 0px; margin-top: 0px; }#hd_outermost_table > tbody > tr { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }#hd_outermost_table > tbody > tr > td { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-top: 3px; }.afterName { display: none; }.list_indent { margin-left: 40px; }.declaration_indent { margin-left: 40px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; min-height: 12px; vertical-align: middle; }.declaration_indent pre { margin-top: 20px; padding-top: 0px; margin-bottom: 20px; padding-bottom: 0px; }.gapBeforeFooter { display: none; }hr { height: 0px; min-height: 0px; border-top: none; border-left: none; border-right: none; border-bottom: 1px solid #909090;}hr.afterHeader { display: none }.param_group_indent { margin-left: 25px; }.param_indent { margin-left: 40px; margin-top: 0px; padding-top: 0px; }.param_indent dl { margin-top: 4px; padding-top: 0px; }dl dd > p:first-child { margin-top: 2px; padding-top: 0px; }.param_indent dl dd > p:first-child { margin-top: 2px; padding-top: 0px; }.group_indent { margin-left: 40px; }.group_desc_indent { margin-left: 20px; }.warning_indent { margin-left: 40px; }.important_indent { margin-left: 40px; }.note_indent { margin-left: 40px; }h3 {       color: #3C4C6C;}.tight {       margin-top: 2px; margin-bottom: 0px;       padding-top: 0px; padding-bottom: 0px;}h3 a {       color: #3C4C6C;	font-size: 16px;	font-style: normal;	font-variant: normal;	font-weight: bold;	height: 0px;	line-height: normal;}.hd_tocAccess { display: block; margin-left: 40px; font-style: italic; font-size: 10px; font-weight: normal; color: #303030; }.tocSubheading { margin-bottom: 4px; }--></style>
+</head>
+<body bgcolor="#ffffff" onload="hidetoc();">
+<!-- headerDoc=Header;  uid=//apple_ref/doc/header/WAVData.h;   name=WAVData -->
+<a name="//apple_ref/doc/header/WAVData.h"></a>
+<table id="hd_outermost_table" height="100%" width="100%"><tr>
+<td valign="top" id="tocMenu" src="toc.html"></td>
+<td id="bodyContents" valign="top">
+<a name="top"></a>
+<h1><a name="WAVData">WAVData</a></h1>
+<div class="spec_sheet_info_box"><table cellspacing="0" class="specbox">
+<tr>
+<td scope="row"><b>Author:</b></td>
+<td><div style="margin-bottom:1px"><div class="content_text">Armin Trattnig</div></div></td>
+</tr>
+<tr>
+<td scope="row"><b>Version:</b></td>
+<td><div style="margin-bottom:1px"><div class="content_text">1.0</div></div></td>
+</tr>
+<tr>
+<td scope="row"><b>Includes:</b></td>
+<td><div style="margin-bottom:1px"><div class="content_text">
+<!-- a logicalPath="//apple_ref/doc/header/stdio.h" machineGenerated="true" -->&lt;stdio.h&gt;<!-- /a --><br><!-- a logicalPath="//apple_ref/doc/header/stdlib.h" machineGenerated="true" -->&lt;stdlib.h&gt;<!-- /a --><br><!-- a logicalPath="//apple_ref/doc/header/wavIO.h" machineGenerated="true" -->&lt;wavIO.h&gt;<!-- /a --><br><a machinegenerated="true" href="../DRCAtoms_h/index.html#//apple_ref/doc/header/DRCAtoms.h" logicalPath="//apple_ref/doc/header/DRCAtoms.h" target="_top">"DRCAtoms.h"</a></div></div></td>
+</tr>
+</table></div>
+<h2>Introduction</h2>
+<p><!-- headerDoc=abstract;uid=//apple_ref/doc/header/WAVData.h;name=start --><!-- begin abstract -->Use the links in the table of contents to the left to access the documentation.<br><!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/doc/header/WAVData.h;name=end --></p>
+<dl>
+<dt><b>Updated:</b></dt>
+<dd>Wednesday, September 10, 2014</dd>
+</dl>
+<hr class="afterClassOrHeaderInfo">
+<br><a name="HeaderDoc_functions"></a>
+<h2 class="h2tight">Functions</h2>
+<dl>
+<dt><tt><a href="index.html#//apple_ref/c/func/closeWAVDataFile" target="_top">closeWAVDataFile</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/c/func/initWAVDataForReading" target="_top">initWAVDataForReading</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/c/func/initWAVDataForWriting" target="_top">initWAVDataForWriting</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/c/func/readFrame" target="_top">readFrame</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/c/func/writeFrame" target="_top">writeFrame</a></tt></dt>
+<dd></dd>
+</dl>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=func;  uid=//apple_ref/c/func/closeWAVDataFile;   name=closeWAVDataFile --><a name="//apple_ref/c/func/closeWAVDataFile"></a>
+<h3><a name="closeWAVDataFile">closeWAVDataFile</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/func/closeWAVDataFile;name=start --><!-- a logicalPath="//apple_ref/c/cl/MP4Err //apple_ref/c/tdef/MP4Err //apple_ref/c/tag/MP4Err //apple_ref/c/struct/MP4Err //apple_ref/c/intf/MP4Err //apple_ref/doc/anysymbol/MP4Err" machineGenerated="true" --><span class="type">MP4Err</span><!-- /a --> <a machinegenerated="true" href="index.html#//apple_ref/c/func/closeWAVDataFile" logicalPath="//apple_ref/c/instm/closeWAVDataFile //apple_ref/c/clm/closeWAVDataFile //apple_ref/c/intfcm/closeWAVDataFile //apple_ref/c/intfm/closeWAVDataFile //apple_ref/c/func/closeWAVDataFile" target="_top"><span class="function">closeWAVDataFile</span></a> (
+    <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/WAVData" logicalPath="//apple_ref/c/cl/WAVData //apple_ref/c/tdef/WAVData" target="_top"><span class="type">WAVData</span></a> <span class="type">*</span><span class="param">wavData</span>);  <!-- headerDoc=declaration;uid=//apple_ref/c/func/closeWAVDataFile;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/closeWAVDataFile/wavData;   name=wavData -->
+<a name="//apple_ref/doc/functionparam/closeWAVDataFile/wavData"></a>
+<code>wavData</code>
+</dt>
+<dd><p>Pointer to an initialized WAVData structure</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/closeWAVDataFile;name=start --><p>Updates the size fields in the wav header and closes the wav file
+<!-- headerDoc=discussion;uid=//apple_ref/c/func/closeWAVDataFile;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=func;  uid=//apple_ref/c/func/initWAVDataForReading;   name=initWAVDataForReading --><a name="//apple_ref/c/func/initWAVDataForReading"></a>
+<h3><a name="initWAVDataForReading">initWAVDataForReading</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/func/initWAVDataForReading;name=start --><!-- a logicalPath="//apple_ref/c/cl/MP4Err //apple_ref/c/tdef/MP4Err //apple_ref/c/tag/MP4Err //apple_ref/c/struct/MP4Err //apple_ref/c/intf/MP4Err //apple_ref/doc/anysymbol/MP4Err" machineGenerated="true" --><span class="type">MP4Err</span><!-- /a --> <a machinegenerated="true" href="index.html#//apple_ref/c/func/initWAVDataForReading" logicalPath="//apple_ref/c/instm/initWAVDataForReading //apple_ref/c/clm/initWAVDataForReading //apple_ref/c/intfcm/initWAVDataForReading //apple_ref/c/intfm/initWAVDataForReading //apple_ref/c/func/initWAVDataForReading" target="_top"><span class="function">initWAVDataForReading</span></a> (
+    <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/WAVData" logicalPath="//apple_ref/c/cl/WAVData //apple_ref/c/tdef/WAVData" target="_top"><span class="type">WAVData</span></a> <span class="type">*</span><span class="param">wavData</span>,
+    <!-- a logicalPath="//apple_ref/c/cl/char //apple_ref/c/tdef/char //apple_ref/c/tag/char //apple_ref/c/struct/char //apple_ref/c/intf/char //apple_ref/doc/anysymbol/char" machineGenerated="true" --><span class="type">char</span><!-- /a --> <span class="type">*</span><span class="param">inputFileStr</span>);  <!-- headerDoc=declaration;uid=//apple_ref/c/func/initWAVDataForReading;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/initWAVDataForReading/wavData;   name=wavData -->
+<a name="//apple_ref/doc/functionparam/initWAVDataForReading/wavData"></a>
+<code>wavData</code>
+</dt>
+<dd><p>Pointer to a allocated WAVData structure</p></dd>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/initWAVDataForReading/inputFileStr;   name=inputFileStr -->
+<a name="//apple_ref/doc/functionparam/initWAVDataForReading/inputFileStr"></a>
+<code>inputFileStr</code>
+</dt>
+<dd><p>Path to a wav file</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/initWAVDataForReading;name=start --><p>Initializes WAV data from a file for reading
+<!-- headerDoc=discussion;uid=//apple_ref/c/func/initWAVDataForReading;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=func;  uid=//apple_ref/c/func/initWAVDataForWriting;   name=initWAVDataForWriting --><a name="//apple_ref/c/func/initWAVDataForWriting"></a>
+<h3><a name="initWAVDataForWriting">initWAVDataForWriting</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/func/initWAVDataForWriting;name=start --><!-- a logicalPath="//apple_ref/c/cl/MP4Err //apple_ref/c/tdef/MP4Err //apple_ref/c/tag/MP4Err //apple_ref/c/struct/MP4Err //apple_ref/c/intf/MP4Err //apple_ref/doc/anysymbol/MP4Err" machineGenerated="true" --><span class="type">MP4Err</span><!-- /a --> <a machinegenerated="true" href="index.html#//apple_ref/c/func/initWAVDataForWriting" logicalPath="//apple_ref/c/instm/initWAVDataForWriting //apple_ref/c/clm/initWAVDataForWriting //apple_ref/c/intfcm/initWAVDataForWriting //apple_ref/c/intfm/initWAVDataForWriting //apple_ref/c/func/initWAVDataForWriting" target="_top"><span class="function">initWAVDataForWriting</span></a> (
+    <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/WAVData" logicalPath="//apple_ref/c/cl/WAVData //apple_ref/c/tdef/WAVData" target="_top"><span class="type">WAVData</span></a> <span class="type">*</span><span class="param">wavData</span>,
+    <!-- a logicalPath="//apple_ref/c/cl/char //apple_ref/c/tdef/char //apple_ref/c/tag/char //apple_ref/c/struct/char //apple_ref/c/intf/char //apple_ref/doc/anysymbol/char" machineGenerated="true" --><span class="type">char</span><!-- /a --> <span class="type">*</span><span class="param">outputFileStr</span>,
+    <!-- a logicalPath="//apple_ref/c/cl/int //apple_ref/c/tdef/int //apple_ref/c/tag/int //apple_ref/c/struct/int //apple_ref/c/intf/int //apple_ref/doc/anysymbol/int" machineGenerated="true" --><span class="type">int</span><!-- /a --> <span class="param">channelCount</span>,
+    <!-- a logicalPath="//apple_ref/c/cl/int //apple_ref/c/tdef/int //apple_ref/c/tag/int //apple_ref/c/struct/int //apple_ref/c/intf/int //apple_ref/doc/anysymbol/int" machineGenerated="true" --><span class="type">int</span><!-- /a --> <span class="param">sampleRate</span>,
+    <!-- a logicalPath="//apple_ref/c/cl/int //apple_ref/c/tdef/int //apple_ref/c/tag/int //apple_ref/c/struct/int //apple_ref/c/intf/int //apple_ref/doc/anysymbol/int" machineGenerated="true" --><span class="type">int</span><!-- /a --> <span class="param">bytesPerSample</span>);  <!-- headerDoc=declaration;uid=//apple_ref/c/func/initWAVDataForWriting;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/initWAVDataForWriting/wavData;   name=wavData -->
+<a name="//apple_ref/doc/functionparam/initWAVDataForWriting/wavData"></a>
+<code>wavData</code>
+</dt>
+<dd><p>Pointer to a allocated WAVData structure</p></dd>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/initWAVDataForWriting/outputFileStr;   name=outputFileStr -->
+<a name="//apple_ref/doc/functionparam/initWAVDataForWriting/outputFileStr"></a>
+<code>outputFileStr</code>
+</dt>
+<dd><p>File, to which the audio data will be written</p></dd>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/initWAVDataForWriting/channelCount;   name=channelCount -->
+<a name="//apple_ref/doc/functionparam/initWAVDataForWriting/channelCount"></a>
+<code>channelCount</code>
+</dt>
+<dd><p>The amount of channels in the audio data</p></dd>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/initWAVDataForWriting/sampleRate;   name=sampleRate -->
+<a name="//apple_ref/doc/functionparam/initWAVDataForWriting/sampleRate"></a>
+<code>sampleRate</code>
+</dt>
+<dd><p>The samplerate of the audio data</p></dd>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/initWAVDataForWriting/bytesPerSample;   name=bytesPerSample -->
+<a name="//apple_ref/doc/functionparam/initWAVDataForWriting/bytesPerSample"></a>
+<code>bytesPerSample</code>
+</dt>
+<dd><p>Byte depth of an audio sample</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/initWAVDataForWriting;name=start --><p>Initializes WAV data from a file for writing
+<!-- headerDoc=discussion;uid=//apple_ref/c/func/initWAVDataForWriting;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=func;  uid=//apple_ref/c/func/readFrame;   name=readFrame --><a name="//apple_ref/c/func/readFrame"></a>
+<h3><a name="readFrame">readFrame</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/func/readFrame;name=start --><!-- a logicalPath="//apple_ref/c/cl/MP4Err //apple_ref/c/tdef/MP4Err //apple_ref/c/tag/MP4Err //apple_ref/c/struct/MP4Err //apple_ref/c/intf/MP4Err //apple_ref/doc/anysymbol/MP4Err" machineGenerated="true" --><span class="type">MP4Err</span><!-- /a --> <a machinegenerated="true" href="index.html#//apple_ref/c/func/readFrame" logicalPath="//apple_ref/c/instm/readFrame //apple_ref/c/clm/readFrame //apple_ref/c/intfcm/readFrame //apple_ref/c/intfm/readFrame //apple_ref/c/func/readFrame" target="_top"><span class="function">readFrame</span></a> (
+    <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/WAVData" logicalPath="//apple_ref/c/cl/WAVData //apple_ref/c/tdef/WAVData" target="_top"><span class="type">WAVData</span></a> <span class="type">*</span><span class="param">wavData</span>,
+    <!-- a logicalPath="//apple_ref/c/cl/MP4Handle //apple_ref/c/tdef/MP4Handle //apple_ref/c/tag/MP4Handle //apple_ref/c/struct/MP4Handle //apple_ref/c/intf/MP4Handle //apple_ref/doc/anysymbol/MP4Handle" machineGenerated="true" --><span class="type">MP4Handle</span><!-- /a --> <span class="param">sampleH</span>,
+    <!-- a logicalPath="//apple_ref/c/cl/u32 //apple_ref/c/tdef/u32 //apple_ref/c/tag/u32 //apple_ref/c/struct/u32 //apple_ref/c/intf/u32 //apple_ref/doc/anysymbol/u32" machineGenerated="true" --><span class="type">u32</span><!-- /a --> <span class="type">*</span><span class="param">duration</span>);  <!-- headerDoc=declaration;uid=//apple_ref/c/func/readFrame;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/readFrame/wavData;   name=wavData -->
+<a name="//apple_ref/doc/functionparam/readFrame/wavData"></a>
+<code>wavData</code>
+</dt>
+<dd><p>Pointer to an initialized WAVData structure</p></dd>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/readFrame/sampleH;   name=sampleH -->
+<a name="//apple_ref/doc/functionparam/readFrame/sampleH"></a>
+<code>sampleH</code>
+</dt>
+<dd><p>MP4 handle, which will contain the audio frame</p></dd>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/readFrame/duration;   name=duration -->
+<a name="//apple_ref/doc/functionparam/readFrame/duration"></a>
+<code>duration</code>
+</dt>
+<dd><p>The number of samples contained in the audio frame, which is equal to the duration</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/readFrame;name=start --><p>Reads an audio frame form the wav input file
+<!-- headerDoc=discussion;uid=//apple_ref/c/func/readFrame;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=func;  uid=//apple_ref/c/func/writeFrame;   name=writeFrame --><a name="//apple_ref/c/func/writeFrame"></a>
+<h3><a name="writeFrame">writeFrame</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/func/writeFrame;name=start --><!-- a logicalPath="//apple_ref/c/cl/MP4Err //apple_ref/c/tdef/MP4Err //apple_ref/c/tag/MP4Err //apple_ref/c/struct/MP4Err //apple_ref/c/intf/MP4Err //apple_ref/doc/anysymbol/MP4Err" machineGenerated="true" --><span class="type">MP4Err</span><!-- /a --> <a machinegenerated="true" href="index.html#//apple_ref/c/func/writeFrame" logicalPath="//apple_ref/c/instm/writeFrame //apple_ref/c/clm/writeFrame //apple_ref/c/intfcm/writeFrame //apple_ref/c/intfm/writeFrame //apple_ref/c/func/writeFrame" target="_top"><span class="function">writeFrame</span></a> (
+    <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/WAVData" logicalPath="//apple_ref/c/cl/WAVData //apple_ref/c/tdef/WAVData" target="_top"><span class="type">WAVData</span></a> <span class="type">*</span><span class="param">wavData</span>,
+    <!-- a logicalPath="//apple_ref/c/cl/MP4Handle //apple_ref/c/tdef/MP4Handle //apple_ref/c/tag/MP4Handle //apple_ref/c/struct/MP4Handle //apple_ref/c/intf/MP4Handle //apple_ref/doc/anysymbol/MP4Handle" machineGenerated="true" --><span class="type">MP4Handle</span><!-- /a --> <span class="param">sampleH</span>,
+    <!-- a logicalPath="//apple_ref/c/cl/u32 //apple_ref/c/tdef/u32 //apple_ref/c/tag/u32 //apple_ref/c/struct/u32 //apple_ref/c/intf/u32 //apple_ref/doc/anysymbol/u32" machineGenerated="true" --><span class="type">u32</span><!-- /a --> <span class="param">size</span>);  <!-- headerDoc=declaration;uid=//apple_ref/c/func/writeFrame;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/writeFrame/wavData;   name=wavData -->
+<a name="//apple_ref/doc/functionparam/writeFrame/wavData"></a>
+<code>wavData</code>
+</dt>
+<dd><p>Pointer to a for writing initialized WAVData structure</p></dd>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/writeFrame/sampleH;   name=sampleH -->
+<a name="//apple_ref/doc/functionparam/writeFrame/sampleH"></a>
+<code>sampleH</code>
+</dt>
+<dd><p>MP4 handle, which contains the audio frame</p></dd>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/writeFrame/size;   name=size -->
+<a name="//apple_ref/doc/functionparam/writeFrame/size"></a>
+<code>size</code>
+</dt>
+<dd><p>Size in bytes of the input mp4handle</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/writeFrame;name=start --><p>Writes an audio frame to the wav output file
+<!-- headerDoc=discussion;uid=//apple_ref/c/func/writeFrame;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenSections">
+<a name="HeaderDoc_datatypes"></a>
+<h2 class="h2tight">Typedefs</h2>
+<dl>
+<dt><tt><a href="index.html#//apple_ref/c/tdef/WAVData" target="_top">WAVData</a></tt></dt>
+<dd><p>Contains the information about a wav audio file and the handles to
+read the wav audio file.
+* </p></dd>
+</dl>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=tdef;  uid=//apple_ref/c/tdef/WAVData;   name=WAVData --><a name="//apple_ref/c/tdef/WAVData"></a>
+<h3><a name="WAVData">WAVData</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/WAVData;name=start --><!-- begin abstract --></p>
+<p>Contains the information about a wav audio file and the handles to
+read the wav audio file.
+* <!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/WAVData;name=end --></p>
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/tdef/WAVData;name=start --><span class="keyword">typedef</span> <span class="keyword">struct</span> <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/WAVData" logicalPath="//apple_ref/c/cl/WAVData //apple_ref/c/tdef/WAVData" target="_top"><span class="type">WAVData</span></a> { 
+    <!-- a logicalPath="//apple_ref/c/cl/WAVIO_HANDLE //apple_ref/c/tdef/WAVIO_HANDLE //apple_ref/c/tag/WAVIO_HANDLE //apple_ref/c/struct/WAVIO_HANDLE //apple_ref/c/intf/WAVIO_HANDLE //apple_ref/doc/anysymbol/WAVIO_HANDLE" machineGenerated="true" --><span class="type">WAVIO_HANDLE</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/wavIOHandle //apple_ref/c/data/wavIOHandle //apple_ref/c/clconst/wavIOHandle " machineGenerated="true" --><span class="var">wavIOHandle</span><!-- /a -->; 
+    <!-- a logicalPath="//apple_ref/c/cl/FILE //apple_ref/c/tdef/FILE //apple_ref/c/tag/FILE //apple_ref/c/struct/FILE //apple_ref/c/intf/FILE //apple_ref/doc/anysymbol/FILE" machineGenerated="true" --><span class="type">FILE</span><!-- /a --> <span class="type">*</span><!-- a logicalPath="//apple_ref/c/econst/file //apple_ref/c/data/file //apple_ref/c/clconst/file " machineGenerated="true" --><span class="var">file</span><!-- /a -->; 
+    <span class="keyword">unsigned</span> <!-- a logicalPath="//apple_ref/c/cl/int //apple_ref/c/tdef/int //apple_ref/c/tag/int //apple_ref/c/struct/int //apple_ref/c/intf/int //apple_ref/doc/anysymbol/int" machineGenerated="true" --><span class="type">int</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/channels //apple_ref/c/data/channels //apple_ref/c/clconst/channels " machineGenerated="true" --><span class="var">channels</span><!-- /a -->; 
+    <span class="keyword">unsigned</span> <!-- a logicalPath="//apple_ref/c/cl/int //apple_ref/c/tdef/int //apple_ref/c/tag/int //apple_ref/c/struct/int //apple_ref/c/intf/int //apple_ref/doc/anysymbol/int" machineGenerated="true" --><span class="type">int</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/sampleRate //apple_ref/c/data/sampleRate //apple_ref/c/clconst/sampleRate " machineGenerated="true" --><span class="var">sampleRate</span><!-- /a -->; 
+    <span class="keyword">unsigned</span> <!-- a logicalPath="//apple_ref/c/cl/int //apple_ref/c/tdef/int //apple_ref/c/tag/int //apple_ref/c/struct/int //apple_ref/c/intf/int //apple_ref/doc/anysymbol/int" machineGenerated="true" --><span class="type">int</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/byteDepth //apple_ref/c/data/byteDepth //apple_ref/c/clconst/byteDepth " machineGenerated="true" --><span class="var">byteDepth</span><!-- /a -->; 
+    <span class="keyword">unsigned</span> <!-- a logicalPath="//apple_ref/c/cl/long //apple_ref/c/tdef/long //apple_ref/c/tag/long //apple_ref/c/struct/long //apple_ref/c/intf/long //apple_ref/doc/anysymbol/long" machineGenerated="true" --><span class="type">long</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/totalSamplesPerChannel //apple_ref/c/data/totalSamplesPerChannel //apple_ref/c/clconst/totalSamplesPerChannel " machineGenerated="true" --><span class="var">totalSamplesPerChannel</span><!-- /a -->; 
+    <!-- a logicalPath="//apple_ref/c/cl/int //apple_ref/c/tdef/int //apple_ref/c/tag/int //apple_ref/c/struct/int //apple_ref/c/intf/int //apple_ref/doc/anysymbol/int" machineGenerated="true" --><span class="type">int</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/samplesPerChannelFilled //apple_ref/c/data/samplesPerChannelFilled //apple_ref/c/clconst/samplesPerChannelFilled " machineGenerated="true" --><span class="var">samplesPerChannelFilled</span><!-- /a -->; 
+    <!-- a logicalPath="//apple_ref/c/cl/u32 //apple_ref/c/tdef/u32 //apple_ref/c/tag/u32 //apple_ref/c/struct/u32 //apple_ref/c/intf/u32 //apple_ref/doc/anysymbol/u32" machineGenerated="true" --><span class="type">u32</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/totalBytesWritten //apple_ref/c/data/totalBytesWritten //apple_ref/c/clconst/totalBytesWritten " machineGenerated="true" --><span class="var">totalBytesWritten</span><!-- /a -->; 
+} <!-- a logicalPath="//apple_ref/c/econst/WAVData //apple_ref/c/data/WAVData //apple_ref/c/clconst/WAVData " machineGenerated="true" --><span class="var">WAVData</span><!-- /a -->;  <!-- headerDoc=declaration;uid=//apple_ref/c/tdef/WAVData;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Fields</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/WAVData/wavIOHandle;   name=wavIOHandle -->
+<a name="//apple_ref/doc/typedeffield/WAVData/wavIOHandle"></a>
+<code>wavIOHandle</code>
+</dt>
+<dd><p>Handle for wavIO library
+*</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/WAVData/inputFile;   name=inputFile -->
+<a name="//apple_ref/doc/typedeffield/WAVData/inputFile"></a>
+<code>inputFile</code>
+</dt>
+<dd><p>The wav input file
+*</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/WAVData/channels;   name=channels -->
+<a name="//apple_ref/doc/typedeffield/WAVData/channels"></a>
+<code>channels</code>
+</dt>
+<dd><p>The number of audio channels in the wav audio file
+*</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/WAVData/sampleRate;   name=sampleRate -->
+<a name="//apple_ref/doc/typedeffield/WAVData/sampleRate"></a>
+<code>sampleRate</code>
+</dt>
+<dd><p>The samplerate of the audio
+*</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/WAVData/byteDepth;   name=byteDepth -->
+<a name="//apple_ref/doc/typedeffield/WAVData/byteDepth"></a>
+<code>byteDepth</code>
+</dt>
+<dd><p>The bytes per sample (wavIO converts 16 bit PCM to 32 bit float PCM!)
+*</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/WAVData/totalSamplesPerChannel;   name=totalSamplesPerChannel -->
+<a name="//apple_ref/doc/typedeffield/WAVData/totalSamplesPerChannel"></a>
+<code>totalSamplesPerChannel</code>
+</dt>
+<dd><p>Number of samples per channel in total
+*</p></dd>
+<dt>
+<!-- headerDoc=typedeffield;  uid=//apple_ref/doc/typedeffield/WAVData/samplesPerChannelFilled;   name=samplesPerChannelFilled -->
+<a name="//apple_ref/doc/typedeffield/WAVData/samplesPerChannelFilled"></a>
+<code>samplesPerChannelFilled</code>
+</dt>
+<dd><p>Number of samples per channels filled</p></dd>
+</dl>
+</div>
+<hr class="betweenSections">
+<a name="HeaderDoc_enums"></a>
+<h2 class="h2tight">Enumerated Types</h2>
+<dl>
+<dt><tt><a href="index.html#//apple_ref/c/tag/DRC" target="_top">DRC</a></tt></dt>
+<dd><p>Extends the list of atom types from MP4Atoms.h with atoms used with drc data
+</p></dd>
+</dl>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=tag;  uid=//apple_ref/c/tag/DRC;   name=DRC --><a name="//apple_ref/c/tag/DRC"></a>
+<h3><a name="DRC">DRC</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/c/tag/DRC;name=start --><!-- begin abstract --></p>
+<p>Extends the list of atom types from MP4Atoms.h with atoms used with drc data
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/c/tag/DRC;name=end --></p>
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/tag/DRC;name=start --><span class="keyword">enum</span> { 
+    <!-- a logicalPath="//apple_ref/c/econst/AudioUnsigned16BitLittleEndianSampleEntryType //apple_ref/c/data/AudioUnsigned16BitLittleEndianSampleEntryType //apple_ref/c/clconst/AudioUnsigned16BitLittleEndianSampleEntryType " machineGenerated="true" --><span class="var">AudioUnsigned16BitLittleEndianSampleEntryType</span><!-- /a --> = <!-- a logicalPath="//apple_ref/c/instm/MP4_FOUR_CHAR_CODE //apple_ref/c/clm/MP4_FOUR_CHAR_CODE //apple_ref/c/intfcm/MP4_FOUR_CHAR_CODE //apple_ref/c/intfm/MP4_FOUR_CHAR_CODE //apple_ref/c/func/MP4_FOUR_CHAR_CODE //apple_ref/c/ftmplt/MP4_FOUR_CHAR_CODE //apple_ref/c/defn/MP4_FOUR_CHAR_CODE //apple_ref/c/macro/MP4_FOUR_CHAR_CODE //apple_ref/doc/anysymbol/MP4_FOUR_CHAR_CODE" machineGenerated="true" --><span class="function">MP4_FOUR_CHAR_CODE</span><!-- /a -->(
+        '<span class="char">r</span>',
+        '<span class="char">a</span>',
+        '<span class="char">w</span>',
+        ' ' ), 
+    <!-- a logicalPath="//apple_ref/c/econst/AudioSigned16BitBigEndianSampleEntryType //apple_ref/c/data/AudioSigned16BitBigEndianSampleEntryType //apple_ref/c/clconst/AudioSigned16BitBigEndianSampleEntryType " machineGenerated="true" --><span class="var">AudioSigned16BitBigEndianSampleEntryType</span><!-- /a --> = <!-- a logicalPath="//apple_ref/c/instm/MP4_FOUR_CHAR_CODE //apple_ref/c/clm/MP4_FOUR_CHAR_CODE //apple_ref/c/intfcm/MP4_FOUR_CHAR_CODE //apple_ref/c/intfm/MP4_FOUR_CHAR_CODE //apple_ref/c/func/MP4_FOUR_CHAR_CODE //apple_ref/c/ftmplt/MP4_FOUR_CHAR_CODE //apple_ref/c/defn/MP4_FOUR_CHAR_CODE //apple_ref/c/macro/MP4_FOUR_CHAR_CODE //apple_ref/doc/anysymbol/MP4_FOUR_CHAR_CODE" machineGenerated="true" --><span class="function">MP4_FOUR_CHAR_CODE</span><!-- /a -->(
+        '<span class="char">t</span>',
+        '<span class="char">w</span>',
+        '<span class="char">o</span>',
+        '<span class="char">s</span>' ), 
+    <!-- a logicalPath="//apple_ref/c/econst/AudioSigned16BitLittleEndianSampleEntryType //apple_ref/c/data/AudioSigned16BitLittleEndianSampleEntryType //apple_ref/c/clconst/AudioSigned16BitLittleEndianSampleEntryType " machineGenerated="true" --><span class="var">AudioSigned16BitLittleEndianSampleEntryType</span><!-- /a --> = <!-- a logicalPath="//apple_ref/c/instm/MP4_FOUR_CHAR_CODE //apple_ref/c/clm/MP4_FOUR_CHAR_CODE //apple_ref/c/intfcm/MP4_FOUR_CHAR_CODE //apple_ref/c/intfm/MP4_FOUR_CHAR_CODE //apple_ref/c/func/MP4_FOUR_CHAR_CODE //apple_ref/c/ftmplt/MP4_FOUR_CHAR_CODE //apple_ref/c/defn/MP4_FOUR_CHAR_CODE //apple_ref/c/macro/MP4_FOUR_CHAR_CODE //apple_ref/doc/anysymbol/MP4_FOUR_CHAR_CODE" machineGenerated="true" --><span class="function">MP4_FOUR_CHAR_CODE</span><!-- /a -->(
+        '<span class="char">s</span>',
+        '<span class="char">o</span>',
+        '<span class="char">w</span>',
+        '<span class="char">t</span>' ) 
+};  <!-- headerDoc=declaration;uid=//apple_ref/c/tag/DRC;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Constants</font></h5>
+<div class="param_indent">
+<dl>
+<dt><a name="//apple_ref/c/econst/DRCUniDrcSampleEntryAtomType"><code>DRCUniDrcSampleEntryAtomType</code></a></dt>
+<dd><p>Type for DRCUniDrcSampleEntry. "unid"</p></dd>
+<dt><a name="//apple_ref/c/econst/DRCCoefficientBasicAtomType"><code>DRCCoefficientBasicAtomType</code></a></dt>
+<dd><p>Type for DRCCoefficientBasic. "udc1"</p></dd>
+<dt><a name="//apple_ref/c/econst/DRCInstructionsBasicAtomType"><code>DRCInstructionsBasicAtomType</code></a></dt>
+<dd><p>Type for DRCInstructionsBasic. "udi1"</p></dd>
+<dt><a name="//apple_ref/c/econst/DRCCoefficientUniDRCAtomType"><code>DRCCoefficientUniDRCAtomType</code></a></dt>
+<dd><p>Type for DRCCoefficientUniDRC. "udc2"</p></dd>
+<dt><a name="//apple_ref/c/econst/DRCInstructionsUniDRCAtomType"><code>DRCInstructionsUniDRCAtomType</code></a></dt>
+<dd><p>Type for DRCInstructionsUniDRC. "udi2"</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/tag/DRC;name=start --><p>Atoms</p>
+<!-- headerDoc=discussion;uid=//apple_ref/c/tag/DRC;name=end --><!-- end discussion -->
+<hr class="betweenSections">
+<a name="HeaderDoc_pdefines"></a>
+<h2 class="h2tight">Macro Definitions</h2>
+<dl>
+<dt><tt><a href="index.html#//apple_ref/c/macro/BLOCKLENGTH" target="_top">BLOCKLENGTH</a></tt></dt>
+<dd></dd>
+</dl>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=macro;  uid=//apple_ref/c/macro/BLOCKLENGTH;   name=BLOCKLENGTH --><a name="//apple_ref/c/macro/BLOCKLENGTH"></a>
+<h3><a name="BLOCKLENGTH">BLOCKLENGTH</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/macro/BLOCKLENGTH;name=start --><span class="preprocessor">#define</span> <a machinegenerated="true" href="index.html#//apple_ref/c/macro/BLOCKLENGTH" logicalPath="//apple_ref/c/cl/BLOCKLENGTH //apple_ref/c/tdef/BLOCKLENGTH //apple_ref/c/tag/BLOCKLENGTH //apple_ref/c/struct/BLOCKLENGTH //apple_ref/c/intf/BLOCKLENGTH //apple_ref/c/econst/BLOCKLENGTH //apple_ref/c/data/BLOCKLENGTH //apple_ref/c/clconst/BLOCKLENGTH //apple_ref/c/instm/BLOCKLENGTH //apple_ref/c/clm/BLOCKLENGTH //apple_ref/c/intfcm/BLOCKLENGTH //apple_ref/c/intfm/BLOCKLENGTH //apple_ref/c/func/BLOCKLENGTH //apple_ref/c/ftmplt/BLOCKLENGTH //apple_ref/c/defn/BLOCKLENGTH //apple_ref/c/macro/BLOCKLENGTH" target="_top"><span class="preprocessor">BLOCKLENGTH</span></a> <span class="preprocessor">1024</span> 
+<!-- headerDoc=declaration;uid=//apple_ref/c/macro/BLOCKLENGTH;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Included Defines</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=defineparam;  uid=//apple_ref/doc/defineparam/BLOCKLENGTH/BLOCKLENGTH;   name=BLOCKLENGTH -->
+<a name="//apple_ref/doc/defineparam/BLOCKLENGTH/BLOCKLENGTH"></a>
+<code>BLOCKLENGTH</code>
+</dt>
+<dd><p>The number of samples contained in one audio frame</p></dd>
+</dl>
+</div>
+<p class="gapBeforeFooter">&nbsp;</p>
+<hr class="afterFooter">
+<div class="hd_copyright_and_timestamp">
+<p class="hd_copyright">&copy; Apple
+ </p>
+<p class="hd_timestamp">Last Updated: Wednesday, September 10, 2014
+</p>
+</div>
+</td>
+</tr></table>
+</body>
+</html>

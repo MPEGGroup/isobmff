@@ -1,0 +1,413 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		188041BF19CB3CD800FAABCE /* Logger.c in Sources */ = {isa = PBXBuildFile; fileRef = 187C301519C10C8A0044AB58 /* Logger.c */; };
+		188041D019CB3CD800FAABCE /* liblibisomediafile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 187C2FF619BF9BF60044AB58 /* liblibisomediafile.a */; };
+		188041E619CCA77D00FAABCE /* DRCAtoms.c in Sources */ = {isa = PBXBuildFile; fileRef = 188041E319CCA77D00FAABCE /* DRCAtoms.c */; };
+		188041E719CCA77D00FAABCE /* DRCCoefficientBasicAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = 188041E519CCA77D00FAABCE /* DRCCoefficientBasicAtom.c */; };
+		188041EB19CCE68F00FAABCE /* DRCCoefficientUniDRCAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = 188041E819CCE68F00FAABCE /* DRCCoefficientUniDRCAtom.c */; };
+		188041EC19CCE68F00FAABCE /* DRCInstructionsBasicAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = 188041E919CCE68F00FAABCE /* DRCInstructionsBasicAtom.c */; };
+		188041ED19CCE68F00FAABCE /* DRCInstructionsUniDRCAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = 188041EA19CCE68F00FAABCE /* DRCInstructionsUniDRCAtom.c */; };
+		188041F119D1D7DE00FAABCE /* Testing.c in Sources */ = {isa = PBXBuildFile; fileRef = 188041EF19D1D7DE00FAABCE /* Testing.c */; };
+		188041FB19D36DFE00FAABCE /* WAVData.c in Sources */ = {isa = PBXBuildFile; fileRef = 188041F919D36DFE00FAABCE /* WAVData.c */; };
+		18913ABF19D9FFBE00BFEAC8 /* DRCUniDrcSampleEntryAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = 18913ABE19D9FFBE00BFEAC8 /* DRCUniDrcSampleEntryAtom.c */; };
+		18913AD519DF6E5C00BFEAC8 /* MP4_to_DRC.c in Sources */ = {isa = PBXBuildFile; fileRef = 18913AD419DF6E5C00BFEAC8 /* MP4_to_DRC.c */; };
+		18913AD919E3023A00BFEAC8 /* FileFormatDrcToInStreamDrc.c in Sources */ = {isa = PBXBuildFile; fileRef = 18913AD719E3023A00BFEAC8 /* FileFormatDrcToInStreamDrc.c */; };
+		18913ADB19E44FDA00BFEAC8 /* DRCAudioSampleEntryAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = 18913ADA19E44FDA00BFEAC8 /* DRCAudioSampleEntryAtom.c */; };
+		18B77BB319EDC4680078892F /* libwriteonlybitbuf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B77BB219EDC4680078892F /* libwriteonlybitbuf.a */; };
+		18B77BB519EDC49A0078892F /* libwavIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B77BB419EDC49A0078892F /* libwavIO.a */; };
+		18B77BB719EDC4AA0078892F /* libuniDrcBitstreamDecoderLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B77BB619EDC4AA0078892F /* libuniDrcBitstreamDecoderLib.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		188041D119CB3CD800FAABCE /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		187C2FF619BF9BF60044AB58 /* liblibisomediafile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibisomediafile.a; path = ../../../libisomediafile/macosx/libisomediafile/build/Debug/liblibisomediafile.a; sourceTree = "<group>"; };
+		187C301219C0F7EA0044AB58 /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Logger.h; path = ../../src/Logger.h; sourceTree = "<group>"; };
+		187C301519C10C8A0044AB58 /* Logger.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Logger.c; path = ../../src/Logger.c; sourceTree = "<group>"; };
+		188041D519CB3CD800FAABCE /* MP4_to_DRC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MP4_to_DRC; sourceTree = BUILT_PRODUCTS_DIR; };
+		188041E319CCA77D00FAABCE /* DRCAtoms.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = DRCAtoms.c; path = ../../src/DRCAtoms.c; sourceTree = "<group>"; };
+		188041E419CCA77D00FAABCE /* DRCAtoms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DRCAtoms.h; path = ../../src/DRCAtoms.h; sourceTree = "<group>"; };
+		188041E519CCA77D00FAABCE /* DRCCoefficientBasicAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = DRCCoefficientBasicAtom.c; path = ../../src/DRCCoefficientBasicAtom.c; sourceTree = "<group>"; };
+		188041E819CCE68F00FAABCE /* DRCCoefficientUniDRCAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = DRCCoefficientUniDRCAtom.c; path = ../../src/DRCCoefficientUniDRCAtom.c; sourceTree = "<group>"; };
+		188041E919CCE68F00FAABCE /* DRCInstructionsBasicAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = DRCInstructionsBasicAtom.c; path = ../../src/DRCInstructionsBasicAtom.c; sourceTree = "<group>"; };
+		188041EA19CCE68F00FAABCE /* DRCInstructionsUniDRCAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = DRCInstructionsUniDRCAtom.c; path = ../../src/DRCInstructionsUniDRCAtom.c; sourceTree = "<group>"; };
+		188041EF19D1D7DE00FAABCE /* Testing.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Testing.c; path = ../../src/Testing.c; sourceTree = "<group>"; };
+		188041F019D1D7DE00FAABCE /* Testing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Testing.h; path = ../../src/Testing.h; sourceTree = "<group>"; };
+		188041F919D36DFE00FAABCE /* WAVData.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = WAVData.c; path = ../../src/WAVData.c; sourceTree = "<group>"; };
+		188041FA19D36DFE00FAABCE /* WAVData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WAVData.h; path = ../../src/WAVData.h; sourceTree = "<group>"; };
+		18913ABE19D9FFBE00BFEAC8 /* DRCUniDrcSampleEntryAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = DRCUniDrcSampleEntryAtom.c; path = ../../src/DRCUniDrcSampleEntryAtom.c; sourceTree = "<group>"; };
+		18913AD419DF6E5C00BFEAC8 /* MP4_to_DRC.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = MP4_to_DRC.c; path = ../../src/MP4_to_DRC.c; sourceTree = "<group>"; };
+		18913AD619E2F3BE00BFEAC8 /* MP4toDRCOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP4toDRCOptions.h; path = ../../src/MP4toDRCOptions.h; sourceTree = "<group>"; };
+		18913AD719E3023A00BFEAC8 /* FileFormatDrcToInStreamDrc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = FileFormatDrcToInStreamDrc.c; path = ../../src/FileFormatDrcToInStreamDrc.c; sourceTree = "<group>"; };
+		18913AD819E3023A00BFEAC8 /* FileFormatDrcToInStreamDrc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileFormatDrcToInStreamDrc.h; path = ../../src/FileFormatDrcToInStreamDrc.h; sourceTree = "<group>"; };
+		18913ADA19E44FDA00BFEAC8 /* DRCAudioSampleEntryAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = DRCAudioSampleEntryAtom.c; path = ../../src/DRCAudioSampleEntryAtom.c; sourceTree = "<group>"; };
+		18B77BB219EDC4680078892F /* libwriteonlybitbuf.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwriteonlybitbuf.a; path = "../../../Part04-Dynamic_Range_Control/trunk/tools/writeonlybitbuf/lib/Darwin_x86_64_O0/libwriteonlybitbuf.a"; sourceTree = "<group>"; };
+		18B77BB419EDC49A0078892F /* libwavIO.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwavIO.a; path = "../../../Part04-Dynamic_Range_Control/trunk/tools/wavIO/lib/Darwin_x86_64_O0/libwavIO.a"; sourceTree = "<group>"; };
+		18B77BB619EDC4AA0078892F /* libuniDrcBitstreamDecoderLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libuniDrcBitstreamDecoderLib.a; path = "../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/lib/Debug/libuniDrcBitstreamDecoderLib.a"; sourceTree = "<group>"; };
+		18B77BB819EDC4BE0078892F /* uniDrcBitstreamDecoder_api.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = uniDrcBitstreamDecoder_api.h; path = "../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/include/uniDrcBitstreamDecoder_api.h"; sourceTree = "<group>"; };
+		18B77BB919EDC4DF0078892F /* writeonlybitbuf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = writeonlybitbuf.h; path = "../../../Part04-Dynamic_Range_Control/trunk/tools/writeonlybitbuf/include/writeonlybitbuf.h"; sourceTree = "<group>"; };
+		18B77BBA19EDC4EE0078892F /* uniDrc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = uniDrc.h; path = "../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcCommon/uniDrc.h"; sourceTree = "<group>"; };
+		18B77BBB19EDC4F50078892F /* uniDrcCommon_api.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = uniDrcCommon_api.h; path = "../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcCommon/uniDrcCommon_api.h"; sourceTree = "<group>"; };
+		18B77BBC19EDC4FB0078892F /* uniDrcCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = uniDrcCommon.h; path = "../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcCommon/uniDrcCommon.h"; sourceTree = "<group>"; };
+		18B77BBD19EDC5020078892F /* uniDrcTables.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = uniDrcTables.h; path = "../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcCommon/uniDrcTables.h"; sourceTree = "<group>"; };
+		18B77BBE19EDC50A0078892F /* wavIO.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = wavIO.h; path = "../../../Part04-Dynamic_Range_Control/trunk/tools/wavIO/include/wavIO.h"; sourceTree = "<group>"; };
+		C645AF9119AD206300A93E10 /* StringUtils.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = StringUtils.h; path = ../../src/StringUtils.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		188041CF19CB3CD800FAABCE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18B77BB519EDC49A0078892F /* libwavIO.a in Frameworks */,
+				18B77BB719EDC4AA0078892F /* libuniDrcBitstreamDecoderLib.a in Frameworks */,
+				188041D019CB3CD800FAABCE /* liblibisomediafile.a in Frameworks */,
+				18B77BB319EDC4680078892F /* libwriteonlybitbuf.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* audioexample */ = {
+			isa = PBXGroup;
+			children = (
+				187C2FF619BF9BF60044AB58 /* liblibisomediafile.a */,
+				18B77BB219EDC4680078892F /* libwriteonlybitbuf.a */,
+				18B77BB619EDC4AA0078892F /* libuniDrcBitstreamDecoderLib.a */,
+				18B77BB419EDC49A0078892F /* libwavIO.a */,
+				18B77BB119EDC43B0078892F /* Include */,
+				08FB7795FE84155DC02AAC07 /* Source */,
+				C6A0FF2B0290797F04C91782 /* Documentation */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = audioexample;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				188041EE19D1D78A00FAABCE /* Testing */,
+				18EAE16D19C750B500F0BC40 /* Options */,
+				187C301019C0F7DA0044AB58 /* Logging */,
+				C645AF8F19AD15F000A93E10 /* utils */,
+				188041E219CCA6B900FAABCE /* DRCAtoms */,
+				1873DF2819D473C600E60B2F /* DRC */,
+				188041F819D36D8500FAABCE /* WAV */,
+				18913AD419DF6E5C00BFEAC8 /* MP4_to_DRC.c */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1873DF2819D473C600E60B2F /* DRC */ = {
+			isa = PBXGroup;
+			children = (
+				18913AD719E3023A00BFEAC8 /* FileFormatDrcToInStreamDrc.c */,
+				18913AD819E3023A00BFEAC8 /* FileFormatDrcToInStreamDrc.h */,
+			);
+			name = DRC;
+			sourceTree = "<group>";
+		};
+		187C301019C0F7DA0044AB58 /* Logging */ = {
+			isa = PBXGroup;
+			children = (
+				187C301519C10C8A0044AB58 /* Logger.c */,
+				187C301219C0F7EA0044AB58 /* Logger.h */,
+			);
+			name = Logging;
+			sourceTree = "<group>";
+		};
+		188041E219CCA6B900FAABCE /* DRCAtoms */ = {
+			isa = PBXGroup;
+			children = (
+				188041E319CCA77D00FAABCE /* DRCAtoms.c */,
+				188041E419CCA77D00FAABCE /* DRCAtoms.h */,
+				18913ADA19E44FDA00BFEAC8 /* DRCAudioSampleEntryAtom.c */,
+				18913ABE19D9FFBE00BFEAC8 /* DRCUniDrcSampleEntryAtom.c */,
+				188041E519CCA77D00FAABCE /* DRCCoefficientBasicAtom.c */,
+				188041E819CCE68F00FAABCE /* DRCCoefficientUniDRCAtom.c */,
+				188041E919CCE68F00FAABCE /* DRCInstructionsBasicAtom.c */,
+				188041EA19CCE68F00FAABCE /* DRCInstructionsUniDRCAtom.c */,
+			);
+			name = DRCAtoms;
+			sourceTree = "<group>";
+		};
+		188041EE19D1D78A00FAABCE /* Testing */ = {
+			isa = PBXGroup;
+			children = (
+				188041EF19D1D7DE00FAABCE /* Testing.c */,
+				188041F019D1D7DE00FAABCE /* Testing.h */,
+			);
+			name = Testing;
+			sourceTree = "<group>";
+		};
+		188041F819D36D8500FAABCE /* WAV */ = {
+			isa = PBXGroup;
+			children = (
+				188041F919D36DFE00FAABCE /* WAVData.c */,
+				188041FA19D36DFE00FAABCE /* WAVData.h */,
+			);
+			name = WAV;
+			sourceTree = "<group>";
+		};
+		18B77BB119EDC43B0078892F /* Include */ = {
+			isa = PBXGroup;
+			children = (
+				18B77BB819EDC4BE0078892F /* uniDrcBitstreamDecoder_api.h */,
+				18B77BB919EDC4DF0078892F /* writeonlybitbuf.h */,
+				18B77BBA19EDC4EE0078892F /* uniDrc.h */,
+				18B77BBB19EDC4F50078892F /* uniDrcCommon_api.h */,
+				18B77BBC19EDC4FB0078892F /* uniDrcCommon.h */,
+				18B77BBD19EDC5020078892F /* uniDrcTables.h */,
+				18B77BBE19EDC50A0078892F /* wavIO.h */,
+			);
+			name = Include;
+			sourceTree = "<group>";
+		};
+		18EAE16D19C750B500F0BC40 /* Options */ = {
+			isa = PBXGroup;
+			children = (
+				18913AD619E2F3BE00BFEAC8 /* MP4toDRCOptions.h */,
+			);
+			name = Options;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				188041D519CB3CD800FAABCE /* MP4_to_DRC */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C645AF8F19AD15F000A93E10 /* utils */ = {
+			isa = PBXGroup;
+			children = (
+				C645AF9119AD206300A93E10 /* StringUtils.h */,
+			);
+			name = utils;
+			sourceTree = "<group>";
+		};
+		C6A0FF2B0290797F04C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		188041B919CB3CD800FAABCE /* MP4_to_DRC */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 188041D219CB3CD800FAABCE /* Build configuration list for PBXNativeTarget "MP4_to_DRC" */;
+			buildPhases = (
+				188041BA19CB3CD800FAABCE /* Sources */,
+				188041CF19CB3CD800FAABCE /* Frameworks */,
+				188041D119CB3CD800FAABCE /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MP4_to_DRC;
+			productName = VTT_to_MP4;
+			productReference = 188041D519CB3CD800FAABCE /* MP4_to_DRC */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+			};
+			buildConfigurationList = CB5BCAA90A2E30930047AF98 /* Build configuration list for PBXProject "MP4_to_DRC" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 08FB7794FE84155DC02AAC07 /* audioexample */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				188041B919CB3CD800FAABCE /* MP4_to_DRC */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		188041BA19CB3CD800FAABCE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				188041F119D1D7DE00FAABCE /* Testing.c in Sources */,
+				188041BF19CB3CD800FAABCE /* Logger.c in Sources */,
+				18913AD519DF6E5C00BFEAC8 /* MP4_to_DRC.c in Sources */,
+				188041E719CCA77D00FAABCE /* DRCCoefficientBasicAtom.c in Sources */,
+				18913ABF19D9FFBE00BFEAC8 /* DRCUniDrcSampleEntryAtom.c in Sources */,
+				188041EC19CCE68F00FAABCE /* DRCInstructionsBasicAtom.c in Sources */,
+				18913ADB19E44FDA00BFEAC8 /* DRCAudioSampleEntryAtom.c in Sources */,
+				188041E619CCA77D00FAABCE /* DRCAtoms.c in Sources */,
+				188041EB19CCE68F00FAABCE /* DRCCoefficientUniDRCAtom.c in Sources */,
+				188041FB19D36DFE00FAABCE /* WAVData.c in Sources */,
+				188041ED19CCE68F00FAABCE /* DRCInstructionsUniDRCAtom.c in Sources */,
+				18913AD919E3023A00BFEAC8 /* FileFormatDrcToInStreamDrc.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		188041D319CB3CD800FAABCE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"${SRCROOT}/../../../libisomediafile/src",
+					"${SRCROOT}/../../../libisomediafile/macosx",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"${SRCROOT}/../../../libisomediafile/macosx/libisomediafile/build/Debug/",
+					"${SRCROOT}/../../../Part04-Dynamic_Range_Control/trunk/tools/writeonlybitbuf/lib/Darwin_x86_64_O0",
+					"${SRCROOT}/../../../Part04-Dynamic_Range_Control/trunk/tools/wavIO/lib/Darwin_x86_64_O0",
+					"${SRCROOT}/../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/lib/Debug",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = MP4_to_DRC;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		188041D419CB3CD800FAABCE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"${SRCROOT}/../../../libisomediafile/src",
+					"${SRCROOT}/../../../libisomediafile/macosx",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"${SRCROOT}/../../../libisomediafile/macosx/libisomediafile/build/Debug/",
+					"${SRCROOT}/../../../Part04-Dynamic_Range_Control/trunk/tools/writeonlybitbuf/lib/Darwin_x86_64_O0",
+					"${SRCROOT}/../../../Part04-Dynamic_Range_Control/trunk/tools/wavIO/lib/Darwin_x86_64_O0",
+					"${SRCROOT}/../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/lib/Debug",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_NAME = MP4_to_DRC;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		CB5BCAAA0A2E30930047AF98 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ONLY_ACTIVE_ARCH = YES;
+			};
+			name = Debug;
+		};
+		CB5BCAAB0A2E30930047AF98 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		188041D219CB3CD800FAABCE /* Build configuration list for PBXNativeTarget "MP4_to_DRC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				188041D319CB3CD800FAABCE /* Debug */,
+				188041D419CB3CD800FAABCE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		CB5BCAA90A2E30930047AF98 /* Build configuration list for PBXProject "MP4_to_DRC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB5BCAAA0A2E30930047AF98 /* Debug */,
+				CB5BCAAB0A2E30930047AF98 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}
