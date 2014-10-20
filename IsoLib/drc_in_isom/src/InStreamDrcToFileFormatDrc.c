@@ -261,6 +261,8 @@ MP4Err  addCoefficientBasics            (UniDrcConfig *uniDrcConfig, MP4AudioSam
 {
     MP4Err                          err;
     
+    logMsg(LOGLEVEL_DEBUG, "Adding coefficient basics to sample entry");
+    
     err         = MP4NoErr;
     for (int i = 0; i < uniDrcConfig->drcCoefficientsBasicCount; i++)
     {
@@ -283,6 +285,8 @@ bail:
 MP4Err  addInstructionsBasics           (UniDrcConfig *uniDrcConfig, MP4AudioSampleEntryAtomPtr audioSampleEntry)
 {
     MP4Err                          err;
+    
+    logMsg(LOGLEVEL_DEBUG, "Adding instructions basics to sample entry");
     
     err         = MP4NoErr;
     for (int i = 0; i < uniDrcConfig->drcInstructionsBasicCount; i++)
@@ -330,6 +334,8 @@ MP4Err  addInstrAdditionalDownMixIDs    (DRCInstructionsBasicAtomPtr instrBasicA
     MP4Err      err;
     err         = MP4NoErr;
     
+    logMsg(LOGLEVEL_DEBUG, "Adding additional downmix ids to instruction basics atom");
+    
     for (int j = 0; j < instrBasic->additionalDownmixIdCount; j++)
     {
         DRCInstructionsAdditionalDownMixID    *downMixID;
@@ -348,6 +354,8 @@ bail:
 MP4Err  addCoefficientUniDRC            (UniDrcConfig *uniDrcConfig, MP4AudioSampleEntryAtomPtr audioSampleEntry)
 {
     MP4Err                          err;
+    
+    logMsg(LOGLEVEL_DEBUG, "Adding coefficient uni drcs to sample entry");
     
     err         = MP4NoErr;
     for (int i = 0; i < uniDrcConfig->drcCoefficientsUniDrcCount; i++)
@@ -379,6 +387,8 @@ MP4Err  addCoeffUniDRCSequences         (DRCCoefficientUniDRCAtomPtr coeffUniDRC
 {
     MP4Err      err;
     err         = MP4NoErr;
+    
+    logMsg(LOGLEVEL_DEBUG, "Adding coefficient drc sequences to coefficient uni drc atom");
     
     for (int j = 0; j < coeffUniDrc->sequenceCount; j++)
     {
@@ -422,9 +432,9 @@ MP4Err  addCoeffUniDRCSeqBandInfos      (DRCCoefficientUniDRCSequence *sequence,
 {
     MP4Err      err;
     
+    logMsg(LOGLEVEL_DEBUG, "Adding coefficient uni drcs band infos to coefficient uni drc atom");
+    
     err = MP4NoErr;
-    
-    
     err = MP4MakeLinkedList(&sequence->bandCharacteristics);    if ( err ) goto bail;
     err = MP4MakeLinkedList(&sequence->bandIndexes);            if ( err ) goto bail;
     for (u8 j = 0; j < sequence->band_count; j++)
@@ -461,7 +471,7 @@ MP4Err  addCoeffUniDRCSeqBandInfos      (DRCCoefficientUniDRCSequence *sequence,
             bandIndex->start_sub_band_index     = gainParams->startSubBandIndex;
         }
         
-        err = MP4AddListEntry(bandIndex, sequence->bandIndexes);                    if ( err ) goto bail;
+        err = MP4AddListEntry(bandIndex, sequence->bandIndexes);    if ( err ) goto bail;
     }
 bail:
     return err;
@@ -471,11 +481,22 @@ MP4Err  addInstructionsUniDRC           (UniDrcConfig *uniDrcConfig, MP4AudioSam
 {
     MP4Err                          err;
     
+    logMsg(LOGLEVEL_DEBUG, "Adding instruction uni drcs to sample entry");
+    
     err         = MP4NoErr;
     for (int i = 0; i < uniDrcConfig->drcInstructionsUniDrcCount; i++)
     {
         DRCInstructionsUniDRCAtomPtr  instrUniDRCAtom;
         DrcInstructionsUniDrc        *instrUniDrc;
+        u8                           channelGroupCount;
+        u8                           uniqueIndex[8];
+        float                        uniqueScaling[8];
+        
+        for (u8 x = 0; x < 8; x++)
+        {
+            uniqueIndex[x] = 0;
+            uniqueScaling[x] = -10.0;
+        }
         
         err             = MP4CreateDRCInstructionsUniDRCAtom(&instrUniDRCAtom); if (err) goto bail;
         instrUniDrc     = &uniDrcConfig->drcInstructionsUniDrc[i];
@@ -520,22 +541,57 @@ MP4Err  addInstructionsUniDRC           (UniDrcConfig *uniDrcConfig, MP4AudioSam
             instrUniDRCAtom->no_independent_use     = instrUniDrc->noIndependentUse;
         
         instrUniDRCAtom->channel_count              = uniDrcConfig->channelLayout.baseChannelCount;
+        channelGroupCount                           = 0;
         
-        for (u8 i = 0; i < instrUniDRCAtom->channel_count; i++)
-        {
-            DRCInstructionsChannelSequenceIndex  *channelSequenceIndex;
-            channelSequenceIndex = calloc(1, sizeof(DRCInstructionsChannelSequenceIndex));
-            
-            channelSequenceIndex->reserved              = 0;
-            channelSequenceIndex->bs_sequence_index     = instrUniDrc->sequenceIndex[i] + 1;
-            err = MP4AddListEntry(channelSequenceIndex, instrUniDRCAtom->channelSequenceIndexes); if ( err ) goto bail;
-        }
-        
-        instrUniDRCAtom->channel_group_count               = instrUniDrc->nDrcChannelGroups;
         
         if ((instrUniDRCAtom->DRC_set_effect & (1 << 10)) != 0)
         {
-            for (u8 x = 0; x < instrUniDRCAtom->channel_group_count; x++)
+            for (u8 m = 0; m < instrUniDRCAtom->channel_count; m++)
+            {
+                int found         = -1;
+                u8 sequenceIndex = instrUniDrc->sequenceIndex[m] + 1;
+                float duckingModifier = -10.0;
+                
+                DuckingModifiers *duckingModifierForChannel = &instrUniDrc->duckingModifiersForChannel[m];
+                if (duckingModifierForChannel->duckingScalingPresent == 1)
+                    duckingModifier = duckingModifierForChannel->duckingScaling;
+                    
+                
+                for (int u = 0; u < channelGroupCount; u++)
+                {
+                    if ((sequenceIndex == uniqueIndex[u]) && (duckingModifier == uniqueScaling[u]))
+                    {
+                        found = u;
+                    }
+                }
+                
+                if (found == -1)
+                {
+                    uniqueIndex[channelGroupCount]      = sequenceIndex;
+                    uniqueScaling[channelGroupCount]    = duckingModifier;
+                    found = channelGroupCount;
+                    channelGroupCount++;
+                }
+                
+                DRCInstructionsGroupIndexPerChannel *groupIndexesPerChannel;
+                groupIndexesPerChannel = calloc(1, sizeof(DRCInstructionsGroupIndexPerChannel));
+                
+                groupIndexesPerChannel->channel_group_index = found + 1;
+                
+                err = MP4AddListEntry(groupIndexesPerChannel, instrUniDRCAtom->groupIndexesPerChannels); if ( err ) goto bail;
+            }
+            
+            for (u8 x = 0; x < channelGroupCount; x++)
+            {
+                DRCInstructionsSequenceIndexOfChannelGroup *sequenceIndexeOfChannelGroup;
+                sequenceIndexeOfChannelGroup = calloc(1, sizeof(DRCInstructionsGroupIndexPerChannel));
+                
+                sequenceIndexeOfChannelGroup->bs_sequence_index = uniqueIndex[x];
+                
+                err = MP4AddListEntry(sequenceIndexeOfChannelGroup, instrUniDRCAtom->sequenceIndexesOfChannelGroups); if ( err ) goto bail;
+            }
+            
+            for (u8 x = 0; x < instrUniDrc->nDrcChannelGroups; x++)
             {
                 DRCInstructionsChannelGroupDuckingScaling  *channelGroupDuckingScaling;
                 DuckingModifiers                           *duckingModifiers;
@@ -555,7 +611,60 @@ MP4Err  addInstructionsUniDRC           (UniDrcConfig *uniDrcConfig, MP4AudioSam
         }
         else
         {
-            for (u8 x = 0; x < instrUniDRCAtom->channel_group_count; x++)
+            if ((instrUniDrc->downmixId != 0) && (instrUniDrc->downmixId != 0x7F))
+            {
+                for (u32 dmixIndex = 0; dmixIndex < uniDrcConfig->downmixInstructionsCount; dmixIndex++)
+                {
+                    DownmixInstructions *downMixIntr;
+                    downMixIntr = &uniDrcConfig->downmixInstructions[dmixIndex];
+                    if (instrUniDrc->downmixId == downMixIntr->downmixId)
+                        instrUniDRCAtom->channel_count = downMixIntr->targetChannelCount;
+                }
+            }
+            else if (instrUniDrc->downmixId == 0x7F)
+            {
+                instrUniDRCAtom->channel_count = 1;
+            }
+            
+            for (u8 m = 0; m < instrUniDRCAtom->channel_count; m++)
+            {
+                int found         = -1;
+                u8 sequenceIndex = instrUniDrc->sequenceIndex[m] + 1;
+                
+                for (int u = 0; u < channelGroupCount; u++)
+                {
+                    if (sequenceIndex == uniqueIndex[u])
+                    {
+                        found = u + 1;
+                    }
+                }
+                
+                if (found == -1)
+                {
+                    uniqueIndex[channelGroupCount] = sequenceIndex;
+                    channelGroupCount++;
+                    found = channelGroupCount;
+                }
+                
+                DRCInstructionsGroupIndexPerChannel *groupIndexesPerChannel;
+                groupIndexesPerChannel = calloc(1, sizeof(DRCInstructionsGroupIndexPerChannel));
+                
+                groupIndexesPerChannel->channel_group_index = found;
+                
+                err = MP4AddListEntry(groupIndexesPerChannel, instrUniDRCAtom->groupIndexesPerChannels); if ( err ) goto bail;
+            }
+            
+            for (u8 x = 0; x < channelGroupCount; x++)
+            {
+                DRCInstructionsSequenceIndexOfChannelGroup *sequenceIndexeOfChannelGroup;
+                sequenceIndexeOfChannelGroup = calloc(1, sizeof(DRCInstructionsGroupIndexPerChannel));
+                
+                sequenceIndexeOfChannelGroup->bs_sequence_index = uniqueIndex[x];
+                
+                err = MP4AddListEntry(sequenceIndexeOfChannelGroup, instrUniDRCAtom->sequenceIndexesOfChannelGroups); if ( err ) goto bail;
+            }
+            
+            for (u8 x = 0; x < instrUniDrc->nDrcChannelGroups; x++)
             {
                 DRCInstructionsChannelGroupGainScaling  *channelGroupGainScaling;
                 GainModifiers                           *gainModifiers;
@@ -593,6 +702,8 @@ void encDownmixCoefficient(const float bsDownmixCoefficient, int* code)
     int i;
     float coeffDb;
     
+    logMsg(LOGLEVEL_TRACE, "Encoding downmix coefficient: %f", bsDownmixCoefficient);
+    
     coeffDb = 20.0f * (float)log10(bsDownmixCoefficient);
     
     if (coeffDb < downmixCoeff[14])
@@ -606,6 +717,8 @@ void encDownmixCoefficient(const float bsDownmixCoefficient, int* code)
         if ((i>0) && (coeffDb > 0.5f * (downmixCoeff[i-1] + downmixCoeff[i]))) i--;
         *code = i;
     }
+    
+    logMsg(LOGLEVEL_TRACE, "Encoding downmix coefficient finished, code: %d", *code);
 }
 
 int encDuckingScaling(const float scaling)
@@ -613,6 +726,8 @@ int encDuckingScaling(const float scaling)
     float   delta;
     int     mu;
     int     bits;
+    
+    logMsg(LOGLEVEL_TRACE, "Encoding ducking scaling: %f", scaling);
     
     delta = scaling - 1.0f;
     
@@ -632,7 +747,8 @@ int encDuckingScaling(const float scaling)
         mu      = max(0, mu);
         bits    += mu;
     }
-
+    
+    logMsg(LOGLEVEL_TRACE, "Encoding ducking scaling finished, result: %d", bits);
     return bits;
 }
 
@@ -640,6 +756,8 @@ MP4Err encMethodValue(const int methodDefinition, const float methodValue, int *
 {
     MP4Err  err;
     int     bits;
+    
+    logMsg(LOGLEVEL_TRACE, "Encoding method value: methodDefinition: %d, methodValue: %f", methodDefinition, methodValue);
     
     err = MP4NoErr;
     switch (methodDefinition)
@@ -693,6 +811,9 @@ MP4Err encMethodValue(const int methodDefinition, const float methodValue, int *
         }
     }
     *code = bits;
+    
+    logMsg(LOGLEVEL_TRACE, "Encoding method value finished: code: %d", bits);
+    
 bail:
     return err;
 }

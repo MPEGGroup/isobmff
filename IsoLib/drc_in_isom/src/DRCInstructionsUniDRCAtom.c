@@ -46,14 +46,23 @@ static void destroy( MP4AtomPtr s )
     }
     MP4DeleteLinkedList(self->additionalDownMixIDs);
     
-    while (self->channelSequenceIndexes->entryCount > 0)
+    while (self->groupIndexesPerChannels->entryCount > 0)
     {
-        DRCInstructionsChannelSequenceIndex *channelSequenceIndex;
-        MP4GetListEntry(self->channelSequenceIndexes, 0, (char**) &channelSequenceIndex);
-        free (channelSequenceIndex);
-        MP4DeleteListEntry(self->channelSequenceIndexes, 0);
+        DRCInstructionsGroupIndexPerChannel *item;
+        MP4GetListEntry(self->groupIndexesPerChannels, 0, (char**) &item);
+        free (item);
+        MP4DeleteListEntry(self->groupIndexesPerChannels, 0);
     }
-    MP4DeleteLinkedList(self->channelSequenceIndexes);
+    MP4DeleteLinkedList(self->groupIndexesPerChannels);
+    
+    while (self->sequenceIndexesOfChannelGroups->entryCount > 0)
+    {
+        DRCInstructionsSequenceIndexOfChannelGroup *item;
+        MP4GetListEntry(self->sequenceIndexesOfChannelGroups, 0, (char**) &item);
+        free (item);
+        MP4DeleteListEntry(self->sequenceIndexesOfChannelGroups, 0);
+    }
+    MP4DeleteLinkedList(self->sequenceIndexesOfChannelGroups);
     
     while (self->channelGroupDuckingScalings->entryCount > 0)
     {
@@ -145,23 +154,26 @@ static MP4Err serialize( struct MP4Atom* s, char* buffer )
     PUT8_V(tmp8);
     PUT8(channel_count);
     
-    assert( self->channelSequenceIndexes->entryCount == self->channel_count );
+    assert( self->groupIndexesPerChannels->entryCount == self->channel_count );
     
     for (u8 i = 0; i < self->channel_count; i++)
     {
-        DRCInstructionsChannelSequenceIndex  *channelSequenceIndex;
-        MP4GetListEntry(self->channelSequenceIndexes, i, (char**) &channelSequenceIndex);
-        tmp8 = (channelSequenceIndex->reserved << 6) + channelSequenceIndex->bs_sequence_index;
+        DRCInstructionsGroupIndexPerChannel  *groupIndexPerChannel;
+        MP4GetListEntry(self->groupIndexesPerChannels, i, (char**) &groupIndexPerChannel);
+        PUT8_V(groupIndexPerChannel->channel_group_index);
+    }
+    
+    for (u8 i = 0; i < self->sequenceIndexesOfChannelGroups->entryCount; i++)
+    {
+        DRCInstructionsSequenceIndexOfChannelGroup  *sequenceIndexOfChannelGroup;
+        MP4GetListEntry(self->sequenceIndexesOfChannelGroups, i, (char**) &sequenceIndexOfChannelGroup);
+        tmp8 = (sequenceIndexOfChannelGroup->reserved << 6) + sequenceIndexOfChannelGroup->bs_sequence_index;
         PUT8_V(tmp8);
     }
     
-    PUT8(channel_group_count);
-    
     if ((self->DRC_set_effect & (1 << 10)) != 0)
     {
-        assert( self->channelGroupDuckingScalings->entryCount == self->channel_group_count );
-        
-        for (u8 i = 0; i < self->channel_group_count; i++)
+       for (u8 i = 0; i < self->channelGroupDuckingScalings->entryCount; i++)
         {
             DRCInstructionsChannelGroupDuckingScaling  *channelGroupDuckingScaling;
             MP4GetListEntry(self->channelGroupDuckingScalings, i, (char**) &channelGroupDuckingScaling);
@@ -176,10 +188,8 @@ static MP4Err serialize( struct MP4Atom* s, char* buffer )
     }
     else
     {
-        assert( self->channelGroupGainScalings->entryCount == self->channel_group_count );
-        
-        for (u8 i = 0; i < self->channel_group_count; i++)
-        {
+      for (u8 i = 0; i < self->channelGroupGainScalings->entryCount; i++)
+      {
             DRCInstructionsChannelGroupGainScaling  *channelGroupGainScaling;
             MP4GetListEntry(self->channelGroupGainScalings, i, (char**) &channelGroupGainScaling);
             tmp8 = (channelGroupGainScaling->reserved1 << 1) + channelGroupGainScaling->gain_scaling_present;
@@ -239,17 +249,15 @@ static MP4Err calculateSize( struct MP4Atom* s )
     
     self->size += 2;
     
-    assert( self->channelSequenceIndexes->entryCount == self->channel_count );
+    assert( self->groupIndexesPerChannels->entryCount == self->channel_count );
     
     self->size += self->channel_count;
     
-    self->size += 1;
+    self->size += self->sequenceIndexesOfChannelGroups->entryCount;
     
     if ((self->DRC_set_effect & (1 << 10)) != 0)
     {
-        assert( self->channelGroupDuckingScalings->entryCount == self->channel_group_count );
-        
-        for (u8 i = 0; i < self->channel_group_count; i++)
+        for (u8 i = 0; i < self->channelGroupDuckingScalings->entryCount; i++)
         {
             DRCInstructionsChannelGroupDuckingScaling  *channelGroupDuckingScaling;
             MP4GetListEntry(self->channelGroupDuckingScalings, i, (char**) &channelGroupDuckingScaling);
@@ -262,9 +270,7 @@ static MP4Err calculateSize( struct MP4Atom* s )
     }
     else
     {
-        assert( self->channelGroupGainScalings->entryCount == self->channel_group_count );
-        
-        for (u8 i = 0; i < self->channel_group_count; i++)
+        for (u8 i = 0; i < self->channelGroupGainScalings->entryCount; i++)
         {
             DRCInstructionsChannelGroupGainScaling  *channelGroupGainScaling;
             MP4GetListEntry(self->channelGroupGainScalings, i, (char**) &channelGroupGainScaling);
@@ -292,11 +298,14 @@ static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStr
 {
     u32         tmp8;
     u32         tmp16;
+    u8          channelGroupCount;
 	MP4Err      err;
+
 	DRCInstructionsUniDRCAtomPtr self = (DRCInstructionsUniDRCAtomPtr) s;
+    err                               = MP4NoErr;
 	
     logMsg(LOGLEVEL_TRACE, "Creating DRCInstructionsUniDRCAtom from inputstream");
-	err = MP4NoErr;
+	
 	if ( self == NULL )	BAILWITHERROR( MP4BadParamErr )
         err = self->super->createFromInputStream( s, proto, (char*) inputStream ); if ( err ) goto bail;
     
@@ -357,62 +366,89 @@ static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStr
     
     GET8(channel_count);
     
-    err = MP4MakeLinkedList(&self->channelSequenceIndexes); if ( err ) goto bail;
+    channelGroupCount                 = 0;
+    err = MP4MakeLinkedList(&self->groupIndexesPerChannels); if ( err ) goto bail;
     for (u8 i = 0; i < self->channel_count; i++)
     {
-        DRCInstructionsChannelSequenceIndex  *channelSequenceIndex;
-        channelSequenceIndex = calloc(1, sizeof(DRCInstructionsChannelSequenceIndex));
+        DRCInstructionsGroupIndexPerChannel  *groupIndexPerChannel;
+        groupIndexPerChannel = calloc(1, sizeof(DRCInstructionsGroupIndexPerChannel));
         GET8_V(tmp8);
-        channelSequenceIndex->reserved              = tmp8 >> 6;
-        channelSequenceIndex->bs_sequence_index     = tmp8 & 0x3F;
-        err = MP4AddListEntry(channelSequenceIndex, self->channelSequenceIndexes); if ( err ) goto bail;
+        groupIndexPerChannel->channel_group_index     = tmp8;
+        
+        if (channelGroupCount < groupIndexPerChannel->channel_group_index)
+        {
+            channelGroupCount = groupIndexPerChannel->channel_group_index;
+        }
+        
+        err = MP4AddListEntry(groupIndexPerChannel, self->groupIndexesPerChannels); if ( err ) goto bail;
     }
     
-    GET8(channel_group_count);
+    err = MP4MakeLinkedList(&self->sequenceIndexesOfChannelGroups); if ( err ) goto bail;
+    for (u8 i = 0; i < channelGroupCount; i++)
+    {
+        DRCInstructionsSequenceIndexOfChannelGroup  *sequenceIndexOfChannelGroup;
+        sequenceIndexOfChannelGroup = calloc(1, sizeof(DRCInstructionsSequenceIndexOfChannelGroup));
+        GET8_V(tmp8);
+        sequenceIndexOfChannelGroup->reserved              = tmp8 >> 6;
+        sequenceIndexOfChannelGroup->bs_sequence_index     = tmp8 & 0x3F;
+        err = MP4AddListEntry(sequenceIndexOfChannelGroup, self->sequenceIndexesOfChannelGroups); if ( err ) goto bail;
+    }
     
     if ((self->DRC_set_effect & (1 << 10)) != 0)
     {
-        for (u8 i = 0; i < self->channel_group_count; i++)
+        for (u8 i = 0; i < channelGroupCount; i++)
         {
-            DRCInstructionsChannelGroupDuckingScaling  *channelGroupDuckingScaling;
+            DRCInstructionsSequenceIndexOfChannelGroup  *sequenceIndexOfChannelGroup;
+            DRCInstructionsChannelGroupDuckingScaling   *channelGroupDuckingScaling;
             channelGroupDuckingScaling = calloc(1, sizeof(DRCInstructionsChannelGroupDuckingScaling));
-            GET8_V(tmp8);
-            channelGroupDuckingScaling->reserved1                   = tmp8 >> 1;
-            channelGroupDuckingScaling->ducking_scaling_present     = tmp8 & 0x01;
-            if (channelGroupDuckingScaling->ducking_scaling_present == 1)
+            
+            MP4GetListEntry(self->sequenceIndexesOfChannelGroups, i, (char **) &sequenceIndexOfChannelGroup);
+            if (sequenceIndexOfChannelGroup->bs_sequence_index == 0)
             {
                 GET8_V(tmp8);
-                channelGroupDuckingScaling->reserved2               = tmp8 >> 4;
-                channelGroupDuckingScaling->bs_ducking_scaling      = tmp8 & 0x0F;
+                channelGroupDuckingScaling->reserved1                   = tmp8 >> 1;
+                channelGroupDuckingScaling->ducking_scaling_present     = tmp8 & 0x01;
+                if (channelGroupDuckingScaling->ducking_scaling_present == 1)
+                {
+                    GET8_V(tmp8);
+                    channelGroupDuckingScaling->reserved2               = tmp8 >> 4;
+                    channelGroupDuckingScaling->bs_ducking_scaling      = tmp8 & 0x0F;
+                }
+                err = MP4AddListEntry(channelGroupDuckingScaling, self->channelGroupDuckingScalings); if ( err ) goto bail;
             }
-            err = MP4AddListEntry(channelGroupDuckingScaling, self->channelGroupDuckingScalings); if ( err ) goto bail;
         }
     }
     else
     {
-        for (u8 i = 0; i < self->channel_group_count; i++)
+        for (u8 i = 0; i < channelGroupCount; i++)
         {
-            DRCInstructionsChannelGroupGainScaling  *channelGroupGainScaling;
+            DRCInstructionsSequenceIndexOfChannelGroup  *sequenceIndexOfChannelGroup;
+            DRCInstructionsChannelGroupGainScaling      *channelGroupGainScaling;
             channelGroupGainScaling = calloc(1, sizeof(DRCInstructionsChannelGroupGainScaling));
-            GET8_V(tmp8);
-            channelGroupGainScaling->reserved1                  = tmp8 >> 1;
-            channelGroupGainScaling->gain_scaling_present       = tmp8 & 0x01;
-            if (channelGroupGainScaling->gain_scaling_present == 1)
+            err = MP4GetListEntry(self->sequenceIndexesOfChannelGroups, i, (char **) &sequenceIndexOfChannelGroup); if ( err ) goto bail;
+            
+            if (sequenceIndexOfChannelGroup->bs_sequence_index != 0)
             {
                 GET8_V(tmp8);
-                channelGroupGainScaling->bs_attenuation_scaling        = tmp8 >> 4;
-                channelGroupGainScaling->bs_amplification_scaling      = tmp8 & 0x0F;
-            }
-            GET8_V(tmp8);
-            channelGroupGainScaling->reserved2                  = tmp8 >> 1;
-            channelGroupGainScaling->gain_offset_present        = tmp8 & 0x01;
-            if (channelGroupGainScaling->gain_offset_present == 1)
-            {
+                channelGroupGainScaling->reserved1                  = tmp8 >> 1;
+                channelGroupGainScaling->gain_scaling_present       = tmp8 & 0x01;
+                if (channelGroupGainScaling->gain_scaling_present == 1)
+                {
+                    GET8_V(tmp8);
+                    channelGroupGainScaling->bs_attenuation_scaling        = tmp8 >> 4;
+                    channelGroupGainScaling->bs_amplification_scaling      = tmp8 & 0x0F;
+                }
                 GET8_V(tmp8);
-                channelGroupGainScaling->reserved3              = tmp8 >> 6;
-                channelGroupGainScaling->bs_gain_offset         = tmp8 & 0x3F;
+                channelGroupGainScaling->reserved2                  = tmp8 >> 1;
+                channelGroupGainScaling->gain_offset_present        = tmp8 & 0x01;
+                if (channelGroupGainScaling->gain_offset_present == 1)
+                {
+                    GET8_V(tmp8);
+                    channelGroupGainScaling->reserved3              = tmp8 >> 6;
+                    channelGroupGainScaling->bs_gain_offset         = tmp8 & 0x3F;
+                }
+                err = MP4AddListEntry(channelGroupGainScaling, self->channelGroupGainScalings); if ( err ) goto bail;
             }
-            err = MP4AddListEntry(channelGroupGainScaling, self->channelGroupGainScalings); if ( err ) goto bail;
         }
     }
 
@@ -448,7 +484,8 @@ MP4Err MP4CreateDRCInstructionsUniDRCAtom( DRCInstructionsUniDRCAtomPtr *outAtom
     self->reserved6                 = 0;
     
     err = MP4MakeLinkedList(&self->additionalDownMixIDs);
-    err = MP4MakeLinkedList(&self->channelSequenceIndexes);
+    err = MP4MakeLinkedList(&self->groupIndexesPerChannels);
+    err = MP4MakeLinkedList(&self->sequenceIndexesOfChannelGroups);
     err = MP4MakeLinkedList(&self->channelGroupDuckingScalings);
     err = MP4MakeLinkedList(&self->channelGroupGainScalings);
     

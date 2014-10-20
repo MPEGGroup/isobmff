@@ -765,21 +765,33 @@ MP4Err testDRCInstructionsUniDRCAtom()
     
     atom->channel_count                     = getTestInt(8);
     
+    u8 biggestIndex = 0;
     for (u8 i = 0; i < atom->channel_count; i++)
     {
-        DRCInstructionsChannelSequenceIndex  *channelSequenceIndex;
-        channelSequenceIndex = calloc(1, sizeof(DRCInstructionsChannelSequenceIndex));
+        DRCInstructionsGroupIndexPerChannel  *item;
+        item = calloc(1, sizeof(DRCInstructionsGroupIndexPerChannel));
         
-        channelSequenceIndex->reserved              = 0;
-        channelSequenceIndex->bs_sequence_index     = getTestInt(6);
-        err = MP4AddListEntry(channelSequenceIndex, atom->channelSequenceIndexes); if ( err ) goto bail;
+        item->channel_group_index                   = i+1;
+        if (biggestIndex < item->channel_group_index)
+            biggestIndex = item->channel_group_index;
+        
+        err = MP4AddListEntry(item, atom->groupIndexesPerChannels); if ( err ) goto bail;
     }
     
-    atom->channel_group_count               = getTestInt(8);
+    for (u8 i = 0; i < biggestIndex -1; i++)
+    {
+        DRCInstructionsSequenceIndexOfChannelGroup  *item;
+        item = calloc(1, sizeof(DRCInstructionsSequenceIndexOfChannelGroup));
+        
+        item->reserved              = 0;
+        item->bs_sequence_index     = getTestInt(6);
+        err = MP4AddListEntry(item, atom->sequenceIndexesOfChannelGroups); if ( err ) goto bail;
+    }
+    
     
     if ((atom->DRC_set_effect & (1 << 10)) != 0)
     {
-        for (u8 i = 0; i < atom->channel_group_count; i++)
+        for (u8 i = 0; i < biggestIndex -1; i++)
         {
             DRCInstructionsChannelGroupDuckingScaling  *channelGroupDuckingScaling;
             channelGroupDuckingScaling = calloc(1, sizeof(DRCInstructionsChannelGroupDuckingScaling));
@@ -796,7 +808,7 @@ MP4Err testDRCInstructionsUniDRCAtom()
     }
     else
     {
-        for (u8 i = 0; i < atom->channel_group_count; i++)
+        for (u8 i = 0; i < biggestIndex -1; i++)
         {
             DRCInstructionsChannelGroupGainScaling  *channelGroupGainScaling;
             channelGroupGainScaling = calloc(1, sizeof(DRCInstructionsChannelGroupGainScaling));
@@ -891,19 +903,17 @@ MP4Err testDRCInstructionsUniDRCAtom()
     
     for (u8 i = 0; i < atom->channel_count; i++)
     {
-        DRCInstructionsChannelSequenceIndex  *channelSequenceIndexOrig;
-        DRCInstructionsChannelSequenceIndex  *channelSequenceIndexParsed;
-        MP4GetListEntry(atom->channelSequenceIndexes, i, (char**) &channelSequenceIndexOrig);
-        MP4GetListEntry(parsedDRCAtom->channelSequenceIndexes, i, (char**) &channelSequenceIndexParsed);
-        CHECK(channelSequenceIndexOrig, channelSequenceIndexParsed, reserved);
-        CHECK(channelSequenceIndexOrig, channelSequenceIndexParsed, bs_sequence_index);
+        DRCInstructionsGroupIndexPerChannel  *channelSequenceIndexOrig;
+        DRCInstructionsGroupIndexPerChannel  *channelSequenceIndexParsed;
+        MP4GetListEntry(atom->groupIndexesPerChannels, i, (char**) &channelSequenceIndexOrig);
+        MP4GetListEntry(parsedDRCAtom->groupIndexesPerChannels, i, (char**) &channelSequenceIndexParsed);
+        CHECK(channelSequenceIndexOrig, channelSequenceIndexParsed, channel_group_index);
     }
     
-    CHECK(atom, parsedDRCAtom, channel_group_count);
     
     if ((atom->DRC_set_effect & (1 << 10)) != 0)
     {
-        for (u8 i = 0; i < atom->channel_group_count; i++)
+        for (u8 i = 0; i < atom->channel_count; i++)
         {
             DRCInstructionsChannelGroupDuckingScaling  *channelGroupDuckingScalingOrig;
             DRCInstructionsChannelGroupDuckingScaling  *channelGroupDuckingScalingParsed;
@@ -920,7 +930,7 @@ MP4Err testDRCInstructionsUniDRCAtom()
     }
     else
     {
-        for (u8 i = 0; i < atom->channel_group_count; i++)
+        for (u8 i = 0; i < atom->channel_count; i++)
         {
             DRCInstructionsChannelGroupGainScaling  *channelGroupGainScalingOrig;
             DRCInstructionsChannelGroupGainScaling  *channelGroupGainScalingParsed;

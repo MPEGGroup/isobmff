@@ -50,8 +50,6 @@ int     main                ( int argc, char **argv )
     
     setDefaultValues(&options);
     
-    //err = testAll(10); if (err) goto bail;
-    
     if (!parseArguments(argc, argv, &options))
     {
         logMsg(LOGLEVEL_ERROR, "Parsing options failed!");
@@ -64,10 +62,9 @@ int     main                ( int argc, char **argv )
     logMsg(LOGLEVEL_INFO, "DRC to MP4 started.\n");
     printOptions(&options);
     
-    err = initWAVDataForReading(&wavData, options.wavInputFile); if (err) goto bail;
-    err = initDRCData(&drcData, options.drcBitstreamInputFile, wavData.sampleRate, wavData.channels, BLOCKLENGTH); if (err) goto bail;
-    
-    err = createMP4Movie(&wavData, &drcData, &options);         if (err) goto bail;
+    err = initWAVDataForReading(&wavData, options.wavInputFile);                                                    if (err) goto bail;
+    err = initDRCData(&drcData, options.drcBitstreamInputFile, wavData.sampleRate, wavData.channels, BLOCKLENGTH);  if (err) goto bail;
+    err = createMP4Movie(&wavData, &drcData, &options);                                                             if (err) goto bail;
     
     logMsg(LOGLEVEL_INFO, "DRC to MP4 finished.");
 bail:
@@ -186,6 +183,7 @@ MP4Err  createAudioSampleEntry  (MP4AudioSampleEntryAtomPtr *sampleEntry, WAVDat
     logMsg(LOGLEVEL_DEBUG, "Creating audio sample entry for raw pcm audio data");
     
     err = MP4CreateAudioSampleEntryAtom( sampleEntry ); if (err) goto bail;
+    
     (*sampleEntry)->timeScale             = wavData->sampleRate;
     (*sampleEntry)->dataReferenceIndex    = 1;
     (*sampleEntry)->reserved3             = wavData->channels;

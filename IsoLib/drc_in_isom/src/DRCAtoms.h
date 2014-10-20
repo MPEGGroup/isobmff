@@ -220,11 +220,21 @@ typedef struct DRCInstructionsBasicAtom
  * @field reserved bit(2) reserved = 0;
  * @field bs_sequence_index unsigned int(6) bs_sequence_index;
  */
-typedef struct DRCInstructionsChannelSequenceIndex
+typedef struct DRCInstructionsGroupIndexPerChannel
 {
-	u8      reserved;               //  bit(2) = 0
+    u8      channel_group_index;    //  uint(8)
+} DRCInstructionsGroupIndexPerChannel;
+
+/*!
+ * @brief Part of DRCInstructionsUniDRCAtom
+ * @field reserved bit(2) reserved = 0;
+ * @field bs_sequence_index unsigned int(6) bs_sequence_index;
+ */
+typedef struct DRCInstructionsSequenceIndexOfChannelGroup
+{
+    u8      reserved;               //  bit(2) = 0
     u8      bs_sequence_index;      //  uint(6)
-} DRCInstructionsChannelSequenceIndex;
+} DRCInstructionsSequenceIndexOfChannelGroup;
 
 /*!
  * @brief Part of DRCInstructionsUniDRCAtom
@@ -287,7 +297,8 @@ typedef struct DRCInstructionsChannelGroupGainScaling
  * @field no_independent_use bit(1) no_independent_use;
  * @field reserved6 bit(1) reserved = 0;
  * @field channel_count unsigned int(8) channel_count;
- * @field channelSequenceIndexes List of DRCInstructionsChannelSequenceIndexes
+ * @field groupIndexesPerChannels List of DRCInstructionsGroupIndexPerChannel
+ * @field sequenceIndexesOfChannelGroups List of DRCInstructionsSequenceIndexOfChannelGroup
  * @field channel_group_count unsigned int(8) channel_group_count;
  * @field channelGroupDuckingScalings List of DRCInstructionsChannelGroupDuckingScalings
  * @field channelGroupGainScalings List of DRCInstructionsChannelGroupGainScaling
@@ -310,14 +321,13 @@ typedef struct DRCInstructionsUniDRCAtom
     u8              reserved4;                                  // bit(4) = 0
     u8              bs_DRC_set_target_loudness_value_upper;     // uint(6)
     u8              bs_DRC_set_target_loudness_value_lower;     // uint(6)
-    
     u8              reserved5;                                  // bit(1) = 0
     u8              depends_on_DRC_set;                         // uint(3)
     u8              no_independent_use;                         // bit(1)
     u8              reserved6;                                  // bit(1) = 0
     u8              channel_count;                              // uint(8)
-    MP4LinkedList   channelSequenceIndexes;                     // List of DRCInstructionsChannelSequenceIndexes
-    u8              channel_group_count;                        // uint(8)
+    MP4LinkedList   groupIndexesPerChannels;                    // List of DRCInstructionsGroupIndexPerChannel
+    MP4LinkedList   sequenceIndexesOfChannelGroups;             // List of DRCInstructionsSequenceIndexOfChannelGroup
     MP4LinkedList   channelGroupDuckingScalings;                // List of DRCInstructionsChannelGroupDuckingScalings
     MP4LinkedList   channelGroupGainScalings;                   // List of DRCInstructionsChannelGroupGainScaling
 } DRCInstructionsUniDRCAtom;

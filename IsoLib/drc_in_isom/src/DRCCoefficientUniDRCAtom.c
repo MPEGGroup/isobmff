@@ -144,7 +144,7 @@ static MP4Err serialize( struct MP4Atom* s, char* buffer )
             
             for (u8 j = 1; j < sequence->band_count; j++)
             {
-                MP4GetListEntry(sequence->bandIndexes, j, (char**) &bandIndex);
+                MP4GetListEntry(sequence->bandIndexes, j - 1, (char**) &bandIndex);
                 
                 if (sequence->drc_band_type == 1)
                 {

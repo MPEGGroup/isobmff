@@ -51,6 +51,8 @@ MP4Err  createStaticDrcDataFromAudioTrack   (MP4Track trak, StaticDrcData *stati
     MP4Err                          err;
     MP4AudioSampleEntryAtomPtr      audioSampleEntry;
 
+    logMsg(LOGLEVEL_DEBUG, "Creating static drc data from audio track");
+    
     err = MP4NoErr;
     err = createSampleEntryFromBuffer(trak, &audioSampleEntry);             if (err) goto bail;
     
@@ -58,6 +60,9 @@ MP4Err  createStaticDrcDataFromAudioTrack   (MP4Track trak, StaticDrcData *stati
     staticDrcData->sampleRate           = audioSampleEntry->timeScale;
     staticDrcData->bytesPerSample       = audioSampleEntry->reserved4 / 8;
     staticDrcData->drcLocation          = 1; // maybe optional later
+    
+    logMsg(LOGLEVEL_INFO, "Audio data from sample entry: channels: %d, sampleRate: %d, bytesPerSample: %d",
+           staticDrcData->channelCount, staticDrcData->sampleRate, staticDrcData->bytesPerSample);
     
     staticDrcData->loudnessAtom         = NULL;
     staticDrcData->channelLayoutAtom    = NULL;
@@ -71,6 +76,8 @@ MP4Err  createStaticDrcDataFromAudioTrack   (MP4Track trak, StaticDrcData *stati
     err = collectSampleEntryAtoms(audioSampleEntry, staticDrcData);             if (err) goto bail;
     err = getLoudnessInfoAtomFromTrack(trak, staticDrcData);                    if (err) goto bail;
     
+    logMsg(LOGLEVEL_DEBUG, "Creating static drc data from audio track finished.");
+    
 bail:
     return err;
 }
@@ -79,8 +86,9 @@ MP4Err  initDrcBitstream                    (StaticDrcData *staticDrcData, DrcBi
 {
     MP4Err      err;
     
-    err = MP4NoErr;
+    logMsg(LOGLEVEL_DEBUG, "Initializing DRC bitstream.");
     
+    err = MP4NoErr;
     err = estimateBistreamBufferSize(staticDrcData, &drcBitStreamHandle->totalBufferSizeInBytes); if (err) goto bail;
     
     drcBitStreamHandle->currentBytePosition = 0;
@@ -89,6 +97,8 @@ MP4Err  initDrcBitstream                    (StaticDrcData *staticDrcData, DrcBi
     
     drcBitStreamHandle->bitstream = calloc(1, sizeof(wobitbuf));
     wobitbuf_Init(drcBitStreamHandle->bitstream, drcBitStreamHandle->bitstreamBuffer, drcBitStreamHandle->totalBufferSizeInBytes * 8, 0);
+    
+    logMsg(LOGLEVEL_DEBUG, "Initializing DRC bitstream finished. Estimated buffer size for static DRC data: %d bytes", drcBitStreamHandle->totalBufferSizeInBytes);
 bail:
     return err;
 }
@@ -97,6 +107,8 @@ MP4Err  writeStaticDrcDataToBitstream       (StaticDrcData *staticDrcData, DrcBi
 {
     MP4Err      err;
     int         bitErr;
+    
+    logMsg(LOGLEVEL_DEBUG, "Writing static DRC data to bitstream started.");
     
     bitErr  = 0;
     err     = MP4NoErr;
@@ -110,6 +122,7 @@ MP4Err  writeStaticDrcDataToBitstream       (StaticDrcData *staticDrcData, DrcBi
     
     err = writeLoudnessInfoSetToBitstream(staticDrcData, drcBitStreamHandle);   if (err) goto bail;
     
+    logMsg(LOGLEVEL_DEBUG, "Writing static DRC data to bitstream finished. Bits written: %d bits", drcBitStreamHandle->bitstream->bitsWritten);
 bail:
     return err;
 }
@@ -120,6 +133,8 @@ MP4Err  prepareDrcBitStreamHelper           (DrcBitStreamHelper *drcBitStreamHel
     int         bitErr;
     int         bitsRead;
     int         bytesRead;
+    
+    logMsg(LOGLEVEL_DEBUG, "Preparing DRC bitstream helper.");
     
     bitErr                              = 0;
     err                                 = MP4NoErr;
@@ -149,6 +164,8 @@ MP4Err  prepareDrcBitStreamHelper           (DrcBitStreamHelper *drcBitStreamHel
     drcBitStreamHandle->offsetInBits               = bitsRead - bytesRead * 8;
     drcBitStreamHandle->currentBytePosition        += bytesRead;
     
+    logMsg(LOGLEVEL_DEBUG, "Preparing DRC bitstream helper finished: Static drc data size: %d bits", bitsRead);
+    
     if (bitErr) BAILWITHERROR(MP4InternalErr);
     
 bail:
@@ -174,6 +191,8 @@ MP4Err  writeDrcGainToBitstream             (MP4Handle packetH, DrcBitstreamHand
     
     drcBitStreamHandle->totalBufferSizeInBytes += size;
     drcBitStreamHandle->bitstreamBuffer = realloc(drcBitStreamHandle->bitstreamBuffer, drcBitStreamHandle->totalBufferSizeInBytes);
+    
+    logMsg(LOGLEVEL_TRACE, "Writing DRC gain to bitbuffer. Extending buffersizer: New size: %d", drcBitStreamHandle->totalBufferSizeInBytes);
     
     bytesLeft = drcBitStreamHandle->totalBufferSizeInBytes - drcBitStreamHandle->currentBytePosition;
     wobitbuf_Init(drcBitStreamHandle->bitstream, &drcBitStreamHandle->bitstreamBuffer[drcBitStreamHandle->currentBytePosition], bytesLeft * 8, 0);
@@ -226,12 +245,14 @@ MP4Err  writeUniDrcConfigToBitstream        (StaticDrcData *staticDrcData, DrcBi
     MP4Err      err;
     int         bitErr;
     
+    logMsg(LOGLEVEL_DEBUG, "Writing UniDrcConfig to bitstream");
+    
     bitErr  = 0;
     err     = MP4NoErr;
     
-    bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, 1, 1);                               // sampleRatePresent
+    bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, 1, 1);                                       // sampleRatePresent
     if (bitErr) BAILWITHERROR(MP4IOErr);
-    bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, staticDrcData->sampleRate - 1000, 18);      // bsSampleRate
+    bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, staticDrcData->sampleRate - 1000, 18);       // bsSampleRate
     if (bitErr) BAILWITHERROR(MP4IOErr);
     bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, staticDrcData->downMixInstructionsAtoms->entryCount, 7);         // downMixInstructionsCount
     if (bitErr) BAILWITHERROR(MP4IOErr);
@@ -266,6 +287,8 @@ MP4Err  writeUniDrcConfigToBitstream        (StaticDrcData *staticDrcData, DrcBi
     
     bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, 0, 1);      // uniDrcConfigExtPresent
     if (bitErr) BAILWITHERROR(MP4IOErr);
+    
+    logMsg(LOGLEVEL_DEBUG, "Writing UniDrcConfig to bitstream finished. Bits written: %d bits", drcBitStreamHandle->bitstream->bitsWritten);
 bail:
     return err;
 }
@@ -274,6 +297,8 @@ MP4Err  writeChannelLayoutToBitstream       (StaticDrcData *staticDrcData, DrcBi
 {
     MP4Err      err;
     int         bitErr;
+    
+    logMsg(LOGLEVEL_DEBUG, "Writing ChannelLayout to bitstream.");
     
     bitErr  = 0;
     err     = MP4NoErr;
@@ -285,6 +310,7 @@ MP4Err  writeChannelLayoutToBitstream       (StaticDrcData *staticDrcData, DrcBi
     bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, 0, 1);                                   // layoutSignalingPresent
     if (bitErr) BAILWITHERROR(MP4IOErr);
     
+    logMsg(LOGLEVEL_DEBUG, "Writing ChannelLayout to bitstream finished. Bits written: %d bits", drcBitStreamHandle->bitstream->bitsWritten);
 bail:
     return err;
 }
@@ -295,6 +321,8 @@ MP4Err  writeDownMixInstructionsToBitstream         (StaticDrcData *staticDrcDat
     int                             bitErr;
     u32                             i;
     MP4DownMixInstructionsAtomPtr   downMixInstrAtom;
+    
+    logMsg(LOGLEVEL_DEBUG, "Writing DownMixInstructions to bitstream.");
     
     bitErr  = 0;
     err     = MP4NoErr;
@@ -330,6 +358,8 @@ MP4Err  writeDownMixInstructionsToBitstream         (StaticDrcData *staticDrcDat
         }
     }
     
+    logMsg(LOGLEVEL_DEBUG, "Writing DownMixInstructions to bitstream finished. Bits written: %d bits", drcBitStreamHandle->bitstream->bitsWritten);
+    
 bail:
     return err;
 }
@@ -340,6 +370,8 @@ MP4Err  writeCoeffBasicsToBitstream                 (StaticDrcData *staticDrcDat
     int                             bitErr;
     u32                             i;
     DRCCoefficientBasicAtomPtr      coeffBasicAtom;
+    
+    logMsg(LOGLEVEL_DEBUG, "Writing CoefficientsBasics to bitstream.");
     
     bitErr  = 0;
     err     = MP4NoErr;
@@ -354,7 +386,7 @@ MP4Err  writeCoeffBasicsToBitstream                 (StaticDrcData *staticDrcDat
         if (bitErr) BAILWITHERROR(MP4IOErr);
     }
     
-    
+    logMsg(LOGLEVEL_DEBUG, "Writing CoefficientsBasics to bitstream finished. Bits written: %d bits", drcBitStreamHandle->bitstream->bitsWritten);
 bail:
     return err;
 }
@@ -365,6 +397,8 @@ MP4Err  writeInstrBasicsToBitstream                 (StaticDrcData *staticDrcDat
     int                             bitErr;
     u32                             i;
     DRCInstructionsBasicAtomPtr     instrBasicAtom;
+    
+    logMsg(LOGLEVEL_DEBUG, "Writing InstructionssBasics to bitstream. Bits written: %d bits", drcBitStreamHandle->bitstream->bitsWritten);
     
     bitErr  = 0;
     err     = MP4NoErr;
@@ -427,6 +461,7 @@ MP4Err  writeInstrBasicsToBitstream                 (StaticDrcData *staticDrcDat
         }
     }
     
+    logMsg(LOGLEVEL_DEBUG, "Writing InstructionssBasics to bitstream finished. Bits written: %d bits", drcBitStreamHandle->bitstream->bitsWritten);
     
 bail:
     return err;
@@ -438,6 +473,8 @@ MP4Err  writeCoeffUniDrcToBitstream                 (StaticDrcData *staticDrcDat
     int                             bitErr;
     u32                             i;
     DRCCoefficientUniDRCAtomPtr     coeffUniDrcAtom;
+    
+    logMsg(LOGLEVEL_DEBUG, "Writing CoefficientUniDRCs to bitstream.");
     
     bitErr  = 0;
     err     = MP4NoErr;
@@ -460,6 +497,8 @@ MP4Err  writeCoeffUniDrcToBitstream                 (StaticDrcData *staticDrcDat
         err = writeCoeffUniDrcSequencesToBitstream(coeffUniDrcAtom, drcBitStreamHandle); if (err) goto bail;
     }
     
+    logMsg(LOGLEVEL_DEBUG, "Writing CoefficientUniDRCs to bitstream finished. Bits written: %d bits", drcBitStreamHandle->bitstream->bitsWritten);
+    
 bail:
     return err;
 }
@@ -470,6 +509,8 @@ MP4Err  writeCoeffUniDrcSequencesToBitstream        (DRCCoefficientUniDRCAtomPtr
     int                             bitErr;
     u32                             i;
     DRCCoefficientUniDRCSequence    *sequence;
+    
+    logMsg(LOGLEVEL_TRACE, "Writing CoefficientUniDRC sequences to bitstream.");
     
     bitErr  = 0;
     err     = MP4NoErr;
@@ -523,7 +564,7 @@ MP4Err  writeCoeffUniDrcSequencesToBitstream        (DRCCoefficientUniDRCAtomPtr
             for (u8 j = 1; j < sequence->band_count; j++)
             {
                 DRCCoefficientUniDRCSequenceBandIndex           *bandIndex;
-                MP4GetListEntry(sequence->bandIndexes, j, (char **) &bandIndex);
+                MP4GetListEntry(sequence->bandIndexes, j-1, (char **) &bandIndex);
                 
                 if (sequence->drc_band_type == 1)
                 {
@@ -540,6 +581,8 @@ MP4Err  writeCoeffUniDrcSequencesToBitstream        (DRCCoefficientUniDRCAtomPtr
         }
     }
     
+    logMsg(LOGLEVEL_TRACE, "Writing CoefficientUniDRC sequences to bitstream finished. Bits written: %d bits", drcBitStreamHandle->bitstream->bitsWritten);
+    
 bail:
     return err;
 }
@@ -550,6 +593,8 @@ MP4Err  writeInstrUniDrcToBitstream                 (StaticDrcData *staticDrcDat
     int                             bitErr;
     u32                             i;
     DRCInstructionsUniDRCAtomPtr    instrUniDrcAtom;
+    
+    logMsg(LOGLEVEL_DEBUG, "Writing InstructionsUniDRCs to bitstream.");
     
     bitErr  = 0;
     err     = MP4NoErr;
@@ -628,44 +673,97 @@ MP4Err  writeInstrUniDrcToBitstream                 (StaticDrcData *staticDrcDat
         
         if ((instrUniDrcAtom->DRC_set_effect & (1 << 10)) != 0)
         {
-            int uniqueIndexes[8];
-            int k = 0;
+            u8 duckingGroupIndex[8];
+            u8 offset = 0;
+            for (u32 x = 0; x < instrUniDrcAtom->sequenceIndexesOfChannelGroups->entryCount; x++)
+            {
+                DRCInstructionsSequenceIndexOfChannelGroup  *sequenceIndexesOfChannelGroup;
+                MP4GetListEntry(instrUniDrcAtom->sequenceIndexesOfChannelGroups, x, (char **) &sequenceIndexesOfChannelGroup);
+                duckingGroupIndex[x] = x;
+                if (sequenceIndexesOfChannelGroup->bs_sequence_index != 0)
+                {
+                    offset++;
+                }
+                else
+                {
+                    duckingGroupIndex[x] = duckingGroupIndex[x] - offset;
+                }
+            }
+            
+            int     repeatCount         = -1;
+            int     repeatGroupIndex    = -1;
             for (u32 x = 0; x < staticDrcData->channelCount; x++)
             {
                 int                                         groupIndex = -1;
-                DRCInstructionsChannelSequenceIndex         *channelSequenceIndex;
+                DRCInstructionsGroupIndexPerChannel         *groupIndexesPerChannel;
                 DRCInstructionsChannelGroupDuckingScaling   *channelGroupDuckingScaling;
+                DRCInstructionsSequenceIndexOfChannelGroup  *sequenceIndexesOfChannelGroup;
                 
-                MP4GetListEntry(instrUniDrcAtom->channelSequenceIndexes, x, (char **) &channelSequenceIndex);
+                MP4GetListEntry(instrUniDrcAtom->groupIndexesPerChannels, x, (char **) &groupIndexesPerChannel);
+                groupIndex = groupIndexesPerChannel->channel_group_index - 1;
+                MP4GetListEntry(instrUniDrcAtom->sequenceIndexesOfChannelGroups, groupIndex, (char **) &sequenceIndexesOfChannelGroup);
                 
-                bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, channelSequenceIndex->bs_sequence_index, 6);     //bsSequenceIndex
-                if (bitErr) BAILWITHERROR(MP4IOErr);
                 
-                for (int p = 0; p < k; p++)
+                if (repeatCount != -1)
                 {
-                    if (channelSequenceIndex->bs_sequence_index == uniqueIndexes[p])
-                        groupIndex = p;
+                    if (groupIndex == repeatGroupIndex)
+                    {
+                        repeatCount++;
+                    }
+                    else
+                    {
+                        if (repeatCount == 0)
+                        {
+                            bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, 0, 1);                                           //repeatParameters
+                            if (bitErr) BAILWITHERROR(MP4IOErr);
+                        }
+                        else
+                        {
+                            bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, 1, 1);                                           //repeatParameters
+                            if (bitErr) BAILWITHERROR(MP4IOErr);
+                            bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, repeatCount - 1, 5);                             //bsRepeatParametersCount
+                            if (bitErr) BAILWITHERROR(MP4IOErr);
+                        }
+                        repeatCount = -1;
+                    }
                 }
                 
-                if (groupIndex == -1)
+                if (repeatCount == -1)
                 {
-                    uniqueIndexes[k]    = channelSequenceIndex->bs_sequence_index;
-                    groupIndex          = k;
-                    k++;
-                }
-                
-                MP4GetListEntry(instrUniDrcAtom->channelGroupDuckingScalings, groupIndex, (char **) &channelGroupDuckingScaling);
-                
-                bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, channelGroupDuckingScaling->ducking_scaling_present, 1);     //duckingScalingPresent
-                if (bitErr) BAILWITHERROR(MP4IOErr);
-                
-                if (channelGroupDuckingScaling->ducking_scaling_present == 1)
-                {
-                    bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, channelGroupDuckingScaling->bs_ducking_scaling, 4);      //duckingScaling
+                    bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, sequenceIndexesOfChannelGroup->bs_sequence_index, 6);     //bsSequenceIndex
                     if (bitErr) BAILWITHERROR(MP4IOErr);
+                    
+                    if (sequenceIndexesOfChannelGroup->bs_sequence_index != 0)
+                    {
+                        bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, 0, 1);     //duckingScalingPresent
+                    }
+                    else
+                    {
+                        MP4GetListEntry(instrUniDrcAtom->channelGroupDuckingScalings, duckingGroupIndex[groupIndex], (char **) &channelGroupDuckingScaling);
+                        
+                        bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, channelGroupDuckingScaling->ducking_scaling_present, 1);     //duckingScalingPresent
+                        if (bitErr) BAILWITHERROR(MP4IOErr);
+                        
+                        if (channelGroupDuckingScaling->ducking_scaling_present == 1)
+                        {
+                            bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, channelGroupDuckingScaling->bs_ducking_scaling, 4);      //duckingScaling
+                            if (bitErr) BAILWITHERROR(MP4IOErr);
+                        }
+                    }
+                    repeatCount         = 0;
+                    repeatGroupIndex    = groupIndex;
                 }
-                
-                bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, 0, 1);                                                       //repeatParameters
+            }
+            if (repeatCount == 0)
+            {
+                bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, 0, 1);                                           //repeatParameters
+                if (bitErr) BAILWITHERROR(MP4IOErr);
+            }
+            else
+            {
+                bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, 1, 1);                                           //repeatParameters
+                if (bitErr) BAILWITHERROR(MP4IOErr);
+                bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, repeatCount - 1, 5);                             //bsRepeatParametersCount
                 if (bitErr) BAILWITHERROR(MP4IOErr);
             }
         }
@@ -675,7 +773,7 @@ MP4Err  writeInstrUniDrcToBitstream                 (StaticDrcData *staticDrcDat
             if ((instrUniDrcAtom->downmix_ID != 0) && (instrUniDrcAtom->downmix_ID != 0x7F))
             {
                 MP4DownMixInstructionsAtomPtr   downMixInstrAtom;
-                for (u32 z = 0; z < staticDrcData->drcInstructionsBasicAtoms->entryCount; z++)
+                for (u32 z = 0; z < staticDrcData->downMixInstructionsAtoms->entryCount; z++)
                 {
                     err = MP4GetListEntry(staticDrcData->downMixInstructionsAtoms, z, (char **) &downMixInstrAtom); if (err) goto bail;
                     if (instrUniDrcAtom->downmix_ID == downMixInstrAtom->downmix_ID)
@@ -691,12 +789,17 @@ MP4Err  writeInstrUniDrcToBitstream                 (StaticDrcData *staticDrcDat
             u8  repeatSequenceIndex = -1;
             for (u32 x = 0; x < channelCount; x++)
             {
-                DRCInstructionsChannelSequenceIndex  *channelSequenceIndex;
-                MP4GetListEntry(instrUniDrcAtom->channelSequenceIndexes, x, (char **) &channelSequenceIndex);
+                int                                         groupIndex = -1;
+                DRCInstructionsGroupIndexPerChannel         *groupIndexesPerChannel;
+                DRCInstructionsSequenceIndexOfChannelGroup  *sequenceIndexesOfChannelGroup;
+                
+                MP4GetListEntry(instrUniDrcAtom->groupIndexesPerChannels, x, (char **) &groupIndexesPerChannel);
+                groupIndex = groupIndexesPerChannel->channel_group_index - 1;
+                MP4GetListEntry(instrUniDrcAtom->sequenceIndexesOfChannelGroups, groupIndex, (char **) &sequenceIndexesOfChannelGroup);
                 
                 if (repeatCount != -1)
                 {
-                    if (channelSequenceIndex->bs_sequence_index == repeatSequenceIndex)
+                    if (sequenceIndexesOfChannelGroup->bs_sequence_index == repeatSequenceIndex)
                     {
                         repeatCount++;
                     }
@@ -720,9 +823,9 @@ MP4Err  writeInstrUniDrcToBitstream                 (StaticDrcData *staticDrcDat
                 
                 if (repeatCount == -1)
                 {
-                    bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, channelSequenceIndex->bs_sequence_index, 6);             //bsSequenceIndex
+                    bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, sequenceIndexesOfChannelGroup->bs_sequence_index, 6);             //bsSequenceIndex
                     if (bitErr) BAILWITHERROR(MP4IOErr);
-                    repeatSequenceIndex = channelSequenceIndex->bs_sequence_index;
+                    repeatSequenceIndex = sequenceIndexesOfChannelGroup->bs_sequence_index;
                     repeatCount         = 0;
                 }
             }
@@ -741,7 +844,7 @@ MP4Err  writeInstrUniDrcToBitstream                 (StaticDrcData *staticDrcDat
             }
 
             
-            for (u32 x = 0; x < instrUniDrcAtom->channel_group_count; x++)
+            for (u32 x = 0; x < instrUniDrcAtom->channelGroupGainScalings->entryCount; x++)
             {
                 DRCInstructionsChannelGroupGainScaling  *channelGroupGainScaling;
                 err = MP4GetListEntry(instrUniDrcAtom->channelGroupGainScalings, x, (char **) &channelGroupGainScaling); if (err) goto bail;
@@ -769,6 +872,7 @@ MP4Err  writeInstrUniDrcToBitstream                 (StaticDrcData *staticDrcDat
         }
     }
     
+    logMsg(LOGLEVEL_DEBUG, "Writing InstructionsUniDRCs to bitstream finished. Bits written: %d bits", drcBitStreamHandle->bitstream->bitsWritten);
     
 bail:
     return err;
@@ -779,6 +883,8 @@ MP4Err  writeLoudnessInfoSetToBitstream             (StaticDrcData *staticDrcDat
     MP4Err                  err;
     int                     bitErr;
     MP4LoudnessBaseAtomPtr  atom;
+    
+    logMsg(LOGLEVEL_DEBUG, "Writing LoudnessInfoSet to bitstream.");
     
     bitErr  = 0;
     err     = MP4NoErr;
@@ -802,6 +908,8 @@ MP4Err  writeLoudnessInfoSetToBitstream             (StaticDrcData *staticDrcDat
     
     bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, 0, 1);                                                                       //loudnessInfoSetExtPresent
     if (bitErr) BAILWITHERROR(MP4IOErr);
+    
+    logMsg(LOGLEVEL_DEBUG, "Writing LoudnessInfoSet to bitstream finsihed. Bits written: %d bits", drcBitStreamHandle->bitstream->bitsWritten);
 bail:
     return err;
 }
@@ -810,6 +918,8 @@ MP4Err  writeLoudnessBaseBoxToBitstream             (MP4LoudnessBaseAtomPtr loud
 {
     MP4Err      err;
     int         bitErr;
+    
+    logMsg(LOGLEVEL_DEBUG, "Writing LoudnessBase to bitstream.");
     
     bitErr  = 0;
     err     = MP4NoErr;
@@ -866,6 +976,8 @@ MP4Err  writeLoudnessBaseBoxToBitstream             (MP4LoudnessBaseAtomPtr loud
         bitErr = wobitbuf_WriteBits(drcBitStreamHandle->bitstream, measurement->reliability, 2);                    //reliability
         if (bitErr) BAILWITHERROR(MP4IOErr);
     }
+    
+    logMsg(LOGLEVEL_DEBUG, "Writing LoudnessBase to bitstream finished. Bits written: %d bits", drcBitStreamHandle->bitstream->bitsWritten);
 bail:
     return err;
 }
