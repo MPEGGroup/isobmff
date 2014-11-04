@@ -39,6 +39,7 @@ MP4Err initDRCData  (DRCData *drcData, char *inputFileStr, int sampleRate, int c
     int             drcErr;
     int             bytesRead;
     int             bitsRead;
+    int             delayMode = 0; /* TODO: check if this always holds for DRC metadata tracks */
     
     logMsg(LOGLEVEL_DEBUG, "Initializing DRC data with file %s", inputFileStr);
     
@@ -65,7 +66,7 @@ MP4Err initDRCData  (DRCData *drcData, char *inputFileStr, int sampleRate, int c
    
     logMsg(LOGLEVEL_DEBUG, "Audio settings for DRC Init: Samplerate: %d, Framesize: %d, Channels: %d", sampleRate, framesize, channels);
     
-    drcErr = initUniDrcBitstreamDec(drcData->hUniDrcBsDecStruct, sampleRate, framesize, channels);
+    drcErr = initUniDrcBitstreamDec(drcData->hUniDrcBsDecStruct, sampleRate, framesize, delayMode);
     if (drcErr) BAILWITHERROR(MP4InternalErr);
     
     err = readFileContentIntoBuffer(inputFileStr, &drcData->bitstreamBuffer, &drcData->bufferBytesRemaining); if (err) goto bail;
