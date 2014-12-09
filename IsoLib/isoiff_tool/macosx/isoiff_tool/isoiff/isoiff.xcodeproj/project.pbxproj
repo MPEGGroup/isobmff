@@ -1,0 +1,306 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		18C784871A1AB6DF00756142 /* isoiff.h in Headers */ = {isa = PBXBuildFile; fileRef = 18C784861A1AB6DF00756142 /* isoiff.h */; };
+		18C7848D1A1AB77A00756142 /* Logger.c in Sources */ = {isa = PBXBuildFile; fileRef = 18C784881A1AB77A00756142 /* Logger.c */; };
+		18C7848E1A1AB77A00756142 /* Logger.h in Headers */ = {isa = PBXBuildFile; fileRef = 18C784891A1AB77A00756142 /* Logger.h */; };
+		18C784AF1A1BC9C000756142 /* isoiff.c in Sources */ = {isa = PBXBuildFile; fileRef = 18C784AE1A1BC9C000756142 /* isoiff.c */; };
+		18C784B11A1BCA5B00756142 /* liblibisomediafile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18C784B01A1BCA5B00756142 /* liblibisomediafile.a */; };
+		18C784BD1A1FDCB500756142 /* isoiff_hevc.h in Headers */ = {isa = PBXBuildFile; fileRef = 18C784BA1A1FDCB500756142 /* isoiff_hevc.h */; };
+		18C784BE1A1FDCB500756142 /* HEVCItemData.c in Sources */ = {isa = PBXBuildFile; fileRef = 18C784BB1A1FDCB500756142 /* HEVCItemData.c */; };
+		18C784C01A1FFAB800756142 /* HEVCDecoderConfigRecord.c in Sources */ = {isa = PBXBuildFile; fileRef = 18C784BF1A1FFAB800756142 /* HEVCDecoderConfigRecord.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		18C784781A1AB26300756142 /* libisoiff.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libisoiff.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		18C784861A1AB6DF00756142 /* isoiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = isoiff.h; path = ../../../src/isoiff.h; sourceTree = "<group>"; };
+		18C784881A1AB77A00756142 /* Logger.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Logger.c; path = ../../src/Logger.c; sourceTree = "<group>"; };
+		18C784891A1AB77A00756142 /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Logger.h; path = ../../src/Logger.h; sourceTree = "<group>"; };
+		18C784AE1A1BC9C000756142 /* isoiff.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = isoiff.c; path = ../../../src/isoiff.c; sourceTree = "<group>"; };
+		18C784B01A1BCA5B00756142 /* liblibisomediafile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibisomediafile.a; path = ../../../../libisomediafile/macosx/libisomediafile/build/Debug/liblibisomediafile.a; sourceTree = "<group>"; };
+		18C784BA1A1FDCB500756142 /* isoiff_hevc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = isoiff_hevc.h; path = ../../src/isoiff_hevc.h; sourceTree = "<group>"; };
+		18C784BB1A1FDCB500756142 /* HEVCItemData.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = HEVCItemData.c; path = ../../src/HEVCItemData.c; sourceTree = "<group>"; };
+		18C784BF1A1FFAB800756142 /* HEVCDecoderConfigRecord.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = HEVCDecoderConfigRecord.c; path = ../../src/HEVCDecoderConfigRecord.c; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		18C784751A1AB26300756142 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18C784B11A1BCA5B00756142 /* liblibisomediafile.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		18C7846F1A1AB26300756142 = {
+			isa = PBXGroup;
+			children = (
+				18C784B01A1BCA5B00756142 /* liblibisomediafile.a */,
+				18C784851A1AB58500756142 /* Source */,
+				18C784791A1AB26300756142 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		18C784791A1AB26300756142 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				18C784781A1AB26300756142 /* libisoiff.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		18C784851A1AB58500756142 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				18C784BC1A1FDCB500756142 /* HEVC */,
+				18C7848C1A1AB77A00756142 /* Utils */,
+				18C784AE1A1BC9C000756142 /* isoiff.c */,
+				18C784861A1AB6DF00756142 /* isoiff.h */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		18C7848C1A1AB77A00756142 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				18C784881A1AB77A00756142 /* Logger.c */,
+				18C784891A1AB77A00756142 /* Logger.h */,
+			);
+			name = Utils;
+			path = ..;
+			sourceTree = "<group>";
+		};
+		18C784BC1A1FDCB500756142 /* HEVC */ = {
+			isa = PBXGroup;
+			children = (
+				18C784BA1A1FDCB500756142 /* isoiff_hevc.h */,
+				18C784BB1A1FDCB500756142 /* HEVCItemData.c */,
+				18C784BF1A1FFAB800756142 /* HEVCDecoderConfigRecord.c */,
+			);
+			name = HEVC;
+			path = ..;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		18C784761A1AB26300756142 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18C7848E1A1AB77A00756142 /* Logger.h in Headers */,
+				18C784BD1A1FDCB500756142 /* isoiff_hevc.h in Headers */,
+				18C784871A1AB6DF00756142 /* isoiff.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		18C784771A1AB26300756142 /* isoiff */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 18C7847C1A1AB26300756142 /* Build configuration list for PBXNativeTarget "isoiff" */;
+			buildPhases = (
+				18C784741A1AB26300756142 /* Sources */,
+				18C784751A1AB26300756142 /* Frameworks */,
+				18C784761A1AB26300756142 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = isoiff;
+			productName = isoiff;
+			productReference = 18C784781A1AB26300756142 /* libisoiff.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		18C784701A1AB26300756142 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0610;
+				ORGANIZATIONNAME = "Apple Inc.";
+				TargetAttributes = {
+					18C784771A1AB26300756142 = {
+						CreatedOnToolsVersion = 6.1;
+					};
+				};
+			};
+			buildConfigurationList = 18C784731A1AB26300756142 /* Build configuration list for PBXProject "isoiff" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 18C7846F1A1AB26300756142;
+			productRefGroup = 18C784791A1AB26300756142 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				18C784771A1AB26300756142 /* isoiff */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		18C784741A1AB26300756142 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18C7848D1A1AB77A00756142 /* Logger.c in Sources */,
+				18C784AF1A1BC9C000756142 /* isoiff.c in Sources */,
+				18C784BE1A1FDCB500756142 /* HEVCItemData.c in Sources */,
+				18C784C01A1FFAB800756142 /* HEVCDecoderConfigRecord.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		18C7847A1A1AB26300756142 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		18C7847B1A1AB26300756142 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		18C7847D1A1AB26300756142 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/Users/apple/Desktop/svns/trunk/IsoLib/libisomediafile/src,
+					/Users/apple/Desktop/svns/trunk/IsoLib/libisomediafile/macosx,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"${SRCROOT}/../../../../libisomediafile/macosx/libisomediafile/build/Debug",
+					/Users/apple/Desktop/svns/trunk/IsoLib/libisomediafile/macosx/libisomediafile/build/Debug,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		18C7847E1A1AB26300756142 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/Users/apple/Desktop/svns/trunk/IsoLib/libisomediafile/src,
+					/Users/apple/Desktop/svns/trunk/IsoLib/libisomediafile/macosx,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"${SRCROOT}/../../../../libisomediafile/macosx/libisomediafile/build/Debug",
+					/Users/apple/Desktop/svns/trunk/IsoLib/libisomediafile/macosx/libisomediafile/build/Debug,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		18C784731A1AB26300756142 /* Build configuration list for PBXProject "isoiff" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18C7847A1A1AB26300756142 /* Debug */,
+				18C7847B1A1AB26300756142 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		18C7847C1A1AB26300756142 /* Build configuration list for PBXNativeTarget "isoiff" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18C7847D1A1AB26300756142 /* Debug */,
+				18C7847E1A1AB26300756142 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 18C784701A1AB26300756142 /* Project object */;
+}
