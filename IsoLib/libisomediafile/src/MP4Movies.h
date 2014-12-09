@@ -449,6 +449,9 @@ MP4GetIndMediaSampleReference( MP4Media theMedia,
 
 MP4_EXTERN ( MP4Err )
 MP4GetMediaDataRefCount( MP4Media theMedia, u32 *outCount );
+    
+MP4_EXTERN ( MP4Err )
+MP4UseSignedCompositionTimeOffsets ( MP4Media media );
 
 /* data reference attributes */
 enum
@@ -665,6 +668,25 @@ MP4TrackReaderSetSLConfig( MP4TrackReader theReader, MP4SLConfig slConfig );
 
 MP4_EXTERN ( MP4Err )
 MP4TrackReaderGetCurrentSampleNumber( MP4TrackReader theReader, u32 *sampleNumber );
+    
+    
+    
+/* Sample Auxiliary Information */
+    
+MP4_EXTERN ( MP4Err )
+MP4SetupSampleAuxiliaryInformation( MP4Media theMedia, u8 isUsingAuxInfoPropertiesFlag, u32 aux_info_type, u32 aux_info_type_parameter,
+                                    u8 default_sample_info_size );
+MP4_EXTERN ( MP4Err )
+MP4AddSampleAuxiliaryInformation( MP4Media theMedia, u8 isUsingAuxInfoPropertiesFlag, u32 aux_info_type, u32 aux_info_type_parameter,
+                                  MP4Handle dataH, u32 sampleCount, MP4Handle sizesH );
+    
+MP4_EXTERN ( MP4Err )
+MP4GetSampleAuxiliaryInformation( MP4Media theMedia, u32 *outCount, MP4Handle isUsingAuxInfoPropertiesFlags,
+                                  MP4Handle aux_info_types, MP4Handle aux_info_type_parameters );
+    
+MP4_EXTERN ( MP4Err )
+MP4GetSampleAuxiliaryInformationForSample( MP4Media theMedia, u8 isUsingAuxInfoPropertiesFlag, u32 aux_info_type, u32 aux_info_type_parameter,
+                                           u32 sampleNr, MP4Handle outDataH, u32 *outSize );
 
 /* User Data */
 
@@ -789,7 +811,9 @@ MP4_EXTERN ( MP4Err )
 ISOAddDelayToTrackFragmentDecodeTime( MP4Movie theMovie, u32 delay );
 MP4_EXTERN ( MP4Err ) 
 ISOSetTrackFragmentDefaults( MP4Track theTrack, u32 duration, u32 size, u32 is_sync, u8 pad );
-
+MP4_EXTERN ( MP4Err )
+ISOSetCompositonToDecodePropertiesForFragments( MP4Movie theMovie, u32 trackID, s32 compositionToDTSShift,
+                                                s32 leastDecodeToDisplayDelta, s32 greatestDecodeToDisplayDelta, s32 compositionStartTime, s32 compositionEndTime );
 
 /* JB_RESO 09/02 adding support for IPMPX */
 MP4_EXTERN ( MP4Err )

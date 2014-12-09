@@ -625,7 +625,8 @@ static MP4Err mdatMoved( struct MP4MediaInformationAtom *self, u64 mdatBase, u64
 	MP4SampleToChunkAtomPtr     stsc;
 	MP4ChunkOffsetAtomPtr       stco;
 	MP4SampleDescriptionAtomPtr stsd;
-	MP4Err err;	
+	MP4Err                      err;
+    u32                         i;
 	
 	err = MP4NoErr;
 	dinf = (MP4DataInformationAtomPtr) self->dataInformation;
@@ -642,6 +643,14 @@ static MP4Err mdatMoved( struct MP4MediaInformationAtom *self, u64 mdatBase, u64
 		BAILWITHERROR( MP4InvalidMediaErr )
 
 	err = stsc->mdatMoved( stsc, mdatBase, mdatEnd, mdatOffset, stsd, dref, stco ); if (err) goto bail;
+    
+    for (i = 0; i < stbl->SampleAuxiliaryInformationOffsets->entryCount; i++)
+    {
+        MP4SampleAuxiliaryInformationOffsetsAtomPtr saio;
+        err = MP4GetListEntry(stbl->SampleAuxiliaryInformationOffsets, i, (char **) &saio); if (err) goto bail;
+        err = saio->mdatMoved((MP4AtomPtr) saio, mdatBase, mdatEnd, mdatOffset); if (err) goto bail;
+    }
+    
 bail:
 	TEST_RETURN( err );
 	return err;

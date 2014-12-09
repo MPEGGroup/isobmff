@@ -208,8 +208,47 @@ static MP4Err setfieldsize( struct MP4MediaAtom* self, u32 fieldsize )
 
 static MP4Err settrackfragment (struct MP4MediaAtom *self, MP4AtomPtr fragment)
 {
+    MP4MediaInformationAtomPtr      minf;
+    MP4SampleTableAtomPtr           stbl;
+    MP4TrackFragmentAtomPtr         traf;
+    
 	if (self->true_minf == NULL) self->true_minf = self->information;
 	self->information  = fragment;
+    
+    minf = (MP4MediaInformationAtomPtr) self->true_minf;
+    stbl = (MP4SampleTableAtomPtr) minf->sampleTable;
+    traf = (MP4TrackFragmentAtomPtr) fragment;
+    
+    traf->useSignedCompositionTimeOffsets = stbl->useSignedCompositionTimeOffsets;
+    
+    if (stbl->SampleAuxiliaryInformationSizes->entryCount != 0)
+    {
+        u32                                         i;
+        MP4SampleAuxiliaryInformationSizesAtomPtr   saizOld;
+        MP4SampleAuxiliaryInformationSizesAtomPtr   saizNew;
+        MP4SampleAuxiliaryInformationOffsetsAtomPtr saioOld;
+        MP4SampleAuxiliaryInformationOffsetsAtomPtr saioNew;
+        
+        for (i = 0; i < stbl->SampleAuxiliaryInformationSizes->entryCount; i++)
+        {
+            MP4GetListEntry(stbl->SampleAuxiliaryInformationSizes, i, (char **) &saizOld);
+            MP4GetListEntry(stbl->SampleAuxiliaryInformationOffsets, i, (char **) &saioOld);
+            
+            MP4CreateSampleAuxiliaryInformationSizesAtom(&saizNew);
+            saizNew->aux_info_type              = saizOld->aux_info_type;
+            saizNew->aux_info_type_parameter    = saizOld->aux_info_type_parameter;
+            saizNew->default_sample_info_size   = saizOld->default_sample_info_size;
+            saizNew->flags                      = saizOld->flags;
+            
+            MP4CreateSampleAuxiliaryInformationOffsetsAtom(&saioNew);
+            saioNew->aux_info_type              = saioOld->aux_info_type;
+            saioNew->aux_info_type_parameter    = saioOld->aux_info_type_parameter;
+            saioNew->flags                      = saioOld->flags;
+            
+            MP4AddListEntry(saizNew, traf->saizList);
+            MP4AddListEntry(saioNew, traf->saioList);
+        }
+    }
 	
 	return MP4NoErr;
 }

@@ -36,113 +36,121 @@ ISOErr MP4GetCurrentTime( u64 *outTime );
 
 enum
 {
-	MP4AudioSampleEntryAtomType            = MP4_FOUR_CHAR_CODE( 'm', 'p', '4', 'a' ),
-    MP4ChannelLayoutAtomType               = MP4_FOUR_CHAR_CODE( 'c', 'h', 'n', 'l' ),
-    MP4DownMixInstructionsAtomType         = MP4_FOUR_CHAR_CODE( 'd', 'm', 'i', 'x' ),
-    MP4TrackLoudnessInfoAtomType           = MP4_FOUR_CHAR_CODE( 't', 'l', 'o', 'u' ),
-    MP4AlbumLoudnessInfoAtomType           = MP4_FOUR_CHAR_CODE( 'a', 'l', 'o', 'u' ),
-    MP4LoudnessAtomType                    = MP4_FOUR_CHAR_CODE( 'l', 'u', 'd', 't' ),
-	MP4ChunkLargeOffsetAtomType            = MP4_FOUR_CHAR_CODE( 'c', 'o', '6', '4' ),
-	MP4ChunkOffsetAtomType                 = MP4_FOUR_CHAR_CODE( 's', 't', 'c', 'o' ),
-	MP4ClockReferenceMediaHeaderAtomType   = MP4_FOUR_CHAR_CODE( 'c', 'r', 'h', 'd' ),
-	MP4CompositionOffsetAtomType           = MP4_FOUR_CHAR_CODE( 'c', 't', 't', 's' ),
-	MP4CopyrightAtomType                   = MP4_FOUR_CHAR_CODE( 'c', 'p', 'r', 't' ),
-	MP4DataEntryURLAtomType                = MP4_FOUR_CHAR_CODE( 'u', 'r', 'l', ' ' ),
-	MP4DataEntryURNAtomType                = MP4_FOUR_CHAR_CODE( 'u', 'r', 'n', ' ' ),
-	MP4DataInformationAtomType             = MP4_FOUR_CHAR_CODE( 'd', 'i', 'n', 'f' ),
-	MP4DataReferenceAtomType               = MP4_FOUR_CHAR_CODE( 'd', 'r', 'e', 'f' ),
-	MP4DegradationPriorityAtomType         = MP4_FOUR_CHAR_CODE( 's', 't', 'd', 'p' ),
-	MP4ESDAtomType                         = MP4_FOUR_CHAR_CODE( 'e', 's', 'd', 's' ),
-	MP4EditAtomType                        = MP4_FOUR_CHAR_CODE( 'e', 'd', 't', 's' ),
-	MP4EditListAtomType                    = MP4_FOUR_CHAR_CODE( 'e', 'l', 's', 't' ),
-	MP4ExtendedAtomType                    = MP4_FOUR_CHAR_CODE( 'u', 'u', 'i', 'd' ),
-	MP4FreeSpaceAtomType                   = MP4_FOUR_CHAR_CODE( 'f', 'r', 'e', 'e' ),
-	MP4GenericSampleEntryAtomType		   = MP4_FOUR_CHAR_CODE( '!', 'g', 'n', 'r' ),
-	MP4HandlerAtomType                     = MP4_FOUR_CHAR_CODE( 'h', 'd', 'l', 'r' ),
-	MP4HintMediaHeaderAtomType             = MP4_FOUR_CHAR_CODE( 'h', 'm', 'h', 'd' ),
-	MP4HintTrackReferenceAtomType          = MP4_FOUR_CHAR_CODE( 'h', 'i', 'n', 't' ),
-	MP4MPEGMediaHeaderAtomType             = MP4_FOUR_CHAR_CODE( 'n', 'm', 'h', 'd' ),
-	MP4MPEGSampleEntryAtomType             = MP4_FOUR_CHAR_CODE( 'm', 'p', '4', 's' ),
-	MP4MediaAtomType                       = MP4_FOUR_CHAR_CODE( 'm', 'd', 'i', 'a' ),
-	MP4MediaDataAtomType                   = MP4_FOUR_CHAR_CODE( 'm', 'd', 'a', 't' ),
-	MP4MediaHeaderAtomType                 = MP4_FOUR_CHAR_CODE( 'm', 'd', 'h', 'd' ),
-	MP4MediaInformationAtomType            = MP4_FOUR_CHAR_CODE( 'm', 'i', 'n', 'f' ),
-    MP4ExtendedLanguageTagAtomType         = MP4_FOUR_CHAR_CODE( 'e', 'l', 'n', 'g' ),
-	MP4MovieAtomType                       = MP4_FOUR_CHAR_CODE( 'm', 'o', 'o', 'v' ),
-	MP4MovieHeaderAtomType                 = MP4_FOUR_CHAR_CODE( 'm', 'v', 'h', 'd' ),
-	MP4ObjectDescriptorAtomType            = MP4_FOUR_CHAR_CODE( 'i', 'o', 'd', 's' ),
-	MP4ObjectDescriptorMediaHeaderAtomType = MP4_FOUR_CHAR_CODE( 'o', 'd', 'h', 'd' ),
-	MP4ODTrackReferenceAtomType            = MP4_FOUR_CHAR_CODE( 'm', 'p', 'o', 'd' ),
-	MP4SampleDescriptionAtomType           = MP4_FOUR_CHAR_CODE( 's', 't', 's', 'd' ),
-	MP4SampleSizeAtomType                  = MP4_FOUR_CHAR_CODE( 's', 't', 's', 'z' ),
-	MP4CompactSampleSizeAtomType           = MP4_FOUR_CHAR_CODE( 's', 't', 'z', '2' ),
-	MP4SampleTableAtomType                 = MP4_FOUR_CHAR_CODE( 's', 't', 'b', 'l' ),
-	MP4SampleToChunkAtomType               = MP4_FOUR_CHAR_CODE( 's', 't', 's', 'c' ),
-	MP4SceneDescriptionMediaHeaderAtomType = MP4_FOUR_CHAR_CODE( 's', 'd', 'h', 'd' ),
-	MP4ShadowSyncAtomType                  = MP4_FOUR_CHAR_CODE( 's', 't', 's', 'h' ),
-	MP4SkipAtomType                        = MP4_FOUR_CHAR_CODE( 's', 'k', 'i', 'p' ),
-	MP4SoundMediaHeaderAtomType            = MP4_FOUR_CHAR_CODE( 's', 'm', 'h', 'd' ),
-	MP4StreamDependenceAtomType            = MP4_FOUR_CHAR_CODE( 'd', 'p', 'n', 'd' ),
-	MP4SyncSampleAtomType                  = MP4_FOUR_CHAR_CODE( 's', 't', 's', 's' ),
-	MP4SyncTrackReferenceAtomType          = MP4_FOUR_CHAR_CODE( 's', 'y', 'n', 'c' ),
-	MP4TimeToSampleAtomType                = MP4_FOUR_CHAR_CODE( 's', 't', 't', 's' ),
-	MP4TrackAtomType                       = MP4_FOUR_CHAR_CODE( 't', 'r', 'a', 'k' ),
-	MP4TrackHeaderAtomType                 = MP4_FOUR_CHAR_CODE( 't', 'k', 'h', 'd' ),
-	MP4TrackReferenceAtomType              = MP4_FOUR_CHAR_CODE( 't', 'r', 'e', 'f' ),
-	MP4UserDataAtomType                    = MP4_FOUR_CHAR_CODE( 'u', 'd', 't', 'a' ),
-	MP4VideoMediaHeaderAtomType            = MP4_FOUR_CHAR_CODE( 'v', 'm', 'h', 'd' ),
-	MP4VisualSampleEntryAtomType           = MP4_FOUR_CHAR_CODE( 'm', 'p', '4', 'v' ),
-	MP4PaddingBitsAtomType                 = MP4_FOUR_CHAR_CODE( 'p', 'a', 'd', 'b' ),
-	MP4MovieExtendsAtomType                = MP4_FOUR_CHAR_CODE( 'm', 'v', 'e', 'x' ),
-	MP4TrackExtendsAtomType                = MP4_FOUR_CHAR_CODE( 't', 'r', 'e', 'x' ),
-	MP4MovieFragmentAtomType               = MP4_FOUR_CHAR_CODE( 'm', 'o', 'o', 'f' ),
-	MP4MovieFragmentHeaderAtomType         = MP4_FOUR_CHAR_CODE( 'm', 'f', 'h', 'd' ),
-	MP4TrackFragmentAtomType               = MP4_FOUR_CHAR_CODE( 't', 'r', 'a', 'f' ),
-	MP4TrackFragmentHeaderAtomType         = MP4_FOUR_CHAR_CODE( 't', 'f', 'h', 'd' ),
-    MP4TrackFragmentDecodeTimeAtomType     = MP4_FOUR_CHAR_CODE( 't', 'f', 'd', 't' ),
-	MP4TrackRunAtomType    		           = MP4_FOUR_CHAR_CODE( 't', 'r', 'u', 'n' ),
+	MP4AudioSampleEntryAtomType                         = MP4_FOUR_CHAR_CODE( 'm', 'p', '4', 'a' ),
+    MP4ChannelLayoutAtomType                            = MP4_FOUR_CHAR_CODE( 'c', 'h', 'n', 'l' ),
+    MP4DownMixInstructionsAtomType                      = MP4_FOUR_CHAR_CODE( 'd', 'm', 'i', 'x' ),
+    MP4TrackLoudnessInfoAtomType                        = MP4_FOUR_CHAR_CODE( 't', 'l', 'o', 'u' ),
+    MP4AlbumLoudnessInfoAtomType                        = MP4_FOUR_CHAR_CODE( 'a', 'l', 'o', 'u' ),
+    MP4LoudnessAtomType                                 = MP4_FOUR_CHAR_CODE( 'l', 'u', 'd', 't' ),
+	MP4ChunkLargeOffsetAtomType                         = MP4_FOUR_CHAR_CODE( 'c', 'o', '6', '4' ),
+	MP4ChunkOffsetAtomType                              = MP4_FOUR_CHAR_CODE( 's', 't', 'c', 'o' ),
+	MP4ClockReferenceMediaHeaderAtomType                = MP4_FOUR_CHAR_CODE( 'c', 'r', 'h', 'd' ),
+	MP4CompositionOffsetAtomType                        = MP4_FOUR_CHAR_CODE( 'c', 't', 't', 's' ),
+    MP4CompositionToDecodeAtomType                      = MP4_FOUR_CHAR_CODE( 'c', 's', 'l', 'g' ),
+	MP4CopyrightAtomType                                = MP4_FOUR_CHAR_CODE( 'c', 'p', 'r', 't' ),
+	MP4DataEntryURLAtomType                             = MP4_FOUR_CHAR_CODE( 'u', 'r', 'l', ' ' ),
+	MP4DataEntryURNAtomType                             = MP4_FOUR_CHAR_CODE( 'u', 'r', 'n', ' ' ),
+	MP4DataInformationAtomType                          = MP4_FOUR_CHAR_CODE( 'd', 'i', 'n', 'f' ),
+	MP4DataReferenceAtomType                            = MP4_FOUR_CHAR_CODE( 'd', 'r', 'e', 'f' ),
+	MP4DegradationPriorityAtomType                      = MP4_FOUR_CHAR_CODE( 's', 't', 'd', 'p' ),
+	MP4ESDAtomType                                      = MP4_FOUR_CHAR_CODE( 'e', 's', 'd', 's' ),
+	MP4EditAtomType                                     = MP4_FOUR_CHAR_CODE( 'e', 'd', 't', 's' ),
+	MP4EditListAtomType                                 = MP4_FOUR_CHAR_CODE( 'e', 'l', 's', 't' ),
+	MP4ExtendedAtomType                                 = MP4_FOUR_CHAR_CODE( 'u', 'u', 'i', 'd' ),
+	MP4FreeSpaceAtomType                                = MP4_FOUR_CHAR_CODE( 'f', 'r', 'e', 'e' ),
+	MP4GenericSampleEntryAtomType		                = MP4_FOUR_CHAR_CODE( '!', 'g', 'n', 'r' ),
+	MP4HandlerAtomType                                  = MP4_FOUR_CHAR_CODE( 'h', 'd', 'l', 'r' ),
+	MP4HintMediaHeaderAtomType                          = MP4_FOUR_CHAR_CODE( 'h', 'm', 'h', 'd' ),
+	MP4HintTrackReferenceAtomType                       = MP4_FOUR_CHAR_CODE( 'h', 'i', 'n', 't' ),
+	MP4MPEGMediaHeaderAtomType                          = MP4_FOUR_CHAR_CODE( 'n', 'm', 'h', 'd' ),
+	MP4MPEGSampleEntryAtomType                          = MP4_FOUR_CHAR_CODE( 'm', 'p', '4', 's' ),
+	MP4MediaAtomType                                    = MP4_FOUR_CHAR_CODE( 'm', 'd', 'i', 'a' ),
+	MP4MediaDataAtomType                                = MP4_FOUR_CHAR_CODE( 'm', 'd', 'a', 't' ),
+	MP4MediaHeaderAtomType                              = MP4_FOUR_CHAR_CODE( 'm', 'd', 'h', 'd' ),
+	MP4MediaInformationAtomType                         = MP4_FOUR_CHAR_CODE( 'm', 'i', 'n', 'f' ),
+    MP4ExtendedLanguageTagAtomType                      = MP4_FOUR_CHAR_CODE( 'e', 'l', 'n', 'g' ),
+	MP4MovieAtomType                                    = MP4_FOUR_CHAR_CODE( 'm', 'o', 'o', 'v' ),
+	MP4MovieHeaderAtomType                              = MP4_FOUR_CHAR_CODE( 'm', 'v', 'h', 'd' ),
+	MP4ObjectDescriptorAtomType                         = MP4_FOUR_CHAR_CODE( 'i', 'o', 'd', 's' ),
+	MP4ObjectDescriptorMediaHeaderAtomType              = MP4_FOUR_CHAR_CODE( 'o', 'd', 'h', 'd' ),
+	MP4ODTrackReferenceAtomType                         = MP4_FOUR_CHAR_CODE( 'm', 'p', 'o', 'd' ),
+	MP4SampleDescriptionAtomType                        = MP4_FOUR_CHAR_CODE( 's', 't', 's', 'd' ),
+	MP4SampleSizeAtomType                               = MP4_FOUR_CHAR_CODE( 's', 't', 's', 'z' ),
+	MP4CompactSampleSizeAtomType                        = MP4_FOUR_CHAR_CODE( 's', 't', 'z', '2' ),
+	MP4SampleTableAtomType                              = MP4_FOUR_CHAR_CODE( 's', 't', 'b', 'l' ),
+	MP4SampleToChunkAtomType                            = MP4_FOUR_CHAR_CODE( 's', 't', 's', 'c' ),
+    MP4SampleAuxiliaryInformationSizesAtomType          = MP4_FOUR_CHAR_CODE( 's', 'a', 'i', 'z' ),
+    MP4SampleAuxiliaryInformationOffsetsAtomType        = MP4_FOUR_CHAR_CODE( 's', 'a', 'i', 'o' ),
+	MP4SceneDescriptionMediaHeaderAtomType              = MP4_FOUR_CHAR_CODE( 's', 'd', 'h', 'd' ),
+	MP4ShadowSyncAtomType                               = MP4_FOUR_CHAR_CODE( 's', 't', 's', 'h' ),
+	MP4SkipAtomType                                     = MP4_FOUR_CHAR_CODE( 's', 'k', 'i', 'p' ),
+	MP4SoundMediaHeaderAtomType                         = MP4_FOUR_CHAR_CODE( 's', 'm', 'h', 'd' ),
+	MP4StreamDependenceAtomType                         = MP4_FOUR_CHAR_CODE( 'd', 'p', 'n', 'd' ),
+	MP4SyncSampleAtomType                               = MP4_FOUR_CHAR_CODE( 's', 't', 's', 's' ),
+	MP4SyncTrackReferenceAtomType                       = MP4_FOUR_CHAR_CODE( 's', 'y', 'n', 'c' ),
+	MP4TimeToSampleAtomType                             = MP4_FOUR_CHAR_CODE( 's', 't', 't', 's' ),
+	MP4TrackAtomType                                    = MP4_FOUR_CHAR_CODE( 't', 'r', 'a', 'k' ),
+	MP4TrackHeaderAtomType                              = MP4_FOUR_CHAR_CODE( 't', 'k', 'h', 'd' ),
+	MP4TrackReferenceAtomType                           = MP4_FOUR_CHAR_CODE( 't', 'r', 'e', 'f' ),
+	MP4UserDataAtomType                                 = MP4_FOUR_CHAR_CODE( 'u', 'd', 't', 'a' ),
+	MP4VideoMediaHeaderAtomType                         = MP4_FOUR_CHAR_CODE( 'v', 'm', 'h', 'd' ),
+	MP4VisualSampleEntryAtomType                        = MP4_FOUR_CHAR_CODE( 'm', 'p', '4', 'v' ),
+	MP4PaddingBitsAtomType                              = MP4_FOUR_CHAR_CODE( 'p', 'a', 'd', 'b' ),
+	MP4MovieExtendsAtomType                             = MP4_FOUR_CHAR_CODE( 'm', 'v', 'e', 'x' ),
+    MP4TrackExtensionPropertiesAtomType                 = MP4_FOUR_CHAR_CODE( 't', 'r', 'e', 'p' ),
+	MP4TrackExtendsAtomType                             = MP4_FOUR_CHAR_CODE( 't', 'r', 'e', 'x' ),
+	MP4MovieFragmentAtomType                            = MP4_FOUR_CHAR_CODE( 'm', 'o', 'o', 'f' ),
+	MP4MovieFragmentHeaderAtomType                      = MP4_FOUR_CHAR_CODE( 'm', 'f', 'h', 'd' ),
+	MP4TrackFragmentAtomType                            = MP4_FOUR_CHAR_CODE( 't', 'r', 'a', 'f' ),
+	MP4TrackFragmentHeaderAtomType                      = MP4_FOUR_CHAR_CODE( 't', 'f', 'h', 'd' ),
+    MP4TrackFragmentDecodeTimeAtomType                  = MP4_FOUR_CHAR_CODE( 't', 'f', 'd', 't' ),
+	MP4TrackRunAtomType    		                        = MP4_FOUR_CHAR_CODE( 't', 'r', 'u', 'n' ),
 	
-	MP4SampleGroupDescriptionAtomType		= MP4_FOUR_CHAR_CODE( 's', 'g', 'p', 'd' ),
-	MP4SampletoGroupAtomType				= MP4_FOUR_CHAR_CODE( 's', 'b', 'g', 'p' ),
+	MP4SampleGroupDescriptionAtomType		             = MP4_FOUR_CHAR_CODE( 's', 'g', 'p', 'd' ),
+	MP4SampletoGroupAtomType				             = MP4_FOUR_CHAR_CODE( 's', 'b', 'g', 'p' ),
 	
-	MP4SampleDependencyAtomType				= MP4_FOUR_CHAR_CODE( 's', 'd', 't', 'p' ),
+	MP4SampleDependencyAtomType				             = MP4_FOUR_CHAR_CODE( 's', 'd', 't', 'p' ),
 
-	ISOMetaAtomType							= MP4_FOUR_CHAR_CODE( 'm', 'e', 't', 'a' ),
-	ISOPrimaryItemAtomType					= MP4_FOUR_CHAR_CODE( 'p', 'i', 't', 'm' ),
-	ISOItemLocationAtomType					= MP4_FOUR_CHAR_CODE( 'i', 'l', 'o', 'c' ),
-	ISOItemProtectionAtomType				= MP4_FOUR_CHAR_CODE( 'i', 'p', 'r', 'o' ),
-	ISOItemInfoAtomType						= MP4_FOUR_CHAR_CODE( 'i', 'i', 'n', 'f' ),
-	ISOItemInfoEntryAtomType				= MP4_FOUR_CHAR_CODE( 'i', 'n', 'f', 'e' ),
+	ISOMetaAtomType							             = MP4_FOUR_CHAR_CODE( 'm', 'e', 't', 'a' ),
+	ISOPrimaryItemAtomType					             = MP4_FOUR_CHAR_CODE( 'p', 'i', 't', 'm' ),
+	ISOItemLocationAtomType					             = MP4_FOUR_CHAR_CODE( 'i', 'l', 'o', 'c' ),
+	ISOItemProtectionAtomType				             = MP4_FOUR_CHAR_CODE( 'i', 'p', 'r', 'o' ),
+	ISOItemInfoAtomType						             = MP4_FOUR_CHAR_CODE( 'i', 'i', 'n', 'f' ),
+	ISOItemInfoEntryAtomType				             = MP4_FOUR_CHAR_CODE( 'i', 'n', 'f', 'e' ),
+    ISOAdditionalMetaDataContainerAtomType               = MP4_FOUR_CHAR_CODE( 'm', 'e', 'c', 'o' ),
+    ISOMetaboxRelationAtomType                           = MP4_FOUR_CHAR_CODE( 'm', 'e', 'r', 'e' ),
+    ISOItemDataAtomType                                  = MP4_FOUR_CHAR_CODE( 'i', 'd', 'a', 't' ),
+    ISOItemReferenceAtomType                             = MP4_FOUR_CHAR_CODE( 'i', 'r', 'e', 'f' ),
 	
-	ISOVCConfigAtomType						= MP4_FOUR_CHAR_CODE( 'a', 'v', 'c', 'C' ),
-	ISOAVCSampleEntryAtomType               = MP4_FOUR_CHAR_CODE( 'a', 'v', 'c', '1' ),
-	MP4XMLMetaSampleEntryAtomType           = MP4_FOUR_CHAR_CODE( 'm', 'e', 't', 'x' ),
-	MP4TextMetaSampleEntryAtomType          = MP4_FOUR_CHAR_CODE( 'm', 'e', 't', 't' ),
+	ISOVCConfigAtomType						             = MP4_FOUR_CHAR_CODE( 'a', 'v', 'c', 'C' ),
+	ISOAVCSampleEntryAtomType                            = MP4_FOUR_CHAR_CODE( 'a', 'v', 'c', '1' ),
+	MP4XMLMetaSampleEntryAtomType                        = MP4_FOUR_CHAR_CODE( 'm', 'e', 't', 'x' ),
+	MP4TextMetaSampleEntryAtomType                       = MP4_FOUR_CHAR_CODE( 'm', 'e', 't', 't' ),
 
-	MP4AMRSampleEntryAtomType				= MP4_FOUR_CHAR_CODE( 's', 'a', 'm', 'r' ),
-	MP4AMRSpecificInfoAtomType				= MP4_FOUR_CHAR_CODE( 'd', 'a', 'm', 'r' ),
-	MP4AWBSampleEntryAtomType				= MP4_FOUR_CHAR_CODE( 's', 'a', 'w', 'b' ),
-	MP4AMRWPSampleEntryAtomType				= MP4_FOUR_CHAR_CODE( 's', 'a', 'w', 'p' ),
-	MP4AMRWPSpecificInfoAtomType			= MP4_FOUR_CHAR_CODE( 'd', 'a', 'w', 'p' ),
-	MP4H263SampleEntryAtomType				= MP4_FOUR_CHAR_CODE( 's', '2', '6', '3' ),
-	MP4H263SpecificInfoAtomType				= MP4_FOUR_CHAR_CODE( 'd', '2', '6', '3' ),
-	MP4BitRateAtomType						= MP4_FOUR_CHAR_CODE( 'b', 't', 'r', 't' ),
-	TGPPBitRateAtomType						= MP4_FOUR_CHAR_CODE( 'b', 'i', 't', 'r' )
+	MP4AMRSampleEntryAtomType				             = MP4_FOUR_CHAR_CODE( 's', 'a', 'm', 'r' ),
+	MP4AMRSpecificInfoAtomType				             = MP4_FOUR_CHAR_CODE( 'd', 'a', 'm', 'r' ),
+	MP4AWBSampleEntryAtomType				             = MP4_FOUR_CHAR_CODE( 's', 'a', 'w', 'b' ),
+	MP4AMRWPSampleEntryAtomType				             = MP4_FOUR_CHAR_CODE( 's', 'a', 'w', 'p' ),
+	MP4AMRWPSpecificInfoAtomType			             = MP4_FOUR_CHAR_CODE( 'd', 'a', 'w', 'p' ),
+	MP4H263SampleEntryAtomType				             = MP4_FOUR_CHAR_CODE( 's', '2', '6', '3' ),
+	MP4H263SpecificInfoAtomType				             = MP4_FOUR_CHAR_CODE( 'd', '2', '6', '3' ),
+	MP4BitRateAtomType						             = MP4_FOUR_CHAR_CODE( 'b', 't', 'r', 't' ),
+	TGPPBitRateAtomType						             = MP4_FOUR_CHAR_CODE( 'b', 'i', 't', 'r' )
 }; 
 
 
 #ifdef ISMACrypt
 enum {
-	MP4SecurityInfoAtomType					= MP4_FOUR_CHAR_CODE( 's', 'i', 'n', 'f' ),
-	MP4OriginalFormatAtomType				= MP4_FOUR_CHAR_CODE( 'f', 'r', 'm', 'a' ),
-	MP4SecuritySchemeAtomType				= MP4_FOUR_CHAR_CODE( 's', 'c', 'h', 'm' ),
-	MP4SchemeInfoAtomType					= MP4_FOUR_CHAR_CODE( 's', 'c', 'h', 'i' ),
-	ISMAKMSAtomType							= MP4_FOUR_CHAR_CODE( 'i', 'K', 'M', 'S' ),
-	ISMASampleFormatAtomType				= MP4_FOUR_CHAR_CODE( 'i', 'S', 'F', 'M' ),
-	ISMASaltAtomType						= MP4_FOUR_CHAR_CODE( 'i', 'S', 'L', 'T' ),
-	MP4EncAudioSampleEntryAtomType          = MP4_FOUR_CHAR_CODE( 'e', 'n', 'c', 'a' ),
-	MP4EncVisualSampleEntryAtomType         = MP4_FOUR_CHAR_CODE( 'e', 'n', 'c', 'v' ),
-	ISMACryptAESCounterType					= MP4_FOUR_CHAR_CODE( 'i', 'A', 'E', 'C' )
+	MP4SecurityInfoAtomType					             = MP4_FOUR_CHAR_CODE( 's', 'i', 'n', 'f' ),
+	MP4OriginalFormatAtomType				             = MP4_FOUR_CHAR_CODE( 'f', 'r', 'm', 'a' ),
+	MP4SecuritySchemeAtomType				             = MP4_FOUR_CHAR_CODE( 's', 'c', 'h', 'm' ),
+	MP4SchemeInfoAtomType					             = MP4_FOUR_CHAR_CODE( 's', 'c', 'h', 'i' ),
+	ISMAKMSAtomType							             = MP4_FOUR_CHAR_CODE( 'i', 'K', 'M', 'S' ),
+	ISMASampleFormatAtomType				             = MP4_FOUR_CHAR_CODE( 'i', 'S', 'F', 'M' ),
+	ISMASaltAtomType						             = MP4_FOUR_CHAR_CODE( 'i', 'S', 'L', 'T' ),
+	MP4EncAudioSampleEntryAtomType                       = MP4_FOUR_CHAR_CODE( 'e', 'n', 'c', 'a' ),
+	MP4EncVisualSampleEntryAtomType                      = MP4_FOUR_CHAR_CODE( 'e', 'n', 'c', 'v' ),
+	ISMACryptAESCounterType					             = MP4_FOUR_CHAR_CODE( 'i', 'A', 'E', 'C' )
 };
 #endif
 
@@ -199,6 +207,8 @@ typedef struct MP4PrivateMovieRecord
 	  MP4AtomPtr jp2h;              /* for JPEG-2000, the JP2 header atom */
 	  MP4AtomPtr sgnt;              /* for JPEG-2000, the signature atom */
 	  MP4AtomPtr meta;				/* file-level meta-data */
+      MP4AtomPtr meco;              /* file-level additional meta-data container */
+    
       void *inMemoryDataHandler;
       MP4Handle prepend_handle;
       MP4LinkedList	movieFragments;
@@ -269,11 +279,13 @@ typedef struct MP4MovieAtom
 	MP4Err (*getTrackMedia)( struct MP4MovieAtom* self, u32 trackID, MP4AtomPtr *outMedia );
 	MP4Err (*mdatArrived)( struct MP4MovieAtom *self, MP4AtomPtr mdat );
 	MP4Err (*getSampleDescriptionIndex)(struct MP4MovieAtom *self, u32 trackID, u32* sd_index );
+    
 
 	MP4AtomPtr mvhd;              /* the movie header */
 	MP4AtomPtr udta;		      /* user data */
 	MP4AtomPtr mvex;			  /* movie extends atom */
 	MP4AtomPtr meta;
+    MP4AtomPtr meco;              /* additional meta-data container */
 	MP4PrivateMovieRecordPtr moov;
 	MP4LinkedList atomList;
 	MP4LinkedList trackList;
@@ -347,6 +359,7 @@ typedef struct MP4TrackAtom
 	MP4AtomPtr trackEditAtom;
 	MP4AtomPtr trackReferences;
 	MP4AtomPtr meta;
+    MP4AtomPtr meco;              /* additional meta-data container */
 	MP4LinkedList atomList;
 } MP4TrackAtom, *MP4TrackAtomPtr;
 
@@ -591,6 +604,38 @@ typedef struct MP4DataReferenceAtom
 
 } MP4DataReferenceAtom, *MP4DataReferenceAtomPtr;
 
+typedef struct MP4SampleAuxiliaryInformationSizesAtom
+{
+    MP4_FULL_ATOM
+    u32         aux_info_type;
+    u32         aux_info_type_parameter;
+    
+    u8          default_sample_info_size;
+    u32         sample_count;
+    u8          *sample_info_sizes;
+    
+    u32         totalSize;
+    
+    MP4Err (*addSizes) ( MP4AtomPtr s, u32 sampleCount, MP4Handle sizesH );
+    MP4Err (*mergeSizes) ( MP4AtomPtr s, MP4AtomPtr otherSaiz );
+} MP4SampleAuxiliaryInformationSizesAtom, *MP4SampleAuxiliaryInformationSizesAtomPtr;
+
+typedef struct MP4SampleAuxiliaryInformationOffsetsAtom
+{
+    MP4_FULL_ATOM
+    u32 aux_info_type;
+    u32 aux_info_type_parameter;
+    
+    u32 entry_count;
+    u64 *offsets;
+    
+    u64 additionalOffset;
+    u64 totalOffset;
+    MP4Err (*addOffsets)    ( MP4AtomPtr s, u32 entryCount, MP4Handle sizesH );
+    MP4Err (*mdatMoved)     ( MP4AtomPtr s, u64 mdatBase, u64 mdatEnd, s32 mdatOffset );
+    MP4Err (*mergeOffsets)  ( MP4AtomPtr s, MP4AtomPtr otherSaio, u64 baseOffset );
+} MP4SampleAuxiliaryInformationOffsetsAtom, *MP4SampleAuxiliaryInformationOffsetsAtomPtr;
+
 typedef struct MP4SampleTableAtom
 {
 	MP4_BASE_ATOM
@@ -614,8 +659,12 @@ typedef struct MP4SampleTableAtom
 	MP4Err (*setSampleDependency)( struct MP4SampleTableAtom *self, s32 sample_index, MP4Handle dependencies  );
 	MP4Err (*getSampleDependency)( struct MP4SampleTableAtom *self, u32 sampleNumber, u8* dependency  );
     
+    MP4Err (*getSampleAuxiliaryInformation)( struct MP4SampleTableAtom *self, u8 isUsingAuxInfoPropertiesFlag, u32 aux_info_type, u32 aux_info_type_parameter,
+                                            MP4SampleAuxiliaryInformationSizesAtomPtr *saizOut, MP4SampleAuxiliaryInformationOffsetsAtomPtr *saioOut);
+    
 	MP4AtomPtr TimeToSample;
 	MP4AtomPtr CompositionOffset;
+    MP4AtomPtr CompositionToDecode;
 	MP4AtomPtr SyncSample;
 	MP4AtomPtr SampleDescription;
 	MP4AtomPtr SampleSize;
@@ -625,7 +674,11 @@ typedef struct MP4SampleTableAtom
 	MP4AtomPtr DegradationPriority;
 	MP4AtomPtr PaddingBits;
 	MP4AtomPtr SampleDependency;
-
+    
+    
+    MP4LinkedList SampleAuxiliaryInformationSizes;
+    MP4LinkedList SampleAuxiliaryInformationOffsets;
+    
 	MP4LinkedList groupDescriptionList;
 	MP4LinkedList sampletoGroupList;
 
@@ -633,7 +686,7 @@ typedef struct MP4SampleTableAtom
 	
 	MP4AtomPtr currentSampleEntry;
 	u32		   currentSampleEntryIndex;
-
+    u8         useSignedCompositionTimeOffsets;
 } MP4SampleTableAtom, *MP4SampleTableAtomPtr;
 
 typedef struct MP4TimeToSampleAtom
@@ -664,6 +717,18 @@ typedef struct MP4CompositionOffsetAtom
 	void *currentEntry;
 	u32 finalSampleNumber;
 } MP4CompositionOffsetAtom, *MP4CompositionOffsetAtomPtr;
+
+typedef struct MP4CompositionToDecodeAtom
+{
+    MP4_FULL_ATOM
+    s32 compositionToDTSShift;
+    s32 leastDecodeToDisplayDelta;
+    s32 greatestDecodeToDisplayDelta;
+    s32 compositionStartTime;
+    s32 compositionEndTime;
+    MP4Err (*updateFields)( struct MP4Atom* s, u32 sampleCount, MP4Handle durationsH, MP4Handle compositionOffsetsH );
+    s64 totalDuration;
+} MP4CompositionToDecodeAtom, *MP4CompositionToDecodeAtomPtr;
 
 #define COMMON_SAMPLE_ENTRY_FIELDS \
 	u32 dataReferenceIndex;        \
@@ -1078,12 +1143,25 @@ typedef struct MP4MovieFragmentHeaderAtom
 typedef struct MP4MovieExtendsAtom
 {
 	MP4_FULL_ATOM
-	MP4LinkedList atomList;		/* track extends list */
+	MP4LinkedList trackExtendsList;
+    MP4LinkedList trackExtensionPropertiesList;
 	MP4Err (*addAtom)( struct MP4MovieExtendsAtom *self, MP4AtomPtr atom );
 	MP4Err (*maketrackfragments) (struct MP4MovieExtendsAtom *self, MP4MovieFragmentAtomPtr moof, MP4MovieAtomPtr moov, MP4MediaDataAtomPtr mdat );
 	MP4Err (*getTrackExtendsAtom)( struct MP4MovieExtendsAtom* self, u32 trackID, MP4AtomPtr *outTrack );
+    MP4Err (*getTrackExtensionPropertiesAtom)( struct MP4MovieExtendsAtom* self, u32 trackID, MP4AtomPtr *outProb);
 	MP4Err (*setSampleDescriptionIndexes)( struct MP4MovieExtendsAtom* self, MP4AtomPtr moov );
+    MP4Err (*setCompositionToDecodeProperties) (struct MP4MovieExtendsAtom *self, u32 trackID, s32 compositionToDTSShift, s32 leastDecodeToDisplayDelta,
+                                                s32 greatestDecodeToDisplayDelta, s32 compositionStartTime, s32 compositionEndTime);
 } MP4MovieExtendsAtom, *MP4MovieExtendsAtomPtr;
+
+typedef struct MP4TrackExtensionPropertiesAtom
+{
+    MP4_FULL_ATOM
+    u32             track_id;
+    MP4LinkedList   atomList;
+    MP4Err (*addAtom)( struct MP4TrackExtensionPropertiesAtom *self, MP4AtomPtr atom );
+    MP4Err (*getAtom)( struct MP4TrackExtensionPropertiesAtom *self, u32 atomType, MP4AtomPtr *outAtom );
+} MP4TrackExtensionPropertiesAtom, *MP4TrackExtensionPropertiesAtomPtr;
 
 typedef struct MP4TrackExtendsAtom
 {
@@ -1118,6 +1196,10 @@ typedef struct MP4TrackFragmentAtom
     
 	MP4Err (*mergeRuns)( struct MP4TrackFragmentAtom *self, MP4MediaAtomPtr mdia );
 	MP4Err (*calculateDataEnd)( struct MP4TrackFragmentAtom *self, u32* outSize);
+    MP4Err (*mergeSampleAuxiliaryInformation)( struct MP4TrackFragmentAtom *self, MP4MediaAtomPtr mdia );
+    
+    MP4Err (*getSampleAuxiliaryInfoFromTrackFragment)(struct MP4TrackFragmentAtom *self, u8 isUsingAuxInfoPropertiesFlag, u32 aux_info_type, u32 aux_info_type_parameter,
+                                                      MP4SampleAuxiliaryInformationSizesAtomPtr *saizOut, MP4SampleAuxiliaryInformationOffsetsAtomPtr *saioOut);
 	
 	u32 default_sample_description_index;	/* all copied from the matching trex */
 	u32 default_sample_duration;
@@ -1129,6 +1211,11 @@ typedef struct MP4TrackFragmentAtom
 
 	MP4LinkedList atomList;		/* track runs */
 	MP4LinkedList groupList;	/* sample to group maps */
+    
+    u8          useSignedCompositionTimeOffsets;
+    
+    MP4LinkedList saizList;
+    MP4LinkedList saioList;
 } MP4TrackFragmentAtom, *MP4TrackFragmentAtomPtr;
 
 enum {
@@ -1359,6 +1446,8 @@ typedef struct ISOMetaAtom
 	MP4AtomPtr dinf;
 	MP4AtomPtr iloc;
 	MP4AtomPtr iinf;
+    MP4AtomPtr iref;
+    MP4AtomPtr idat;
 	MP4AtomPtr pitm;
 	MP4AtomPtr ipro;
 	
@@ -1366,11 +1455,55 @@ typedef struct ISOMetaAtom
 	MP4LinkedList atomList;
 	
 	u16 next_item_ID;
+    
+    MP4AtomPtr relatedMeco;
 	
 	struct MP4InputStreamRecord* inputStream;
 	void       *dataHandler;
 	s32         dataEntryIndex;	
 } ISOMetaAtom, *ISOMetaAtomPtr;
+
+typedef struct ISOAdditionalMetaDataContainerAtom
+{
+    MP4_BASE_ATOM
+    MP4LinkedList metaList;
+    MP4LinkedList relationList;
+    MP4Err (*addMeta)( struct ISOAdditionalMetaDataContainerAtom* self, MP4AtomPtr meta );
+    MP4Err (*getMeta) ( struct ISOAdditionalMetaDataContainerAtom* self, u32 type, ISOMetaAtomPtr *outMetaPtr );
+    MP4Err (*mdatMoved) (struct ISOAdditionalMetaDataContainerAtom* self, u64 mdatBase, u64 mdatEnd, s32 mdatOffset );
+    MP4Err (*setMdat) ( struct ISOAdditionalMetaDataContainerAtom* self, MP4AtomPtr mdat );
+} ISOAdditionalMetaDataContainerAtom, *ISOAdditionalMetaDataContainerAtomPtr;
+
+
+typedef struct ISOMetaboxRelationAtom
+{
+    MP4_FULL_ATOM
+    u32 first_metabox_handler_type;
+    u32 second_metabox_handler_type;
+    u8  metabox_relation;
+} ISOMetaboxRelationAtom, *ISOMetaboxRelationAtomPtr;
+
+typedef struct ISOItemDataAtom
+{
+    MP4_BASE_ATOM
+    MP4Handle data;
+    MP4Err (*getData) ( MP4AtomPtr s, char *target, u32 offset, u32 length );
+} ISOItemDataAtom, *ISOItemDataAtomPtr;
+
+typedef struct ISOItemReferenceAtom
+{
+    MP4_FULL_ATOM
+    MP4LinkedList atomList;
+} ISOItemReferenceAtom, *ISOItemReferenceAtomPtr;
+
+typedef struct ISOSingleItemTypeReferenceAtom
+{
+    MP4_BASE_ATOM
+    u32 from_item_ID;
+    u16 reference_count;
+    u32 *to_item_IDs;
+    u8 isLarge;
+} ISOSingleItemTypeReferenceAtom, *ISOSingleItemTypeReferenceAtomPtr;
 
 typedef struct ISOPrimaryItemAtom
 {
@@ -1379,6 +1512,7 @@ typedef struct ISOPrimaryItemAtom
 } ISOPrimaryItemAtom, *ISOPrimaryItemAtomPtr;
 
 typedef struct MetaExtentLocation {
+    u64 extent_index;
 	u64 extent_offset;
 	u64 extent_length;
 } MetaExtentLocation, *MetaExtentLocationPtr;
@@ -1386,6 +1520,7 @@ typedef struct MetaExtentLocation {
 typedef struct MetaItemLocation {
 	MP4AtomPtr meta;
 	u16 item_ID;
+    u8  construction_method;
 	u16 dref_index;
 	u64 base_offset;
 	MP4LinkedList extentList;
@@ -1395,10 +1530,12 @@ typedef struct ISOItemLocationAtom
 {
 	MP4_FULL_ATOM
 	MP4Err (*mdatMoved)( struct ISOItemLocationAtom* self, u64 mdatBase, u64 mdatEnd, s32 mdatOffset );
+    MP4Err (*setItemsMeta)( struct ISOItemLocationAtom* self, MP4AtomPtr meta );
 
 	u8 offset_size;
 	u8 length_size;
 	u8 base_offset_size;
+    u8 index_size;
 	MP4LinkedList itemList;
 } ISOItemLocationAtom, *ISOItemLocationAtomPtr;
 
@@ -1417,6 +1554,11 @@ typedef struct ISOItemInfoEntryAtom
 	char* item_name;
 	char* content_type;
 	char* content_encoding;
+    u32 extension_type;
+    MP4Handle item_info_extension;
+    u16 item_protection_index;
+    u32 item_type;
+    char* item_uri_type;
 } ISOItemInfoEntryAtom, *ISOItemInfoEntryAtomPtr;
 
 typedef struct ISOItemInfoAtom
@@ -1424,6 +1566,7 @@ typedef struct ISOItemInfoAtom
 	MP4_FULL_ATOM
 	MP4LinkedList atomList;
 	MP4Err (*addAtom)( struct ISOItemInfoAtom* self, MP4AtomPtr atom );
+    MP4Err (*getEntry) ( struct ISOItemInfoAtom* self, u32 itemID, ISOItemInfoEntryAtomPtr *outEntry );
 } ISOItemInfoAtom, *ISOItemInfoAtomPtr;
 
 typedef struct MP4SampleDependencyAtom
@@ -1454,6 +1597,7 @@ MP4Err MP4CreateLoudnessAtom( MP4LoudnessAtomPtr *outAtom );
 MP4Err MP4CreateChunkOffsetAtom( MP4ChunkOffsetAtomPtr *outAtom );
 MP4Err MP4CreateClockReferenceMediaHeaderAtom( MP4ClockReferenceMediaHeaderAtomPtr *outAtom );
 MP4Err MP4CreateCompositionOffsetAtom( MP4CompositionOffsetAtomPtr *outAtom );
+MP4Err MP4CreateCompositionToDecodeAtom( MP4CompositionToDecodeAtomPtr *outAtom );
 MP4Err MP4CreateCopyrightAtom( MP4CopyrightAtomPtr *outAtom );
 MP4Err MP4CreateDataEntryURLAtom( MP4DataEntryURLAtomPtr *outAtom );
 MP4Err MP4CreateDataEntryURNAtom( MP4DataEntryURNAtomPtr *outAtom );
@@ -1482,6 +1626,8 @@ MP4Err MP4CreateSampleDescriptionAtom( MP4SampleDescriptionAtomPtr *outAtom );
 MP4Err MP4CreateSampleSizeAtom( MP4SampleSizeAtomPtr *outAtom );
 MP4Err MP4CreateSampleTableAtom( MP4SampleTableAtomPtr *outAtom );
 MP4Err MP4CreateSampleToChunkAtom( MP4SampleToChunkAtomPtr *outAtom );
+MP4Err MP4CreateSampleAuxiliaryInformationSizesAtom( MP4SampleAuxiliaryInformationSizesAtomPtr *outAtom );
+MP4Err MP4CreateSampleAuxiliaryInformationOffsetsAtom( MP4SampleAuxiliaryInformationOffsetsAtomPtr *outAtom );
 MP4Err MP4CreateSceneDescriptionMediaHeaderAtom( MP4SceneDescriptionMediaHeaderAtomPtr *outAtom );
 MP4Err MP4CreateShadowSyncAtom( MP4ShadowSyncAtomPtr *outAtom );
 MP4Err MP4CreateSoundMediaHeaderAtom( MP4SoundMediaHeaderAtomPtr *outAtom );
@@ -1501,6 +1647,7 @@ MP4Err MP4CreateTextMetaSampleEntryAtom( MP4TextMetaSampleEntryAtomPtr *outAtom 
 
 
 MP4Err MP4CreateMovieExtendsAtom( MP4MovieExtendsAtomPtr *outAtom );
+MP4Err MP4CreateTrackExtensionPropertiesAtom( MP4TrackExtensionPropertiesAtomPtr *outAtom );
 MP4Err MP4CreateTrackExtendsAtom( MP4TrackExtendsAtomPtr *outAtom );
 MP4Err MP4CreateMovieFragmentAtom( MP4MovieFragmentAtomPtr *outAtom );
 MP4Err MP4CreateMovieFragmentHeaderAtom( MP4MovieFragmentHeaderAtomPtr *outAtom );
@@ -1535,6 +1682,12 @@ MP4Err ISOCreateItemLocationAtom( ISOItemLocationAtomPtr *outAtom );
 MP4Err ISOCreateItemProtectionAtom( ISOItemProtectionAtomPtr *outAtom );
 MP4Err ISOCreateItemInfoAtom( ISOItemInfoAtomPtr *outAtom );
 MP4Err ISOCreateItemInfoEntryAtom( ISOItemInfoEntryAtomPtr *outAtom );
+
+MP4Err ISOCreateAdditionalMetaDataContainerAtom( ISOAdditionalMetaDataContainerAtomPtr *outAtom );
+MP4Err ISOCreateMetaboxRelationAtom( ISOMetaboxRelationAtomPtr *outAtom );
+MP4Err ISOCreateItemDataAtom( ISOItemDataAtomPtr *outAtom );
+MP4Err ISOCreateItemReferenceAtom( ISOItemReferenceAtomPtr *outAtom );
+MP4Err ISOCreateSingleItemTypeReferenceAtom( ISOSingleItemTypeReferenceAtomPtr *outAtom, u32 type, u8 isLarge );
 
 MP4Err MP4CreateVCConfigAtom( ISOVCConfigAtomPtr *outAtom );
 

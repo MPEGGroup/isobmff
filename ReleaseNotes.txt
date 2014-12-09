@@ -9,6 +9,10 @@ Collections.
 
 d) Updated and added functions in isofile.doc
 
+e) Removed support for freebsd, osxs, solaris
+
+f) Updated Meta atom structure and related atoms, to newest spec
+
 Release notes Oct 2014
 
 a) Added support for track fragment decode time

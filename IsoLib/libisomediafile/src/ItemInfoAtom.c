@@ -57,6 +57,27 @@ bail:
 	return err;
 }
 
+static MP4Err getEntry( ISOItemInfoAtomPtr self, u32 itemID, ISOItemInfoEntryAtomPtr *outEntry )
+{
+    MP4Err  err;
+    u32     i;
+    
+    for (i = 0; i < self->atomList->entryCount; i++)
+    {
+        ISOItemInfoEntryAtomPtr entry;
+        err = MP4GetListEntry(self->atomList, i, (char **) &entry); if (err) goto bail;
+        if (entry->type == ISOItemInfoEntryAtomType)
+        {
+            if (entry->item_ID == itemID)
+                *outEntry = entry;
+        }
+    }
+bail:
+    TEST_RETURN( err );
+    
+    return err;
+}
+
 static MP4Err serialize( struct MP4Atom* s, char* buffer )
 {
 	MP4Err err;
@@ -71,7 +92,7 @@ static MP4Err serialize( struct MP4Atom* s, char* buffer )
 	err = MP4GetListEntryCount( self->atomList, &count ); if (err) goto bail; 
 	PUT16_V( count );
 	
-    SERIALIZE_ATOM_LIST( atomList );
+    SERIALIZE_ATOM_LIST( atomList ); /* should be sorted by item_id! */
 	assert( self->bytesWritten == self->size );
 bail:
 	TEST_RETURN( err );
@@ -137,6 +158,7 @@ MP4Err ISOCreateItemInfoAtom( ISOItemInfoAtomPtr *outAtom )
 	self->calculateSize         = calculateSize;
 	self->serialize             = serialize;
 	self->addAtom				= addAtom;
+    self->getEntry              = getEntry;
 	*outAtom = self;
 bail:
 	TEST_RETURN( err );

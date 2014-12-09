@@ -357,6 +357,12 @@ static MP4Err addAtom( MP4MovieAtomPtr self, MP4AtomPtr atom )
 				BAILWITHERROR( MP4BadDataErr )
 			self->meta = atom;
 			break;
+            
+        case ISOAdditionalMetaDataContainerAtomType:
+            if ( self->meco )
+                BAILWITHERROR( MP4BadDataErr )
+                self->meco = atom;
+            break;
 		
 		case MP4MovieExtendsAtomType:
 			if ( self->mvex )
@@ -543,6 +549,7 @@ static MP4Err mdatMoved( struct MP4MovieAtom* self, u64 mdatBase, u64 mdatEnd, s
 	u32 i;
 	MP4Err err;
 	ISOMetaAtomPtr meta;
+    ISOAdditionalMetaDataContainerAtomPtr meco;
 	
 	err = MP4NoErr;
 
@@ -561,6 +568,11 @@ static MP4Err mdatMoved( struct MP4MovieAtom* self, u64 mdatBase, u64 mdatEnd, s
 	if (meta) {
 		err = meta->mdatMoved( meta, mdatBase, mdatEnd, mdatOffset ); if (err) goto bail;
 	}
+    
+    meco = (ISOAdditionalMetaDataContainerAtomPtr) self->meco;
+    if (meco) {
+        err = meco->mdatMoved( meco, mdatBase, mdatEnd, mdatOffset ); if (err) goto bail;
+    }
 bail:
 	TEST_RETURN( err );
 	return err;
@@ -572,11 +584,15 @@ static MP4Err mdatArrived( struct MP4MovieAtom* self, MP4AtomPtr mdat )
 	u32 i;
 	MP4Err err;
 	ISOMetaAtomPtr meta;
+    ISOAdditionalMetaDataContainerAtomPtr meco;
 	
 	err = MP4NoErr;
 
 	meta = (ISOMetaAtomPtr) self->meta;
 	if (meta) { meta->setMdat( meta, mdat ); }
+    
+    meco = (ISOAdditionalMetaDataContainerAtomPtr) self->meco;
+    if (meco) { meco->setMdat( meco, mdat ); }
 
 	trackCount = getTrackCount( self );
 	
@@ -673,6 +689,10 @@ MP4Err MP4CreateMovieAtom( MP4MovieAtomPtr *outAtom )
 	self->getTrackExtendsAtom = getTrackExtendsAtom;
 	self->getTrackMedia	= getTrackMedia;
 	self->getSampleDescriptionIndex = getSampleDescriptionIndex;
+    
+    self->meta = NULL;
+    self->meco = NULL;
+    
 	*outAtom = self;
 bail:
 	TEST_RETURN( err );

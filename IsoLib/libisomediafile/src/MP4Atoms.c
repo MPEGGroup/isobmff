@@ -312,6 +312,18 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
 		case MP4CompositionOffsetAtomType:
 			err = MP4CreateCompositionOffsetAtom( (MP4CompositionOffsetAtomPtr*) &newAtom );
 			break;
+            
+        case MP4CompositionToDecodeAtomType:
+            err = MP4CreateCompositionToDecodeAtom( (MP4CompositionToDecodeAtomPtr*) &newAtom );
+            break;
+            
+        case MP4SampleAuxiliaryInformationSizesAtomType:
+            err = MP4CreateSampleAuxiliaryInformationSizesAtom( (MP4SampleAuxiliaryInformationSizesAtomPtr*) &newAtom );
+            break;
+            
+        case MP4SampleAuxiliaryInformationOffsetsAtomType:
+            err = MP4CreateSampleAuxiliaryInformationOffsetsAtom( (MP4SampleAuxiliaryInformationOffsetsAtomPtr*) &newAtom );
+            break;
 
 		case MP4ShadowSyncAtomType:
 			err = MP4CreateShadowSyncAtom( (MP4ShadowSyncAtomPtr*) &newAtom );
@@ -413,6 +425,10 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
 			err = MP4CreateMovieExtendsAtom( (MP4MovieExtendsAtomPtr*) &newAtom );
 			break;
 			
+        case MP4TrackExtensionPropertiesAtomType:
+            err = MP4CreateTrackExtensionPropertiesAtom( (MP4TrackExtensionPropertiesAtomPtr*) &newAtom );
+            break;
+            
 		case MP4TrackExtendsAtomType:
 			err = MP4CreateTrackExtendsAtom( (MP4TrackExtendsAtomPtr*) &newAtom );
 			break;
@@ -501,6 +517,22 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
 		case ISOItemInfoEntryAtomType:
 			err = ISOCreateItemInfoEntryAtom( (ISOItemInfoEntryAtomPtr *) &newAtom );
 			break;
+            
+        case ISOAdditionalMetaDataContainerAtomType:
+            err = ISOCreateAdditionalMetaDataContainerAtom( (ISOAdditionalMetaDataContainerAtomPtr *) &newAtom );
+            break;
+            
+        case ISOMetaboxRelationAtomType:
+            err = ISOCreateMetaboxRelationAtom( (ISOMetaboxRelationAtomPtr *) &newAtom );
+            break;
+            
+        case ISOItemDataAtomType:
+            err = ISOCreateItemDataAtom( (ISOItemDataAtomPtr *) &newAtom );
+            break;
+            
+        case ISOItemReferenceAtomType:
+            err = ISOCreateItemReferenceAtom( (ISOItemReferenceAtomPtr *) &newAtom );
+            break;
 
 		case MP4AMRSpecificInfoAtomType:
 			err = MP4CreateAMRSpecificInfoAtom( (MP4AMRSpecificInfoAtomPtr *) &newAtom );

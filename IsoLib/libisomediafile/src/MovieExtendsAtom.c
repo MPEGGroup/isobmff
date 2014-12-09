@@ -35,8 +35,9 @@ static void destroy( MP4AtomPtr s )
 
 	self = (MP4MovieExtendsAtomPtr) s;
 	if ( self == NULL ) BAILWITHERROR( MP4BadParamErr )
-	err = MP4DeleteLinkedList( self->atomList ); if (err) goto bail;
-
+	err = MP4DeleteLinkedList( self->trackExtendsList ); if (err) goto bail;
+    err = MP4DeleteLinkedList( self->trackExtensionPropertiesList ); if (err) goto bail;
+    
 	if ( self->super )
 		self->super->destroy( s );
 
@@ -54,7 +55,9 @@ static MP4Err serialize( struct MP4Atom* s, char* buffer )
 	
 	err = MP4SerializeCommonBaseAtomFields( s, buffer ); if (err) goto bail;
     buffer += self->bytesWritten;	
-    SERIALIZE_ATOM_LIST( atomList );
+    SERIALIZE_ATOM_LIST( trackExtendsList );
+    SERIALIZE_ATOM_LIST( trackExtensionPropertiesList );
+    
 	assert( self->bytesWritten == self->size );
 
 bail:
@@ -71,7 +74,8 @@ static MP4Err calculateSize( struct MP4Atom* s )
 	
 	err = MP4CalculateBaseAtomFieldSize( s ); if (err) goto bail;
 
-	ADD_ATOM_LIST_SIZE( atomList );
+	ADD_ATOM_LIST_SIZE( trackExtendsList );
+    ADD_ATOM_LIST_SIZE( trackExtensionPropertiesList );
 bail:
 	TEST_RETURN( err );
 
@@ -85,17 +89,66 @@ static MP4Err addAtom( MP4MovieExtendsAtomPtr self, MP4AtomPtr atom )
 	
 	if ( self == 0 )
 		BAILWITHERROR( MP4BadParamErr );
-	err = MP4AddListEntry( atom, self->atomList );
 	
-	/* switch (atom->type) {
-		case MP4TrackExtendsAtomType: err = MP4AddListEntry( atom, self->atomList ); break;
+	switch (atom->type)
+    {
+		case MP4TrackExtendsAtomType: err = MP4AddListEntry( atom, self->trackExtendsList ); break;
+        case MP4TrackExtensionPropertiesAtomType: err = MP4AddListEntry( atom, self->trackExtensionPropertiesList ); break;
 		default: BAILWITHERROR( MP4BadDataErr )
-	} */	
+	}
 bail:
 	TEST_RETURN( err );
 
 	return err;
 }
+
+static MP4Err   setCompositionToDecodeProperties(struct MP4MovieExtendsAtom *self, u32 trackID, s32 compositionToDTSShift, s32 leastDecodeToDisplayDelta,
+                                                 s32 greatestDecodeToDisplayDelta, s32 compositionStartTime, s32 compositionEndTime)
+{
+    MP4Err                              err;
+    MP4TrackExtensionPropertiesAtomPtr  trep;
+    MP4CompositionToDecodeAtomPtr       cslg;
+    MP4CompositionToDecodeAtomPtr       cslgOfSampleTable;
+    u8                                  createCslg;
+    
+    err         = MP4NoErr;
+    createCslg  = 0;
+    
+    trep = NULL;
+    self->getTrackExtensionPropertiesAtom(self, trackID, (MP4AtomPtr *) &trep);
+    
+    if (trep != NULL)
+    {
+        cslg = NULL;
+        trep->getAtom(trep, MP4CompositionToDecodeAtomType, (MP4AtomPtr *) &cslg);
+        if (cslg == NULL)
+            createCslg = 1;
+    }
+    else
+    {
+        err = MP4CreateTrackExtensionPropertiesAtom(&trep);     if (err) goto bail;
+        trep->track_id = trackID;
+        err = self->addAtom(self, (MP4AtomPtr) trep);           if (err) goto bail;
+        createCslg = 1;
+    }
+    
+    if (createCslg == 1)
+    {
+        err = MP4CreateCompositionToDecodeAtom(&cslg);  if (err) goto bail;
+        trep->addAtom(trep, (MP4AtomPtr) cslg);
+    }
+    
+    cslg->compositionToDTSShift         = compositionToDTSShift;
+    cslg->leastDecodeToDisplayDelta     = leastDecodeToDisplayDelta;
+    cslg->greatestDecodeToDisplayDelta  = greatestDecodeToDisplayDelta;
+    cslg->compositionStartTime          = compositionStartTime;
+    cslg->compositionEndTime            = compositionEndTime;
+bail:
+    TEST_RETURN( err );
+    
+    return err;
+}
+
 
 static MP4Err maketrackfragments (struct MP4MovieExtendsAtom *self, MP4MovieFragmentAtomPtr moof, MP4MovieAtomPtr moov, MP4MediaDataAtomPtr mdat )
 {
@@ -105,7 +158,7 @@ static MP4Err maketrackfragments (struct MP4MovieExtendsAtom *self, MP4MovieFrag
 	u32 trackCount;
 	err = MP4NoErr;
 	
-	MP4GetListEntryCount( self->atomList, &trackCount );
+	MP4GetListEntryCount( self->trackExtendsList, &trackCount );
 	for( i = 0, trackIdx = 0; i < trackCount; i++ )
 	{
 		MP4TrackExtendsAtomPtr              trex;
@@ -113,7 +166,7 @@ static MP4Err maketrackfragments (struct MP4MovieExtendsAtom *self, MP4MovieFrag
 		MP4TrackFragmentHeaderAtomPtr       tfhd;
         MP4TrackFragmentDecodeTimeAtomPtr   tfdt;
         
-		err = MP4GetListEntry( self->atomList, i, (char **) &trex ); if (err) goto bail;
+		err = MP4GetListEntry( self->trackExtendsList, i, (char **) &trex ); if (err) goto bail;
 		
 		err = MP4CreateTrackFragmentAtom( &traf ); if (err) goto bail;
 		err = MP4CreateTrackFragmentHeaderAtom( &tfhd ); if (err) goto bail;
@@ -150,7 +203,7 @@ static MP4Err maketrackfragments (struct MP4MovieExtendsAtom *self, MP4MovieFrag
 		/* if we ever allow flipping of sample descriptions, this should be copied from the
 		   last fragment, and only the movie for the first one */
 		   
-		err = moov->settrackfragment( moov, trex->trackID, (MP4AtomPtr) traf ); if (err) goto bail;		
+		err = moov->settrackfragment( moov, trex->trackID, (MP4AtomPtr) traf ); if (err) goto bail;
 		err = moof->addAtom( moof, (MP4AtomPtr) traf ); if (err) goto bail;
 	}
 bail:
@@ -166,12 +219,12 @@ static MP4Err getTrackExtendsAtom( struct MP4MovieExtendsAtom* self, u32 trackID
 	u32 trackCount;
 	err = MP4NoErr;
 	
-	MP4GetListEntryCount( self->atomList, &trackCount );
+	MP4GetListEntryCount( self->trackExtendsList, &trackCount );
 	for( i = 0; i < trackCount; i++ )
 	{
 		MP4TrackExtendsAtomPtr trex;
 		
-		err = MP4GetListEntry( self->atomList, i, (char **) &trex ); if (err) goto bail;
+		err = MP4GetListEntry( self->trackExtendsList, i, (char **) &trex ); if (err) goto bail;
 		
 		if ((trex->type == MP4TrackExtendsAtomType) && (trex->trackID == trackID)) {
 			*outTrack = (MP4AtomPtr) trex;
@@ -183,6 +236,30 @@ bail:
 	return err;
 }
 
+static MP4Err getTrackExtensionPropertiesAtom( struct MP4MovieExtendsAtom* self, u32 trackID, MP4AtomPtr *outProbs )
+{
+    u32 i;
+    MP4Err err;
+    u32 probCount;
+    err = MP4NoErr;
+    
+    MP4GetListEntryCount( self->trackExtensionPropertiesList, &probCount );
+    for( i = 0; i < probCount; i++ )
+    {
+        MP4TrackExtensionPropertiesAtomPtr trep;
+        
+        err = MP4GetListEntry( self->trackExtendsList, i, (char **) &trep ); if (err) goto bail;
+        
+        if ((trep->type == MP4TrackExtensionPropertiesAtomType) && (trep->track_id == trackID)) {
+            *outProbs = (MP4AtomPtr) trep;
+            break;
+        }
+    }
+bail:
+    TEST_RETURN( err );
+    return err;
+}
+
 static MP4Err setSampleDescriptionIndexes( struct MP4MovieExtendsAtom* self, MP4AtomPtr moov )
 {
 	u32 i;
@@ -190,13 +267,13 @@ static MP4Err setSampleDescriptionIndexes( struct MP4MovieExtendsAtom* self, MP4
 	u32 trackCount;
 	err = MP4NoErr;
 	
-	MP4GetListEntryCount( self->atomList, &trackCount );
+	MP4GetListEntryCount( self->trackExtendsList, &trackCount );
 	for( i = 0; i < trackCount; i++ )
 	{
 		MP4TrackExtendsAtomPtr trex;
 		u32 sd_index;
 		
-		err = MP4GetListEntry( self->atomList, i, (char **) &trex ); if (err) goto bail;
+		err = MP4GetListEntry( self->trackExtendsList, i, (char **) &trex ); if (err) goto bail;
 		
 		err = ((MP4MovieAtomPtr) moov)->getSampleDescriptionIndex( (MP4MovieAtom*) moov, trex->trackID, &sd_index ); if (err) goto bail;
 		trex->default_sample_description_index = sd_index;
@@ -208,11 +285,22 @@ bail:
 
 static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream )
 {
-	PARSE_ATOM_LIST(MP4MovieExtendsAtom)
-bail:
-	TEST_RETURN( err );
+    MP4Err err;
+    MP4MovieExtendsAtomPtr self = (MP4MovieExtendsAtomPtr) s;
+    
+    err = MP4NoErr;
+    if ( self == NULL )	BAILWITHERROR( MP4BadParamErr )
+        err = self->super->createFromInputStream( s, proto, (char*) inputStream ); if ( err ) goto bail;
 
-	return err;
+    GETATOM_LIST( trackExtendsList );
+    GETATOM_LIST( trackExtensionPropertiesList );
+    
+    assert( self->bytesRead == self->size );
+    
+bail:
+    TEST_RETURN( err );
+    
+    return err;
 }
 
 MP4Err MP4CreateMovieExtendsAtom( MP4MovieExtendsAtomPtr *outAtom )
@@ -226,16 +314,20 @@ MP4Err MP4CreateMovieExtendsAtom( MP4MovieExtendsAtomPtr *outAtom )
 	err = MP4CreateBaseAtom( (MP4AtomPtr) self );
 	if ( err ) goto bail;
 	self->type = MP4MovieExtendsAtomType;
-	self->name                = "movie extends";
+	self->name                  = "movie extends";
 	self->createFromInputStream = (cisfunc) createFromInputStream;
-	self->destroy             = destroy;
-	err = MP4MakeLinkedList( &self->atomList ); if (err) goto bail;
+	self->destroy               = destroy;
 	self->calculateSize         = calculateSize;
 	self->serialize             = serialize;
 	self->addAtom				= addAtom;
 	self->maketrackfragments	= maketrackfragments;
 	self->getTrackExtendsAtom	= getTrackExtendsAtom;
+    self->getTrackExtensionPropertiesAtom = getTrackExtensionPropertiesAtom;
 	self->setSampleDescriptionIndexes = setSampleDescriptionIndexes;
+    self->setCompositionToDecodeProperties = setCompositionToDecodeProperties;
+    
+    err = MP4MakeLinkedList( &self->trackExtendsList ); if (err) goto bail;
+    err = MP4MakeLinkedList( &self->trackExtensionPropertiesList ); if (err) goto bail;
 
 	*outAtom = self;
 bail:

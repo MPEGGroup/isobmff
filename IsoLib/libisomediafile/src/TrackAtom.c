@@ -101,6 +101,7 @@ static MP4Err mdatArrived( struct MP4TrackAtom* self, MP4AtomPtr mdat )
 	MP4MediaAtomPtr mdia;
 	MP4MediaInformationAtomPtr minf;
 	ISOMetaAtomPtr meta;
+    ISOAdditionalMetaDataContainerAtomPtr meco;
 
 	err = MP4NoErr;
 
@@ -108,6 +109,11 @@ static MP4Err mdatArrived( struct MP4TrackAtom* self, MP4AtomPtr mdat )
 	if (meta) { 
 		meta->setMdat( meta, (MP4AtomPtr) mdat ); 
 	}
+    
+    meco = (ISOAdditionalMetaDataContainerAtomPtr) self->meco;
+    if (meco) {
+        meco->setMdat( meco, (MP4AtomPtr) mdat );
+    }
 
 	mdia = (MP4MediaAtomPtr) self->trackMedia;
 	if ( mdia == NULL )
@@ -127,6 +133,7 @@ static MP4Err mdatMoved( struct MP4TrackAtom* self, u64 mdatBase, u64 mdatEnd, s
 	MP4Err err;
 	MP4MediaAtomPtr mdia;
 	ISOMetaAtomPtr meta;
+    ISOAdditionalMetaDataContainerAtomPtr meco;
 
 	err = MP4NoErr;
 	mdia = (MP4MediaAtomPtr) self->trackMedia;
@@ -138,7 +145,11 @@ static MP4Err mdatMoved( struct MP4TrackAtom* self, u64 mdatBase, u64 mdatEnd, s
 	if (meta) {
 		err = meta->mdatMoved( meta, mdatBase, mdatEnd, mdatOffset ); if (err) goto bail;
 	}
-
+    
+    meco = (ISOAdditionalMetaDataContainerAtomPtr) self->meco;
+    if (meco) {
+        err = meco->mdatMoved( meco, mdatBase, mdatEnd, mdatOffset ); if (err) goto bail;
+    }
   bail:
    TEST_RETURN( err );
    return err;
@@ -410,7 +421,15 @@ static MP4Err addAtom( MP4TrackAtomPtr self, MP4AtomPtr atom )
 				BAILWITHERROR( MP4BadDataErr )
 			self->meta = atom;
 			break;
-		}
+           
+       case ISOAdditionalMetaDataContainerAtomType:
+           if ( self->meco )
+               BAILWITHERROR( MP4BadDataErr )
+               self->meco = atom;
+           break;
+    }
+    
+    
   bail:
    TEST_RETURN( err );
 
@@ -492,7 +511,12 @@ MP4Err MP4CreateTrackAtom( MP4TrackAtomPtr *outAtom )
 	self->mdatMoved				= mdatMoved;
 	self->mdatArrived 			= mdatArrived;
 	self->settrackfragment		= settrackfragment;
+    
+    self->meta = NULL;
+    self->meco = NULL;
+    
 	*outAtom = self;
+    
 bail:
 	TEST_RETURN( err );
 

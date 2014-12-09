@@ -37,6 +37,7 @@ static MP4Err LocalPutMovieIntoHandle( MP4Movie theMovie, MP4Handle movieH, u32 
 	MP4MovieAtomPtr     moov;
 	MP4MediaDataAtomPtr mdat;
 	MP4AtomPtr			meta;
+    MP4AtomPtr          meco;
 	u32					prepend_size;
 	u32					pre_data_size;
 	u32					move_up;
@@ -54,6 +55,7 @@ static MP4Err LocalPutMovieIntoHandle( MP4Movie theMovie, MP4Handle movieH, u32 
 	movie = (MP4PrivateMovieRecordPtr) theMovie;
 	moov = (MP4MovieAtomPtr) movie->moovAtomPtr;
 	meta = movie->meta;
+    meco = movie->meco;
 	
 	if (movie->fileType == ISOMPEG4FileType)
 		err = MP4MovieCreateDescriptors( theMovie ); 
@@ -94,6 +96,11 @@ static MP4Err LocalPutMovieIntoHandle( MP4Movie theMovie, MP4Handle movieH, u32 
 		err = meta->calculateSize( meta ); if (err) goto bail;
 		pre_data_size += meta->size;
 	}
+    
+    if (meco) {
+        err = meco->calculateSize( meco ); if (err) goto bail;
+        pre_data_size += meco->size;
+    }
 
 	if (moov) 
 	{
@@ -122,6 +129,12 @@ static MP4Err LocalPutMovieIntoHandle( MP4Movie theMovie, MP4Handle movieH, u32 
 			myMeta = (ISOMetaAtomPtr) meta;
 			err = myMeta->mdatMoved( myMeta, 0, mdat->dataSize, move_up ); if (err) goto bail;
 		}
+        
+        if (meco) {
+            ISOAdditionalMetaDataContainerAtomPtr myMeco;
+            myMeco = (ISOAdditionalMetaDataContainerAtomPtr) meco;
+            err = myMeco->mdatMoved( myMeco, 0, mdat->dataSize, move_up ); if (err) goto bail;
+        }
 	}
 	else mdat_size = 0;
 	
@@ -129,13 +142,13 @@ static MP4Err LocalPutMovieIntoHandle( MP4Movie theMovie, MP4Handle movieH, u32 
 		if (movie->prepend_handle == NULL)
 			err = MP4NewHandle( pre_data_size + moov_size + mdat_size, &(movie->prepend_handle) );
 			else 
-			err = MP4SetHandleSize( movie->prepend_handle, pre_data_size + moov_size + mdat_size ); 
+			err = MP4SetHandleSize( movie->prepend_handle, pre_data_size + moov_size + mdat_size );
 		if (err) goto bail;
 		write_location = (*(movie->prepend_handle)) + prepend_size;
 	}
 	else
 	{
-		err = MP4SetHandleSize( movieH, pre_data_size + moov_size + mdat_size ); if (err) goto bail;
+		err = MP4SetHandleSize( movieH, pre_data_size + moov_size + mdat_size); if (err) goto bail;
 
 		if (movie->prepend_handle != NULL) memcpy( (char*) *movieH, (char*) *(movie->prepend_handle), prepend_size );
 		write_location = (*movieH) + prepend_size;
@@ -168,6 +181,11 @@ static MP4Err LocalPutMovieIntoHandle( MP4Movie theMovie, MP4Handle movieH, u32 
 		err = meta->serialize( meta, write_location ); if (err) goto bail;
 		write_location += meta->size;
 	}
+    
+    if (meco) {
+        err = meco->serialize( meco, write_location ); if (err) goto bail;
+        write_location += meco->size;
+    }
 
 	if (moov) {
 		err = moov->serialize( (MP4AtomPtr) moov, write_location ); if (err) goto bail;
@@ -184,12 +202,19 @@ static MP4Err LocalPutMovieIntoHandle( MP4Movie theMovie, MP4Handle movieH, u32 
 			myMeta = (ISOMetaAtomPtr) meta;
 			err = myMeta->mdatMoved( myMeta, move_up, mdat->dataSize + move_up, - ((s32) move_up) ); if (err) goto bail;
 		}
+        
+        if (meco) {
+            ISOAdditionalMetaDataContainerAtomPtr myMeco;
+            myMeco = (ISOAdditionalMetaDataContainerAtomPtr) meco;
+            err = myMeco->mdatMoved( myMeco, move_up, mdat->dataSize + move_up, - ((s32) move_up) ); if (err) goto bail;
+        }
 
 		if (include_mdat) {
 			err = mdat->serialize( (MP4AtomPtr) mdat, write_location ); if (err) goto bail;
 			write_location += mdat->size;
 		}
 	}
+    
 bail:
 	TEST_RETURN( err );
 
@@ -375,7 +400,31 @@ ISOAddDelayToTrackFragmentDecodeTime( MP4Movie theMovie, u32 delay )
         }
     }
     
+bail:
+    TEST_RETURN( err );
+    
+    return err;
+}
 
+ISO_EXTERN ( MP4Err )
+ISOSetCompositonToDecodePropertiesForFragments( MP4Movie theMovie, u32 trackID, s32 compositionToDTSShift, s32 leastDecodeToDisplayDelta,
+                                               s32 greatestDecodeToDisplayDelta, s32 compositionStartTime, s32 compositionEndTime )
+{
+    MP4Err                      err;
+    MP4PrivateMovieRecordPtr    movie;
+    MP4MovieAtomPtr             moov;
+    MP4MovieExtendsAtomPtr      mvex;
+    
+    err = MP4NoErr;
+    movie = (MP4PrivateMovieRecordPtr) theMovie;
+    
+    moov = (MP4MovieAtomPtr) (movie->moovAtomPtr);
+    
+    mvex = (MP4MovieExtendsAtomPtr) moov->mvex;
+    if (mvex == NULL) BAILWITHERROR( MP4BadParamErr )
+        
+    err = mvex->setCompositionToDecodeProperties(mvex, trackID, compositionToDTSShift, leastDecodeToDisplayDelta,
+                                               greatestDecodeToDisplayDelta, compositionStartTime, compositionEndTime);
 bail:
     TEST_RETURN( err );
     

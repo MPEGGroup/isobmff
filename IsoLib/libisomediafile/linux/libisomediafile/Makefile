@@ -144,7 +144,16 @@ sources = \
 	ChannelLayoutAtom.c \
 	DownMixInstructionsAtom.c \
 	LoudnessBaseAtom.c \
-	LoudnessAtom.c
+	LoudnessAtom.c \
+	CompositionToDecodeAtom.c \
+	TrackExtensionPropertiesAtom.c \
+	SampleAuxiliaryInformationSizesAtom.c \
+	SampleAuxiliaryInformationOffsetsAtom.c \
+	AdditionalMetaDataContainerAtom.c \
+	MetaboxRelationAtom.c \
+	ItemReferenceAtom.c \
+	ItemDataAtom.c \
+	SingleItemTypeReferenceAtom.c
 
 
 

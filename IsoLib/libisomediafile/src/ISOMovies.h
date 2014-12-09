@@ -208,7 +208,7 @@ typedef ISOMetaItemRecord*	ISOMetaItem;
 #define ISOGetTrackUserData							MP4GetTrackUserData
 #define ISOGetUserDataEntryCount					MP4GetUserDataEntryCount
 #define ISOGetUserDataItem							MP4GetUserDataItem
-#define ISOGetAtomFromUserData							MP4GetAtomFromUserData
+#define ISOGetAtomFromUserData						MP4GetAtomFromUserData
 #define ISODeleteUserDataItem						MP4DeleteUserDataItem
 #define ISOGetUserDataTypeCount						MP4GetUserDataTypeCount
 #define ISONewUserData								MP4NewUserData
@@ -219,6 +219,7 @@ typedef ISOMetaItemRecord*	ISOMetaItem;
 #define ISODisposeHandle							MP4DisposeHandle
 #define ISOGetHandleSize							MP4GetHandleSize
 #define ISOSetHandleOffset							MP4SetHandleOffset
+#define ISOUseSignedCompositionTimeOffsets			MP4UseSignedCompositionTimeOffsets
 
 #define	QTPutMovieIntoHandle						MP4PutMovieIntoHandle
 #define	MJ2PutMovieIntoHandle						MP4PutMovieIntoHandle
@@ -374,6 +375,11 @@ ISO_EXTERN ( ISOErr )
 ISONewMovieMeta( ISOMovie theMovie, u32 metaType, ISOMeta* meta );
 ISO_EXTERN ( ISOErr )
 ISONewTrackMeta( ISOTrack theTrack, u32 metaType, ISOMeta* meta );
+    
+ISO_EXTERN ( ISOErr )
+ISOAddMetaBoxRelation( ISOMeta first_meta, ISOMeta second_meta, u8 relation_type  );
+ISO_EXTERN ( ISOErr )
+ISOGetMetaBoxRelation( ISOMeta first_meta, ISOMeta second_meta, u8 *relation_type  );
 
 ISO_EXTERN ( ISOErr )
 ISOAddMetaDataReference( ISOMeta meta, u16* out_ref, ISOHandle urlHandle, ISOHandle urnHandle );
@@ -382,11 +388,24 @@ ISO_EXTERN ( ISOErr )
 ISOAddMetaItem( ISOMeta meta, ISOMetaItem* outItem, u64 base_offset, u16 data_ref_index );
 ISO_EXTERN ( ISOErr )
 ISOAddMetaItemWithID( ISOMeta meta, ISOMetaItem* outItem, u64 base_offset, u16 data_ref_index, u16 item_ID );
+    
 ISO_EXTERN ( ISOErr )
 ISOAddItemExtent( ISOMetaItem item, MP4Handle data );
 ISO_EXTERN ( ISOErr )
 ISOAddItemExtentReference( ISOMetaItem item, u64 offset, u64 length );
-
+ISO_EXTERN ( ISOErr )
+ISOAddItemExtentUsingItemData( ISOMetaItem item, MP4Handle data );
+ISO_EXTERN ( ISOErr )
+ISOAddItemExtentItem( ISOMetaItem item, ISOMetaItem extent_item, u32 offset, u32 length );
+    
+   
+ISO_EXTERN ( ISOErr )
+ISOAddItemReference( ISOMetaItem item, u32 reference_type, u32 to_item_ID, u32 *outIndex);
+ISO_EXTERN ( ISOErr )
+ISOAddItemReferences( ISOMetaItem item, u32 reference_type, u16 reference_count, MP4Handle to_item_IDs);
+ISO_EXTERN ( ISOErr )
+ISOGetItemReferences( ISOMetaItem item, u32 reference_type, u16 *reference_count, MP4Handle to_item_IDs );
+    
 ISO_EXTERN ( ISOErr )
 ISOAddPrimaryData( ISOMeta meta, u32 box_type, MP4Handle data, u8 is_full_atom );
 ISO_EXTERN ( ISOErr ) 
@@ -404,6 +423,16 @@ ISOGetItemID( ISOMetaItem item, u16* ID );
 
 ISO_EXTERN ( ISOErr )
 ISOSetItemInfo( ISOMetaItem item, u16 protection_index, char* name, char* content_type, char* content_encoding );
+    
+ISO_EXTERN ( ISOErr )
+ISOSetItemInfoExtension( ISOMetaItem item, MP4Handle extension, u32 extension_type );
+ISO_EXTERN ( ISOErr )
+ISOGetItemInfoExtension( ISOMetaItem item, MP4Handle extension, u32 *extension_type );
+    
+ISO_EXTERN ( ISOErr )
+ISOSetItemInfoItemType( ISOMetaItem item, u32 item_type, char* item_uri_type);
+ISO_EXTERN ( ISOErr )
+ISOGetItemInfoItemType( ISOMetaItem item, u32 *item_type, char** item_uri_type);
 
 ISO_EXTERN ( ISOErr )
 ISOGetFileMeta( ISOMovie theMovie,  ISOMeta* meta, u32 inMetaType, u32* outMetaType);
@@ -412,6 +441,9 @@ ISOGetMovieMeta( ISOMovie theMovie, ISOMeta* meta, u32 inMetaType, u32* outMetaT
 ISO_EXTERN ( ISOErr )
 ISOGetTrackMeta( ISOTrack theTrack, ISOMeta* meta, u32 inMetaType, u32* outMetaType );
 
+    
+ISO_EXTERN ( ISOErr )
+ISOGetAllItemsWithType( ISOMeta meta, u32 type, ISOMetaItem **items, u32 *numberOfItemsFound );
 ISO_EXTERN ( ISOErr )
 ISOFindItemByName( ISOMeta meta, ISOMetaItem* item, char* name, u8 exact_case );
 ISO_EXTERN ( ISOErr )

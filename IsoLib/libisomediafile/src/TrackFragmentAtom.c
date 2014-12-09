@@ -57,10 +57,12 @@ static MP4Err addAtom( MP4TrackFragmentAtomPtr self, MP4AtomPtr atom )
 	if ( self == 0 )
 		BAILWITHERROR( MP4BadParamErr );
 	switch (atom->type) {
-		case MP4TrackFragmentHeaderAtomType:        self->tfhd = atom; break;
-        case MP4TrackFragmentDecodeTimeAtomType:    self->tfdt = atom; break;
-		case MP4TrackRunAtomType:                   err = MP4AddListEntry( atom, self->atomList ); break;
-		case MP4SampletoGroupAtomType:              err = MP4AddListEntry( atom, self->groupList ); break;
+		case MP4TrackFragmentHeaderAtomType:                    self->tfhd = atom; break;
+        case MP4TrackFragmentDecodeTimeAtomType:                self->tfdt = atom; break;
+        case MP4SampleAuxiliaryInformationSizesAtomType:        err = MP4AddListEntry( atom, self->saizList ); break;
+        case MP4SampleAuxiliaryInformationOffsetsAtomType:      err = MP4AddListEntry( atom, self->saioList ); break;
+		case MP4TrackRunAtomType:                               err = MP4AddListEntry( atom, self->atomList ); break;
+		case MP4SampletoGroupAtomType:                          err = MP4AddListEntry( atom, self->groupList ); break;
 		/* default:                                 BAILWITHERROR( MP4BadDataErr ) */
 	}
 bail:
@@ -132,6 +134,7 @@ static MP4Err addSamples( struct MP4MediaInformationAtom *s, MP4Handle sampleH,
 	u32* decodes;
 	MP4TrackFragmentAtomPtr self;
     MP4TrackExtendsAtomPtr trex;
+    MP4CompositionToDecodeAtomPtr cslg;
     
 		
 	self = (MP4TrackFragmentAtomPtr) s;
@@ -187,10 +190,13 @@ static MP4Err addSamples( struct MP4MediaInformationAtom *s, MP4Handle sampleH,
 		}
 	}
 	
+    if (self->useSignedCompositionTimeOffsets == 1)
+        trun->version = 1;
+
 	err = MP4AddListEntry( trun, self->atomList ); if (err) goto bail;
 	
 	err = addSampleGroups( self, sampleCount ); if (err) goto bail;
-	
+
 bail:
 	TEST_RETURN( err );
 
@@ -267,6 +273,9 @@ static MP4Err addSampleReference( struct MP4MediaInformationAtom *s, u64 dataOff
 		}
 	}
 	
+    if (self->useSignedCompositionTimeOffsets == 1)
+        trun->version = 1;
+    
 	err = MP4AddListEntry( trun, self->atomList ); if (err) goto bail;
 
 	err = addSampleGroups( self, sampleCount ); if (err) goto bail;
@@ -288,6 +297,8 @@ static MP4Err serialize( struct MP4Atom* s, char* buffer )
     	buffer += self->bytesWritten;	
     	SERIALIZE_ATOM( tfhd );
         SERIALIZE_ATOM( tfdt );
+        SERIALIZE_ATOM_LIST( saizList );
+        SERIALIZE_ATOM_LIST( saioList );
 		
     	SERIALIZE_ATOM_LIST( atomList );
 		SERIALIZE_ATOM_LIST( groupList );
@@ -375,6 +386,8 @@ static MP4Err calculateSize( struct MP4Atom* s )
 		err = MP4CalculateBaseAtomFieldSize( s ); if (err) goto bail;
 		ADD_ATOM_SIZE( tfhd );
         ADD_ATOM_SIZE( tfdt );
+        ADD_ATOM_LIST_SIZE( saizList );
+        ADD_ATOM_LIST_SIZE( saioList );
 		ADD_ATOM_LIST_SIZE( atomList );
 		ADD_ATOM_LIST_SIZE( groupList );
 	}
@@ -520,6 +533,79 @@ bail:
 	return err;
 }
 
+MP4Err mergeSampleAuxiliaryInformation( struct MP4TrackFragmentAtom *self, MP4MediaAtomPtr mdia )
+{
+    u32                                             i;
+  	MP4Err                                          err;
+    MP4TrackFragmentHeaderAtomPtr                   tfhd;
+    MP4MediaInformationAtomPtr                      minf;
+    MP4SampleTableAtomPtr                           stbl;
+    
+    err = MP4NoErr;
+    
+    tfhd = (MP4TrackFragmentHeaderAtomPtr) self->tfhd;
+    minf = (MP4MediaInformationAtomPtr) mdia->information;
+    stbl = (MP4SampleTableAtomPtr) minf->sampleTable;
+    
+    for (i = 0; i < self->saizList->entryCount; i++)
+    {
+        MP4SampleAuxiliaryInformationSizesAtomPtr       saizOfTraf;
+        MP4SampleAuxiliaryInformationOffsetsAtomPtr     saioOfTraf;
+        MP4SampleAuxiliaryInformationSizesAtomPtr       saizOfStbl;
+        MP4SampleAuxiliaryInformationOffsetsAtomPtr     saioOfStbl;
+        err = MP4GetListEntry(self->saizList, i, (char **) &saizOfTraf);
+        err = MP4GetListEntry(self->saioList, i, (char **) &saioOfTraf);
+        
+        err = stbl->getSampleAuxiliaryInformation(stbl, (saizOfTraf->flags & 1), saizOfTraf->aux_info_type, saizOfTraf->aux_info_type_parameter,
+                                                  &saizOfStbl, &saioOfStbl); if (err) goto bail;
+        
+        err = saizOfStbl->mergeSizes((MP4AtomPtr) saizOfStbl, (MP4AtomPtr) saizOfTraf); if (err) goto bail;
+        err = saioOfStbl->mergeOffsets((MP4AtomPtr) saioOfStbl, (MP4AtomPtr) saioOfTraf, tfhd->base_data_offset ); if (err) goto bail;
+    }
+    
+    
+bail:
+    TEST_RETURN( err );
+    
+    return err;
+}
+
+MP4Err getSampleAuxiliaryInfoFromTrackFragment (struct MP4TrackFragmentAtom *self, u8 isUsingAuxInfoPropertiesFlag, u32 aux_info_type, u32 aux_info_type_parameter,
+                                                MP4SampleAuxiliaryInformationSizesAtomPtr *saizOut, MP4SampleAuxiliaryInformationOffsetsAtomPtr *saioOut)
+{
+    MP4Err  err;
+    u32     i;
+    err = MP4NoErr;
+    
+    *saizOut = NULL;
+    *saioOut = NULL;
+    
+    for (i = 0; i < self->saizList->entryCount; i++)
+    {
+        MP4SampleAuxiliaryInformationSizesAtomPtr       saizExisting;
+        MP4SampleAuxiliaryInformationOffsetsAtomPtr     saioExisting;
+        err = MP4GetListEntry(self->saizList, i, (char **) &saizExisting);
+        err = MP4GetListEntry(self->saioList, i, (char **) &saioExisting);
+        
+        if (((saizExisting->flags & 1) == isUsingAuxInfoPropertiesFlag)  &&
+            (saizExisting->aux_info_type == aux_info_type) &&
+            (saizExisting->aux_info_type_parameter == aux_info_type_parameter))
+        {
+            *saizOut = saizExisting;
+        }
+        
+        if (((saioExisting->flags & 1) == isUsingAuxInfoPropertiesFlag)  &&
+            (saioExisting->aux_info_type == aux_info_type) &&
+            (saioExisting->aux_info_type_parameter == aux_info_type_parameter))
+        {
+            *saioOut = saioExisting;
+        }
+    }
+bail:
+    TEST_RETURN( err );
+    
+    return err;
+}
 static MP4Err calculateDataEnd( MP4TrackFragmentAtomPtr self, u32* outEnd )
 {
 	MP4Err err;
@@ -701,7 +787,13 @@ MP4Err MP4CreateTrackFragmentAtom( MP4TrackFragmentAtomPtr *outAtom )
 	
 	self->setSampleDependency	= setSampleDependency;
 	
-
+    self->useSignedCompositionTimeOffsets = 0;
+    self->mergeSampleAuxiliaryInformation = mergeSampleAuxiliaryInformation;
+    self->getSampleAuxiliaryInfoFromTrackFragment = getSampleAuxiliaryInfoFromTrackFragment;
+    
+    err = MP4MakeLinkedList( &self->saizList ); if (err) goto bail;
+    err = MP4MakeLinkedList( &self->saioList ); if (err) goto bail;
+    
 	*outAtom = self;
 bail:
 	TEST_RETURN( err );

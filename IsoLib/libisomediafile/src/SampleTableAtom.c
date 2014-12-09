@@ -93,6 +93,7 @@ static MP4Err addAtom( MP4SampleTableAtomPtr self, MP4AtomPtr atom )
 	{
 		ADDCASE( TimeToSample );
 		ADDCASE( CompositionOffset );
+        ADDCASE( CompositionToDecode );
 		ADDCASE( SyncSample );
 		ADDCASE( SampleDescription );
 		
@@ -109,6 +110,14 @@ static MP4Err addAtom( MP4SampleTableAtomPtr self, MP4AtomPtr atom )
 		ADDCASE( PaddingBits );
 		
 		ADDCASE( SampleDependency );
+            
+        case MP4SampleAuxiliaryInformationSizesAtomType:
+            err = MP4AddListEntry( (void*) atom, self->SampleAuxiliaryInformationSizes );
+            break;
+            
+        case MP4SampleAuxiliaryInformationOffsetsAtomType:
+            err = MP4AddListEntry( (void*) atom, self->SampleAuxiliaryInformationOffsets );
+            break;
 		
 		case MP4SampleGroupDescriptionAtomType:
 			err = MP4AddListEntry( (void*) atom, self->groupDescriptionList );
@@ -246,14 +255,15 @@ static MP4Err addSamples( struct MP4SampleTableAtom *self,
 {
    u32 beginningSampleNumber;
    u32 sampleDescriptionIndex;
-   MP4SampleDescriptionAtomPtr stsd;
-   MP4TimeToSampleAtomPtr      stts;
-   MP4SampleSizeAtomPtr        stsz;
-   MP4SampleToChunkAtomPtr     stsc;
-   MP4ChunkOffsetAtomPtr       stco;
-   MP4CompositionOffsetAtomPtr ctts;
-   MP4SyncSampleAtomPtr        stss;
-   MP4PaddingBitsAtomPtr       padb;
+   MP4SampleDescriptionAtomPtr      stsd;
+   MP4TimeToSampleAtomPtr           stts;
+   MP4SampleSizeAtomPtr             stsz;
+   MP4SampleToChunkAtomPtr          stsc;
+   MP4ChunkOffsetAtomPtr            stco;
+   MP4CompositionOffsetAtomPtr      ctts;
+   MP4SyncSampleAtomPtr             stss;
+   MP4PaddingBitsAtomPtr            padb;
+   MP4CompositionToDecodeAtomPtr    cslg;
    u32						   groupCount;
    u32 i;
    MP4Err err;
@@ -289,11 +299,20 @@ static MP4Err addSamples( struct MP4SampleTableAtom *self,
    {
       if (self->CompositionOffset == NULL )
       {
-         MP4Err MP4CreateCompositionOffsetAtom( MP4CompositionOffsetAtomPtr *outAtom );
-         err = MP4CreateCompositionOffsetAtom( &ctts ); if (err) goto bail;
-         err = addAtom( self, (MP4AtomPtr) ctts ); if (err) goto bail;
+          MP4Err MP4CreateCompositionOffsetAtom( MP4CompositionOffsetAtomPtr *outAtom );
+          err = MP4CreateCompositionOffsetAtom( &ctts ); if (err) goto bail;
+          if (self->useSignedCompositionTimeOffsets == 1)
+          {
+              MP4Err MP4CreateCompositionToDecodeAtom( MP4CompositionToDecodeAtomPtr *outAtom );
+              ctts->version = 1;
+              err = MP4CreateCompositionToDecodeAtom( &cslg );  if (err) goto bail;
+              err = addAtom( self, (MP4AtomPtr) cslg );         if (err) goto bail;
+              
+          }
+          err = addAtom( self, (MP4AtomPtr) ctts ); if (err) goto bail;
       }
       ctts = (MP4CompositionOffsetAtomPtr) self->CompositionOffset;
+      
    }
    stss = NULL;
    if ( syncSamplesH != NULL )
@@ -320,7 +339,12 @@ static MP4Err addSamples( struct MP4SampleTableAtom *self,
    err = stts->addSamples( stts, sampleCount, durationsH ); if (err) goto bail;
    if ( ctts )
    {
-      err = ctts->addSamples( ctts, beginningSampleNumber, sampleCount, compositionOffsetsH ); if (err) goto bail;
+       err = ctts->addSamples( ctts, beginningSampleNumber, sampleCount, compositionOffsetsH ); if (err) goto bail;
+       if (self->useSignedCompositionTimeOffsets == 1)
+       {
+           cslg = (MP4CompositionToDecodeAtomPtr) self->CompositionToDecode;
+           cslg->updateFields( (MP4AtomPtr) cslg, sampleCount, durationsH, compositionOffsetsH); if (err) goto bail;
+       }
    }
    if ( stss )
    {
@@ -387,6 +411,8 @@ static MP4Err serialize( struct MP4Atom* s, char* buffer )
 	err = MP4SerializeCommonBaseAtomFields( s, buffer ); if (err) goto bail;
     buffer += self->bytesWritten;
     SERIALIZE_ATOM_LIST( atomList );
+    SERIALIZE_ATOM_LIST( SampleAuxiliaryInformationSizes );
+    SERIALIZE_ATOM_LIST( SampleAuxiliaryInformationOffsets );
 	assert( self->bytesWritten == self->size );
 bail:
 	TEST_RETURN( err );
@@ -402,6 +428,8 @@ static MP4Err calculateSize( struct MP4Atom* s )
 	
 	err = MP4CalculateBaseAtomFieldSize( s ); if (err) goto bail;
 	ADD_ATOM_LIST_SIZE( atomList );
+    ADD_ATOM_LIST_SIZE( SampleAuxiliaryInformationSizes );
+    ADD_ATOM_LIST_SIZE( SampleAuxiliaryInformationOffsets );
 bail:
 	TEST_RETURN( err );
 
@@ -587,6 +615,43 @@ static MP4Err getSampleDependency( struct MP4SampleTableAtom *self, u32 sampleNu
    return err;
 }
 
+MP4Err getSampleAuxiliaryInformation(   struct MP4SampleTableAtom *self, u8 isUsingAuxInfoPropertiesFlag, u32 aux_info_type, u32 aux_info_type_parameter,
+                                        MP4SampleAuxiliaryInformationSizesAtomPtr *saizOut, MP4SampleAuxiliaryInformationOffsetsAtomPtr *saioOut)
+{
+    MP4Err  err;
+    u32     i;
+    err = MP4NoErr;
+    
+    *saizOut = NULL;
+    *saioOut = NULL;
+    
+    for (i = 0; i < self->SampleAuxiliaryInformationSizes->entryCount; i++)
+    {
+        MP4SampleAuxiliaryInformationSizesAtomPtr       saizExisting;
+        MP4SampleAuxiliaryInformationOffsetsAtomPtr     saioExisting;
+        err = MP4GetListEntry(self->SampleAuxiliaryInformationSizes, i, (char **) &saizExisting);
+        err = MP4GetListEntry(self->SampleAuxiliaryInformationOffsets, i, (char **) &saioExisting);
+        
+        if (((saizExisting->flags & 1) == isUsingAuxInfoPropertiesFlag)  &&
+            (saizExisting->aux_info_type == aux_info_type) &&
+            (saizExisting->aux_info_type_parameter == aux_info_type_parameter))
+        {
+            *saizOut = saizExisting;
+        }
+        
+        if (((saioExisting->flags & 1) == isUsingAuxInfoPropertiesFlag)  &&
+            (saioExisting->aux_info_type == aux_info_type) &&
+            (saioExisting->aux_info_type_parameter == aux_info_type_parameter))
+        {
+            *saioOut = saioExisting;
+        }
+    }
+bail:
+    TEST_RETURN( err );
+    
+    return err;
+}
+
 static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream )
 {
 	PARSE_ATOM_LIST(MP4SampleTableAtom)
@@ -635,6 +700,12 @@ MP4Err MP4CreateSampleTableAtom( MP4SampleTableAtomPtr *outAtom )
 	
 	err = MP4MakeLinkedList( &(self->groupDescriptionList) ); if (err) goto bail;
 	err = MP4MakeLinkedList( &(self->sampletoGroupList) );    if (err) goto bail;
+    
+    self->useSignedCompositionTimeOffsets   = 0;
+    self->getSampleAuxiliaryInformation     = getSampleAuxiliaryInformation;
+    
+    err = MP4MakeLinkedList( &(self->SampleAuxiliaryInformationSizes) );        if (err) goto bail;
+    err = MP4MakeLinkedList( &(self->SampleAuxiliaryInformationOffsets) );      if (err) goto bail;
 	
 	*outAtom = self;
 bail:

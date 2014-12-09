@@ -79,6 +79,10 @@ MP4DisposeMovie( MP4Movie theMovie )
 	
 	if ( moov->mdat )
 		moov->mdat->destroy( moov->mdat );
+    
+    if ( moov->meta )
+        moov->meta->destroy( moov->meta );
+    
 		
 	if ( moov->jp2h )
 		moov->jp2h->destroy( moov->jp2h );
@@ -180,6 +184,10 @@ parseMovie( MP4Movie *theMovie, MP4PrivateMovieRecordPtr moov, int openMovieFlag
 				if ( moov->meta ) BAILWITHERROR( MP4BadDataErr )
 				else moov->meta = anAtomPtr;
 			  break;
+            case ISOAdditionalMetaDataContainerAtomType:
+                if ( moov->meco ) BAILWITHERROR( MP4BadDataErr )
+                    else moov->meco = anAtomPtr;
+                break;
 			default:
 				anAtomPtr->destroy( anAtomPtr );
 				/* TODO: Save other top-level atoms -- if any, but this should be it */

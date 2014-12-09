@@ -994,6 +994,39 @@ MP4_EXTERN ( MP4Err ) MP4GetMediaDataRefCount( MP4Media theMedia, u32 *outCount 
    return err;
 }
 
+MP4_EXTERN ( MP4Err ) MP4UseSignedCompositionTimeOffsets ( MP4Media media )
+{
+    MP4Err                          err;
+    MP4MediaAtomPtr                 mdia;
+    MP4MediaInformationAtomPtr      minf;
+    MP4SampleTableAtomPtr           stbl;
+    
+    err = MP4NoErr;
+    
+    if (media == NULL)
+    {
+        BAILWITHERROR( MP4BadParamErr );
+    }
+    mdia = (MP4MediaAtomPtr) media;
+    minf = (MP4MediaInformationAtomPtr) mdia->information;
+    if (minf == NULL)
+    {
+        BAILWITHERROR( MP4BadParamErr );
+    }
+    
+    stbl = (MP4SampleTableAtomPtr) minf->sampleTable;
+    if (stbl == NULL)
+        BAILWITHERROR( MP4InvalidMediaErr );
+    
+    stbl->useSignedCompositionTimeOffsets = 1;
+bail:
+    TEST_RETURN( err );
+    
+    return err;
+}
+
+
+
 MP4_EXTERN ( MP4Err ) MP4CheckMediaDataReferences( MP4Media theMedia )
 {
    MP4Err err;
@@ -2032,4 +2065,267 @@ MP4CheckMediaDataRef( MP4Media theMedia, u32 dataEntryIndex)
 
 bail:
    return err;
+}
+
+
+/* Sample Auxiliary Information */
+
+
+MP4_EXTERN ( MP4Err )
+MP4SetupSampleAuxiliaryInformation( MP4Media theMedia, u8 isUsingAuxInfoPropertiesFlag, u32 aux_info_type, u32 aux_info_type_parameter,
+                                   u8 default_sample_info_size )
+{
+    MP4Err                                          err;
+    MP4MediaAtomPtr                                 mdia;
+    MP4MediaInformationAtomPtr                      minf;
+    MP4SampleTableAtomPtr                           stbl;
+    MP4SampleAuxiliaryInformationSizesAtomPtr       saizExisting;
+    MP4SampleAuxiliaryInformationOffsetsAtomPtr     saioExisting;
+    MP4SampleAuxiliaryInformationSizesAtomPtr       saiz;
+    MP4SampleAuxiliaryInformationOffsetsAtomPtr     saio;
+    u32                                             i;
+    
+    err     = MP4NoErr;
+    mdia    = NULL;
+    minf    = NULL;
+    stbl    = NULL;
+    
+    mdia    = (MP4MediaAtomPtr) theMedia;
+    if (mdia == NULL)  BAILWITHERROR( MP4BadParamErr );
+    
+    minf    = (MP4MediaInformationAtomPtr) mdia->information;
+    if (minf == NULL)  BAILWITHERROR( MP4BadParamErr );
+    
+    stbl    = (MP4SampleTableAtomPtr) minf->sampleTable;
+    if (stbl == NULL)  BAILWITHERROR( MP4BadParamErr );
+    
+    err = stbl->getSampleAuxiliaryInformation(stbl, isUsingAuxInfoPropertiesFlag, aux_info_type, aux_info_type_parameter,
+                                              &saizExisting, &saioExisting);  if (err) goto bail;
+    
+    if (saizExisting != NULL)
+        BAILWITHERROR(MP4BadParamErr);
+    
+    err     = MP4CreateSampleAuxiliaryInformationSizesAtom(&saiz);          if (err) goto bail;
+    err     = MP4CreateSampleAuxiliaryInformationOffsetsAtom(&saio);        if (err) goto bail;
+    
+    if (isUsingAuxInfoPropertiesFlag != 0)
+    {
+        saiz->flags                     |= 1;
+        saio->flags                     |= 1;
+        saiz->aux_info_type             = aux_info_type;
+        saio->aux_info_type             = aux_info_type;
+        saiz->aux_info_type_parameter   = aux_info_type_parameter;
+        saio->aux_info_type_parameter   = aux_info_type_parameter;
+    }
+    
+    saiz->default_sample_info_size = default_sample_info_size;
+    
+    err = MP4AddListEntry(saiz, stbl->SampleAuxiliaryInformationSizes); if (err) goto bail;
+    err = MP4AddListEntry(saio, stbl->SampleAuxiliaryInformationOffsets); if (err) goto bail;
+bail:
+    return err;
+}
+
+MP4_EXTERN ( MP4Err )
+MP4AddSampleAuxiliaryInformation( MP4Media theMedia, u8 isUsingAuxInfoPropertiesFlag, u32 aux_info_type, u32 aux_info_type_parameter,
+                                 MP4Handle dataH, u32 sampleCount, MP4Handle sizesH )
+{
+    MP4Err                                          err;
+    MP4MediaAtomPtr                                 mdia;
+    MP4MediaInformationAtomPtr                      minf;
+    MP4SampleTableAtomPtr                           stbl;
+    MP4SampleAuxiliaryInformationSizesAtomPtr       saiz;
+    MP4SampleAuxiliaryInformationOffsetsAtomPtr     saio;
+    MP4TrackFragmentAtomPtr                         traf;
+    MP4DataInformationAtomPtr                       dinf;
+    MP4MediaDataAtomPtr                             mdat;
+    
+    u32                                             dataReferenceIndex;
+    u64                                             sampleOffset;
+    
+    err     = MP4NoErr;
+    mdia    = NULL;
+    minf    = NULL;
+    stbl    = NULL;
+    traf    = NULL;
+    
+    if (sampleCount == 0) goto bail;
+    
+    mdia    = (MP4MediaAtomPtr) theMedia;
+    if (mdia == NULL)  BAILWITHERROR( MP4BadParamErr );
+    
+    if (mdia->information->type == MP4MediaInformationAtomType)
+    {
+        minf    = (MP4MediaInformationAtomPtr) mdia->information;
+        if (minf == NULL)  BAILWITHERROR( MP4BadParamErr );
+        
+        stbl    = (MP4SampleTableAtomPtr) minf->sampleTable;
+        if (stbl == NULL)  BAILWITHERROR( MP4BadParamErr );
+        
+        err = stbl->getSampleAuxiliaryInformation(stbl, isUsingAuxInfoPropertiesFlag, aux_info_type, aux_info_type_parameter,
+                                                  &saiz, &saio);  if (err) goto bail;
+    }
+    else if (mdia->information->type == MP4TrackFragmentAtomType)
+    {
+        traf = (MP4TrackFragmentAtomPtr) mdia->information;
+        if (traf == NULL)  BAILWITHERROR( MP4BadParamErr );
+        
+        err = traf->getSampleAuxiliaryInfoFromTrackFragment(traf, isUsingAuxInfoPropertiesFlag, aux_info_type, aux_info_type_parameter,
+                                                  &saiz, &saio);  if (err) goto bail;
+    }
+    
+    if (saiz == NULL)  BAILWITHERROR( MP4BadParamErr );
+    if (saio == NULL)  BAILWITHERROR( MP4BadParamErr );
+    
+    if (mdia->information->type == MP4MediaInformationAtomType)
+    {
+        dinf                = (MP4DataInformationAtomPtr) minf->dataInformation;
+        if ( dinf == NULL )
+            BAILWITHERROR( MP4InvalidMediaErr );
+        err                 = stbl->getCurrentDataReferenceIndex( stbl, &dataReferenceIndex );  if (err) goto bail;
+        err                 = dinf->getOffset( dinf, dataReferenceIndex, &sampleOffset );       if (err) goto bail;
+        saio->totalOffset   = sampleOffset;
+        
+        err                 = dinf->addSamples( dinf, sampleCount, dataReferenceIndex, dataH ); if (err) goto bail;
+    }
+    else if (mdia->information->type == MP4TrackFragmentAtomType)
+    {
+        mdat                = traf->mdat;
+        saio->totalOffset   = mdat->dataSize;
+        mdat->addData( mdat, dataH );
+    }
+    else
+        if (traf == NULL)  BAILWITHERROR( MP4BadParamErr );
+    
+    err = saiz->addSizes((MP4AtomPtr) saiz, sampleCount, sizesH);    if (err) goto bail;
+    err = saio->addOffsets((MP4AtomPtr) saio, sampleCount, sizesH);         if (err) goto bail;
+bail:
+    return err;
+}
+
+MP4_EXTERN ( MP4Err )
+MP4GetSampleAuxiliaryInformation( MP4Media theMedia, u32 *outCount, MP4Handle isUsingAuxInfoPropertiesFlags,
+                                 MP4Handle aux_info_types, MP4Handle aux_info_type_parameters )
+{
+    MP4Err                                          err;
+    MP4MediaAtomPtr                                 mdia;
+    MP4MediaInformationAtomPtr                      minf;
+    MP4SampleTableAtomPtr                           stbl;
+    MP4SampleAuxiliaryInformationSizesAtomPtr       saiz;
+    u32                                             i;
+    u8                                              *flags;
+    u32                                             *types;
+    u32                                             *parameters;
+    
+
+    err         = MP4NoErr;
+    mdia        = NULL;
+    minf        = NULL;
+    stbl        = NULL;
+
+    *outCount   = 0;
+    
+    mdia    = (MP4MediaAtomPtr) theMedia;
+    if (mdia == NULL)  BAILWITHERROR( MP4BadParamErr );
+
+    minf    = (MP4MediaInformationAtomPtr) mdia->information;
+    if (minf == NULL)  BAILWITHERROR( MP4BadParamErr );
+    
+    stbl    = (MP4SampleTableAtomPtr) minf->sampleTable;
+    if (stbl == NULL)  BAILWITHERROR( MP4BadParamErr );
+    
+    err    = MP4SetHandleSize( isUsingAuxInfoPropertiesFlags, stbl->SampleAuxiliaryInformationSizes->entryCount * sizeof(u8) );  if (err) goto bail;
+    err    = MP4SetHandleSize( aux_info_types, stbl->SampleAuxiliaryInformationSizes->entryCount * sizeof(u32) );                if (err) goto bail;
+    err    = MP4SetHandleSize( aux_info_type_parameters, stbl->SampleAuxiliaryInformationSizes->entryCount * sizeof(u32) );      if (err) goto bail;
+    
+    flags       = (u8*) isUsingAuxInfoPropertiesFlags;
+    types       = (u32*) aux_info_types;
+    parameters  = (u32*) aux_info_type_parameters;
+    
+    for (i = 0; i < stbl->SampleAuxiliaryInformationSizes->entryCount; i++)
+    {
+        err             = MP4GetListEntry(stbl->SampleAuxiliaryInformationSizes, i, (char **) &saiz);     if (err) goto bail;
+        
+        flags[i]        = saiz->flags;
+        types[i]        = saiz->aux_info_type;
+        parameters[i]   = saiz->aux_info_type_parameter;
+    }
+    
+    *outCount   = stbl->SampleAuxiliaryInformationSizes->entryCount;
+bail:
+    return err;
+}
+
+MP4_EXTERN ( MP4Err )
+MP4GetSampleAuxiliaryInformationForSample( MP4Media theMedia, u8 isUsingAuxInfoPropertiesFlag, u32 aux_info_type, u32 aux_info_type_parameter, u32 sampleNr, MP4Handle outDataH, u32 *outSize )
+{
+    MP4Err                                          err;
+    MP4MediaAtomPtr                                 mdia;
+    MP4MediaInformationAtomPtr                      minf;
+    MP4SampleTableAtomPtr                           stbl;
+    MP4SampleAuxiliaryInformationSizesAtomPtr       saiz;
+    MP4SampleAuxiliaryInformationOffsetsAtomPtr     saio;
+    MP4SampleToChunkAtomPtr                         stsc;
+    MP4DataHandlerPtr                               dhlr;
+
+    u64 offset;
+    u32 sampleSize;
+    u32 chunkNumber;
+    u32 sampleDescriptionIndex;
+    u32 dataReferenceIndex;
+    u32 firstSampleNumberInChunk;
+    u32 sampleOffsetWithinChunk;
+    
+    err         = MP4NoErr;
+    mdia        = NULL;
+    minf        = NULL;
+    stbl        = NULL;
+    saiz        = NULL;
+    saio        = NULL;
+    *outSize    = 0;
+    
+    mdia    = (MP4MediaAtomPtr) theMedia;
+    if (mdia == NULL)  BAILWITHERROR( MP4BadParamErr );
+    
+    minf    = (MP4MediaInformationAtomPtr) mdia->information;
+    if (minf == NULL)  BAILWITHERROR( MP4BadParamErr );
+    
+    stbl    = (MP4SampleTableAtomPtr) minf->sampleTable;
+    if (stbl == NULL)  BAILWITHERROR( MP4BadParamErr );
+    
+    stsc    = (MP4SampleToChunkAtomPtr) stbl->SampleToChunk;
+    if (stsc == NULL) BAILWITHERROR( MP4InvalidMediaErr );
+
+    err = stbl->getSampleAuxiliaryInformation(stbl, isUsingAuxInfoPropertiesFlag, aux_info_type, aux_info_type_parameter,
+                                              &saiz, &saio);  if (err) goto bail;
+    
+    if (saiz == NULL)  BAILWITHERROR( MP4BadParamErr );
+    if (saio == NULL)  BAILWITHERROR( MP4BadParamErr );
+    
+    if (saiz->sample_count < sampleNr) BAILWITHERROR( MP4EOF );
+    
+    err = stsc->lookupSample( stbl->SampleToChunk, sampleNr,
+                             &chunkNumber, &sampleDescriptionIndex, &firstSampleNumberInChunk ); if (err) goto bail;
+    
+    err     = MP4GetMediaSampleDescription( theMedia, sampleDescriptionIndex, NULL, &dataReferenceIndex ); if (err) goto bail;
+    err     = minf->openDataHandler( (MP4AtomPtr) minf, dataReferenceIndex ); if (err) goto bail;
+    dhlr    = (MP4DataHandlerPtr) minf->dataHandler;
+    
+    if (dhlr == NULL)  BAILWITHERROR( MP4BadParamErr );
+    
+    sampleSize = saiz->default_sample_info_size;
+    if (sampleSize == 0)
+        sampleSize = saiz->sample_info_sizes[sampleNr-1];
+    
+    offset  = saio->offsets[sampleNr -1];
+    *outSize = sampleSize;
+    
+    err     = MP4SetHandleSize( outDataH, sampleSize ); if (err) goto bail;
+    if (sampleSize > 0)
+    {
+        err = dhlr->copyData( dhlr, offset, *outDataH, sampleSize ); if (err) goto bail;
+    }
+    
+bail:
+    return err;
 }

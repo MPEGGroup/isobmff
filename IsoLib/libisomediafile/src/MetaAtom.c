@@ -33,10 +33,13 @@ static void destroy( MP4AtomPtr s )
 {
 	MP4Err err;
 	ISOMetaAtomPtr self;
-
+    u32 i;
+    
 	self = (ISOMetaAtomPtr) s;
-	if ( self == NULL ) BAILWITHERROR( MP4BadParamErr )
-	err = MP4DeleteLinkedList( self->atomList ); if (err) goto bail;
+    if ( self == NULL )
+        BAILWITHERROR( MP4BadParamErr );
+    
+    DESTROY_ATOM_LIST
 
 	if ( self->super )
 		self->super->destroy( s );
@@ -157,7 +160,8 @@ bail:
 
 static MP4Err addAtom( ISOMetaAtomPtr self, MP4AtomPtr atom )
 {
-	MP4Err err;
+	MP4Err                  err;
+    ISOItemLocationAtomPtr  iloc;
 	err = MP4NoErr;
 	
 	if ( self == 0 )
@@ -176,6 +180,8 @@ static MP4Err addAtom( ISOMetaAtomPtr self, MP4AtomPtr atom )
 		case ISOItemLocationAtomType: 
 			if (self->iloc) { BAILWITHERROR(MP4BadParamErr); }
 			self->iloc = atom;
+            iloc = (ISOItemLocationAtomPtr) atom;
+            err = iloc->setItemsMeta(iloc, (MP4AtomPtr) self); if (err) goto bail;
 			break;
 
 		case ISOPrimaryItemAtomType: 
@@ -187,8 +193,18 @@ static MP4Err addAtom( ISOMetaAtomPtr self, MP4AtomPtr atom )
 			if (self->iinf) { BAILWITHERROR(MP4BadParamErr); }
 			self->iinf = atom;
 			break;
+            
+        case ISOItemReferenceAtomType:
+            if (self->iref) { BAILWITHERROR(MP4BadParamErr); }
+            self->iref = atom;
+            break;
+            
+        case ISOItemDataAtomType:
+            if (self->idat) { BAILWITHERROR(MP4BadParamErr); }
+            self->idat = atom;
+            break;
 
-		case ISOItemProtectionAtomType: 
+		case ISOItemProtectionAtomType:
 			if (self->ipro) { BAILWITHERROR(MP4BadParamErr); }
 			self->ipro = atom;
 			break;
@@ -295,6 +311,8 @@ MP4Err ISOCreateMetaAtom( ISOMetaAtomPtr *outAtom )
 	self->openDataHandler		= openDataHandler;
 	self->closeDataHandler		= closeDataHandler;
 	self->dataEntryIndex		= -1;
+    self->relatedMeco           = NULL;
+    self->iref                  = NULL;
 	*outAtom = self;
 bail:
 	TEST_RETURN( err );

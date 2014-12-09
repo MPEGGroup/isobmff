@@ -156,7 +156,10 @@ static MP4Err mergeFragments( struct MP4MovieFragmentAtom* self, MP4MovieAtomPtr
 		{
 			err = MP4BeginMediaEdits( (MP4Media) mdia ); if (err) goto bail;
 			err = traf->mergeRuns( traf, mdia );
-			err = MP4EndMediaEdits( (MP4Media) mdia ); if (err) goto bail;
+            
+            err = traf->mergeSampleAuxiliaryInformation( traf, mdia );
+			
+            err = MP4EndMediaEdits( (MP4Media) mdia ); if (err) goto bail;
 			
 			err = MP4GetMediaDuration( (MP4Media) mdia, &mediaDuration ); if (err) goto bail;
 			if (((MP4TrackAtomPtr) trak)->trackEditAtom) {

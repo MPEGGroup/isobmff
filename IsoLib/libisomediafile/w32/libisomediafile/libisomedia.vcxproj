@@ -134,11 +134,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\AdditionalMetaDataContainerAtom.c" />
     <ClCompile Include="..\..\src\ChannelLayoutAtom.c" />
+    <ClCompile Include="..\..\src\CompositionToDecodeAtom.c" />
     <ClCompile Include="..\..\src\DownMixInstructionsAtom.c" />
     <ClCompile Include="..\..\src\ExtendedLanguageTag.c" />
+    <ClCompile Include="..\..\src\ItemDataAtom.c" />
+    <ClCompile Include="..\..\src\ItemReferenceAtom.c" />
     <ClCompile Include="..\..\src\LoudnessAtom.c" />
     <ClCompile Include="..\..\src\LoudnessBaseAtom.c" />
+    <ClCompile Include="..\..\src\MetaboxRelationAtom.c" />
+    <ClCompile Include="..\..\src\SampleAuxiliaryInformationOffsetsAtom.c" />
+    <ClCompile Include="..\..\src\SampleAuxiliaryInformationSizesAtom.c" />
+    <ClCompile Include="..\..\src\SingleItemTypeReferenceAtom.c" />
+    <ClCompile Include="..\..\src\TrackExtensionPropertiesAtom.c" />
     <ClCompile Include="..\..\src\TrackFragmentDecodeTimeAtom.c" />
     <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\AMRSpecificInfoAtom.c" />
     <ClCompile Include="\Desktop\svns\trunk\IsoLib\libisomediafile\src\AMRWPSpecificInfoAtom.c" />
