@@ -1,3 +1,14 @@
+Release notes Dez 2014
+
+a) Added composition to decode time atom. Also supports signed values.
+
+b) Added support for sample auxiliary information.
+
+c) Added ISO Image File Format library and tool. Tool is able to create HEVC Still Image
+Collections.
+
+d) Updated and added functions in isofile.doc
+
 Release notes Oct 2014
 
 a) Added support for track fragment decode time
