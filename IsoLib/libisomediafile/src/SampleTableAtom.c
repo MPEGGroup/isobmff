@@ -40,6 +40,9 @@ static void destroy( MP4AtomPtr s )
 	
 	err = MP4DeleteLinkedList( self->groupDescriptionList ); if (err) goto bail;
 	err = MP4DeleteLinkedList( self->sampletoGroupList );    if (err) goto bail;
+    
+    err = MP4DeleteLinkedList( self->SampleAuxiliaryInformationSizes ); if (err) goto bail;
+    err = MP4DeleteLinkedList( self->SampleAuxiliaryInformationOffsets );    if (err) goto bail;
 	
 	if ( self->super )
 		self->super->destroy( s );

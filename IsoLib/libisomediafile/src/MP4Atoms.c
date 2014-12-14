@@ -44,6 +44,8 @@ static char* baseAtomGetName( MP4AtomPtr self )
 static void  baseAtomDestroy( MP4AtomPtr self )
 {
 	free( self );
+    if ( MP4BaseAtomClassPtr != NULL )
+        free (MP4BaseAtomClassPtr);
 }
 
 static MP4Err baseAtomCreateFromInputStream( MP4AtomPtr self, MP4AtomPtr proto, MP4InputStreamPtr inputStream )
@@ -88,6 +90,8 @@ static MP4FullAtomPtr MP4FullAtomClassPtr = 0;
 static void  fullAtomDestroy( MP4AtomPtr self )
 {
 	baseAtomDestroy( self );
+    if ( MP4FullAtomClassPtr  != NULL)
+        free (MP4FullAtomClassPtr);
 }
 
 static MP4Err fullAtomCreateFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream )
