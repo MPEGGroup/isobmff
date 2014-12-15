@@ -483,6 +483,12 @@ MP4Err MP4CreateDRCInstructionsUniDRCAtom( DRCInstructionsUniDRCAtomPtr *outAtom
     self->reserved6                 = 0;
     
     
+    err = MP4MakeLinkedList(&self->additionalDownMixIDs);               if ( err ) goto bail;
+    err = MP4MakeLinkedList(&self->sequenceIndexesOfChannelGroups);     if ( err ) goto bail;
+    err = MP4MakeLinkedList(&self->groupIndexesPerChannels);            if ( err ) goto bail;
+    err = MP4MakeLinkedList(&self->channelGroupDuckingScalings);    if (err) goto bail;
+    err = MP4MakeLinkedList(&self->channelGroupGainScalings);       if (err) goto bail;
+    
 	*outAtom = self;
 bail:
 	TEST_RETURN( err );
