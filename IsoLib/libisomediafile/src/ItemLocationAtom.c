@@ -274,13 +274,15 @@ static MP4Err setItemsMeta( ISOItemLocationAtomPtr self, MP4AtomPtr meta )
     if (self == NULL)
         BAILWITHERROR( MP4BadParamErr );
     
-    for ( i = 0; i < self->itemList->entryCount; i++ )
+    if (self->itemList)
     {
-        MetaItemLocationPtr a;
-        err     = MP4GetListEntry( self->itemList, i, (char **) &a ); if (err) goto bail;
-        a->meta = meta;
+        for ( i = 0; i < self->itemList->entryCount; i++ )
+        {
+            MetaItemLocationPtr a;
+            err     = MP4GetListEntry( self->itemList, i, (char **) &a ); if (err) goto bail;
+            a->meta = meta;
+        }
     }
-    
 bail:
     TEST_RETURN( err );
     
@@ -392,6 +394,9 @@ MP4Err ISOCreateItemLocationAtom( ISOItemLocationAtomPtr *outAtom )
 	self->mdatMoved				= mdatMoved;    
     self->setItemsMeta          = setItemsMeta;
 
+    
+    err = MP4MakeLinkedList( &(self->itemList) ); if (err) goto bail;
+    
 	*outAtom = self;
 bail:
 	TEST_RETURN( err );
