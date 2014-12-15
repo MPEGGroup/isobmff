@@ -323,8 +323,9 @@ MP4Err processDrcGainSamples   (MP4Track trak, DrcBitstreamHandle *drcBitStreamH
         }
         
         if (err == MP4EOF)
+        {
             break;
-        
+        }
         errWrite = writeDrcGainToBitstream(packetH, drcBitStreamHandle, drcBitStreamHelper);
         if (errWrite)
         {
@@ -357,7 +358,11 @@ MP4Err writeDrcBitstreamToFile  (DrcBitstreamHandle *drcBitStreamHandle, char *d
     }
     
     if (drcBitStreamHandle->offsetInBits != 0)
+    {
         drcBitStreamHandle->currentBytePosition += 1;
+        drcBitStreamHandle->bitstreamBuffer[drcBitStreamHandle->currentBytePosition - 1] |= 0xFF >> drcBitStreamHandle->offsetInBits; /* 1 padding */
+
+    }
     
     fwrite(drcBitStreamHandle->bitstreamBuffer, drcBitStreamHandle->currentBytePosition, 1, file);
     
