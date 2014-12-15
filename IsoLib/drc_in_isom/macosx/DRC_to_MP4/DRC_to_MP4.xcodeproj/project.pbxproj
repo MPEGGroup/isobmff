@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1805C39A1A3E390B00C55F5F /* libuniDrcBitstreamDecoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1805C3991A3E390B00C55F5F /* libuniDrcBitstreamDecoder.a */; };
+		1805C39C1A3E391E00C55F5F /* libreadonlybitbuf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1805C39B1A3E391E00C55F5F /* libreadonlybitbuf.a */; };
+		1805C39E1A3E392B00C55F5F /* libwavIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1805C39D1A3E392B00C55F5F /* libwavIO.a */; };
 		1873DF2B19D4744200E60B2F /* DRCData.c in Sources */ = {isa = PBXBuildFile; fileRef = 1873DF2919D4744200E60B2F /* DRCData.c */; };
 		188041BF19CB3CD800FAABCE /* Logger.c in Sources */ = {isa = PBXBuildFile; fileRef = 187C301519C10C8A0044AB58 /* Logger.c */; };
 		188041C319CB3CD800FAABCE /* DRC_to_MP4.c in Sources */ = {isa = PBXBuildFile; fileRef = 188041B719CB3C8000FAABCE /* DRC_to_MP4.c */; };
@@ -20,9 +23,6 @@
 		18913ABF19D9FFBE00BFEAC8 /* DRCUniDrcSampleEntryAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = 18913ABE19D9FFBE00BFEAC8 /* DRCUniDrcSampleEntryAtom.c */; };
 		18913ACF19DF1B8B00BFEAC8 /* InStreamDrcToFileFormatDrc.c in Sources */ = {isa = PBXBuildFile; fileRef = 18913ACD19DF1B8B00BFEAC8 /* InStreamDrcToFileFormatDrc.c */; };
 		18913ADD19E4541800BFEAC8 /* DRCAudioSampleEntryAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = 18913ADC19E4541800BFEAC8 /* DRCAudioSampleEntryAtom.c */; };
-		18B77BA319EDC1730078892F /* libreadonlybitbuf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B77BA219EDC1730078892F /* libreadonlybitbuf.a */; };
-		18B77BA519EDC1820078892F /* libwavIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B77BA419EDC1820078892F /* libwavIO.a */; };
-		18B77BA719EDC1C30078892F /* libuniDrcBitstreamDecoderLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B77BA619EDC1C30078892F /* libuniDrcBitstreamDecoderLib.a */; };
 		18B77BB019EDC2FB0078892F /* liblibisomediafile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B77BAF19EDC2FB0078892F /* liblibisomediafile.a */; };
 /* End PBXBuildFile section */
 
@@ -39,6 +39,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1805C3991A3E390B00C55F5F /* libuniDrcBitstreamDecoder.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libuniDrcBitstreamDecoder.a; path = "../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/lib/Darwin_x86_64_D_O0/libuniDrcBitstreamDecoder.a"; sourceTree = "<group>"; };
+		1805C39B1A3E391E00C55F5F /* libreadonlybitbuf.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libreadonlybitbuf.a; path = "../../../Part04-Dynamic_Range_Control/trunk/tools/readonlybitbuf/lib/Darwin_x86_64_D_O0/libreadonlybitbuf.a"; sourceTree = "<group>"; };
+		1805C39D1A3E392B00C55F5F /* libwavIO.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwavIO.a; path = "../../../Part04-Dynamic_Range_Control/trunk/tools/wavIO/lib/Darwin_x86_64_D_O0/libwavIO.a"; sourceTree = "<group>"; };
 		1873DF2919D4744200E60B2F /* DRCData.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = DRCData.c; path = ../../src/DRCData.c; sourceTree = "<group>"; };
 		1873DF2A19D4744200E60B2F /* DRCData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DRCData.h; path = ../../src/DRCData.h; sourceTree = "<group>"; };
 		187C301219C0F7EA0044AB58 /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Logger.h; path = ../../src/Logger.h; sourceTree = "<group>"; };
@@ -60,9 +63,6 @@
 		18913ACE19DF1B8B00BFEAC8 /* InStreamDrcToFileFormatDrc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InStreamDrcToFileFormatDrc.h; path = ../../src/InStreamDrcToFileFormatDrc.h; sourceTree = "<group>"; };
 		18913AD119DF67CB00BFEAC8 /* DRCtoMP4Options.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DRCtoMP4Options.h; path = ../../src/DRCtoMP4Options.h; sourceTree = "<group>"; };
 		18913ADC19E4541800BFEAC8 /* DRCAudioSampleEntryAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = DRCAudioSampleEntryAtom.c; path = ../../src/DRCAudioSampleEntryAtom.c; sourceTree = "<group>"; };
-		18B77BA219EDC1730078892F /* libreadonlybitbuf.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libreadonlybitbuf.a; path = "../../../Part04-Dynamic_Range_Control/trunk/tools/readonlybitbuf/lib/Darwin_x86_64_O0/libreadonlybitbuf.a"; sourceTree = "<group>"; };
-		18B77BA419EDC1820078892F /* libwavIO.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwavIO.a; path = "../../../Part04-Dynamic_Range_Control/trunk/tools/wavIO/lib/Darwin_x86_64_O0/libwavIO.a"; sourceTree = "<group>"; };
-		18B77BA619EDC1C30078892F /* libuniDrcBitstreamDecoderLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libuniDrcBitstreamDecoderLib.a; path = "../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/lib/Debug/libuniDrcBitstreamDecoderLib.a"; sourceTree = "<group>"; };
 		18B77BA819EDC22C0078892F /* uniDrcBitstreamDecoder_api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = uniDrcBitstreamDecoder_api.h; path = "../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/include/uniDrcBitstreamDecoder_api.h"; sourceTree = "<group>"; };
 		18B77BA919EDC2660078892F /* uniDrc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = uniDrc.h; path = "../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcCommon/uniDrc.h"; sourceTree = "<group>"; };
 		18B77BAA19EDC2700078892F /* uniDrcCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = uniDrcCommon.h; path = "../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcCommon/uniDrcCommon.h"; sourceTree = "<group>"; };
@@ -80,9 +80,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				18B77BB019EDC2FB0078892F /* liblibisomediafile.a in Frameworks */,
-				18B77BA519EDC1820078892F /* libwavIO.a in Frameworks */,
-				18B77BA719EDC1C30078892F /* libuniDrcBitstreamDecoderLib.a in Frameworks */,
-				18B77BA319EDC1730078892F /* libreadonlybitbuf.a in Frameworks */,
+				1805C39A1A3E390B00C55F5F /* libuniDrcBitstreamDecoder.a in Frameworks */,
+				1805C39E1A3E392B00C55F5F /* libwavIO.a in Frameworks */,
+				1805C39C1A3E391E00C55F5F /* libreadonlybitbuf.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,9 +93,9 @@
 			isa = PBXGroup;
 			children = (
 				18B77BAF19EDC2FB0078892F /* liblibisomediafile.a */,
-				18B77BA219EDC1730078892F /* libreadonlybitbuf.a */,
-				18B77BA619EDC1C30078892F /* libuniDrcBitstreamDecoderLib.a */,
-				18B77BA419EDC1820078892F /* libwavIO.a */,
+				1805C3991A3E390B00C55F5F /* libuniDrcBitstreamDecoder.a */,
+				1805C39B1A3E391E00C55F5F /* libreadonlybitbuf.a */,
+				1805C39D1A3E392B00C55F5F /* libwavIO.a */,
 				18B77B8B19EDBE450078892F /* Include */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				C6A0FF2B0290797F04C91782 /* Documentation */,
@@ -328,6 +328,12 @@
 					"${SRCROOT}/../../../Part04-Dynamic_Range_Control/trunk/tools/wavIO/lib/Darwin_x86_64_O0",
 					"${SRCROOT}/../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/lib/Debug",
 					"${SRCROOT}/../../../libisomediafile/macosx/libisomediafile/build/Debug",
+					"${SRCROOT}/../../../Part04-Dynamic_Range_Control/trunk/tools/readonlybitbuf/lib/Darwin_x86_64_D_O0",
+					"${SRCROOT}/../../../Part04-Dynamic_Range_Control/trunk/tools/wavIO/lib/Darwin_x86_64_D_O0",
+					"${SRCROOT}/../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/lib/Darwin_x86_64_D_O0",
+					"/Users/apple/Desktop/shared_with_ubuntu/Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/lib/Darwin_x86_64_D_O0",
+					"/Users/apple/Desktop/shared_with_ubuntu/Part04-Dynamic_Range_Control/trunk/tools/readonlybitbuf/lib/Darwin_x86_64_D_O0",
+					"/Users/apple/Desktop/shared_with_ubuntu/Part04-Dynamic_Range_Control/trunk/tools/wavIO/lib/Darwin_x86_64_D_O0",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = YES;
@@ -374,6 +380,12 @@
 					"${SRCROOT}/../../../Part04-Dynamic_Range_Control/trunk/tools/wavIO/lib/Darwin_x86_64_O0",
 					"${SRCROOT}/../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/lib/Debug",
 					"${SRCROOT}/../../../libisomediafile/macosx/libisomediafile/build/Debug",
+					"${SRCROOT}/../../../Part04-Dynamic_Range_Control/trunk/tools/readonlybitbuf/lib/Darwin_x86_64_D_O0",
+					"${SRCROOT}/../../../Part04-Dynamic_Range_Control/trunk/tools/wavIO/lib/Darwin_x86_64_D_O0",
+					"${SRCROOT}/../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/lib/Darwin_x86_64_D_O0",
+					"/Users/apple/Desktop/shared_with_ubuntu/Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/lib/Darwin_x86_64_D_O0",
+					"/Users/apple/Desktop/shared_with_ubuntu/Part04-Dynamic_Range_Control/trunk/tools/readonlybitbuf/lib/Darwin_x86_64_D_O0",
+					"/Users/apple/Desktop/shared_with_ubuntu/Part04-Dynamic_Range_Control/trunk/tools/wavIO/lib/Darwin_x86_64_D_O0",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_NAME = DRC_to_MP4;

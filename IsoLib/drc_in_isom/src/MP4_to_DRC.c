@@ -138,6 +138,15 @@ int     main                ( int argc, char **argv )
         goto bail;
     }
     
+    err = MP4DisposeMovie(moov);                        if (err) goto bail;
+    err = freeWAVData(&wavData);                        if (err) goto bail;
+    err = freeDrcBitstreamHandle(drcBitStreamHandle);   if (err) goto bail;
+    err = freeDrcBitStreamHelper(&drcBitStreamHelper);  if (err) goto bail;
+    err = freeStaticDrcData(&staticDrcData);            if (err) goto bail;
+    
+    free(drcBitStreamHandle);
+    freeOptions(&options);
+    
     logMsg(LOGLEVEL_INFO, "MP4 to DRC finished.");
 bail:
     fflush(stdout);
@@ -170,7 +179,7 @@ MP4Err readAudioTrackAtom   (MP4Movie moov, MP4Track *trak, u32 trackNumber, Sta
     
     err = createStaticDrcDataFromAudioTrack(*trak, staticDrcData);                               if (err) goto bail;
     
-    
+    err = MP4DisposeHandle(mediaDescriptionH);  if (err) goto bail;
     logMsg(LOGLEVEL_INFO, "Reading audio track atom finished successfully.");
 bail:
     return err;
@@ -220,6 +229,8 @@ MP4Err processAudioSamples   (MP4Track trak, WAVData *wavData)
     }
     err = MP4NoErr;
     
+    err = MP4DisposeTrackReader(reader);    if (err) goto bail;
+    err = MP4DisposeHandle(packetH);        if (err) goto bail;
     logMsg(LOGLEVEL_DEBUG, "Processing audio samples from track finished");
 bail:
     return err;
@@ -265,9 +276,11 @@ MP4Err processDrcMetaTrack   (MP4Movie moov, u32 trackNumber, DrcBitstreamHandle
         err = MP4InvalidMediaErr;
         goto bail;
     }
-    
+    sampleEntry->destroy(sampleEntry);
     err = processDrcGainSamples(trak, drcBitStreamHandle, drcBitStreamHelper);                  if (err) goto bail;
     
+    err = MP4DisposeHandle(mediaDescriptionH);  if (err) goto bail;
+    is->destroy(is);
     logMsg(LOGLEVEL_INFO, "Reading drc track finished successfully.");
 bail:
     return err;
@@ -322,6 +335,8 @@ MP4Err processDrcGainSamples   (MP4Track trak, DrcBitstreamHandle *drcBitStreamH
     }
     err = MP4NoErr;
     
+    err = MP4DisposeTrackReader(reader);    if (err) goto bail;
+    err = MP4DisposeHandle(packetH);        if (err) goto bail;
     logMsg(LOGLEVEL_DEBUG, "Processing drc samples from track finished");
 bail:
     return err;
@@ -352,6 +367,7 @@ MP4Err writeDrcBitstreamToFile  (DrcBitstreamHandle *drcBitStreamHandle, char *d
         BAILWITHERROR(MP4IOErr);
     }
     
+    fclose(file);
 bail:
     return err;
 }

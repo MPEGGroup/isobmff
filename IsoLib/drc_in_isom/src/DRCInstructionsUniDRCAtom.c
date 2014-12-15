@@ -28,57 +28,53 @@
 
 static void destroy( MP4AtomPtr s )
 {
-	MP4Err err;
+	MP4Err  err;
+    u32     i;
 	DRCInstructionsUniDRCAtomPtr self = (DRCInstructionsUniDRCAtomPtr) s;
     err = MP4NoErr;
     
     logMsg(LOGLEVEL_TRACE, "Destroying atom: \"%s\"", self->name);
 	if ( self == NULL )
-		BAILWITHERROR( MP4BadParamErr )
+        BAILWITHERROR( MP4BadParamErr );
         
 
-    while (self->additionalDownMixIDs->entryCount > 0)
+    for (i = 0; i < self->additionalDownMixIDs->entryCount; i++)
     {
         DRCInstructionsAdditionalDownMixID *additionalDownMixID;
-        MP4GetListEntry(self->additionalDownMixIDs, 0, (char**) &additionalDownMixID);
+        MP4GetListEntry(self->additionalDownMixIDs, i, (char**) &additionalDownMixID);
         free (additionalDownMixID);
-        MP4DeleteListEntry(self->additionalDownMixIDs, 0);
     }
     MP4DeleteLinkedList(self->additionalDownMixIDs);
     
-    while (self->groupIndexesPerChannels->entryCount > 0)
+    for (i = 0; i < self->groupIndexesPerChannels->entryCount; i++)
     {
         DRCInstructionsGroupIndexPerChannel *item;
-        MP4GetListEntry(self->groupIndexesPerChannels, 0, (char**) &item);
+        MP4GetListEntry(self->groupIndexesPerChannels, i, (char**) &item);
         free (item);
-        MP4DeleteListEntry(self->groupIndexesPerChannels, 0);
     }
     MP4DeleteLinkedList(self->groupIndexesPerChannels);
     
-    while (self->sequenceIndexesOfChannelGroups->entryCount > 0)
+    for (i = 0; i < self->sequenceIndexesOfChannelGroups->entryCount; i++)
     {
         DRCInstructionsSequenceIndexOfChannelGroup *item;
-        MP4GetListEntry(self->sequenceIndexesOfChannelGroups, 0, (char**) &item);
+        MP4GetListEntry(self->sequenceIndexesOfChannelGroups, i, (char**) &item);
         free (item);
-        MP4DeleteListEntry(self->sequenceIndexesOfChannelGroups, 0);
     }
     MP4DeleteLinkedList(self->sequenceIndexesOfChannelGroups);
     
-    while (self->channelGroupDuckingScalings->entryCount > 0)
+    for (i = 0; i < self->channelGroupDuckingScalings->entryCount; i++)
     {
         DRCInstructionsChannelGroupDuckingScaling *channelGroupDuckingScaling;
-        MP4GetListEntry(self->channelGroupDuckingScalings, 0, (char**) &channelGroupDuckingScaling);
+        MP4GetListEntry(self->channelGroupDuckingScalings, i, (char**) &channelGroupDuckingScaling);
         free (channelGroupDuckingScaling);
-        MP4DeleteListEntry(self->channelGroupDuckingScalings, 0);
     }
     MP4DeleteLinkedList(self->channelGroupDuckingScalings);
     
-    while (self->channelGroupGainScalings->entryCount > 0)
+    for (i = 0; i < self->channelGroupGainScalings->entryCount; i++)
     {
         DRCInstructionsChannelGroupGainScaling *channelGroupGainScaling;
-        MP4GetListEntry(self->channelGroupGainScalings, 0, (char**) &channelGroupGainScaling);
+        MP4GetListEntry(self->channelGroupGainScalings, i, (char**) &channelGroupGainScaling);
         free (channelGroupGainScaling);
-        MP4DeleteListEntry(self->channelGroupGainScalings, 0);
     }
     MP4DeleteLinkedList(self->channelGroupGainScalings);
     
@@ -321,6 +317,7 @@ static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStr
     self->downmix_ID                    += tmp8 >> 3;
     self->additional_dowmix_ID_count    = tmp8 & 0x07;
     
+    err = MP4MakeLinkedList(&self->additionalDownMixIDs); if ( err ) goto bail;
     for (u8 i = 0; i < self->additional_dowmix_ID_count; i++)
     {
         DRCInstructionsAdditionalDownMixID  *downMixID;
@@ -394,6 +391,8 @@ static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStr
         err = MP4AddListEntry(sequenceIndexOfChannelGroup, self->sequenceIndexesOfChannelGroups); if ( err ) goto bail;
     }
     
+    err = MP4MakeLinkedList(&self->channelGroupDuckingScalings);    if (err) goto bail;
+    err = MP4MakeLinkedList(&self->channelGroupGainScalings);       if (err) goto bail;
     if ((self->DRC_set_effect & (1 << 10)) != 0)
     {
         for (u8 i = 0; i < channelGroupCount; i++)
@@ -483,11 +482,6 @@ MP4Err MP4CreateDRCInstructionsUniDRCAtom( DRCInstructionsUniDRCAtomPtr *outAtom
     self->reserved5                 = 0;
     self->reserved6                 = 0;
     
-    err = MP4MakeLinkedList(&self->additionalDownMixIDs);
-    err = MP4MakeLinkedList(&self->groupIndexesPerChannels);
-    err = MP4MakeLinkedList(&self->sequenceIndexesOfChannelGroups);
-    err = MP4MakeLinkedList(&self->channelGroupDuckingScalings);
-    err = MP4MakeLinkedList(&self->channelGroupGainScalings);
     
 	*outAtom = self;
 bail:

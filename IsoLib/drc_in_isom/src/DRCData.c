@@ -92,6 +92,7 @@ MP4Err initDRCData  (DRCData *drcData, char *inputFileStr, int sampleRate, int c
     drcData->bufferIndex                += bytesRead;
     drcData->bufferBytesRemaining       -= bytesRead;
     logMsg(LOGLEVEL_TRACE, "Finished processing initial uniDrcConfig (bytePosition: %d, bitOffset: %d, bytesRemaining: %d)", drcData->bufferIndex, drcData->bufferOffset, drcData->bufferBytesRemaining);
+    
 bail:
     return err;
 }
@@ -190,8 +191,6 @@ MP4Err  copyDrcGainIntoBufferForSample  (DRCData *drcData, MP4Handle dataH, int 
     int             tmp;
     int             bits;
     
-    
-    
     err     = MP4NoErr;
     bitErr  = 0;
     bits    = bitsRead - bitOffset;
@@ -275,6 +274,24 @@ MP4Err readFileContentIntoBuffer    (char *fileStr, unsigned char **buffer, int 
     }
     fclose(inputFile);
     
+bail:
+    return err;
+}
+
+
+MP4Err  freeDRCData                  (DRCData *drcData)
+{
+    MP4Err  err;
+    int     drcErr;
+    
+    err = MP4NoErr;
+    
+    drcErr = closeUniDrcBitstreamDec(&drcData->hUniDrcBsDecStruct, &drcData->hUniDrcConfig,
+                                     &drcData->hLoudnessInfoSet, &drcData->hUniDrcGain);
+    if (drcErr) BAILWITHERROR(MP4InternalErr);
+    
+    free (drcData->bitstream);
+    free (drcData->bitstreamBuffer);
 bail:
     return err;
 }

@@ -76,8 +76,8 @@ MP4Err  createStaticDrcDataFromAudioTrack   (MP4Track trak, StaticDrcData *stati
     err = collectSampleEntryAtoms(audioSampleEntry, staticDrcData);             if (err) goto bail;
     err = getLoudnessInfoAtomFromTrack(trak, staticDrcData);                    if (err) goto bail;
     
+    staticDrcData->sampleEntryAtom = audioSampleEntry;
     logMsg(LOGLEVEL_DEBUG, "Creating static drc data from audio track finished.");
-    
 bail:
     return err;
 }
@@ -1017,6 +1017,9 @@ MP4Err  createSampleEntryFromBuffer         (MP4Track trak, MP4AudioSampleEntryA
     }
     
     *audioSampleEntry = (MP4AudioSampleEntryAtomPtr) atom;
+    
+    err = MP4DisposeHandle(mediaDescriptionH);  if (err) goto bail;
+    is->destroy(is);
     logMsg(LOGLEVEL_DEBUG, "Creating MP4AudioSampleEntryAtomPtr from buffer finished.");
 bail:
     return err;
@@ -1159,3 +1162,45 @@ bail:
     return err;
 }
 
+MP4Err  freeDrcBitstreamHandle              (DrcBitstreamHandle *drcBitStreamHandle)
+{
+    MP4Err err;
+    
+    err = MP4NoErr;
+    
+    free(drcBitStreamHandle->bitstreamBuffer);
+    free(drcBitStreamHandle->bitstream);
+bail:
+    return err;
+}
+
+MP4Err  freeDrcBitStreamHelper              (DrcBitStreamHelper *drcBitStreamHelper)
+{
+    MP4Err  err;
+    int     drcErr;
+    
+    err = MP4NoErr;
+    
+    drcErr = closeUniDrcBitstreamDec(&drcBitStreamHelper->hUniDrcBsDecStruct, &drcBitStreamHelper->hUniDrcConfig,
+                                    &drcBitStreamHelper->hLoudnessInfoSet, &drcBitStreamHelper->hUniDrcGain);
+    if (drcErr) BAILWITHERROR(MP4InternalErr);
+bail:
+    return err;
+}
+
+MP4Err  freeStaticDrcData                   (StaticDrcData *staticDrcData)
+{
+    MP4Err err;
+    
+    err = MP4NoErr;
+    
+    staticDrcData->sampleEntryAtom->destroy((MP4AtomPtr) staticDrcData->sampleEntryAtom);
+
+    err = MP4DeleteLinkedList(staticDrcData->downMixInstructionsAtoms);          if (err) goto bail;
+    err = MP4DeleteLinkedList(staticDrcData->drcCoefficientsBasicAtoms);         if (err) goto bail;
+    err = MP4DeleteLinkedList(staticDrcData->drcInstructionsBasicAtoms);         if (err) goto bail;
+    err = MP4DeleteLinkedList(staticDrcData->drcCoefficientsUniDrcAtoms);        if (err) goto bail;
+    err = MP4DeleteLinkedList(staticDrcData->drcInstructionsUniDrcAtoms);        if (err) goto bail;
+bail:
+    return err;
+}

@@ -75,7 +75,7 @@ typedef struct DRCData
  * @param sampleRate Samplerate of the audio data
  * @param channels Number of channels in audio data
  * @param framesize Number of samples in an audio frame
- * @return An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
  */
 MP4Err  initDRCData                     (DRCData *drcData, char *inputFileStr, int sampleRate, int channels, int framesize);
 
@@ -84,8 +84,15 @@ MP4Err  initDRCData                     (DRCData *drcData, char *inputFileStr, i
  The data will be byte aligned in order to put it into a MP4 track as a sample.
  * @param drcData Pointer to a initialized DRCdata structure
  * @param dataH MP4 handle, which will hold the byte aligned UniDrcGain
- * @return An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
  */
 MP4Err  nextUniDRCGain                  (DRCData *drcData, MP4Handle dataH);
+
+/*!
+ * @discussion Will free memory of DRCData struct
+ * @param drcData Pointer to a initialized DRCdata structure
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ */
+MP4Err  freeDRCData                  (DRCData *drcData);
 
 #endif

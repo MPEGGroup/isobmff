@@ -218,3 +218,15 @@ static void updateWavHeader(WAVData *wavData)
     tmp = LittleToNativeEndianLong(bytesWritten);
     fwrite(&tmp, sizeof(int), 1, wavData->file);
 }
+
+MP4Err  freeWAVData                 (WAVData *wavData)
+{
+    MP4Err  err;
+    err = MP4NoErr;
+    
+    wavIO_close(wavData->wavIOHandle);
+    
+    fclose(wavData->file);
+bail:
+    return err;
+}

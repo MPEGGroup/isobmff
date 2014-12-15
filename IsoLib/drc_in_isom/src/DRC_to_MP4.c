@@ -66,6 +66,9 @@ int     main                ( int argc, char **argv )
     err = initDRCData(&drcData, options.drcBitstreamInputFile, wavData.sampleRate, wavData.channels, BLOCKLENGTH);  if (err) goto bail;
     err = createMP4Movie(&wavData, &drcData, &options);                                                             if (err) goto bail;
     
+    err = freeDRCData(&drcData);        if (err) goto bail;
+    err = freeWAVData(&wavData);        if (err) goto bail;
+    freeOptions(&options);
     logMsg(LOGLEVEL_INFO, "DRC to MP4 finished.");
 bail:
     fflush(stdout);
@@ -139,6 +142,8 @@ MP4Err  createMP4Movie      (WAVData *wavData, DRCData *drcData, DRCtoMP4Options
     
 	err = MP4WriteMovieToFile( moov, options->outputFile );                         if (err) goto bail;
     
+    err = MP4DisposeHandle(sampleEntryH);                                           if (err) goto bail;
+    err = MP4DisposeMovie(moov);                                                    if (err) goto bail;
     logMsg(LOGLEVEL_DEBUG, "Creating MP4 movie finished successfully.");
 bail:
 	return err;
@@ -171,6 +176,9 @@ MP4Err  addAudioSamples         (MP4Track trak, MP4Media media, WAVData *wavData
 		err = MP4AddMediaSamples( media, sampleDataH, 1, sampleDurationH, sampleSizeH, NULL, NULL, NULL ); if (err) goto bail;
     }
     
+    err = MP4DisposeHandle(sampleDataH);        if (err) goto bail;
+    err = MP4DisposeHandle(sampleDurationH);    if (err) goto bail;
+    err = MP4DisposeHandle(sampleSizeH);        if (err) goto bail;
     logMsg(LOGLEVEL_DEBUG, "Adding samples to MP4 file finished successfully.");
 bail:
 	return err;
@@ -229,7 +237,9 @@ MP4Err  addDRCMetadataTrack     (MP4Movie moov, WAVData *wavData, DRCData *drcDa
     err = MP4GetMediaDuration( media, &mediaDuration );                             if (err) goto bail;
     err = MP4InsertMediaIntoTrack( trak, 0, 0, mediaDuration, 1 );                  if (err) goto bail;
     
+    err = MP4DisposeHandle(sampleEntryH);                                           if (err) goto bail;
     logMsg(LOGLEVEL_DEBUG, "Adding DRC meta data track finished successfully.");
+    
 bail:
     return err;
 }
@@ -261,6 +271,9 @@ MP4Err  addDRCSamples         (MP4Track trak, MP4Media media, WAVData *wavData, 
         err = MP4AddMediaSamples( media, sampleDataH, 1, sampleDurationH, sampleSizeH, NULL, NULL, NULL ); if (err) goto bail;
     }
     
+    err = MP4DisposeHandle(sampleDataH);        if (err) goto bail;
+    err = MP4DisposeHandle(sampleDurationH);    if (err) goto bail;
+    err = MP4DisposeHandle(sampleSizeH);        if (err) goto bail;
     logMsg(LOGLEVEL_DEBUG, "Adding DRC samples to MP4 file finished successfully.");
 bail:
     return err;

@@ -118,6 +118,9 @@ MP4Err  addLoudnessInfoToTrackAtom      (DRCData *drcData, MP4Track track)
     
     err     = userDataAtom->addUserData(userDataAtom, loudnessAtomDataH, MP4LoudnessAtomType, &outIndex);   if (err) goto bail;
     err     = trackAtom->addAtom(trackAtom, (MP4AtomPtr) userDataAtom);                                     if (err) goto bail;
+    
+    err     = MP4DisposeHandle(loudnessAtomDataH);                                                          if (err) goto bail;
+    loudnessAtom->destroy((MP4AtomPtr) loudnessAtom);
 bail:
     return err;
 }

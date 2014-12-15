@@ -63,7 +63,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/apple/Desktop/drc_project/DRC_to_MP4_out.mp4"
+            argument = "/Users/apple/Desktop/shared_with_ubuntu/drc_in_isom/linux/testout3.mp4"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument

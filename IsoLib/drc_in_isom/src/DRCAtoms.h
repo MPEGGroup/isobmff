@@ -362,7 +362,7 @@ typedef struct DRCInstructionsUniDRCAtom    *DRCInstructionsUniDRCAtomPtr;
  * @discussion Creates and initializes a atom structure with a certain type, memory will be allocated
  * @param atomType Type of the atom, which will be created
  * @param outAtom pointer to a structure, which will be created
- * @return An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
  */
 MP4Err MP4CreateDRCAtom                ( u32 atomType, MP4AtomPtr *outAtom );
 
@@ -372,7 +372,7 @@ MP4Err MP4CreateDRCAtom                ( u32 atomType, MP4AtomPtr *outAtom );
  * @param protoList List of atoms, which are valid for being parsed. Can be NULL.
  * @param defaultAtom Prototype of parsed atom. Can be NULL.
  * @param outAtom pointer to a structure, which will be created
- * @return An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
  */
 MP4Err MP4ParseDRCAtomUsingProtoList   ( MP4InputStreamPtr inputStream, u32* protoList, u32 defaultAtom, MP4AtomPtr *outAtom );
 
@@ -380,7 +380,7 @@ MP4Err MP4ParseDRCAtomUsingProtoList   ( MP4InputStreamPtr inputStream, u32* pro
  * @discussion Reads an atom from inputStream.
  * @param inputStream MP4InputStreamPtr (can be found in libisomediafile.a). Data will be read from this stream.
  * @param outAtom pointer to a structure, which will be created
- * @return An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
  */
 MP4Err MP4ParseDRCAtom                 ( MP4InputStreamPtr inputStream, MP4AtomPtr *outAtom );
 
@@ -388,37 +388,37 @@ MP4Err MP4ParseDRCAtom                 ( MP4InputStreamPtr inputStream, MP4AtomP
 /*!
  * @discussion Creates and initializes a MP4AudioSampleEntryAtom structure, memory will be allocated
  * @param outAtom pointer to MP4AudioSampleEntryAtom structure, which will be created
- * @return An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
  */
 MP4Err MP4CreateDrcAudioSampleEntryAtom     ( MP4AudioSampleEntryAtomPtr            *outAtom );
 /*!
  * @discussion Creates and initializes a DRCUniDrcSampleEntryAtom structure, memory will be allocated
  * @param outAtom pointer to DRCUniDrcSampleEntryAtom structure, which will be created
- * @return An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
  */
 MP4Err MP4CreateDRCUniDrcSampleEntryAtom    ( DRCUniDrcSampleEntryAtomPtr           *outAtom );
 /*!
  * @discussion Creates and initializes a DRCCoefficientBasicAtom structure, memory will be allocated
  * @param outAtom pointer to DRCCoefficientBasicAtom structure, which will be created
- * @return An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
  */
 MP4Err MP4CreateDRCCoefficientBasicAtom     ( DRCCoefficientBasicAtomPtr            *outAtom );
 /*!
  * @discussion Creates and initializes a DRCCoefficientUniDRCAtom structure, memory will be allocated
  * @param outAtom pointer to DRCCoefficientUniDRCAtom structure, which will be created
- * @return An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
  */
 MP4Err MP4CreateDRCCoefficientUniDRCAtom    ( DRCCoefficientUniDRCAtomPtr           *outAtom );
 /*!
  * @discussion Creates and initializes a DRCInstructionsBasicAtom structure, memory will be allocated
  * @param outAtom pointer to DRCInstructionsBasicAtom structure, which will be created
- * @return An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
  */
 MP4Err MP4CreateDRCInstructionsBasicAtom    ( DRCInstructionsBasicAtomPtr           *outAtom );
 /*!
  * @discussion Creates and initializes a DRCInstructionsUniDRCAtom structure, memory will be allocated
  * @param outAtom pointer to DRCInstructionsUniDRCAtom structure, which will be created
- * @return An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
  */
 MP4Err MP4CreateDRCInstructionsUniDRCAtom   ( DRCInstructionsUniDRCAtomPtr          *outAtom );
 

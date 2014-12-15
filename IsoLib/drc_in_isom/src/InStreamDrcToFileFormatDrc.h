@@ -41,7 +41,7 @@ derivative works. Copyright (c) 2014.
  data found in the drc bitstream.
  * @param drcData Pointer to an initialized DRCData structure
  * @param audioSampleEntry Pointer to an initialized MP4AudioSampleEntryAtom
- * @return An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
  */
 MP4Err  addDRCDataToAudioSampleEntry    (DRCData *drcData, MP4AudioSampleEntryAtomPtr audioSampleEntry);
 
@@ -49,7 +49,7 @@ MP4Err  addDRCDataToAudioSampleEntry    (DRCData *drcData, MP4AudioSampleEntryAt
  * @discussion Creates and adds a LoundessAtom to a MP4 track.
  * @param drcData Pointer to an initialized DRCData structure
  * @param track The MP4 track
- * @return An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
  */
 MP4Err  addLoudnessInfoToTrackAtom      (DRCData *drcData, MP4Track track);
 

@@ -60,6 +60,7 @@ typedef struct StaticDrcData
     int                             sampleRate;
     int                             bytesPerSample;
     int                             drcLocation;
+    MP4AudioSampleEntryAtomPtr      sampleEntryAtom;
     MP4LoudnessAtomPtr              loudnessAtom;
     MP4ChannelLayoutAtomPtr         channelLayoutAtom;
     MP4LinkedList                   downMixInstructionsAtoms;
@@ -109,7 +110,7 @@ typedef struct DrcBitStreamHelper
  * @discussion Collects the static drc data contained inside an audio track
  * @param trak The audio track
  * @param staticDrcData Pointer to an allocated StaticDrcData structure
- * @return An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
  */
 MP4Err  createStaticDrcDataFromAudioTrack   (MP4Track trak, StaticDrcData *staticDrcData);
 
@@ -117,7 +118,7 @@ MP4Err  createStaticDrcDataFromAudioTrack   (MP4Track trak, StaticDrcData *stati
  * @discussion Initializes the buffer for the drc output file
  * @param staticDrcData Data for static drc. Used to estimate buffer size
  * @param drcBitStreamHandle Pointer to a drcBitStreamHandle, must be allocated
- * @return An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
  */
 MP4Err  initDrcBitstream                    (StaticDrcData *staticDrcData, DrcBitstreamHandle *drcBitStreamHandle);
 
@@ -126,7 +127,7 @@ MP4Err  initDrcBitstream                    (StaticDrcData *staticDrcData, DrcBi
  and writes the in stream data in the drc buffer.
  * @param staticDrcData Data for static drc
  * @param drcBitStreamHandle Pointer to a drcBitStreamHandle, must be allocated
- * @return An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
  */
 MP4Err  writeStaticDrcDataToBitstream       (StaticDrcData *staticDrcData, DrcBitstreamHandle *drcBitStreamHandle);
 
@@ -136,7 +137,7 @@ MP4Err  writeStaticDrcDataToBitstream       (StaticDrcData *staticDrcData, DrcBi
  * @param drcBitStreamHelper Pointer to DrcBitStreamHelper, must be allocated
  * @param drcBitStreamHandle Pointer to a drcBitStreamHandle, must already contain static drc data
  * @param staticDrcData Data for static drc
- * @return An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
  */
 MP4Err  prepareDrcBitStreamHelper           (DrcBitStreamHelper *drcBitStreamHelper, DrcBitstreamHandle *drcBitStreamHandle, StaticDrcData *staticDrcData);
 
@@ -147,11 +148,29 @@ MP4Err  prepareDrcBitStreamHelper           (DrcBitStreamHelper *drcBitStreamHel
  * @param packetH MP4Handle containing a dynamic drc sample from a drc metadata track
  * @param drcBitStreamHandle Pointer to a drcBitStreamHandle, must already contain static drc data
  * @param drcBitStreamHelper Pointer to a DrcBitStreamHelper, must be prepared with prepareDrcBitStreamHelper
- * @return An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
  */
 MP4Err  writeDrcGainToBitstream             (MP4Handle packetH, DrcBitstreamHandle *drcBitStreamHandle, DrcBitStreamHelper *drcBitStreamHelper);
 
+/*!
+ * @discussion Frees memory used by a DrcBitstreamHandle struct
+ * @param drcBitStreamHandle Pointer to a drcBitStreamHandle
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ */
+MP4Err  freeDrcBitstreamHandle              (DrcBitstreamHandle *drcBitStreamHandle);
 
+/*!
+ * @discussion Frees memory used by a DrcBitStreamHelper struct
+ * @param drcBitStreamHelper Pointer to a drcBitStreamHelper
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ */
+MP4Err  freeDrcBitStreamHelper              (DrcBitStreamHelper *drcBitStreamHelper);
 
+/*!
+ * @discussion Frees memory used by a StaticDrcData struct
+ * @param staticDrcData Pointer to a staticDrcData
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ */
+MP4Err  freeStaticDrcData                   (StaticDrcData *staticDrcData);
 
 #endif

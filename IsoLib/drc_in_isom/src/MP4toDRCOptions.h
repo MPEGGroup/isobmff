@@ -106,6 +106,17 @@ static inline void printOptions     (MP4toDRCOptions *options)
 }
 
 /*!
+ * @discussion Deallocates the contents of option
+ * @param options Pointer to an option structure
+ */
+static inline void freeOptions     (MP4toDRCOptions *options)
+{
+    free(options->inputFile);
+    free(options->drcOutputFile);
+    free(options->wavOutputFile);
+}
+
+/*!
  * @discussion Parses the arguments given with the command line and sets the fields of options
  * @param argc argc from main (Number of arguments)
  * @param argv argv from main (Actual argument strings)

@@ -92,7 +92,7 @@ typedef struct WAVData
  * @discussion Initializes WAV data from a file for reading
  * @param wavData Pointer to a allocated WAVData structure
  * @param inputFileStr Path to a wav file
- * @return An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
  */
 MP4Err  initWAVDataForReading            (WAVData *wavData, char *inputFileStr);
 
@@ -101,7 +101,7 @@ MP4Err  initWAVDataForReading            (WAVData *wavData, char *inputFileStr);
  * @param wavData Pointer to an initialized WAVData structure
  * @param sampleH MP4 handle, which will contain the audio frame
  * @param duration The number of samples contained in the audio frame, which is equal to the duration
- * @return An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
  */
 MP4Err  readFrame                       (WAVData *wavData, MP4Handle sampleH, u32 *duration);
 
@@ -112,7 +112,7 @@ MP4Err  readFrame                       (WAVData *wavData, MP4Handle sampleH, u3
  * @param channelCount The amount of channels in the audio data
  * @param sampleRate The samplerate of the audio data
  * @param bytesPerSample Byte depth of an audio sample
- * @return An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
  */
 MP4Err  initWAVDataForWriting            (WAVData *wavData, char *outputFileStr, int channelCount, int sampleRate, int bytesPerSample);
 
@@ -121,14 +121,22 @@ MP4Err  initWAVDataForWriting            (WAVData *wavData, char *outputFileStr,
  * @param wavData Pointer to a for writing initialized WAVData structure
  * @param sampleH MP4 handle, which contains the audio frame
  * @param size Size in bytes of the input mp4handle
- * @return An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
  */
 MP4Err  writeFrame                       (WAVData *wavData, MP4Handle sampleH, u32 size);
 
 /*!
  * @discussion Updates the size fields in the wav header and closes the wav file
  * @param wavData Pointer to an initialized WAVData structure
- * @return An MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
  */
 MP4Err  closeWAVDataFile                 (WAVData *wavData);
+
+/*!
+ * @discussion Frees WAVData's memory
+ * @param wavData Pointer to an initialized WAVData structure
+ * @return A MP4Err, which is defined libisomediafile.a; MP4NoErr if nothing fails
+ */
+MP4Err  freeWAVData                 (WAVData *wavData);
+
 #endif
