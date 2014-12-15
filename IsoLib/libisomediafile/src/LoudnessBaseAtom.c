@@ -209,6 +209,8 @@ MP4Err MP4CreateLoudnessBaseAtom( MP4LoudnessBaseAtomPtr *outAtom, u32 type )
 	self->serialize                 = serialize;
     self->reserved                  = 0;
     
+    err = MP4MakeLinkedList(&self->measurements); if (err) goto bail;
+    
 	*outAtom = self;
 bail:
 	TEST_RETURN( err );
