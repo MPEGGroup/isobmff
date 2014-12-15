@@ -35,10 +35,13 @@ static void destroy( MP4AtomPtr s )
     err = MP4NoErr;
     
 	if ( self == NULL )
-		BAILWITHERROR( MP4BadParamErr )
+        BAILWITHERROR( MP4BadParamErr );
+    
+    if (self->bs_downmix_coefficients)
+        free(self->bs_downmix_coefficients);
         
-        if ( self->super )
-            self->super->destroy( s );
+    if ( self->super )
+        self->super->destroy( s );
 bail:
 	TEST_RETURN( err );
     

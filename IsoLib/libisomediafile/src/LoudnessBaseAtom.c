@@ -31,14 +31,24 @@
 static void destroy( MP4AtomPtr s )
 {
 	MP4Err err;
+    u32 i;
 	MP4LoudnessBaseAtomPtr self = (MP4LoudnessBaseAtomPtr) s;
     err = MP4NoErr;
     
 	if ( self == NULL )
-		BAILWITHERROR( MP4BadParamErr )
-        
-        if ( self->super )
-            self->super->destroy( s );
+        BAILWITHERROR( MP4BadParamErr );
+    
+    for (i = 0; i < self->measurement_count; i++)
+    {
+        MP4LoudnessBaseMeasurement *measurement;
+        MP4GetListEntry(self->measurements, i, (char**) &measurement);
+        free(measurement);
+    }
+    
+    err = MP4DeleteLinkedList(self->measurements); if (err) goto bail;
+    
+    if ( self->super )
+        self->super->destroy( s );
 bail:
 	TEST_RETURN( err );
     
@@ -198,8 +208,6 @@ MP4Err MP4CreateLoudnessBaseAtom( MP4LoudnessBaseAtomPtr *outAtom, u32 type )
 	self->calculateSize             = calculateSize;
 	self->serialize                 = serialize;
     self->reserved                  = 0;
-    
-    err = MP4MakeLinkedList(&self->measurements); if ( err ) goto bail;
     
 	*outAtom = self;
 bail:

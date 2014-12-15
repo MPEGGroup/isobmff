@@ -744,7 +744,7 @@ ISO_EXTERN ( ISOErr ) ISOAddItemReference( ISOMetaItem item, u32 reference_type,
         }
     }
     
-    
+    err = MP4DisposeHandle(toItemIDS);  if (err) goto bail;
 bail:
     TEST_RETURN( err );
     return err;

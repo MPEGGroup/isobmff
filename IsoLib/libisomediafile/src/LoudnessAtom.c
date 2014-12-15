@@ -33,12 +33,16 @@ derivative works. Copyright (c) 2014.
 static void destroy( MP4AtomPtr s )
 {
 	MP4Err err;
+    u32     i;
 	MP4LoudnessAtomPtr self = (MP4LoudnessAtomPtr) s;
     err = MP4NoErr;
 
 	if ( self == NULL )
-		BAILWITHERROR( MP4BadParamErr )
+        BAILWITHERROR( MP4BadParamErr );
 
+    DESTROY_ATOM_LIST_V(self->albumLoudnessInfoList);
+    DESTROY_ATOM_LIST_V(self->trackLoudnessInfoList);
+    
 	if ( self->super )
 		self->super->destroy( s );
 bail:

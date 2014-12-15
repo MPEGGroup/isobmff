@@ -391,7 +391,6 @@ MP4Err ISOCreateItemLocationAtom( ISOItemLocationAtomPtr *outAtom )
 	self->serialize             = serialize;
 	self->mdatMoved				= mdatMoved;    
     self->setItemsMeta          = setItemsMeta;
-	err = MP4MakeLinkedList( &(self->itemList) ); if (err) goto bail;
 
 	*outAtom = self;
 bail:
