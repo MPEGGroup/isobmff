@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1805C3A81A3F55EB00C55F5F /* libisoiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18C784841A1AB26400756142 /* libisoiff.a */; };
 		181E0AAE1A30D4F100D0568A /* hevc_tool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 181E0AAC1A30D4F100D0568A /* hevc_tool.cpp */; };
 		188041C319CB3CD800FAABCE /* isoiff_tool_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 188041B719CB3C8000FAABCE /* isoiff_tool_main.cpp */; };
-		18C7849F1A1ABA5100756142 /* libisoiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18C7849E1A1ABA5100756142 /* libisoiff.a */; };
 		18C784B31A1FB7BC00756142 /* libTLibDecoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18C784B21A1FB7BC00756142 /* libTLibDecoder.a */; };
 		18C784B51A1FB7C800756142 /* libTLibCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18C784B41A1FB7C800756142 /* libTLibCommon.a */; };
 /* End PBXBuildFile section */
@@ -50,9 +50,8 @@
 		188041D519CB3CD800FAABCE /* isoiff_tool */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = isoiff_tool; sourceTree = BUILT_PRODUCTS_DIR; };
 		18913AD119DF67CB00BFEAC8 /* Options.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Options.h; path = ../../src/Options.h; sourceTree = "<group>"; };
 		18C7847F1A1AB26300756142 /* isoiff.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = isoiff.xcodeproj; path = isoiff/isoiff.xcodeproj; sourceTree = "<group>"; };
-		18C7849E1A1ABA5100756142 /* libisoiff.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libisoiff.a; path = "../../../../../../../Library/Developer/Xcode/DerivedData/DRC_to_MP4-gedcntyltwggiyfecgncmvbhixsx/Build/Products/Debug/libisoiff.a"; sourceTree = "<group>"; };
-		18C784B21A1FB7BC00756142 /* libTLibDecoder.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTLibDecoder.a; path = "../../../../../../../Library/Developer/Xcode/DerivedData/HM-emcmbmerybpcfobfdvfjxmwmgevs/Build/Products/Debug/libTLibDecoder.a"; sourceTree = "<group>"; };
-		18C784B41A1FB7C800756142 /* libTLibCommon.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTLibCommon.a; path = "../../../../../../../Library/Developer/Xcode/DerivedData/HM-emcmbmerybpcfobfdvfjxmwmgevs/Build/Products/Debug/libTLibCommon.a"; sourceTree = "<group>"; };
+		18C784B21A1FB7BC00756142 /* libTLibDecoder.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTLibDecoder.a; path = ../../../HM/build/Debug/libTLibDecoder.a; sourceTree = SOURCE_ROOT; };
+		18C784B41A1FB7C800756142 /* libTLibCommon.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTLibCommon.a; path = ../../../HM/build/Debug/libTLibCommon.a; sourceTree = SOURCE_ROOT; };
 		18EC2CB81A366E1800B5ADD5 /* StringUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StringUtils.h; path = ../../src/StringUtils.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -61,7 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				18C7849F1A1ABA5100756142 /* libisoiff.a in Frameworks */,
+				1805C3A81A3F55EB00C55F5F /* libisoiff.a in Frameworks */,
 				18C784B51A1FB7C800756142 /* libTLibCommon.a in Frameworks */,
 				18C784B31A1FB7BC00756142 /* libTLibDecoder.a in Frameworks */,
 			);
@@ -75,7 +74,6 @@
 			children = (
 				18C784B41A1FB7C800756142 /* libTLibCommon.a */,
 				18C784B21A1FB7BC00756142 /* libTLibDecoder.a */,
-				18C7849E1A1ABA5100756142 /* libisoiff.a */,
 				18C7847F1A1AB26300756142 /* isoiff.xcodeproj */,
 				18B77B8B19EDBE450078892F /* Include */,
 				08FB7795FE84155DC02AAC07 /* Source */,

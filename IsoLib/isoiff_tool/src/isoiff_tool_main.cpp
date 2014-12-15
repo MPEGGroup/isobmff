@@ -96,6 +96,7 @@ MP4Err  processReadMode     (Options *options)
 {
     u32                                 imgCount;
     u32                                 size;
+    u32                                 i;
     MP4Handle                           bitstreamH;
     MP4Err                              err;
     ISOIFF_ImageCollection              collection;
@@ -115,6 +116,18 @@ MP4Err  processReadMode     (Options *options)
     
     file = fopen(options->outputFile, "wb");
     fwrite(*bitstreamH, size, 1, file);
+    fclose(file);
+    
+    for (i = 0; i < imgCount; i++)
+    {
+        err = ISOIFF_FreeImage(images[i]);                                                      if (err) goto bail;
+        err = ISOIFF_FreeHEVCDecoderConfigRecord(records[i]);                                   if (err) goto bail;
+        free (images);
+        free (records);
+    }
+    
+    err = MP4DisposeHandle(bitstreamH);                                                         if (err) goto bail;
+    err = ISOIFF_FreeImageCollection(collection);                                               if (err) goto bail;
 bail:
     return err;
 }

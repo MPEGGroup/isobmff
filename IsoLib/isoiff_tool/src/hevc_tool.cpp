@@ -145,6 +145,7 @@ MP4Err     processHEVC_SPS            (ISOIFF_HEVCDecoderConfigRecord record, In
     if (ptl->getFrameOnlyConstraintFlag())
         record->general_constraint_indicator_flags |= 0x100000000000;
     
+    delete sps;
 bail:
     return err;
 }
@@ -181,6 +182,8 @@ MP4Err     addHEVCImageToCollection    (ISOIFF_ImageCollection collection, ISOIF
     
     err = MP4DisposeHandle(metaData);                                           if (err) goto bail;
     err = MP4DisposeHandle(imageData);                                          if (err) goto bail;
+    err = ISOIFF_FreeImage(image);                                              if (err) goto bail;
+    err = ISOIFF_FreeMeta(meta);                                                if (err) goto bail;
 bail:
     return err;
 }
@@ -209,7 +212,13 @@ MP4Err     getHEVCImages                 (ISOIFF_ImageCollection collection, ISO
         
         err = ISOIFF_GetMetaData(metas[0], metaDataH);  if (err) goto bail;
         err = ISOIFF_CreateHEVCDecConfRecFromHandle(metaDataH, &(*decoderConfigs[i]));  if (err) goto bail;
+        
+        err = ISOIFF_FreeMeta(metas[0]);        if (err) goto bail;
+        err = MP4DisposeHandle(metaDataH);      if (err) goto bail;
+        free (metas);
     }
+    
+    
     
 bail:
     return err;
@@ -287,6 +296,16 @@ MP4Err     getHEVCBitstreamFromImage    (ISOIFF_Image image, ISOIFF_HEVCDecoderC
         err = MP4HandleCat(bitstreamH, naluH);                      if (err) goto bail;
     }
     
+    err = MP4DisposeHandle(startCodePrefixH);       if (err) goto bail;
+    err = MP4DisposeHandle(imgDatH);                if (err) goto bail;
+    err = MP4DisposeHandle(zeroByteH);              if (err) goto bail;
+    
+    err = MP4DeleteLinkedList(vpsNALUnits);         if (err) goto bail;
+    err = MP4DeleteLinkedList(spsNALUnits);         if (err) goto bail;
+    err = MP4DeleteLinkedList(ppsNALUnits);         if (err) goto bail;
+    err = MP4DeleteLinkedList(imageNALUnits);       if (err) goto bail;
+    
+    err = ISOIFF_FreeHEVCItemData(hevcItemData);    if (err) goto bail;
 bail:
     return err;
 }

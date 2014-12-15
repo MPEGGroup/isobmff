@@ -71,7 +71,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/apple/Desktop/w32_isoiff.mp4"
+            argument = "/Users/apple/Desktop/isoiff.mp4"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument

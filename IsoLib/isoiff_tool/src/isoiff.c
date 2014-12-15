@@ -179,7 +179,7 @@ MP4Err          ISOIFF_GetAllImagesWithType         (ISOIFF_ImageCollection coll
     *images = calloc(*numberOfImagesFound, sizeof(struct ISOIFF_ImageS));
     for (i = 0; i < *numberOfImagesFound; i++)
     {
-        ISOIFF_Image image;
+        ISOIFF_Image image = (*images)[i];
         
         image                   = calloc(1, sizeof(struct ISOIFF_ImageS));
         image->item             = (ISOMetaItem) items[i];
@@ -187,6 +187,7 @@ MP4Err          ISOIFF_GetAllImagesWithType         (ISOIFF_ImageCollection coll
         (*images)[i]            = image;
     }
     
+    free (items);
     logMsg(LOGLEVEL_DEBUG, "Images found: %d", *numberOfImagesFound);
 bail:
     return err;
@@ -309,7 +310,8 @@ MP4Err          ISOIFF_GetImageType                 (ISOIFF_Image image, u32 *ou
     char    *tmp;
     
     err = ISOGetItemInfoItemType(image->item, outType, &tmp);   if (err) goto bail;
-    
+    if (tmp)
+        free (tmp);
 bail:
     return err;
 }
@@ -320,7 +322,8 @@ MP4Err          ISOIFF_GetMetaType                  (ISOIFF_Meta meta, u32 *outT
     char    *tmp;
     
     err = ISOGetItemInfoItemType(meta->item, outType, &tmp);   if (err) goto bail;
-    
+    if (tmp)
+        free (tmp);
 bail:
     return err;
 }
@@ -410,6 +413,7 @@ MP4Err          ISOIFF_GetMetasOfImageWithType      (ISOIFF_Image fromImage, u32
         (*toMetas)[i]          = meta;
     }
     
+    err = MP4DisposeHandle(toItemIDs);  if (err) goto bail;
     logMsg(LOGLEVEL_DEBUG, "Metas found: %d", *numberOfMetasFound);
 bail:
     return err;
@@ -455,6 +459,26 @@ MP4Err          ISOIFF_FreeImageCollection          (ISOIFF_ImageCollection coll
     
     err = MP4DisposeMovie(collection->moov); if (err) goto bail;
     free (collection);
+bail:
+    return err;
+}
+
+MP4Err          ISOIFF_FreeMeta                     (ISOIFF_Meta meta)
+{
+    MP4Err      err;
+    
+    err     =   MP4NoErr;
+    free (meta);
+bail:
+    return err;
+}
+
+MP4Err          ISOIFF_FreeImage                    (ISOIFF_Image image)
+{
+    MP4Err      err;
+    
+    err     =   MP4NoErr;
+    free (image);
 bail:
     return err;
 }

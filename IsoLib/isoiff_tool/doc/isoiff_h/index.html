@@ -293,7 +293,11 @@ function disclosure_triangle(elt) {
 <dd></dd>
 <dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_CreateImageCollection" target="_top">ISOIFF_CreateImageCollection</a></tt></dt>
 <dd></dd>
+<dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_FreeImage" target="_top">ISOIFF_FreeImage</a></tt></dt>
+<dd></dd>
 <dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_FreeImageCollection" target="_top">ISOIFF_FreeImageCollection</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_FreeMeta" target="_top">ISOIFF_FreeMeta</a></tt></dt>
 <dd></dd>
 <dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_GetAllImagesWithType" target="_top">ISOIFF_GetAllImagesWithType</a></tt></dt>
 <dd></dd>
@@ -473,6 +477,29 @@ function disclosure_triangle(elt) {
 <!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_CreateImageCollection;name=end --><!-- end discussion -->
 </p>
 <hr class="betweenAPIEntries">
+<!-- headerDoc=func;  uid=//apple_ref/c/func/ISOIFF_FreeImage;   name=ISOIFF_FreeImage --><a name="//apple_ref/c/func/ISOIFF_FreeImage"></a>
+<h3><a name="ISOIFF_FreeImage">ISOIFF_FreeImage</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/func/ISOIFF_FreeImage;name=start --><!-- a logicalPath="//apple_ref/c/cl/MP4Err //apple_ref/c/tdef/MP4Err //apple_ref/c/tag/MP4Err //apple_ref/c/struct/MP4Err //apple_ref/c/intf/MP4Err //apple_ref/doc/anysymbol/MP4Err" machineGenerated="true" --><span class="type">MP4Err</span><!-- /a --> <a machinegenerated="true" href="index.html#//apple_ref/c/func/ISOIFF_FreeImage" logicalPath="//apple_ref/c/instm/ISOIFF_FreeImage //apple_ref/c/clm/ISOIFF_FreeImage //apple_ref/c/intfcm/ISOIFF_FreeImage //apple_ref/c/intfm/ISOIFF_FreeImage //apple_ref/c/func/ISOIFF_FreeImage" target="_top"><span class="function">ISOIFF_FreeImage</span></a> (
+    <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/ISOIFF_Image" logicalPath="//apple_ref/c/cl/ISOIFF_Image //apple_ref/c/tdef/ISOIFF_Image" target="_top"><span class="type">ISOIFF_Image</span></a> <span class="param">image</span>);  <!-- headerDoc=declaration;uid=//apple_ref/c/func/ISOIFF_FreeImage;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/ISOIFF_FreeImage/image;   name=image -->
+<a name="//apple_ref/doc/functionparam/ISOIFF_FreeImage/image"></a>
+<code>image</code>
+</dt>
+<dd><p>ISOIFF_Image that will be deallocated</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_FreeImage;name=start --><p>Deallocates the memory used by an ISOIFF_Image struct
+<!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_FreeImage;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
 <!-- headerDoc=func;  uid=//apple_ref/c/func/ISOIFF_FreeImageCollection;   name=ISOIFF_FreeImageCollection --><a name="//apple_ref/c/func/ISOIFF_FreeImageCollection"></a>
 <h3><a name="ISOIFF_FreeImageCollection">ISOIFF_FreeImageCollection</a></h3>
 <hr class="afterName">
@@ -494,6 +521,29 @@ function disclosure_triangle(elt) {
 <h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
 <!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_FreeImageCollection;name=start --><p>Deallocates the memory used by an image collection
 <!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_FreeImageCollection;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=func;  uid=//apple_ref/c/func/ISOIFF_FreeMeta;   name=ISOIFF_FreeMeta --><a name="//apple_ref/c/func/ISOIFF_FreeMeta"></a>
+<h3><a name="ISOIFF_FreeMeta">ISOIFF_FreeMeta</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/func/ISOIFF_FreeMeta;name=start --><!-- a logicalPath="//apple_ref/c/cl/MP4Err //apple_ref/c/tdef/MP4Err //apple_ref/c/tag/MP4Err //apple_ref/c/struct/MP4Err //apple_ref/c/intf/MP4Err //apple_ref/doc/anysymbol/MP4Err" machineGenerated="true" --><span class="type">MP4Err</span><!-- /a --> <a machinegenerated="true" href="index.html#//apple_ref/c/func/ISOIFF_FreeMeta" logicalPath="//apple_ref/c/instm/ISOIFF_FreeMeta //apple_ref/c/clm/ISOIFF_FreeMeta //apple_ref/c/intfcm/ISOIFF_FreeMeta //apple_ref/c/intfm/ISOIFF_FreeMeta //apple_ref/c/func/ISOIFF_FreeMeta" target="_top"><span class="function">ISOIFF_FreeMeta</span></a> (
+    <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/ISOIFF_Meta" logicalPath="//apple_ref/c/cl/ISOIFF_Meta //apple_ref/c/tdef/ISOIFF_Meta" target="_top"><span class="type">ISOIFF_Meta</span></a> <span class="param">meta</span>);  <!-- headerDoc=declaration;uid=//apple_ref/c/func/ISOIFF_FreeMeta;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/ISOIFF_FreeMeta/meta;   name=meta -->
+<a name="//apple_ref/doc/functionparam/ISOIFF_FreeMeta/meta"></a>
+<code>meta</code>
+</dt>
+<dd><p>ISOIFF_Meta that will be deallocated</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_FreeMeta;name=start --><p>Deallocates the memory used by an ISOIFF_Meta struct
+<!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_FreeMeta;name=end --><!-- end discussion -->
 </p>
 <hr class="betweenAPIEntries">
 <!-- headerDoc=func;  uid=//apple_ref/c/func/ISOIFF_GetAllImagesWithType;   name=ISOIFF_GetAllImagesWithType --><a name="//apple_ref/c/func/ISOIFF_GetAllImagesWithType"></a>

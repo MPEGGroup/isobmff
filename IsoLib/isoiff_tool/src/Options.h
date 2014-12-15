@@ -96,7 +96,7 @@ static inline void printUsage       ()
     printf("\nUsage:\n");
     printf("\t-h\t\tPrints this usage help.\n");
     printf("\t-m\t\tMode (mandatory) (0 = read file format, write bitstream; 1 = read bitstream, write file format)\n");
-    printf("\t-o\t\tInputfile (mandatory)\n");
+    printf("\t-i\t\tInputfile (mandatory)\n");
     printf("\t-o\t\tOutputfile (mandatory)\n");
     printf("\t-d\t\tDebuglevel. 0 = No Logging, 1 = Error, 2 = Warning, 3 = Info (Default), 4 = Debug, 5 = Trace\n");
     printf("\nExample:\n");

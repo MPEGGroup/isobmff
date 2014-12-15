@@ -201,4 +201,16 @@ MP4Err          ISOIFF_GetImagesOfMetaWithType      (ISOIFF_Meta fromMeta, u32 r
  */
 MP4Err          ISOIFF_FreeImageCollection          (ISOIFF_ImageCollection collection);
 
+/*!
+ * @discussion Deallocates the memory used by an ISOIFF_Meta struct
+ * @param meta ISOIFF_Meta that will be deallocated
+ */
+MP4Err          ISOIFF_FreeMeta                     (ISOIFF_Meta meta);
+
+/*!
+ * @discussion Deallocates the memory used by an ISOIFF_Image struct
+ * @param image ISOIFF_Image that will be deallocated
+ */
+MP4Err          ISOIFF_FreeImage                    (ISOIFF_Image image);
+
 #endif
