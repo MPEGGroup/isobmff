@@ -55,7 +55,7 @@ struct ISOIFF_MetaS
     ISOIFF_ImageCollection      collection;
 };
 
-void typeToString (u32 inType, char* ioStr)
+static void     typeToString                        (u32 inType, char* ioStr)
 {
     u32     i;
     int     ch;
@@ -71,25 +71,25 @@ void typeToString (u32 inType, char* ioStr)
     *ioStr = 0;
 }
 
-void            logType(int debugLevel, const char *text, u32 type)
+static void     logType                             (int debugLevel, const char *text, u32 type)
 {
     char    typeString[8];
     typeToString( type, typeString );
     logMsg(debugLevel, "%s :'%s'", text, typeString);
 }
 
-MP4Err          ISOIFF_CreateImageCollection         (ISOIFF_ImageCollection *collection, u32 brand, u32 minorversion)
+MP4Err          ISOIFF_CreateImageCollection         (ISOIFF_ImageCollection *collection, u32 brand, u32 minorVersion)
 {
     MP4Err  err;
     u32     tmp;
 
     logMsg(LOGLEVEL_DEBUG, "Creating image collection");
     logType(LOGLEVEL_DEBUG, "Brand", brand);
-    logMsg(LOGLEVEL_DEBUG, "Minorversion: %d", minorversion);
+    logMsg(LOGLEVEL_DEBUG, "Minorversion: %d", minorVersion);
     
     *collection = calloc(1, sizeof(struct ISOIFF_ImageCollectionS));
     
-    err         = ISONewMetaMovie(&(*collection)->moov, ISOIFF_IMAGE_META_HANDLER_TYPE, brand, minorversion);           if (err) goto bail;
+    err         = ISONewMetaMovie(&(*collection)->moov, ISOIFF_IMAGE_META_HANDLER_TYPE, brand, minorVersion);           if (err) goto bail;
     err         = ISOGetFileMeta((*collection)->moov, &(*collection)->meta, ISOIFF_IMAGE_META_HANDLER_TYPE, &tmp);      if (err) goto bail;
     err         = ISOSetMovieCompatibleBrand((*collection)->moov, ISOIFF_IMAGE_COLLECTION_BRAND);                       if (err) goto bail;
     
@@ -143,7 +143,7 @@ MP4Err          ISOIFF_WriteCollectionToFile        (ISOIFF_ImageCollection coll
     
     logMsg(LOGLEVEL_DEBUG, "Writing Image Collection to file: '%s'", filename);
 
-    err     = MP4WriteMovieToFile( collection->moov, filename ); if (err) goto bail;
+    err = MP4WriteMovieToFile( collection->moov, filename );                if (err) goto bail;
 bail:
     return err;
 }
@@ -176,7 +176,7 @@ MP4Err          ISOIFF_GetAllImagesWithType         (ISOIFF_ImageCollection coll
     
     err = ISOGetAllItemsWithType( collection->meta, type, &items, numberOfImagesFound ); if (err) goto bail;
     
-    *images = calloc(*numberOfImagesFound, sizeof(struct ISOIFF_ImageS));
+    *images = calloc(*numberOfImagesFound, sizeof(ISOIFF_Image));
     for (i = 0; i < *numberOfImagesFound; i++)
     {
         ISOIFF_Image image = (*images)[i];
@@ -203,7 +203,7 @@ MP4Err          ISOIFF_GetAllMetasWithType          (ISOIFF_ImageCollection coll
     
     err = ISOGetAllItemsWithType( collection->meta, type, &items, numberOfMetasFound ); if (err) goto bail;
     
-    *metas = calloc(*numberOfMetasFound, sizeof(struct ISOIFF_MetaS));
+    *metas = calloc(*numberOfMetasFound, sizeof(ISOIFF_Meta));
     for (i = 0; i < *numberOfMetasFound; i++)
     {
         ISOIFF_Meta meta;
@@ -309,6 +309,7 @@ MP4Err          ISOIFF_GetImageType                 (ISOIFF_Image image, u32 *ou
     MP4Err  err;
     char    *tmp;
     
+    tmp = NULL;
     err = ISOGetItemInfoItemType(image->item, outType, &tmp);   if (err) goto bail;
     if (tmp)
         free (tmp);
@@ -321,6 +322,7 @@ MP4Err          ISOIFF_GetMetaType                  (ISOIFF_Meta meta, u32 *outT
     MP4Err  err;
     char    *tmp;
     
+    tmp = NULL;
     err = ISOGetItemInfoItemType(meta->item, outType, &tmp);   if (err) goto bail;
     if (tmp)
         free (tmp);
@@ -366,7 +368,7 @@ MP4Err          ISOIFF_GetImagesOfImageWithType     (ISOIFF_Image fromImage, u32
     *numberOfImagesFound    = referenceCount;
     toItemIDsArray          = (u32*) *toItemIDs;
     
-    *toImages = calloc(referenceCount, sizeof(struct ISOIFF_ImageS));
+    *toImages = calloc(referenceCount, sizeof(ISOIFF_Image));
     for (i = 0; i < referenceCount; i++)
     {
         ISOIFF_Image        refImage;
@@ -400,7 +402,7 @@ MP4Err          ISOIFF_GetMetasOfImageWithType      (ISOIFF_Image fromImage, u32
     *numberOfMetasFound     = referenceCount;
     toItemIDsArray          = (u32*) *toItemIDs;
     
-    *toMetas = calloc(referenceCount, sizeof(struct ISOIFF_MetaS));
+    *toMetas = calloc(referenceCount, sizeof(ISOIFF_Meta));
     for (i = 0; i < referenceCount; i++)
     {
         ISOIFF_Meta     meta;
@@ -435,7 +437,7 @@ MP4Err          ISOIFF_GetImagesOfMetaWithType      (ISOIFF_Meta fromMeta, u32 r
     *numberOfImagesFound    = referenceCount;
     toItemIDsArray          = (u32*) *toItemIDs;
     
-    *toImages = calloc(referenceCount, sizeof(struct ISOIFF_ImageS));
+    *toImages = calloc(referenceCount, sizeof(ISOIFF_Image));
     for (i = 0; i < referenceCount; i++)
     {
         ISOIFF_Image        image;

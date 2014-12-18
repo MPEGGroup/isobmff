@@ -58,9 +58,9 @@ typedef struct  ISOIFF_MetaS                         *ISOIFF_Meta;
  * @discussion Creates an image collection conforming to ISO Base Media Image File Format.
  * @param collection This ISOIFF_ImageCollection will be allocated and initialized
  * @param brand The brand of the image collection
- * @param minorversion The minorversion of the image collection
+ * @param minorVersion The minorversion of the image collection
  */
-MP4Err          ISOIFF_CreateImageCollection        (ISOIFF_ImageCollection *collection, u32 brand, u32 minorversion);
+MP4Err          ISOIFF_CreateImageCollection        (ISOIFF_ImageCollection *collection, u32 brand, u32 minorVersion);
 
 /*!
  * @discussion Creates and adds an image with a given type and data to an image collection

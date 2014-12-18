@@ -83,8 +83,11 @@ MP4Err  processWriteMode    (Options *options)
     err = addHEVCImageToCollection(collection, decoderConfigRecord, hevcImageItemData);         if (err) goto bail;
     
     err = ISOIFF_WriteCollectionToFile(collection, options->outputFile);                        if (err) goto bail;
-    //err = ISOIFF_ReadCollectionFromFile(&collection, options->outputFile);                      if (err) goto bail;
     
+    if (options->debugLevel >= 4)
+    {
+        err = ISOIFF_ReadCollectionFromFile(&collection, options->outputFile);                  if (err) goto bail;
+    }
     err = ISOIFF_FreeHEVCItemData(hevcImageItemData);                                           if (err) goto bail;
     err = ISOIFF_FreeHEVCDecoderConfigRecord(decoderConfigRecord);                              if (err) goto bail;
     err = ISOIFF_FreeImageCollection(collection);                                               if (err) goto bail;

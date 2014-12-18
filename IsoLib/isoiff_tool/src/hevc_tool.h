@@ -33,25 +33,12 @@ derivative works. Copyright (c) 2014.
 #ifndef hevc_tool_h
 #define hevc_tool_h
 
-#include <list>
-#include <vector>
-#include <stdio.h>
-#include <fcntl.h>
-#include <assert.h>
-#include <fstream>
-
-#include "TLibDecoder/AnnexBread.h"
-#include "TLibDecoder/NALread.h"
 #include "TLibDecoder/TDecEntropy.h"
-#include "TLibDecoder/TDecCAVLC.h"
 
 extern "C"
 {
     #include "MP4Movies.h"
     #include "MP4Atoms.h"
-        
-    #include "StringUtils.h"
-    #include "Logger.h"
     #include "Options.h"
     #include "isoiff.h"
     #include "isoiff_hevc.h"
@@ -74,7 +61,7 @@ MP4Err     processHEVC_NALUnits          (ISOIFF_HEVCDecoderConfigRecord record,
 
 /*!
  * @discussion Will add an HEVC image item to the provided collection. The decoder configuration record will be linked to the image.
- NOTE: Before calling this function, create the image collection and genereate the record and itemData using processHEVC_NALUnits
+ NOTE: Before calling this function, create the image collection and generate the record and itemData using processHEVC_NALUnits
  * @param collection The image collection the provided HEVC image will be added to
  * @param record The decoder configuration record (use processHEVC_NALUnits to fill with data)
  * @param itemData The HEVC Item (image) data (use processHEVC_NALUnits to fill with data)

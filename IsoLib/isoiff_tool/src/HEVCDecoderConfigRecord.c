@@ -104,7 +104,7 @@ MP4Err          ISOIFF_AddNALUnitToHEVCDecConfRec          (ISOIFF_HEVCDecoderCo
         
         logMsg(LOGLEVEL_TRACE, "Creating new array of NAL units of type %d", type);
         
-        array->array_completeness = 1; /* ? */
+        array->array_completeness = 1; /* For the still image case, this is always 1 */
         array->numNalus           = 0;
         array->NAL_unit_type      = type;
         

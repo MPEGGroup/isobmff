@@ -79,10 +79,6 @@ MP4Err          ISOIFF_AddNALUnitToHEVCItemData            (ISOIFF_HEVCItemData 
     
     if (hevcItemData->lengthInSizeMinusOne == 1)
         if ((hevcNalUnit->nalUnitLength >> 16) > 0)
-            hevcItemData->lengthInSizeMinusOne = 2;
-    
-    if (hevcItemData->lengthInSizeMinusOne == 2)
-        if ((hevcNalUnit->nalUnitLength >> 24) > 0)
             hevcItemData->lengthInSizeMinusOne = 3;
 
 bail:
@@ -144,12 +140,6 @@ MP4Err          ISOIFF_PutHEVCItemDataIntoHandle           (ISOIFF_HEVCItemData 
             buffer[bytePosition + 1]    = (u8) (hevcNalUnit->nalUnitLength & 0xff);
         }
         
-        if (hevcItemData->lengthInSizeMinusOne == 2)
-        {
-            buffer[bytePosition]        = (u8) ((hevcNalUnit->nalUnitLength  >> 16) & 0xff);
-            buffer[bytePosition + 1]    = (u8) ((hevcNalUnit->nalUnitLength  >> 8) & 0xff);
-            buffer[bytePosition + 2]    = (u8) (hevcNalUnit->nalUnitLength & 0xff);
-        }
         if (hevcItemData->lengthInSizeMinusOne == 3)
         {
             buffer[bytePosition]        = (u8) ((hevcNalUnit->nalUnitLength  >> 24) & 0xff);
@@ -216,11 +206,7 @@ MP4Err          ISOIFF_CreateHEVCItemDataFromHandle        (MP4Handle itemDataHa
         }
         if (lengthSize == 3)
         {
-            u8 b1, b2, b3;
-            b1 = (u8) buffer[bufferPosition];
-            b2 = (u8) buffer[bufferPosition + 1];
-            b3 = (u8) buffer[bufferPosition + 2];
-            hevcNalUnit->nalUnitLength = (u32) ((b1 << 16) + (b2 << 8) + b3);
+            BAILWITHERROR(MP4BadDataErr);
         }
         if (lengthSize == 4)
         {
