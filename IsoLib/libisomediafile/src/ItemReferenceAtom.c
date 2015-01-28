@@ -51,7 +51,7 @@ static MP4Err serialize( struct MP4Atom* s, char* buffer )
 	u8 x;
 	err = MP4NoErr;
 	
-	err = MP4SerializeCommonBaseAtomFields( s, buffer ); if (err) goto bail;
+	err = MP4SerializeCommonFullAtomFields( (MP4FullAtomPtr) s, buffer ); if (err) goto bail;
     buffer += self->bytesWritten;
 
 	SERIALIZE_ATOM_LIST( atomList );
@@ -68,7 +68,7 @@ static MP4Err calculateSize( struct MP4Atom* s )
 	ISOItemReferenceAtomPtr self = (ISOItemReferenceAtomPtr) s;
 	err = MP4NoErr;
 	
-	err = MP4CalculateBaseAtomFieldSize( s ); if (err) goto bail;
+	err = MP4CalculateFullAtomFieldSize( (MP4FullAtomPtr) s ); if (err) goto bail;
 
 	ADD_ATOM_LIST_SIZE( atomList );
 bail:
@@ -117,7 +117,7 @@ MP4Err ISOCreateItemReferenceAtom( ISOItemReferenceAtomPtr *outAtom )
 	self = (ISOItemReferenceAtomPtr) calloc( 1, sizeof(ISOItemReferenceAtom) );
 	TESTMALLOC( self )
 
-	err = MP4CreateBaseAtom( (MP4AtomPtr) self );
+	err = MP4CreateFullAtom( (MP4AtomPtr) self );
 	if ( err ) goto bail;
 	self->type                      = ISOItemReferenceAtomType;
 	self->name                      = "item references";
