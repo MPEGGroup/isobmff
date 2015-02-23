@@ -357,6 +357,10 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
 			err = MP4CreateChunkOffsetAtom( (MP4ChunkOffsetAtomPtr*) &newAtom );
 			break;
 
+		case MP4SubSampleInformationAtomType:
+			err = MP4CreateSubSampleInformationAtom((MP4SubSampleInformationAtomPtr*)&newAtom);
+			break;
+
 		case MP4SyncSampleAtomType:
 			err = MP4CreateSyncSampleAtom( (MP4SyncSampleAtomPtr*) &newAtom );
 			break;

@@ -128,6 +128,163 @@ MP4_EXTERN ( MP4Err ) MP4AddTrackReference( MP4Track theTrack, MP4Track dependsO
 }
 
 
+
+MP4_EXTERN(MP4Err) MP4AddSubSampleInformationToTrack(MP4Track theTrack, MP4GenericAtom *subs) {
+	MP4Err err;
+	MP4TrackAtomPtr trak;
+	MP4MediaAtomPtr mdia;
+	MP4MediaInformationAtomPtr minf = NULL;
+	err = MP4NoErr;
+	u32 entryCount,i;
+	MP4SampleTableAtomPtr stbl = NULL;
+
+	if ((theTrack == NULL))
+		BAILWITHERROR(MP4BadParamErr);
+	trak = (MP4TrackAtomPtr)theTrack;
+
+	mdia = (MP4MediaAtomPtr)trak->trackMedia;
+	if (mdia->information && ((MP4AtomPtr)mdia->information)->type == MP4MediaInformationAtomType) {
+		minf = (MP4MediaInformationAtomPtr)mdia->information;
+	}
+	else if (mdia->true_minf != NULL)
+	{
+		minf = (MP4MediaInformationAtomPtr)mdia->true_minf;
+	}
+	if (minf == NULL) BAILWITHERROR(MP4BadDataErr);
+
+	err = MP4GetListEntryCount(minf->atomList, &entryCount); if (err) goto bail;
+	for (i = 0; i < entryCount; i++) {
+		MP4AtomPtr anAtom;
+		err = MP4GetListEntry(minf->atomList, i, (char**)&anAtom); if (err) goto bail;
+		if (anAtom->type == MP4SampleTableAtomType) {
+			stbl = (MP4SampleTableAtomPtr)anAtom;
+			break;
+		}
+	}
+	if (stbl == NULL) BAILWITHERROR(MP4BadDataErr);
+
+	MP4CreateSubSampleInformationAtom((MP4SubSampleInformationAtomPtr *)subs);
+
+	err = MP4AddListEntry((void*)*subs, stbl->atomList);
+
+bail:
+	TEST_RETURN(err);
+	return err;
+}
+
+MP4_EXTERN(MP4Err) MP4SetSubSampleInformationFlags(MP4GenericAtom subsample, u32 flags) {
+	MP4Err err;
+	MP4SubSampleInformationAtomPtr subs;
+
+	err = MP4NoErr;
+	if ((subsample == NULL))
+		BAILWITHERROR(MP4BadParamErr);
+	subs = (MP4SubSampleInformationAtomPtr)subsample;
+
+	subs->flags = flags;
+bail:
+	TEST_RETURN(err);
+	return err;
+}
+
+
+MP4_EXTERN(MP4Err) MP4GetSubSampleInformationEntryFromTrack(MP4Track theTrack, u32* flags, u32 *entry_count,  u32 **sample_delta,
+	u32 **subsample_count, u32 ***subsample_size_array, u32 ***subsample_priority_array,
+	u32 ***subsample_discardable_array) {
+	MP4Err err;
+	MP4TrackAtomPtr trak;
+	MP4MediaAtomPtr mdia;
+	MP4MediaInformationAtomPtr minf = NULL;
+	MP4SubSampleInformationAtomPtr subs = NULL;
+	u32 entryCount, i, j;
+	MP4SampleTableAtomPtr stbl = NULL;
+	err = MP4NoErr;
+
+	if ((theTrack == NULL))
+		BAILWITHERROR(MP4BadParamErr);
+	trak = (MP4TrackAtomPtr)theTrack;
+
+	mdia = (MP4MediaAtomPtr)trak->trackMedia;
+	if (mdia->information && ((MP4AtomPtr)mdia->information)->type == MP4MediaInformationAtomType) {
+		minf = (MP4MediaInformationAtomPtr)mdia->information;
+	} else if (mdia->true_minf != NULL) {
+		minf = (MP4MediaInformationAtomPtr)mdia->true_minf;
+	}
+	if (minf == NULL) BAILWITHERROR(MP4NotFoundErr);
+
+	err = MP4GetListEntryCount(minf->atomList, &entryCount); if (err) goto bail;
+	for (i = 0; i < entryCount; i++) {
+		MP4AtomPtr anAtom;
+		err = MP4GetListEntry(minf->atomList, i, (char**)&anAtom); if (err) goto bail;
+		if (anAtom->type == MP4SampleTableAtomType) {
+			stbl = (MP4SampleTableAtomPtr)anAtom;
+			break;
+		}
+	}
+
+	if (stbl == NULL) BAILWITHERROR(MP4NotFoundErr);
+
+	err = MP4GetListEntryCount(stbl->atomList, &entryCount); if (err) goto bail;
+	for (i = 0; i < entryCount; i++) {
+		MP4AtomPtr anAtom;
+		err = MP4GetListEntry(stbl->atomList, i, (char**)&anAtom); if (err) goto bail;
+		if (anAtom->type == MP4SubSampleInformationAtomType) {
+			subs = (MP4SubSampleInformationAtomPtr)anAtom;
+			break;
+		}
+	}
+
+	if (subs == NULL) BAILWITHERROR(MP4NotFoundErr);
+
+	*flags = subs->flags;
+	*entry_count = subs->entry_count;
+	*sample_delta = (u32 *)malloc(subs->entry_count* sizeof(u32));                   TESTMALLOC(*sample_delta);
+	*subsample_count = (u32 *)malloc(subs->entry_count* sizeof(u32));                TESTMALLOC(*subsample_count);
+	*subsample_size_array = (u32 **)malloc(subs->entry_count* sizeof(u32 *));        TESTMALLOC(*subsample_size_array);
+	*subsample_priority_array = (u32 **)malloc(subs->entry_count* sizeof(u32 *));    TESTMALLOC(*subsample_priority_array);
+	*subsample_discardable_array = (u32 **)malloc(subs->entry_count* sizeof(u32 *)); TESTMALLOC(*subsample_discardable_array);
+	
+	for (i = 0; i < subs->entry_count; i++) {
+		(*sample_delta)[i] = subs->sample_delta[i];
+		(*subsample_count)[i] = subs->subsample_count[i];
+
+		if (subs->subsample_count[i]) {
+			(*subsample_size_array)[i] = (u32 *)malloc(subs->subsample_count[i]* sizeof(u32));        TESTMALLOC((*subsample_size_array)[i]);
+			(*subsample_priority_array)[i] = (u32 *)malloc(subs->subsample_count[i]* sizeof(u32));    TESTMALLOC((*subsample_priority_array)[i]);
+			(*subsample_discardable_array)[i] = (u32 *)malloc(subs->subsample_count[i]* sizeof(u32)); TESTMALLOC((*subsample_discardable_array)[i]);
+			for (j = 0; j < subs->subsample_count[i]; j++) {
+				(*subsample_size_array)[i][j] = subs->subsample_size[i][j];
+				(*subsample_priority_array)[i][j] = subs->subsample_priority[i][j];
+				(*subsample_discardable_array)[i][j] = subs->discardable[i][j];
+			}
+		}
+	}
+
+bail:
+	TEST_RETURN(err);
+	return err;
+}
+
+MP4_EXTERN(MP4Err) MP4AddSubSampleInformationEntry(MP4GenericAtom subsample, u32 sample_delta, 
+								u32 subsample_count, MP4Handle subsample_size_array, MP4Handle subsample_priority_array,
+								MP4Handle subsample_discardable_array) {
+	MP4Err err;
+	MP4SubSampleInformationAtomPtr subs;
+	u32 current_entry;
+
+	err = MP4NoErr;
+	if ((subsample == NULL))
+		BAILWITHERROR(MP4BadParamErr);
+	subs = (MP4SubSampleInformationAtomPtr)subsample;
+
+	err = subs->addEntry((MP4AtomPtr)subs, sample_delta, subsample_count, subsample_size_array, subsample_priority_array, subsample_discardable_array);
+
+bail:
+	TEST_RETURN(err);
+	return err;
+}
+
+
 MP4_EXTERN(MP4Err) MP4AddTrackGroup(MP4Track theTrack, u32 groupID, u32 dependencyType) {
 	MP4Err err;
 	MP4TrackAtomPtr trak;

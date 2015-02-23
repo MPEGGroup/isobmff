@@ -240,6 +240,7 @@
     <ClCompile Include="..\..\src\ShadowSyncAtom.c" />
     <ClCompile Include="..\..\src\SLConfigDescriptor.c" />
     <ClCompile Include="..\..\src\SoundMediaHeaderAtom.c" />
+    <ClCompile Include="..\..\src\SubSampleInformationAtom.c" />
     <ClCompile Include="..\..\src\SyncSampleAtom.c" />
     <ClCompile Include="..\..\src\TimeToSampleAtom.c" />
     <ClCompile Include="..\..\src\TrackAtom.c" />

@@ -94,6 +94,7 @@ sources = \
 	ShadowSyncAtom.c \
 	SimpleFileMappingObject.c \
 	SoundMediaHeaderAtom.c \
+	SubSampleInformationAtom.c \
 	SyncSampleAtom.c \
 	TimeToSampleAtom.c \
 	TrackAtom.c \

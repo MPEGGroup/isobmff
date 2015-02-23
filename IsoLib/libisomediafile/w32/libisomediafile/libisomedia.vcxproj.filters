@@ -418,6 +418,9 @@
     <ClCompile Include="..\..\src\DownMixInstructionsAtom.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\SubSampleInformationAtom.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\ChannelLayoutAtom.c">
       <Filter>Source Files</Filter>
     </ClCompile>

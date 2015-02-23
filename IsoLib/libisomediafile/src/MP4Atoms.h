@@ -86,6 +86,7 @@ enum
 	MP4SkipAtomType                                     = MP4_FOUR_CHAR_CODE( 's', 'k', 'i', 'p' ),
 	MP4SoundMediaHeaderAtomType                         = MP4_FOUR_CHAR_CODE( 's', 'm', 'h', 'd' ),
 	MP4StreamDependenceAtomType                         = MP4_FOUR_CHAR_CODE( 'd', 'p', 'n', 'd' ),
+	MP4SubSampleInformationAtomType                     = MP4_FOUR_CHAR_CODE( 's', 'u', 'b', 's' ),
 	MP4SyncSampleAtomType                               = MP4_FOUR_CHAR_CODE( 's', 't', 's', 's' ),
 	MP4SyncTrackReferenceAtomType                       = MP4_FOUR_CHAR_CODE( 's', 'y', 'n', 'c' ),
 	MP4TimeToSampleAtomType                             = MP4_FOUR_CHAR_CODE( 's', 't', 't', 's' ),
@@ -1046,6 +1047,20 @@ typedef struct MP4SampleToChunkAtom
 
 } MP4SampleToChunkAtom, *MP4SampleToChunkAtomPtr;
 
+typedef struct MP4SubSampleInformationAtom {
+	MP4_FULL_ATOM
+	MP4Err(*addEntry)(struct MP4SubSampleInformationAtom *self, u32 sample_delta,
+			u32 subsample_count, MP4Handle subsample_size_array, MP4Handle subsample_priority_array,
+			MP4Handle subsample_discardable_array);
+	u32	entry_count;
+	u32 *sample_delta;
+	u32 *subsample_count;
+	u32 **subsample_size;
+	u32 **subsample_priority;
+	u32 **discardable;
+	u32 **reserved;
+} MP4SubSampleInformationAtom, *MP4SubSampleInformationAtomPtr;
+
 typedef struct MP4SyncSampleAtom
 {
 	MP4_FULL_ATOM
@@ -1669,6 +1684,7 @@ MP4Err MP4CreateSampleAuxiliaryInformationOffsetsAtom( MP4SampleAuxiliaryInforma
 MP4Err MP4CreateSceneDescriptionMediaHeaderAtom( MP4SceneDescriptionMediaHeaderAtomPtr *outAtom );
 MP4Err MP4CreateShadowSyncAtom( MP4ShadowSyncAtomPtr *outAtom );
 MP4Err MP4CreateSoundMediaHeaderAtom( MP4SoundMediaHeaderAtomPtr *outAtom );
+MP4Err MP4CreateSubSampleInformationAtom(MP4SubSampleInformationAtomPtr *outAtom);
 MP4Err MP4CreateSyncSampleAtom( MP4SyncSampleAtomPtr *outAtom );
 MP4Err MP4CreateTimeToSampleAtom( MP4TimeToSampleAtomPtr *outAtom );
 MP4Err MP4CreateTrackAtom( MP4TrackAtomPtr *outAtom );
