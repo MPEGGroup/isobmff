@@ -20,9 +20,8 @@ MPEG-4 conforming products.
 This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
-/*
-	$Id: HEVCConfigAtom.c,v 1.0.0.0 2014/08/04 08:53:34 fador Exp $
-*/
+
+/* Created for Nokia FAVS project by Tampere University of Technology */
 
 #include "MP4Atoms.h"
 #include "MP4Descriptors.h"

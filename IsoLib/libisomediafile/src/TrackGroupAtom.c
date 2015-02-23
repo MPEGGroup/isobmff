@@ -20,9 +20,8 @@ MPEG-4 conforming products.
 This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
-/*
-	$Id: TrackGroupAtom.c,v 1.1.1.1 2014/06/19 13:53:35 fador Exp $
-*/
+
+/* Created for Nokia FAVS project by Tampere University of Technology */
 
 #include "MP4Atoms.h"
 #include <stdlib.h>
