@@ -798,7 +798,7 @@ static u32 GetBits(BitBuffer *bb, u32 nBits, MP4Err *errout)
 			if ((bb->emulation_position >= 2) && (bb->cbyte == 3)) {
 				bb->cbyte = *++bb->cptr;
 				bb->bits_left -= 8;
-				bb->emulation_position = 0;
+				bb->emulation_position = bb->cbyte ? 0 : 1;
 				if (nBits>bb->bits_left) {
 					err = MP4EOF;
 					goto bail;
@@ -1027,5 +1027,186 @@ MP4_EXTERN ( MP4Err ) ISOGetVCSampleDescriptionPS(  MP4Handle sampleEntryH,
 bail:
 	if (entry)
 		entry->destroy((MP4AtomPtr) entry);
+	return err;
+}
+
+MP4_EXTERN(MP4Err) ISOGetHEVCSampleDescriptionPS(MP4Handle sampleEntryH,
+                                                 MP4Handle ps,
+                                                 u32 where,
+                                                 u32 index) {
+	MP4Err err = MP4NoErr;
+	MP4VisualSampleEntryAtomPtr entry = NULL;
+	ISOHEVCConfigAtomPtr			 config;
+
+	err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType); if (err) goto bail;
+
+	if (entry->type != ISOHEVCSampleEntryAtomType) BAILWITHERROR(MP4BadParamErr);
+	err = MP4GetListEntryAtom(entry->ExtensionAtomList, ISOHEVCConfigAtomType, (MP4AtomPtr*)&config);
+	if (err == MP4NotFoundErr) {
+		BAILWITHERROR(MP4BadDataErr);
+	}
+
+	err = config->getParameterSet(config, ps, where, index);    if (err) goto bail;
+
+bail:
+	if (entry)
+		entry->destroy((MP4AtomPtr)entry);
+	return err;
+}
+
+MP4_EXTERN(MP4Err) ISONewHEVCSampleDescription(MP4Track theTrack,
+                                               MP4Handle sampleDescriptionH,
+                                               u32 dataReferenceIndex,
+                                               u32 length_size,
+                                               MP4Handle first_sps,
+                                               MP4Handle first_pps,
+                                               MP4Handle first_vps) {
+	MP4Err MP4CreateVisualSampleEntryAtom(MP4VisualSampleEntryAtomPtr *outAtom);
+	MP4Err MP4CreateHEVCConfigAtom(ISOHEVCConfigAtomPtr *outAtom);
+
+	MP4Err err;
+	GenericSampleEntryAtomPtr     entry;
+	ISOHEVCConfigAtomPtr			 config;
+	MP4TrackAtomPtr               trak;
+	BitBuffer mybb;
+	BitBuffer *bb;
+
+	u32 the_size, y, width, height;
+	u8 x;
+	u32 i,ii;
+	u8 sps_max_sub_layers;
+	u8 sub_layer_profile_present_flag[8];
+	u8 sub_layer_level_present_flag[8];
+
+	if ((theTrack == NULL) || (sampleDescriptionH == NULL)) {
+		BAILWITHERROR(MP4BadParamErr);
+	}
+
+	trak = (MP4TrackAtomPtr)theTrack;
+	if (!(trak->newTrackFlags & MP4NewTrackIsVisual)) BAILWITHERROR(MP4BadParamErr);
+	err = MP4CreateVisualSampleEntryAtom((MP4VisualSampleEntryAtomPtr*)&entry); if (err) goto bail;
+	entry->super = NULL;
+
+	entry->dataReferenceIndex = dataReferenceIndex;
+	entry->type = ISOHEVCSampleEntryAtomType;
+
+	err = MP4CreateHEVCConfigAtom(&config);
+	config->lengthSizeMinusOne = length_size-1;
+
+	err = MP4AddListEntry((void*)config, entry->ExtensionAtomList); if (err) goto bail;
+
+	if (!first_sps) BAILWITHERROR(MP4BadParamErr);
+	err = MP4GetHandleSize(first_sps, &the_size); if (err) goto bail;
+
+	bb = &mybb;
+	err = BitBuffer_Init(bb, (u8*)*first_sps, 8 * the_size); if (err) goto bail;
+	bb->prevent_emulation = 1;
+
+	/* Get first header byte for nal_unit_type */
+	err = GetBytes(bb, 1, &x); if (err) goto bail;
+
+	/* 33 == SPS */
+	if ((x>>1) != 33) BAILWITHERROR(MP4BadParamErr);
+
+	/* Skip second header byte */  
+	err = GetBytes(bb, 1, &x); if (err) goto bail;
+
+	/* sps_video_parameter_set_id (4) + sps_max_sub_layers_minus1 (3) + sps_temporal_id_nesting_flag (1) */
+	err = GetBytes(bb, 1, &x); if (err) goto bail;
+	sps_max_sub_layers = ((x & 0xf) >> 1)+1;
+	config->sps_temporal_id_nesting_flag = x & 1;
+
+	/* profile_tier_level */
+	/* general_profile_space (2) + general_tier_flag (1) + general_profile_idc (5) */
+	err = GetBytes(bb, 1, &x); if (err) goto bail;
+	config->general_profile_idc = x & 0x1f;
+
+	/* general_profile_compatibility_flag[32] */
+	config->general_profile_compatibility_flags = 0;
+	for (i = 0; i < 4; i++) {
+		err = GetBytes(bb, 1, &x); if (err) goto bail;
+		config->general_profile_compatibility_flags |= x << ((3 - i) * 8);
+	}
+
+	/* progressive_source + interlaced_source + non_packed_constraint + 
+		 frame_only_constraint + general_reserved_zero_44bits[44] */
+	for (i = 0; i < 6; i++) {
+		err = GetBytes(bb, 1, &x); if (err) goto bail;
+	}
+
+	/* general_level_idc */
+	err = GetBytes(bb, 1, &x); if (err) goto bail;
+	config->general_level_idc = x;
+
+	/* sub_layer_profile_present_flag[i] + sub_layer_level_present_flag[i] */
+	for (i = 0; i < sps_max_sub_layers - 1; i++) {    
+		sub_layer_profile_present_flag[i] = GetBits(bb, 1, &err); if (err) goto bail;
+		sub_layer_level_present_flag[i] = GetBits(bb, 1, &err); if (err) goto bail;
+	}
+	/* reserved_zero_2bits[ i ] */
+	if (sps_max_sub_layers > 1) {
+		x = GetBits(bb, 16 - (sps_max_sub_layers - 1)*2, &err); if (err) goto bail;
+	}
+
+	/* We are byte-aligned at this point */
+	for (i = 0; i < sps_max_sub_layers - 1; i++) {
+		if (sub_layer_profile_present_flag[i]) {
+			for (ii = 0; ii < 11; ii++) {
+				err = GetBytes(bb, 1, &x); if (err) goto bail;
+			}
+		}
+		if (sub_layer_level_present_flag[i]) {
+			err = GetBytes(bb, 1, &x); if (err) goto bail;
+		}
+	}
+	/* end profile_tier_level */
+
+	/* sps_seq_parameter_set_id */
+	y = read_golomb_uev(bb, &err); if (err) goto bail;
+	/* chroma_format_idc */
+	y = read_golomb_uev(bb, &err); if (err) goto bail;
+	config->chromaFormat = y;
+	if (y == 3) {
+		/* separate_colour_plane_flag */
+		x = GetBits(bb, 1, &err); if (err) goto bail;
+	}
+	/* pic_width_in_luma_samples */
+	width = read_golomb_uev(bb, &err); if (err) goto bail;
+	((MP4VisualSampleEntryAtomPtr)entry)->width = width; 
+ 
+
+	/* pic_height_in_luma_samples */
+	height = read_golomb_uev(bb, &err); if (err) goto bail;
+	((MP4VisualSampleEntryAtomPtr)entry)->height = height;
+	((MP4TrackAtomPtr)theTrack)->setDimensions(theTrack, width, height);
+
+	/* conformance_window_flag */
+	x = GetBits(bb, 1, &err); if (err) goto bail;
+	if (x) {
+		/* conf_win_[left|right|top|bottom]_offset */
+		for (i = 0; i < 4; i++) {      
+			x = read_golomb_uev(bb, &err); if (err) goto bail;
+		}
+	}
+
+	/* bit_depth_luma_minus8 */
+	y = read_golomb_uev(bb, &err); if (err) goto bail;
+	config->bitDepthLumaMinus8 = y;
+
+	/* bit_depth_chroma_minus8 */
+	y = read_golomb_uev(bb, &err); if (err) goto bail;
+	config->bitDepthChromaMinus8 = y;
+
+
+	if (first_vps) { err = config->addParameterSet(config,  first_vps, 32); if (err) goto bail; }
+	if (first_sps) { err = config->addParameterSet(config,  first_sps, 33); if (err) goto bail; }
+	if (first_pps) { err = config->addParameterSet(config,  first_pps, 34); if (err) goto bail; }  
+
+	err = atomPtrToSampleEntryH(sampleDescriptionH, (MP4AtomPtr)entry); if (err) goto bail;
+
+bail:
+
+	TEST_RETURN(err);
+
 	return err;
 }
