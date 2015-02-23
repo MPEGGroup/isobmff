@@ -160,7 +160,7 @@ MP4Err MP4CreateTrackGroupAtom( MP4TrackGroupAtomPtr *outAtom )
 
 	err = MP4CreateBaseAtom( (MP4AtomPtr) self ); if ( err ) goto bail;
 	self->type = MP4TrackGroupAtomType;
-	self->name                  = "track reference";
+	self->name                  = "track group";
 	self->createFromInputStream = (cisfunc) createFromInputStream;
 	self->destroy               = destroy;
 	err = MP4MakeLinkedList( &self->atomList ); if (err) goto bail;
