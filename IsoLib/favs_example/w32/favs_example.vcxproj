@@ -84,10 +84,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\hevc.c" />
     <ClCompile Include="..\src\main.c" />
+    <ClCompile Include="..\src\tools.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\hevc.h" />
     <ClInclude Include="..\src\structures.h" />
+    <ClInclude Include="..\src\tools.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

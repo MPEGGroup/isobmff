@@ -35,16 +35,25 @@ typedef struct {
 struct hevc_slice_header {
 	s32 poc;
 	s32 poc_offset;
+	u32 sample_number;
 	u32 slice_segment_address;
 	u8 dependent_slice;
 	u8 slice_type;
 	u8 nal_type;
 	u8 first_slice_segment_in_pic_flag;
+	u32 num_entry_point_offsets;
+	u32 *entry_point_offset_minus1;
+	u32 num_slices;
+	u32 *slice_offsets;
+	u8 *aggregator_data;
+	u32 aggregator_datalen;
+	u16 aggregator_header;
 };
 
 struct hevc_poc {
 	s32 order_cnt_msb;
 	s32 order_cnt_lsb;
+	u32 last_rap;
 };
 
 
@@ -54,7 +63,15 @@ struct hevc_sps {
 	u32 pic_width_in_luma_samples;
 	u32 pic_height_in_luma_samples;
 	u8 log2_max_pic_order_cnt_lsb_minus4;
-
+	u8 sample_adaptive_offset_enabled_flag;
+	u8 sps_temporal_mvp_enabled_flag;
+	u8 long_term_ref_pics_present_flag;
+	u8 num_long_term_ref_pics_sps;
+	u8 num_short_term_ref_pic_sets;
+	u8 slice_sao_luma_flag;
+	u8 slice_sao_chroma_flag;
+	u32 num_delta_pocs[32];
+	u8 sps_max_sub_layers_minus1;
 };
 
 struct hevc_pps {
@@ -65,8 +82,18 @@ struct hevc_pps {
 	u8 num_tile_columns;
 	u8 num_tile_rows;
 	u8 tile_uniform_spacing_flag;
+	u8 lists_modification_present_flag;
+	u8 cabac_init_present_flag;
+	u8 weighted_pred_flag;
+	u8 weighted_bipred_flag;
+	u8 pps_slice_chroma_qp_offsets_present_flag;
+	u8 deblocking_filter_override_enabled_flag;
+	u8 pps_loop_filter_across_slices_enabled_flag;
+	u8 entropy_coding_sync_enabled_flag;
 	u16 tile_column_width_minus1[16];
 	u16 tile_row_height_minus1[16];
+	u16 num_ref_idx_l0_default_active_minus1;
+	u16 num_ref_idx_l1_default_active_minus1;
 };
 
 struct hevc_stream {
@@ -106,6 +133,8 @@ struct ParamStruct {
 	u32 seek;
 	u8 trackGroupCount;
 	struct TrackGroup **trackGroups;
+
+	u32 subsample_information;
 };
 
 

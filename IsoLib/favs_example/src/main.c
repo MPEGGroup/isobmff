@@ -26,668 +26,8 @@ derivative works. Copyright (c) 1999.
 #include <math.h>
 #include "ISOMovies.h"
 #include "structures.h"
-
-#define GET16(buffer) \
-	((((u8*) buffer)[0] << 8) + ((u8*) buffer)[1])
-
-#define GET32(buffer) \
-	((((u8*)buffer)[0] << 24) + (((u8*)buffer)[1] << 16) + (((u8*)buffer)[2] << 8) + (((u8*)buffer)[3]))
-
-#define PUT32(buffer, val ) \
-	((u8*) buffer)[0] = (u8) (((val) >> 24) & 0xff); \
-	((u8*) buffer)[1] = (u8) (((val) >> 16) & 0xff); \
-	((u8*) buffer)[2] = (u8) (((val) >> 8) & 0xff); \
-	((u8*) buffer)[3] = (u8) ((val)& 0xff); \
-
-#define PUT16(buffer, val ) \
-	((u8*) buffer)[0] = (u8) (((val) >> 8) & 0xff); \
-	((u8*) buffer)[1] = (u8) ((val) & 0xff);
-
-#define PUT32(buffer, val ) \
-	((u8*) buffer)[0] = (u8) (((val) >> 24) & 0xff); \
-	((u8*) buffer)[1] = (u8) (((val) >> 16) & 0xff); \
-	((u8*) buffer)[2] = (u8) (((val) >> 8) & 0xff); \
-	((u8*) buffer)[3] = (u8) ((val)& 0xff); \
-
-
-static MP4Err BitBuffer_Init(BitBuffer *bb, u8 *p, u32 length) {
-	int err = MP4NoErr;
-
-	if (length > 0x0fffffff) {
-		err = MP4BadParamErr;
-		goto bail;
-	}
-
-	bb->ptr = (void*)p;
-	bb->length = length;
-
-	bb->cptr = (void*)p;
-	bb->cbyte = *bb->cptr;
-	bb->curbits = 8;
-
-	bb->bits_left = length * 8;
-
-	bb->prevent_emulation = 1;
-	bb->emulation_position = (bb->cbyte == 0 ? 1 : 0);
-
-bail:
-	return err;
-}
-
-static u32 ceil_log2(u32 x) {
-	u32 ret = 0;
-	while (x>((u32)1 << ret)) ret++;
-	return ret;
-}
-
-
-static u32 GetBits(BitBuffer *bb, u32 nBits, MP4Err *errout) {
-	MP4Err err = MP4NoErr;
-	int myBits;
-	int myValue;
-	int myResidualBits;
-	int leftToRead;
-
-	myValue = 0;
-	if (nBits>bb->bits_left) {
-		err = MP4EOF;
-		goto bail;
-	}
-
-	if (bb->curbits <= 0) {
-		bb->cbyte = *++bb->cptr;
-		bb->curbits = 8;
-
-		if (bb->prevent_emulation != 0) {
-			if ((bb->emulation_position >= 2) && (bb->cbyte == 3)) {
-				bb->cbyte = *++bb->cptr;
-				bb->bits_left -= 8;
-				bb->emulation_position = bb->cbyte ? 0:1;
-				if (nBits>bb->bits_left) {
-					err = MP4EOF;
-					goto bail;
-				}
-			} else if (bb->cbyte == 0) bb->emulation_position += 1;
-			else bb->emulation_position = 0;
-		}
-	}
-
-	if (nBits > bb->curbits)
-		myBits = bb->curbits;
-	else
-		myBits = nBits;
-
-	myValue = (bb->cbyte >> (8 - myBits));
-	myResidualBits = bb->curbits - myBits;
-	leftToRead = nBits - myBits;
-	bb->bits_left -= myBits;
-
-	bb->curbits = myResidualBits;
-	bb->cbyte = ((bb->cbyte) << myBits) & 0xff;
-
-	if (leftToRead > 0) {
-		u32 newBits;
-		newBits = GetBits(bb, leftToRead, &err);
-		myValue = (myValue << leftToRead) | newBits;
-	}
-
-bail:
-	if (errout) *errout = err;
-	return myValue;
-}
-
-static MP4Err GetBytes(BitBuffer *bb, u32 nBytes, u8 *p) {
-	MP4Err err = MP4NoErr;
-	unsigned int i;
-
-	for (i = 0; i < nBytes; i++) {
-		*p++ = (u8)GetBits(bb, 8, &err);
-		if (err) break;
-	}
-
-	return err;
-}
-
-static u32 read_golomb_uev(BitBuffer *bb, MP4Err *errout) {
-	MP4Err err = MP4NoErr;
-
-	u32 power = 1;
-	u32 value = 0;
-	u32 leading = 0;
-	u32 nbits = 0;
-
-	leading = GetBits(bb, 1, &err);  if (err) goto bail;
-
-	while (leading == 0) {
-		power = power << 1;
-		nbits++;
-		leading = GetBits(bb, 1, &err);  if (err) goto bail;
-	}
-
-	if (nbits > 0) {
-		value = GetBits(bb, nbits, &err); if (err) goto bail;
-	}
-
-bail:
-	if (errout) *errout = err;
-	return (power - 1 + value);
-}
-
-
-static MP4Err hevc_parse_sps_minimal(BitBuffer *bb, struct hevc_sps* sps) {
-	MP4Err err = MP4NoErr;
-	u32 i, ii;
-	u8 x;
-	u32 y;
-	u8 sps_max_sub_layers;
-	u8 sub_layer_profile_present_flag[8];
-	u8 sub_layer_level_present_flag[8];
-
-	/* Get first header byte for nal_unit_type */
-	err = GetBytes(bb, 1, &x); if (err) goto bail;
-
-	/* 33 == SPS */
-	if ((x >> 1) != 33) err = MP4BadParamErr; if (err) goto bail;
-
-	/* Skip second header byte */
-	err = GetBytes(bb, 1, &x); if (err) goto bail;
-
-	/* sps_video_parameter_set_id (4) + sps_max_sub_layers_minus1 (3) + sps_temporal_id_nesting_flag (1) */
-	err = GetBytes(bb, 1, &x); if (err) goto bail;
-	sps_max_sub_layers = ((x & 0xf) >> 1) + 1;
-
-	/* profile_tier_level */
-	/* general_profile_space (2) + general_tier_flag (1) + general_profile_idc (5) */
-	err = GetBytes(bb, 1, &x); if (err) goto bail;
-
-	/* general_profile_compatibility_flag[32] */
-	for (i = 0; i < 4; i++) {
-		err = GetBytes(bb, 1, &x); if (err) goto bail;
-	}
-
-	/* progressive_source + interlaced_source + non_packed_constraint +
-	frame_only_constraint + general_reserved_zero_44bits[44] */
-	for (i = 0; i < 6; i++) {
-		err = GetBytes(bb, 1, &x); if (err) goto bail;
-	}
-
-	/* general_level_idc */
-	err = GetBytes(bb, 1, &x); if (err) goto bail;
-
-	/* sub_layer_profile_present_flag[i] + sub_layer_level_present_flag[i] */
-	for (i = 0; i < sps_max_sub_layers - (u32)1; i++) {
-		sub_layer_profile_present_flag[i] = GetBits(bb, 1, &err); if (err) goto bail;
-		sub_layer_level_present_flag[i] = GetBits(bb, 1, &err); if (err) goto bail;
-	}
-	/* reserved_zero_2bits[ i ] */
-	if (sps_max_sub_layers > 1) {
-		x = GetBits(bb, 16 - (sps_max_sub_layers - 1)*2, &err); if (err) goto bail;
-	}
-
-	/* We are byte-aligned at this point */
-	for (i = 0; i < sps_max_sub_layers - (u32)1; i++) {
-		if (sub_layer_profile_present_flag[i]) {
-			for (ii = 0; ii < 11; ii++) {
-				err = GetBytes(bb, 1, &x); if (err) goto bail;
-			}
-		}
-		if (sub_layer_level_present_flag[i]) {
-			err = GetBytes(bb, 1, &x); if (err) goto bail;
-		}
-	}
-	/* end profile_tier_level */
-
-	/* sps_seq_parameter_set_id */
-	y = read_golomb_uev(bb, &err); if (err) goto bail;
-	/* chroma_format_idc */
-	sps->chroma_format_idc = read_golomb_uev(bb, &err); if (err) goto bail;
-
-	if (y == 3) {
-		/* separate_colour_plane_flag */
-		sps->separate_color_plane_flag = GetBits(bb, 1, &err); if (err) goto bail;
-	}
-	/* pic_width_in_luma_samples */
-	sps->pic_width_in_luma_samples = read_golomb_uev(bb, &err); if (err) goto bail;
-	
-	/* pic_height_in_luma_samples */
-	sps->pic_height_in_luma_samples = read_golomb_uev(bb, &err); if (err) goto bail;
-	
-	/* conformance_window_flag */
-	x = GetBits(bb, 1, &err); if (err) goto bail;
-	if (x) {
-		/* conf_win_[left|right|top|bottom]_offset */
-		for (i = 0; i < 4; i++) {
-			x = read_golomb_uev(bb, &err); if (err) goto bail;
-		}
-	}
-
-	/* bit_depth_luma_minus8 */
-	y = read_golomb_uev(bb, &err); if (err) goto bail;
-
-	/* bit_depth_chroma_minus8 */
-	y = read_golomb_uev(bb, &err); if (err) goto bail;
-
-	sps->log2_max_pic_order_cnt_lsb_minus4 = read_golomb_uev(bb, &err); if (err) goto bail;
-
-	bail:
-		return err;
-}
-
-
-static MP4Err hevc_parse_pps_minimal(BitBuffer *bb, struct hevc_pps* pps) {
-	MP4Err err = MP4NoErr;
-	u8 x;
-	u32 y;
-
-	/* Get first header byte for nal_unit_type */
-	err = GetBytes(bb, 1, &x); if (err) goto bail;
-
-	/* 34 == PPS */
- /*  if ((x >> 1) != 34) BAILWITHERROR(MP4BadParamErr); */
-
-	/* Skip second header byte */
-	err = GetBytes(bb, 1, &x); if (err) goto bail;
-
-	/* pps_pic_parameter_set_id */
-	y = read_golomb_uev(bb, &err); if (err) goto bail;
-
-	/* pps_seq_parameter_set_id */
-	y = read_golomb_uev(bb, &err); if (err) goto bail;
-
-	/* dependent_slice_segments_enabled_flag */
-	pps->dependent_slice_segments_enabled_flag = GetBits(bb, 1, &err); if (err) goto bail;
-
-	/* output_flag_present_flag */
-	pps->output_flag_present_flag = GetBits(bb, 1, &err); if (err) goto bail;
-
-	/* num_extra_slice_header_bits */
-	pps->num_extra_slice_header_bits = GetBits(bb, 3, &err); if (err) goto bail;
-
-	/* sign_data_hiding_enabled_flag */
-	GetBits(bb, 1, &err); if (err) goto bail;
-
-	/* cabac_init_present_flag */
-	GetBits(bb, 1, &err); if (err) goto bail;
-
-	/* num_ref_idx_l0_default_active_minus1 */
-	y = read_golomb_uev(bb, &err); if (err) goto bail;
-
-	/* num_ref_idx_l1_default_active_minus1 */
-	y = read_golomb_uev(bb, &err); if (err) goto bail;
-
-	/* init_qp_minus26 */
-	y = read_golomb_uev(bb, &err); if (err) goto bail;
-
-	/* constrained_intra_pred_flag */
-	GetBits(bb, 1, &err); if (err) goto bail;
-
-	/* transform_skip_enabled_flag */
-	GetBits(bb, 1, &err); if (err) goto bail;
-
-	/* cu_qp_delta_enabled_flag */
-	x = GetBits(bb, 1, &err); if (err) goto bail;
-	if (x) {
-		/* diff_cu_qp_delta_depth */
-		y = read_golomb_uev(bb, &err); if (err) goto bail;
-	}
-
-	/* pps_cb_qp_offset */
-	y = read_golomb_uev(bb, &err); if (err) goto bail;
-	/* pps_cr_qp_offset */
-	y = read_golomb_uev(bb, &err); if (err) goto bail;
-
-	/* pps_slice_chroma_qp_offsets_present_flag */
-	GetBits(bb, 1, &err); if (err) goto bail;
-	/* weighted_pred_flag */
-	GetBits(bb, 1, &err); if (err) goto bail;
-	/* weighted_bipred_flag */
-	GetBits(bb, 1, &err); if (err) goto bail;
-	/* transquant_bypass_enabled_flag */
-	GetBits(bb, 1, &err); if (err) goto bail;
-
-	/* tiles_enabled_flag */
-	pps->tiles_enabled_flag = GetBits(bb, 1, &err); if (err) goto bail;
-
-	/* entropy_coding_sync_enabled_flag */
-	GetBits(bb, 1, &err); if (err) goto bail;
-
-	if (pps->tiles_enabled_flag) {
-		/* num_tile_columns_minus1 */
-		pps->num_tile_columns = read_golomb_uev(bb, &err) + 1; if (err) goto bail;
-
-		/* num_tile_rows_minus1 */
-		pps->num_tile_rows = read_golomb_uev(bb, &err) + 1; if (err) goto bail;
-
-		/* uniform_spacing_flag */
-		pps->tile_uniform_spacing_flag = GetBits(bb, 1, &err); if (err) goto bail;
-
-		if (!pps->tile_uniform_spacing_flag) {
-			s32 i;
-			for (i = 0; i < pps->num_tile_columns - 1; i++) {
-				pps->tile_column_width_minus1[i] = read_golomb_uev(bb, &err) + 1; if (err) goto bail;
-			}
-
-			for (i = 0; i < pps->num_tile_rows - 1; i++) {
-				pps->tile_row_height_minus1[i] = read_golomb_uev(bb, &err) + 1; if (err) goto bail;
-			}
-			/* loop_filter_across_tiles_enabled_flag */
-			GetBits(bb, 1, &err); if (err) goto bail;
-		}
-	}
-
-	
-bail:
-	return err;
-}
-
-
-
-
-static MP4Err hevc_parse_slice_header_minimal(BitBuffer *bb, struct hevc_poc* poc, struct hevc_slice_header* header,
-                                              struct hevc_sps* sps, struct hevc_pps* pps) {
-	MP4Err err = MP4NoErr;
-	u8 x = 0;
-	u32 y = 0;
-	u32 nal_type;
-
-	/* Get first header byte for nal_unit_type */
-	err = GetBytes(bb, 1, &x); if (err) goto bail;
-
-	nal_type = x >> 1;
-  /* if ((x >> 1) != 34) BAILWITHERROR(MP4BadParamErr); */
-	header->nal_type = nal_type;
-	/* Skip second NAL header byte */
-	err = GetBytes(bb, 1, &x); if (err) goto bail;
-
-	/* first_slice_segment_in_pic_flag */
-	header->first_slice_segment_in_pic_flag = GetBits(bb, 1, &err); if (err) goto bail;
-
-	/* if (nal_unit_type >= BLA_W_LP  &&  nal_unit_type <= RSV_IRAP_VCL23) */
-	if (nal_type >= 16 && nal_type <= 23) {
-		/* no_output_of_prior_pics_flag */
-		GetBits(bb, 1, &err); if (err) goto bail;
-	}
-
-	/* slice_pic_parameter_set_id */
-	y = read_golomb_uev(bb, &err); if (err) goto bail;
-
-	if (!header->first_slice_segment_in_pic_flag) {
-		u32 PicSizeInCtbsY = (u32)(ceil((float)sps->pic_width_in_luma_samples / 64.0f)*ceil((float)sps->pic_height_in_luma_samples / 64.0f));
-		if (pps->dependent_slice_segments_enabled_flag) {
-			header->dependent_slice = GetBits(bb, 1, &err); if (err) goto bail;
-		}
-		
-		/* Ceil( Log2( PicSizeInCtbsY ) ) bits */
-		header->slice_segment_address = GetBits(bb, ceil_log2(PicSizeInCtbsY), &err); if (err) goto bail;
-	}
-		
-	if (!header->dependent_slice) {
-		if (pps->num_extra_slice_header_bits) {
-			GetBits(bb, pps->num_extra_slice_header_bits, &err); if (err) goto bail;
-		}
-		/* Slice Type */
-		header->slice_type = read_golomb_uev(bb, &err); if (err) goto bail;
-		if (pps->output_flag_present_flag) {
-			/* pic_output_flag */
-			GetBits(bb, 1, &err); if (err) goto bail;
-		}
-		if (sps->separate_color_plane_flag) {
-			/* colour_plane_id (2) */
-			GetBits(bb, 2, &err); if (err) goto bail;
-		}
-		if (header->first_slice_segment_in_pic_flag) {
-			if (nal_type != 20) {
-				s32 last_order_cnt_lsb = poc->order_cnt_lsb;
-				s32 max_lsb = 1 << (sps->log2_max_pic_order_cnt_lsb_minus4 + 4);
-				u8 const bits = sps->log2_max_pic_order_cnt_lsb_minus4 + 4;
-				/* slice_pic_order_cnt_lsb */
-				if (nal_type != 19) {
-					poc->order_cnt_lsb = GetBits(bb, bits, &err); if (err) goto bail;
-				} else {
-					poc->order_cnt_lsb = 0;
-					last_order_cnt_lsb = 0;
-				}
-
-				if (poc->order_cnt_lsb < last_order_cnt_lsb &&
-					last_order_cnt_lsb - poc->order_cnt_lsb > (max_lsb / 2)) {
-					poc->order_cnt_msb += max_lsb;
-				} else if (poc->order_cnt_lsb > last_order_cnt_lsb &&
-					poc->order_cnt_lsb - last_order_cnt_lsb > (max_lsb / 2)) {
-					poc->order_cnt_msb -= max_lsb;
-				}
-				last_order_cnt_lsb = poc->order_cnt_lsb;
-
-			} else {
-				poc->order_cnt_lsb += 1;
-			}
-		}
-	} 
-	header->poc = poc->order_cnt_msb + poc->order_cnt_lsb;
-
-bail:
-	return err;
-}
-
-static u8* stripNALEmulation(u8* buffer, u32* bufferLen) {
-	u8* outBuffer;
-	u32 zerocount = 0;
-	u32 emulationPreventionBytes = 0;
-	u32 ii = 0;
-	u32 i;
-	for (i = 0; i < *bufferLen; i++) {
-		/* Check for emulation prevention code */
-		if (zerocount == 2    &&
-				buffer[i] == 0x03 &&
-				i+1 < *bufferLen   &&
-				buffer[i+1] <= 0x04) {
-			zerocount = buffer[i + 1]?0:1;
-			emulationPreventionBytes++;
-			i++;
-		} else if (buffer[i] == 0) {
-			zerocount++;
-		} else {
-			zerocount = 0;
-		}
-	}
-	outBuffer = malloc(*bufferLen - emulationPreventionBytes);
-
-	for (i = 0, ii = 0; i < *bufferLen; i++, ii++) {
-		/* Check for emulation prevention code */
-		if (zerocount == 2 &&
-			buffer[i] == 0x03 &&
-			i + 1 < *bufferLen &&
-			buffer[i + 1] <= 0x04) {
-			zerocount = buffer[i + 1] ? 0 : 1;
-			i++;
-		} else if (buffer[i] == 0) {
-			zerocount++;
-		} else {
-			zerocount = 0;
-		}
-		outBuffer[ii] = buffer[i];
-	}
-	*bufferLen = *bufferLen - emulationPreventionBytes;
-	
-	return outBuffer;
-}
-
-static int parseHEVCNal(FILE* input,u8** data, int* data_len) {
-	size_t startPos;
-	size_t NALStart = 0;
-	size_t NALEnd = 0;
-	u32 NALULen;
-	u8* NALU;
-	
-	u8 byte;
-	int zerocount;
-	int frame = 0;
-	char nal_header[2];
-
-	/* Save start position */
-	startPos = ftell(input);
-		
-	zerocount = 0;
-	while (1) {
-		u8 byte;
-		if (!fread(&byte, 1, 1, input)) {
-			return -1;
-		}
-		/* Search for sync */
-		if (zerocount >= 2 && byte == 1) {
-			/* Read NAL unit header */
-			fread(nal_header, 2, 1, input);
-			/* Include header in the data */
-			fseek(input, -2, SEEK_CUR);      
-			break;
-		} else if (byte == 0) {
-			zerocount++;
-		} else {
-			zerocount = 0;
-		}
-	}
-	NALStart = ftell(input);
-
-	/* Search for next sync */
-	zerocount = 0;
-	while (1) {
-		if (!fread(&byte, 1, 1, input)) {
-			zerocount = 0;
-			break;
-		}
-		/* Sync found */
-		if (zerocount >= 2 && byte == 1) {
-			fseek(input, -1 - zerocount, SEEK_CUR);
-			NALEnd = ftell(input);
-			break;
-		} else if (byte == 0) {
-			zerocount++;
-		} else {
-			zerocount = 0;
-		}
-	}
-	NALEnd = ftell(input);
-
-	NALULen = NALEnd - NALStart;
-	NALU = malloc(NALULen);
-	fseek(input, NALStart, SEEK_SET);
-	if (!fread(NALU, NALULen, 1, input)) {
-		return -1;
-	}
-	
-
-	/* Extract NAL unit type */
-	byte = nal_header[0] >> 1;
-	*data_len = NALULen;
-	*data = NALU;
-
-	return byte;
-}
-
-
-static ISOErr analyze_hevc_stream(FILE* input, struct hevc_stream* stream) {
-	ISOErr err = MP4NoErr;
-	ISOHandle spsHandle = NULL;
-	ISOHandle vpsHandle = NULL;
-	ISOHandle ppsHandle = NULL;
-	u8 frameNal = 0;
-	u32 size_temp;
-	u8* data = NULL;
-	u32 datalen;
-	BitBuffer bb;
-	size_t startPos;
-	struct hevc_poc poc;
-
-	memset(&poc, 0, sizeof(struct hevc_poc));
-	memset(stream, 0, sizeof(struct hevc_stream));
-	startPos = ftell(input);
-
-	stream->allocated_count = 16;
-	stream->header = malloc(sizeof(struct hevc_slice_header *) * stream->allocated_count);
-
-	/* Loop whole input file */
-	while (1) {
-
-		frameNal = 0;
-		/* Parse NAL units until slice is found */
-		while (!frameNal) {
-			s32 naltype = parseHEVCNal(input, &data, &datalen);
-			if (naltype == -1) break;
-			switch (naltype) {
-			case 32: /* VPS */
-				ISODisposeHandle(vpsHandle);
-				err = ISONewHandle(datalen, &vpsHandle);
-				memcpy((*vpsHandle), data, datalen);
-				free(data); data = NULL;
-				break;
-			case 33: /* SPS */
-				ISODisposeHandle(spsHandle);
-				err = ISONewHandle(datalen, &spsHandle);
-				memcpy((*spsHandle), data, datalen);
-				free(data); data = NULL;
-				break;
-			case 34: /* PPS */
-				ISODisposeHandle(ppsHandle);
-				err = ISONewHandle(datalen, &ppsHandle);
-				memcpy((*ppsHandle), data, datalen);
-				free(data); data = NULL;
-				break;
-			default:
-				if (naltype < 32) {
-					frameNal = 1;
-				}
-			}
-		}
-
-		/* Last frame was read */
-		if (!frameNal) {
-			break;
-		}
-
-			/* Parse slice header data */
-		{
-			struct hevc_slice_header *header = malloc(sizeof(struct hevc_slice_header));
-			memset(header, 0, sizeof(struct hevc_slice_header));
-
-
-			/* Parse info from the headers */
-			/* ToDo: get from analyzed stream data */
-			/* PPS */
-			err = ISOGetHandleSize(ppsHandle, &size_temp); if (err) goto bail;
-			err = BitBuffer_Init(&bb, (u8*)*ppsHandle, 8 * size_temp); if (err) goto bail;
-
-			err = hevc_parse_pps_minimal(&bb, &stream->pps); if (err) goto bail;
-			/* SPS */
-			err = ISOGetHandleSize(spsHandle, &size_temp); if (err) goto bail;
-			err = BitBuffer_Init(&bb, (u8*)*spsHandle, 8 * size_temp); if (err) goto bail;
-			err = hevc_parse_sps_minimal(&bb, &stream->sps); if (err) goto bail;
-			/* Slice header */
-			err = BitBuffer_Init(&bb, data, 8 * datalen); if (err) goto bail;
-			err = hevc_parse_slice_header_minimal(&bb, &poc, header, &stream->sps, &stream->pps); if (err) goto bail;
-
-			/* Double the allocated space when depleted */
-			if (stream->used_count == stream->allocated_count) {
-				stream->allocated_count *= 2;
-				struct hevc_slice_header **temp_header = malloc(stream->allocated_count * sizeof(struct hevc_slice_header *));
-				memcpy(temp_header, stream->header, sizeof(struct hevc_slice_header *)*stream->used_count);
-				free(stream->header);
-				stream->header = temp_header;
-			}
-			stream->header[stream->used_count] = header;
-			stream->used_count++;
-		}
-	}
-
-	/* Release memory */
-	ISODisposeHandle(ppsHandle);
-	ISODisposeHandle(vpsHandle);
-	ISODisposeHandle(spsHandle);
-
-	/* Rewind back to where we were at the start */
-	fseek(input, startPos, SEEK_SET);
-
-bail:
-	return err;
-}
+#include "hevc.h"
+#include "tools.h"
 
 MP4_EXTERN(MP4Err) ISOAddGroupDescription(MP4Media media, u32 groupType, MP4Handle description, u32* index);
 MP4_EXTERN(MP4Err) ISOMapSamplestoGroup(MP4Media media, u32 groupType, u32 group_index, s32 sample_index, u32 count);
@@ -698,11 +38,13 @@ MP4_EXTERN(MP4Err) ISONewHEVCSampleDescription(MP4Track theTrack,
 
 static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trackID, u8 first_sample, struct ParamStruct *parameters, struct hevc_stream *stream) {
 	ISOErr err;
-	static struct hevc_slice_header header;
+	static struct hevc_slice_header *header;
 	static struct hevc_sps sps;
 	static struct hevc_pps pps;
 	static struct hevc_poc poc;
-	u8 frameNal = 0;
+	u8 sliceNal = 0;
+	u32 size_temp;
+	u32 slice_len[64];
 	static u32 cumulativeOffset = 0;
 	static u32 cumulativeSample = 0;
 	ISOHandle sampleEntryH;
@@ -712,25 +54,30 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
 	ISOHandle sampleOffsetH;
 	ISOHandle syncSampleH = NULL;
 	u8* data = NULL;
+	u8* slice_data = NULL;
 	static ISOHandle spsHandle;
 	static ISOHandle vpsHandle;
 	static ISOHandle ppsHandle;
+	static u8 sps_found = 0, vps_found = 0, pps_found = 0;
+	BitBuffer bb;
 	u32 naltype;
+	u32 frame_slices = 0;
 
 	u32 datalen;
+	u32 slice_datalen = 0;
 	
 	/* On first sample */
 	if (first_sample) {
 		u32 i = 0;
 		u32 syncLen = 0;
 		memset(&poc, 0, sizeof(struct hevc_poc));
-		memset(&header, 0, sizeof(struct hevc_slice_header));
 		memset(&pps, 0, sizeof(struct hevc_pps));
 		memset(&sps, 0, sizeof(struct hevc_sps));
 		cumulativeSample = 0;
 		err = ISONewHandle(sizeof(u32) * 2, &syncSampleH);
 		((u32*)*syncSampleH)[0] = 1;
 		((u32*)*syncSampleH)[1] = 1;
+		sps_found = vps_found = pps_found = 0;
 	}
 
 	err = ISOSetMediaLanguage(media, "und"); /* undetermined */
@@ -738,56 +85,153 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
 	err = ISONewHandle(1, &sampleEntryH);
 
 	/* Parse NAL units until slice is found */
-	while (!frameNal) {
+	while (!sliceNal) {
 		naltype = parseHEVCNal(input, &data, &datalen);
 		switch (naltype) {
 		case 32: /* VPS */
+			if (vps_found) {
+				free(data); data = NULL;
+				/*printf("Another VPS\r\n");*/
+				continue;
+			}
+			vps_found = 1;
 			ISODisposeHandle(vpsHandle);
 			err = ISONewHandle(datalen, &vpsHandle);
 			memcpy((*vpsHandle), data, datalen);
 			free(data); data = NULL;
 			break;
 		case 33: /* SPS */
+			if (sps_found) {
+				free(data); data = NULL;
+				/*printf("Another SPS\r\n");*/
+				continue;
+			}
+			sps_found = 1;
 			ISODisposeHandle(spsHandle);
 			err = ISONewHandle(datalen, &spsHandle);
 			memcpy((*spsHandle), data, datalen);
 			free(data); data = NULL;
 			break;
 		case 34: /* PPS */
+			if (pps_found) {
+				free(data); data = NULL;
+				/*printf("Another PPS\r\n");*/
+				continue;
+			}
+			pps_found = 1;
 			ISODisposeHandle(ppsHandle);
 			err = ISONewHandle(datalen, &ppsHandle);
 			memcpy((*ppsHandle), data, datalen);
 			free(data); data = NULL;
 			break;
+		case 40: /* Suffix SEI */
+			{
+				u32 sei_type = 0;
+				u32 datapos = 2;
+				u32 sei_size = 0;
+				while (data[datapos] == 0xff && datapos < datalen) {
+					sei_type += 255;
+					datapos++;
+				}
+				sei_type += data[datapos];
+				datapos++;
+
+				while (data[datapos] == 0xff && datapos < datalen) {
+					sei_size += 255;
+					datapos++;
+				}
+				sei_size += data[datapos];
+				datapos++;
+			}
+			free(data); data = NULL;
+			break;
 		default:
 			if (naltype < 32) {
-				frameNal = 1;
+				u32 layer = data[1] >> 3;
+				sliceNal = !layer;
+				if (layer) {
+					/*printf("NAL Layer: %d\r\n", layer);*/
+				}
+			}
+			else {
+				printf("Unknown NAL: %d\r\n", naltype);
+				assert(0);
+				free(data); data = NULL;
+			}
+		}
+
+		/* Push all slices of a sample to one chunk of data */
+		if (sliceNal && cumulativeSample + frame_slices < stream->used_count - 1) {
+			if (!stream->header[cumulativeSample + frame_slices + 1]->first_slice_segment_in_pic_flag) {
+				sliceNal = 0;
+				slice_len[frame_slices] = datalen + 4;
+				frame_slices++;
+				slice_data = realloc(slice_data, slice_datalen + datalen + 4);
+				memcpy(&slice_data[slice_datalen+4], data, datalen);
+				PUT32(&slice_data[slice_datalen], datalen);
+				slice_datalen += datalen + 4;
+				free(data); data = NULL;
 			}
 		}
 	}
+	/* Special case for the last slice of the frame */
+	if (frame_slices) {
+		u32 i;
+		slice_len[frame_slices] = datalen + 4;
+		slice_data = realloc(slice_data, slice_datalen + datalen+4);
+		memcpy(&slice_data[slice_datalen+4], data, datalen);
+		PUT32(&slice_data[slice_datalen], datalen);
+		slice_datalen += datalen + 4;
+		free(data);
+		data = slice_data;
+		datalen = slice_datalen;
 
-	/* Get the header info from analysis results */
-	header = *stream->header[cumulativeSample];
+		/* Store slice data offsets to be used in sub-sample information box construction */
+		stream->header[cumulativeSample]->num_slices = frame_slices + 1;
+		stream->header[cumulativeSample]->slice_offsets = (u32*)malloc(stream->header[cumulativeSample]->num_slices * sizeof(u32));
+		for (i = 0; i < frame_slices + 1; i++) {
+			stream->header[cumulativeSample]->slice_offsets[i] = slice_len[i];
+		}
+	}
 
-	ISONewHEVCSampleDescription(trak, sampleEntryH, 1, 1, spsHandle, ppsHandle, vpsHandle);
+  /* Header data already parsed in analysis */
+	header = stream->header[cumulativeSample];
+
+	if (first_sample) {
+		ISONewHEVCSampleDescription(trak, sampleEntryH, 1, 1, spsHandle, ppsHandle, vpsHandle);
+	}
 	err = ISONewHandle(sizeof(u32), &sampleDurationH);
 	*((u32*)*sampleDurationH) = parameters->frameduration;
-	err = ISONewHandle(datalen+4, &sampleDataH);
 	
 	err = ISONewHandle(sizeof(u32), &sampleSizeH);
 	err = ISONewHandle(sizeof(u32), &sampleOffsetH);
 
+	/* Special case for aggregators */
+	if (header->aggregator_datalen) {
+		const u32 DATALEN_FIELD_LEN = 4;
+		/* Construct SHVC header by using NAL header data with nal_unit_type changed */		
+		u16 NALU_header = ((AGGREGATOR_NAL_TYPE << 1) << 8) | (header->aggregator_header & 0xff);
+		err = ISONewHandle(datalen + header->aggregator_datalen + 10, &sampleDataH);		
+		PUT32(*sampleDataH, datalen);
+		memcpy((*sampleDataH) + DATALEN_FIELD_LEN, data, datalen);
 
-	memcpy((*sampleDataH)+4, data, datalen);
-	/* NAL units are prefixed with 4-byte length field */
-	(*sampleDataH)[0] = (datalen >> 24) & 0xff;
-	(*sampleDataH)[1] = (datalen >> 16) & 0xff;
-	(*sampleDataH)[2] = (datalen >> 8) & 0xff;
-	(*sampleDataH)[3] = (datalen) & 0xff;
+		/* Append aggregator data after slice data */		
+		PUT32((*sampleDataH) + datalen + DATALEN_FIELD_LEN, header->aggregator_datalen + 2);
+		PUT16((*sampleDataH) + datalen + DATALEN_FIELD_LEN + DATALEN_FIELD_LEN, NALU_header);
+		memcpy((*sampleDataH) + datalen + DATALEN_FIELD_LEN + DATALEN_FIELD_LEN + 2, header->aggregator_data, header->aggregator_datalen);
+	} else if (frame_slices) {
+		err = ISONewHandle(datalen, &sampleDataH);
+		memcpy((*sampleDataH), data, datalen);
+	} else {
+		err = ISONewHandle(datalen + 4, &sampleDataH);
+		memcpy((*sampleDataH) + 4, data, datalen);
+		/* NAL units are prefixed with 4-byte length field */
+		PUT32(*sampleDataH, datalen);
+	}
 
-	*(u32*)*sampleOffsetH = ( ( (stream->header[cumulativeSample]->poc + stream->header[cumulativeSample]->poc_offset) -
-		                          (cumulativeSample)+3) ) * parameters->frameduration;
-
+	/*printf("POC: %d, cumulative: %d, offset: %d, sample_number: %d\n", stream->header[cumulativeSample]->poc + stream->header[cumulativeSample]->poc_offset, cumulativeSample,
+		(((stream->header[cumulativeSample]->poc + stream->header[cumulativeSample]->poc_offset) - (cumulativeSample)+3)) * parameters->frameduration, stream->header[cumulativeSample]->sample_number);*/
+	*(u32*)*sampleOffsetH = (((stream->header[cumulativeSample]->poc + stream->header[cumulativeSample]->poc_offset) - (stream->header[cumulativeSample]->sample_number) + 3)) * parameters->frameduration;
 	cumulativeOffset += datalen;
 	
 	err = ISOGetHandleSize(sampleDataH,(u32*)*sampleSizeH);
@@ -799,7 +243,9 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
 		err = ISODisposeHandle(sampleEntryH);
 		sampleEntryH = NULL;
 	}
-	cumulativeSample++;
+	
+	cumulativeSample += 1 + frame_slices;
+
 	if (syncSampleH) err = ISODisposeHandle(syncSampleH);
 
 	err = ISODisposeHandle(sampleDataH);
@@ -811,6 +257,11 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
 
 MP4_EXTERN(MP4Err) MP4AddAtomToTrack(MP4Track theTrack, MP4GenericAtom the_atom);
 MP4_EXTERN(MP4Err) MP4AddTrackGroup(MP4Track theTrack, u32 groupID, u32 dependencyType);
+MP4_EXTERN(MP4Err) MP4AddSubSampleInformationToTrack(MP4Track theTrack, MP4GenericAtom *subs);
+MP4_EXTERN(MP4Err) MP4AddSubSampleInformationEntry(MP4GenericAtom subsample, u32 sample_delta,
+	u32 subsample_count, MP4Handle subsample_size_array, MP4Handle subsample_priority_array,
+	MP4Handle subsample_discardable_array);
+MP4_EXTERN(MP4Err) MP4SetSubSampleInformationFlags(MP4GenericAtom subsample, u32 flags);
 ISO_EXTERN(ISOErr)
 ISOSetMovieBrand(ISOMovie theMovie, u32 brand, u32 minorversion);
 
@@ -850,17 +301,18 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 										graphics_profileAndLevel);  
 
 	MP4NewHandle(1, &rap_desc); /* Allocate one byte for rap */
-
-	/* Set correct brand for the new features */
 	ISOSetMovieBrand(moov, MP4_FOUR_CHAR_CODE('i', 's', 'o', '6'), 0);
 
 	for (trackID = 1; trackID < (u32)parameters->inputCount + 1; trackID++) {
 	
 		FILE *input = fopen(parameters->inputs[trackID - 1], "rb");
 		struct hevc_stream stream;
+		MP4GenericAtom subs;
 		u32 i;
 		s32 poc_offset = 0;
 		s32 largest_poc = 0;
+		u32 slices = 0;
+		u32 sampleNumber = 0;
 		if (!input) continue;
 
 		err = analyze_hevc_stream(input, &stream); if (err) goto bail;
@@ -868,6 +320,7 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 
 		/* Analyze POC numbers for discontinuety */
 		for (frameCounter = 1; frameCounter < stream.used_count; frameCounter++) {
+			if (!stream.header[frameCounter]->first_slice_segment_in_pic_flag) continue;
 			if (stream.header[frameCounter]->poc == 0) {
 				u32 frameCounterPoc = frameCounter+1;
 				s32 smallest = 0;
@@ -886,15 +339,68 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 		/* Create a new trak to the movie */
 		err = ISONewMovieTrackWithID(moov, ISONewTrackIsVisual, trackID, &trak); if (err) goto bail;
 
+		err = MP4AddTrackToMovieIOD(trak); if (err) goto bail;
 		err = ISONewTrackMedia(trak, &media, ISOVisualHandlerType, 30000, NULL); if (err) goto bail;
 
-		err = ISOBeginMediaEdits(media); if (err) goto bail;
-
-		/* Add each slice as a new sample */
-		for (frameCounter = 0; frameCounter < stream.used_count; frameCounter++) {
-			err = addNaluSamples(input, trak, media, trackID, frameCounter == 0, parameters, &stream); if (err) goto bail;
+		/* Add sub-sample information box */
+		/* TODO: only add when needed */
+		if (parameters->subsample_information == 4 /* Slice based sub-sample */ 
+			|| parameters->subsample_information == 2 /* Tile based sub-sample*/) {
+			err = MP4AddSubSampleInformationToTrack(trak, &subs); if (err) goto bail;
+			err = MP4SetSubSampleInformationFlags(subs, parameters->subsample_information ); if (err) goto bail;
 		}
 
+		err = ISOBeginMediaEdits(media); if (err) goto bail;
+		/* Add each slice as a new sample */
+		for (frameCounter = 0; frameCounter < stream.used_count; frameCounter++) {
+
+			stream.header[frameCounter]->sample_number = sampleNumber;
+			if (!stream.header[frameCounter]->first_slice_segment_in_pic_flag) continue;
+			err = addNaluSamples(input, trak, media, trackID, frameCounter == 0, parameters, &stream); if (err) goto bail;
+
+			/* Handle slice sub-sample information */
+			if (parameters->subsample_information == 4 /* Slice based sub-sample */  && stream.header[frameCounter]->num_slices) {
+				MP4Handle subsample_size_array = NULL;
+				MP4Handle subsample_priority_array = NULL;
+				MP4Handle subsample_discardable_array = NULL;
+				MP4NewHandle(stream.header[frameCounter]->num_slices * sizeof(u32), &subsample_size_array);
+				MP4NewHandle(stream.header[frameCounter]->num_slices * sizeof(u32), &subsample_priority_array);
+				MP4NewHandle(stream.header[frameCounter]->num_slices * sizeof(u32), &subsample_discardable_array);
+				for (i = 0; i < stream.header[frameCounter]->num_slices; i++) {
+					((u32*)*subsample_size_array)[i] = stream.header[frameCounter]->slice_offsets[i];
+					((u32*)*subsample_priority_array)[i] = 0;
+					((u32*)*subsample_discardable_array)[i] = 0;
+				}
+				err = MP4AddSubSampleInformationEntry(subs, frameCounter?1:0, stream.header[frameCounter]->num_slices,
+					subsample_size_array, subsample_priority_array, subsample_discardable_array); if (err) goto bail;
+
+				MP4DisposeHandle(subsample_size_array);
+				MP4DisposeHandle(subsample_priority_array);
+				MP4DisposeHandle(subsample_discardable_array);
+			}
+
+			/* Handle tile sub-sample information */
+			if (parameters->subsample_information == 2 /* Tile based sub-sample*/ && stream.header[frameCounter]->num_entry_point_offsets) {
+				MP4Handle subsample_size_array = NULL;
+				MP4Handle subsample_priority_array = NULL;
+				MP4Handle subsample_discardable_array = NULL;
+				MP4NewHandle(stream.header[frameCounter]->num_entry_point_offsets * sizeof(u32), &subsample_size_array);
+				MP4NewHandle(stream.header[frameCounter]->num_entry_point_offsets * sizeof(u32), &subsample_priority_array);
+				MP4NewHandle(stream.header[frameCounter]->num_entry_point_offsets * sizeof(u32), &subsample_discardable_array);
+				for (i = 0; i < stream.header[frameCounter]->num_entry_point_offsets; i++) {
+					((u32*)*subsample_size_array)[i] = stream.header[frameCounter]->entry_point_offset_minus1[i] + 1;
+					((u32*)*subsample_priority_array)[i] = 0;
+					((u32*)*subsample_discardable_array)[i] = 0;
+				}
+				err = MP4AddSubSampleInformationEntry(subs, frameCounter ? 1 : 0, stream.header[frameCounter]->num_entry_point_offsets,
+					subsample_size_array, subsample_priority_array, subsample_discardable_array); if (err) goto bail;
+
+				MP4DisposeHandle(subsample_size_array);
+				MP4DisposeHandle(subsample_priority_array);
+				MP4DisposeHandle(subsample_discardable_array);
+			}
+			sampleNumber++;
+		}
 		err = ISOGetMediaDuration(media, &mediaDuration); if (err) goto bail;
 		err = ISOEndMediaEdits(media);  if (err) goto bail;/* Calculate duration */
 
@@ -902,8 +408,9 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 		ISOAddGroupDescription(media, MP4_FOUR_CHAR_CODE('r', 'a', 'p', ' '), rap_desc, &rap_desc_index);
 		for (frameCounter = 1; frameCounter < stream.used_count; frameCounter++) {
 			/* Mark RAP frames (CRA/BLA/IDR/IRAP) to the group */
-			if (stream.header[frameCounter]->nal_type >= 16 && stream.header[frameCounter]->nal_type  <= 23) {
-				ISOMapSamplestoGroup(media, MP4_FOUR_CHAR_CODE('r', 'a', 'p', ' '), rap_desc_index, frameCounter, 1);
+			if (stream.header[frameCounter]->first_slice_segment_in_pic_flag &&
+				  stream.header[frameCounter]->nal_type >= 16 && stream.header[frameCounter]->nal_type <= 23) {
+					ISOMapSamplestoGroup(media, MP4_FOUR_CHAR_CODE('r', 'a', 'p', ' '), rap_desc_index, stream.header[frameCounter]->sample_number, 1);
 			}
 		}
 
@@ -913,6 +420,7 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 			u32 leading_pic_count = 0;      
 			/* Map RASL picture count from the headers, search second RAP */
 			for (frameCounter = 1; frameCounter < stream.used_count; frameCounter++) {
+				if (!stream.header[frameCounter]->first_slice_segment_in_pic_flag) continue;
 				if (stream.header[frameCounter]->nal_type >= 16 && stream.header[frameCounter]->nal_type <= 23) {
 						start_slice = frameCounter;
 						break;
@@ -921,6 +429,7 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 			frameCounter++;
 			/* Count RASL slices following */
 			for (; frameCounter < stream.used_count; frameCounter++) {
+				if (!stream.header[frameCounter]->first_slice_segment_in_pic_flag) continue;
 				if (stream.header[frameCounter]->nal_type == 8 || stream.header[frameCounter]->nal_type == 9) {
 					leading_pic_count++;
 				} else if (stream.header[frameCounter]->nal_type == 6 || stream.header[frameCounter]->nal_type == 7) {
@@ -947,6 +456,7 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 				ISOAddGroupDescription(media, MP4_FOUR_CHAR_CODE('a', 'l', 's', 't'), alst_desc, &alst_desc_index);
 
 				for (frameCounter = start_slice; frameCounter < stream.used_count-1; frameCounter++) {
+					if (!stream.header[frameCounter]->first_slice_segment_in_pic_flag) continue;
 					/* Mark RAP before RASL pics and one picture after them to this group */
 					/* This enabled alternative startup sequence to use only the RAP and the picture after RASL in decoding */
 					/* and skip all the RASL pictures */
@@ -956,10 +466,11 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 							((stream.header[frameCounter - 1]->nal_type >= 6 && stream.header[frameCounter - 1]->nal_type <= 9) &&
 							(stream.header[frameCounter]->nal_type < 6 || stream.header[frameCounter]->nal_type > 9))
 							) {
-						ISOMapSamplestoGroup(media, MP4_FOUR_CHAR_CODE('a', 'l', 's', 't'), alst_desc_index, frameCounter, 1);
+						ISOMapSamplestoGroup(media, MP4_FOUR_CHAR_CODE('a', 'l', 's', 't'), alst_desc_index, stream.header[frameCounter]->sample_number, 1);
 					}
 				}
 				MP4DisposeHandle(alst_temp);
+				MP4DisposeHandle(alst_desc);
 			}
 		}
 
@@ -992,6 +503,9 @@ MP4_EXTERN(MP4Err) ISOGetHEVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Hand
 MP4_EXTERN(MP4Err) ISOGetGroupDescription(MP4Media media, u32 groupType, u32 index, MP4Handle description);
 MP4_EXTERN(MP4Err) MP4MediaTimeToSampleNum(MP4Media theMedia, u64 mediaTime, u32 *outSampleNum, 
                                            u64 *outSampleCTS, u64 *outSampleDTS, s32 *outSampleDuration);
+MP4_EXTERN(MP4Err) MP4GetSubSampleInformationEntryFromTrack(MP4Track theTrack, u32* flags, u32 *entry_count, u32 **sample_delta,
+	u32 **subsample_count, u32 ***subsample_size_array, u32 ***subsample_priority_array,
+	u32 ***subsample_discardable_array);
 
 ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 
@@ -1036,6 +550,7 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 		ISOHandle spsHandle = NULL;
 		ISOHandle vpsHandle = NULL;
 		ISOHandle ppsHandle = NULL;
+		MP4GenericAtom subs = NULL;
 		u32 sampleSize;
 		u32 alst_target = 0;
 		u32 pics_rasl_skipped = 0;
@@ -1059,6 +574,43 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 		err = ISONewHandle(0, &decoderConfigH); if (err) goto bail;
 		err = ISOCreateTrackReader(trak, &reader); if (err) goto bail;
 		err = ISONewHandle(0, &sampleH); if (err) goto bail;
+		{
+			u32 flags;
+			u32 entry_count;
+			u32* sample_delta = NULL;
+			u32* subsample_count = NULL;
+			u32** subsample_size_array = NULL;
+			u32** subsample_priority_array = NULL;
+			u32** subsample_discardable_array = NULL;
+
+			if (MP4GetSubSampleInformationEntryFromTrack(trak, &flags, &entry_count, &sample_delta, &subsample_count, &subsample_size_array, &subsample_priority_array, &subsample_discardable_array) == MP4NoErr) {
+				printf("Subsample found: flags: %x, entries: %d\r\n", flags, entry_count);
+				for (i = 0; i < entry_count; i++) {
+					u32 j;
+					printf("[%2d] Subsamples: ", i+1);
+					for (j = 0; j < (u32)subsample_count[i]; j++) {						
+						printf("%d ", subsample_size_array[i][j]);
+					}
+					printf("\r\n");
+				}
+
+				/* Cleanup */
+				/* ToDo: fix */
+				for (i = 0; i < entry_count; i++) {
+					if ((u32)subsample_count[i]) {
+						free(subsample_size_array[i]);        subsample_size_array[i] = NULL;
+						free(subsample_priority_array[i]);    subsample_priority_array[i] = NULL;
+						//free(subsample_discardable_array[i]);	subsample_discardable_array[i] = NULL;
+					}
+				}
+				free(subsample_size_array);        subsample_size_array = NULL;
+				free(subsample_priority_array);    subsample_priority_array = NULL;
+				//free(subsample_discardable_array); subsample_discardable_array = NULL;
+
+				free(sample_delta);                sample_delta = NULL;
+				free(subsample_count);             subsample_count = NULL;
+			}
+		}
 
 		/* Handle alternative startup sequence, 'rap ' is also required */
 		if (ISOGetGroupDescription(media, MP4_FOUR_CHAR_CODE('r', 'a', 'p', ' '), 1, alst_desc) == MP4NoErr) {
@@ -1152,10 +704,38 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 			/* ALST needs special handling, if alst_start if the default -1, this should write everything to a file */
 			if (i >= alst_start) {
 				if (alst_start == -1 || roll_count == alst->roll_count || ((u32*)*alst_index)[i - 1]) {
-					/* ToDo: only RADL slices have short start code */
-					fwrite(&syncCode[0], 4, 1, out);
-					fwrite(*sampleH + 4, unitSize - 4, 1, out);
+					u32 sampleSize = 0;
+					u32 sampleOffsetBytes = 0;
 					
+					MP4GetHandleSize(sampleH, &sampleSize);
+					/* ToDo: only RADL slices have short start code */
+					/* Handle multiple NAL units in a sample */
+					while (sampleOffsetBytes < sampleSize)
+					{
+						u32 boxSize = GET32(*sampleH + sampleOffsetBytes);
+						u32 byteoffset = 4;						
+						/* Handle aggregator decompiling, 48 == aggregator NAL type */
+						if (((u8*)(*sampleH + sampleOffsetBytes + byteoffset))[0] >> 1 == AGGREGATOR_NAL_TYPE)
+						{
+							u32 aggregatorOffset = 0;
+							boxSize -= 2;
+							sampleOffsetBytes += 2;
+							/* Loop aggregator content and process each NAL */
+							while (aggregatorOffset < boxSize) {
+								u32 aggregatorBoxSize = GET32(*sampleH + sampleOffsetBytes + byteoffset + aggregatorOffset);
+								/*printf("OutNAL: %d [a]\r\n", ((u8*)(*sampleH + sampleOffsetBytes + byteoffset + aggregatorOffset + 2))[0] >> 1);*/
+								fwrite(&syncCode[0], 4, 1, out);
+								fwrite(*sampleH + sampleOffsetBytes + byteoffset + aggregatorOffset + 4, aggregatorBoxSize, 1, out);
+								aggregatorOffset += aggregatorBoxSize + 4;
+							}
+							sampleOffsetBytes += boxSize + byteoffset + 2;
+							continue;
+						}
+						/*printf("OutNAL: %d\r\n", ((u8*)(*sampleH + sampleOffsetBytes + 4))[0] >> 1);*/
+						fwrite(&syncCode[0], 4, 1, out);
+						fwrite(*sampleH + sampleOffsetBytes + byteoffset, boxSize, 1, out);
+						sampleOffsetBytes += boxSize + byteoffset;
+					}
 					pics_written++;
 					
 					if (alst && roll_count < alst->roll_count) roll_count++;
@@ -1175,6 +755,9 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 		err = ISODisposeHandle(sampleH);
 		err = ISODisposeHandle(decoderConfigH);
 		err = ISODisposeTrackReader(reader);
+		err = ISODisposeHandle(spsHandle);
+		err = ISODisposeHandle(ppsHandle);
+		err = ISODisposeHandle(vpsHandle);
 	}
 	free(outSampleName);
 	err = ISODisposeMovie(moov);
@@ -1182,128 +765,6 @@ bail:
 	return err;
 }
 
-int parseInput(int argc, char* argv[], struct ParamStruct *parameters) {
-	u32 param;
-	for (param = 1; param < (u32)argc; param++) {
-		if (argv[param][0] == '-') {
-			switch (argv[param][1]) {
-
-			/* New input track */
-			case 'i': {
-					char **tempInputs = parameters->inputs;
-					char *tempInput;
-					u32 inputLen = 0;
-					u32 inputCopy = 0;
-
-					/* if next parameter is not present, abort this operation */
-					if (argc - 1 == param) break;
-
-					/* Allocate new pointer array and copy the old if present */
-					parameters->inputs = malloc(sizeof(char*)*(parameters->inputCount+1));
-					if (tempInputs) {
-						for (inputCopy = 0; inputCopy < parameters->inputCount; inputCopy++) {
-							parameters->inputs[inputCopy] = tempInputs[inputCopy];
-						}
-					}
-					/* Allocate new char array for the name and copy */
-					inputLen = strlen(argv[param + 1]);
-					tempInput = malloc(inputLen + 1);
-					memcpy(tempInput, argv[param + 1], inputLen + 1);
-
-					/* Set new input track */
-					parameters->inputs[parameters->inputCount] = tempInput;
-					parameters->inputCount++;
-
-					if (tempInputs) free(tempInputs);
-					/* Skip next parameter since if was used as the input name */
-					param++;
-				}
-				break;
-			/* Output file */
-			case 'o': {
-					u32 outputLen;
-					/* if next parameter is not present, abort this operation */
-					if (argc - 1 == param) break;
-
-					/* Allocate memory and copy the file name */
-					outputLen = strlen(argv[param + 1]);
-					parameters->output = malloc(outputLen+1);
-					memcpy(parameters->output, argv[param + 1], outputLen + 1);
-				}
-				break;
-			/* Framerate */
-			case 'f': {        
-				/* if next parameter is not present, abort this operation */
-				if (argc - 1 == param) break;
-				parameters->framerate = atof(argv[param + 1]);
-			}
-			/* Seek */
-			case 's': {
-				/* if next parameter is not present, abort this operation */
-				if (argc - 1 == param) break;
-				parameters->seek = atoi(argv[param + 1]);
-			}
-				break;
-			/* Track groups */
-			case 'g': {
-				u32 outputLen;
-				u32 i;
-				u32 found = 0;
-				u32 groupCopy;
-				struct TrackGroup *newTrackGroup;
-
-				/* Store original trackGroup list pointer */
-				struct TrackGroup **tempGroups = parameters->trackGroups;
-
-				/* if next parameter is not present, abort this operation */
-				if (argc - 1 == param) break;
-
-				/* Allocate memory and copy the file name */
-				outputLen = strlen(argv[param + 1]);
-				/* Search for delimiter ':' */
-				for (i = 0; i < outputLen; i++) {
-					if (argv[param + 1][i] == ':' && i != 0 && i != outputLen - 1) {
-						/* Store current position */
-						found = i;
-						/* Set to null to separate the two ID's */
-						argv[param + 1][i] = 0;
-						break;
-					}
-				}
-				if (!found) break;
-
-				/* Grab tracks from the parameter <TrackID>:<GroupID> */
-				newTrackGroup = malloc(sizeof(struct TrackGroup));
-				newTrackGroup->track = atoi(&argv[param + 1][0]);
-				newTrackGroup->track_group_id = atoi(&argv[param + 1][found+1]);
-
-				/* Allocate more space for the trackGroup structs and copy pointers from the original */
-				parameters->trackGroups = malloc(sizeof(struct TrackGroup*)*(parameters->trackGroupCount + 1)); 
-				if (tempGroups) {
-					for (groupCopy = 0; groupCopy < parameters->trackGroupCount; groupCopy++) {
-						parameters->trackGroups[groupCopy] = tempGroups[groupCopy];
-					}
-				}
-				/* Insert the new trackGroup */
-				parameters->trackGroups[parameters->trackGroupCount] = newTrackGroup;
-				parameters->trackGroupCount++;
-				param++;
-
-				/* Free original list data */
-				if (tempGroups) free(tempGroups);
-			}
-				break;
-			/* Long parameter name */
-			case '-': {
-
-				}
-				break;
-			}
-		}
-
-	}
-	return 1;
-}
 
 
 int cleanParameters(struct ParamStruct *parameters) {
@@ -1332,6 +793,7 @@ int main(int argc, char* argv[])
 {
 	struct ParamStruct parameters;
 	memset(&parameters, 0, sizeof(struct ParamStruct));
+	/* Set default parameters */
 	parameters.framerate = 30.0;
 	parseInput(argc, argv, &parameters);
 	parameters.frameduration = (u32)((30000.0 / parameters.framerate)+0.5);
@@ -1339,11 +801,12 @@ int main(int argc, char* argv[])
 	/* We need inputs */
 	if (!parameters.inputCount) {
 		fprintf(stderr, "Usage: program -i <inputFile> -g <TrackID>:<GroupID> -o <outputFile> -f <framerate(float)>\r\n");
-		fprintf(stderr, "            -i <filename>: Input file, can be multiple\r\n");
+		fprintf(stderr, "            --input, -i <filename>: Input file, can be multiple\r\n");
 		fprintf(stderr, "            -g <TrackID>:<GroupID> :Add track group, can be multiple\r\n");
-		fprintf(stderr, "            -o <filename> Output file (MP4)\r\n");
-		fprintf(stderr, "            -f <framerate> set framerate, default 30\r\n");
-		fprintf(stderr, "            -s <frame> seek to position on milliseconds\r\n");
+		fprintf(stderr, "            --output, -o <filename> Output file (MP4)\r\n");
+		fprintf(stderr, "            --framerate, -f <framerate> set framerate, default 30\r\n");
+		fprintf(stderr, "            --subs <type> enable subsample information, 4 = slice, 2 = tile\r\n");
+		fprintf(stderr, "            --seek,-s <frame> seek to frame\r\n");
 		exit(1);
 	}
 

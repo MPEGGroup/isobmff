@@ -2,11 +2,11 @@
 
 VPATH = . ../src ../../src
 
-CFLAGS = -I. -I../../libisomediafile/linux -I../../libisomediafile/src -O -g -Wall -ansi
+CFLAGS = -I. -I../../libisomediafile/linux -I../../libisomediafile/src -O -g -Wall
 
 CC = gcc
 
-FavsSample_src = ../src/main.c
+FavsSample_src = ../src/main.c ../src/hevc.c ../src/tools.c
 
 FavsSample_obj := $(FavsSample_src:.c=.o)
 
