@@ -2,7 +2,7 @@
 
 VPATH = . ../src ../../src
 
-CFLAGS = -I. -I../../libisomediafile/linux -I../../libisomediafile/src -O -g -Wall
+CFLAGS = -I. -I../../libisomediafile/linux -I../../libisomediafile/src -O -g -Wall -ansi
 
 CC = gcc
 

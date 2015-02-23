@@ -259,7 +259,7 @@ static MP4Err hevc_parse_pps_minimal(BitBuffer *bb, struct hevc_pps* pps) {
 	err = GetBytes(bb, 1, &x); if (err) goto bail;
 
 	/* 34 == PPS */
-//  if ((x >> 1) != 34) BAILWITHERROR(MP4BadParamErr);
+ /*  if ((x >> 1) != 34) BAILWITHERROR(MP4BadParamErr); */
 
 	/* Skip second header byte */
 	err = GetBytes(bb, 1, &x); if (err) goto bail;
@@ -370,7 +370,7 @@ static MP4Err hevc_parse_slice_header_minimal(BitBuffer *bb, struct hevc_poc* po
 	err = GetBytes(bb, 1, &x); if (err) goto bail;
 
 	nal_type = x >> 1;
- // if ((x >> 1) != 34) BAILWITHERROR(MP4BadParamErr);
+  /* if ((x >> 1) != 34) BAILWITHERROR(MP4BadParamErr); */
 	header->nal_type = nal_type;
 	/* Skip second NAL header byte */
 	err = GetBytes(bb, 1, &x); if (err) goto bail;
@@ -1099,8 +1099,7 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 			s32 i;
 			
 			err = MP4MediaTimeToSampleNum(media, mediatime, &alst_target, &sampleCTS, &sampleDTS, &sampleDuration); if (err) goto bail;
-			//printf("SampleNum: %d, CTS: %d, DTS: %d, Duration: %d\n", sampleNum, *(u32*)(&sampleCTS), *(u32*)(&sampleDTS), sampleDuration);
-
+			
 			for (i = alst_target - 1; i >= 0; i--) {
 				if (((u32*)*rap_index)[i] && ((u32*)*alst_index)[i]) {
 					alst_start = i + 1;
@@ -1320,7 +1319,7 @@ int main(int argc, char* argv[])
 		fprintf(stderr, "            -g <TrackID>:<GroupID> :Add track group, can be multiple\r\n");
 		fprintf(stderr, "            -o <filename> Output file (MP4)\r\n");
 		fprintf(stderr, "            -f <framerate> set framerate, default 30\r\n");
-		//fprintf(stderr, "            -s <frame> seek to frame\r\n");
+		fprintf(stderr, "            -s <frame> seek to position on milliseconds\r\n");
 		exit(1);
 	}
 
