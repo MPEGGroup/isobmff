@@ -408,6 +408,12 @@ static MP4Err addAtom( MP4TrackAtomPtr self, MP4AtomPtr atom )
 			BAILWITHERROR( MP4BadDataErr );
 		 self->trackReferences = atom;
 		 break;
+
+		case MP4TrackGroupAtomType:
+		 if (self->trackGroups)
+			BAILWITHERROR(MP4BadDataErr);
+		 self->trackGroups = atom;
+		 break;
 			
 		case MP4MediaAtomType:
 		 if ( self->trackMedia )

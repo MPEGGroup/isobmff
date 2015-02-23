@@ -127,6 +127,34 @@ MP4_EXTERN ( MP4Err ) MP4AddTrackReference( MP4Track theTrack, MP4Track dependsO
    return err;
 }
 
+
+MP4_EXTERN(MP4Err) MP4AddTrackGroup(MP4Track theTrack, u32 groupID, u32 dependencyType) {
+	MP4Err err;
+	MP4TrackAtomPtr trak;
+	MP4TrackGroupAtomPtr trgr;
+	MP4TrackGroupTypeAtomPtr msrc;
+
+	err = MP4NoErr;
+	if ((theTrack == NULL))
+		BAILWITHERROR(MP4BadParamErr);
+	trak = (MP4TrackAtomPtr)theTrack;
+	trgr = (MP4TrackGroupAtomPtr)trak->trackGroups;
+	if (trgr == NULL) {
+		MP4Err MP4CreateTrackGroupAtom(MP4TrackGroupAtomPtr *outAtom);
+		err = MP4CreateTrackGroupAtom(&trgr); if (err) goto bail;
+		err = trak->addAtom(trak, (MP4AtomPtr)trgr); if (err) goto bail;
+	}
+	err = trgr->findAtomOfType(trgr, dependencyType, (MP4AtomPtr*)&msrc); if (err) goto bail;
+	if (msrc == NULL) {
+		err = MP4CreateTrackGroupTypeAtom(dependencyType, &msrc); if (err) goto bail;
+		err = trgr->addAtom(trgr, (MP4AtomPtr)msrc); if (err) goto bail;
+	}
+	err = msrc->setGroupID(msrc, groupID); if (err) goto bail;
+bail:
+	TEST_RETURN(err);
+	return err;
+}
+
 MP4_EXTERN ( MP4Err ) MP4AddTrackToMovieIOD( MP4Track theTrack )
 {
    MP4Err MP4MovieAddTrackES_IDToIOD( MP4Movie theMovie, MP4Track theTrack );	
@@ -380,6 +408,32 @@ MP4_EXTERN ( MP4Err ) MP4GetTrackReferenceCount( MP4Track theTrack, u32 referenc
   bail:
    TEST_RETURN( err );
    return err;
+}
+
+MP4_EXTERN(MP4Err) MP4GetTrackGroup(MP4Track theTrack, u32 groupType, u32 *outGroupId) {
+	MP4Err err;
+	MP4TrackAtomPtr trak;
+	MP4Movie moov;
+	MP4TrackGroupAtomPtr trgr;
+	MP4TrackGroupTypeAtomPtr msrc;
+	u32 selectedTrackID;
+	 
+	err = MP4NoErr;
+	if ((theTrack == NULL) || (groupType == 0))
+		BAILWITHERROR(MP4BadParamErr);
+	err = MP4GetTrackMovie(theTrack, &moov); if (err) goto bail;
+	trak = (MP4TrackAtomPtr)theTrack;
+	trgr = (MP4TrackGroupAtomPtr)trak->trackGroups;
+	if (trgr == NULL)
+		BAILWITHERROR(MP4BadParamErr);
+	err = trgr->findAtomOfType(trgr, groupType, (MP4AtomPtr*)&msrc); if (err) goto bail;
+	if ((msrc == NULL))
+		BAILWITHERROR(MP4BadParamErr);
+
+	*outGroupId = msrc->track_group_id;
+bail:
+	TEST_RETURN(err);
+	return err;
 }
 
 MP4_EXTERN ( MP4Err ) MP4GetTrackMovie( MP4Track theTrack, MP4Movie *outMovie )

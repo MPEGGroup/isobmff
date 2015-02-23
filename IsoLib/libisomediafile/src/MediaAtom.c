@@ -529,11 +529,15 @@ MP4Err MP4ParseODFrame(struct MP4MediaAtom *self, MP4Handle sampleH, MP4Handle s
 	MP4InputStreamPtr is;
 	MP4LinkedList descList;
 	MP4TrackReferenceAtomPtr tref;
+	MP4TrackGroupAtomPtr trgr;
 	MP4TrackAtomPtr trak;
 	MP4TrackReferenceTypeAtomPtr mpod;
+	MP4TrackGroupTypeAtomPtr msrc;
 
 	MP4Err MP4CreateTrackReferenceAtom(MP4TrackReferenceAtomPtr *outAtom);
 	MP4Err MP4CreateTrackReferenceTypeAtom( u32 atomType, MP4TrackReferenceTypeAtomPtr *outAtom );
+	MP4Err MP4CreateTrackGroupAtom(MP4TrackGroupAtomPtr *outAtom);
+	MP4Err MP4CreateTrackGroupTypeAtom(u32 atomType, MP4TrackGroupTypeAtomPtr *outAtom);
 	MP4Err MP4ParseCommand( MP4InputStreamPtr inputStream, MP4DescriptorPtr *outDesc );
 	MP4Err MP4CreateES_ID_RefDescriptor( u32 tag, u32 size, u32 bytesRead, MP4DescriptorPtr *outDesc );
 
@@ -554,6 +558,20 @@ MP4Err MP4ParseODFrame(struct MP4MediaAtom *self, MP4Handle sampleH, MP4Handle s
 	if (mpod == NULL) {
 		err = MP4CreateTrackReferenceTypeAtom(MP4ODTrackReferenceAtomType, &mpod);
 		tref->addAtom(tref, (MP4AtomPtr) mpod);
+	}
+
+	/* Track Group */
+	trgr = (MP4TrackGroupAtom *)trak->trackGroups;
+	if (trgr == NULL) {
+		err = MP4CreateTrackGroupAtom(&trgr); if (err) goto bail;
+		trak->addAtom(trak, (MP4AtomPtr)trgr); if (err) goto bail;
+	}
+
+	err = trgr->findAtomOfType(trgr, MP4_FOUR_CHAR_CODE('m', 's', 'r', 'c'), (MP4AtomPtr *)&msrc);
+	if (err) goto bail;
+	if (msrc == NULL) {
+		err = MP4CreateTrackGroupTypeAtom(MP4_FOUR_CHAR_CODE('m', 's', 'r', 'c'), &msrc);
+		trgr->addAtom(trgr, (MP4AtomPtr)msrc);
 	}
 
 	while (is->available > 0) {

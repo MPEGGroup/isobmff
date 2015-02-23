@@ -92,6 +92,7 @@ enum
 	MP4TrackAtomType                                    = MP4_FOUR_CHAR_CODE( 't', 'r', 'a', 'k' ),
 	MP4TrackHeaderAtomType                              = MP4_FOUR_CHAR_CODE( 't', 'k', 'h', 'd' ),
 	MP4TrackReferenceAtomType                           = MP4_FOUR_CHAR_CODE( 't', 'r', 'e', 'f' ),
+	MP4TrackGroupAtomType                               = MP4_FOUR_CHAR_CODE( 't', 'r', 'g', 'r' ),
 	MP4UserDataAtomType                                 = MP4_FOUR_CHAR_CODE( 'u', 'd', 't', 'a' ),
 	MP4VideoMediaHeaderAtomType                         = MP4_FOUR_CHAR_CODE( 'v', 'm', 'h', 'd' ),
 	MP4VisualSampleEntryAtomType                        = MP4_FOUR_CHAR_CODE( 'm', 'p', '4', 'v' ),
@@ -123,7 +124,9 @@ enum
     ISOItemReferenceAtomType                             = MP4_FOUR_CHAR_CODE( 'i', 'r', 'e', 'f' ),
 	
 	ISOVCConfigAtomType						             = MP4_FOUR_CHAR_CODE( 'a', 'v', 'c', 'C' ),
+	ISOHEVCConfigAtomType                                = MP4_FOUR_CHAR_CODE( 'h', 'v', 'c', 'C' ),
 	ISOAVCSampleEntryAtomType                            = MP4_FOUR_CHAR_CODE( 'a', 'v', 'c', '1' ),
+	ISOHEVCSampleEntryAtomType                           = MP4_FOUR_CHAR_CODE( 'h', 'v', 'c', '1' ),
 	MP4XMLMetaSampleEntryAtomType                        = MP4_FOUR_CHAR_CODE( 'm', 'e', 't', 'x' ),
 	MP4TextMetaSampleEntryAtomType                       = MP4_FOUR_CHAR_CODE( 'm', 'e', 't', 't' ),
 
@@ -358,6 +361,7 @@ typedef struct MP4TrackAtom
 	MP4AtomPtr trackMedia;
 	MP4AtomPtr trackEditAtom;
 	MP4AtomPtr trackReferences;
+	MP4AtomPtr trackGroups;
 	MP4AtomPtr meta;
     MP4AtomPtr meco;              /* additional meta-data container */
 	MP4LinkedList atomList;
@@ -397,6 +401,13 @@ typedef struct MP4TrackReferenceAtom
 	MP4LinkedList atomList;
 } MP4TrackReferenceAtom, *MP4TrackReferenceAtomPtr;
 
+typedef struct MP4TrackGroupAtom {
+	MP4_BASE_ATOM
+	MP4Err(*addAtom)(struct MP4TrackGroupAtom *self, MP4AtomPtr atom);
+	MP4Err(*findAtomOfType)(struct MP4TrackGroupAtom *self, u32 atomType, MP4AtomPtr *outAtom);
+	MP4LinkedList atomList;
+} MP4TrackGroupAtom, *MP4TrackGroupAtomPtr;
+
 typedef struct MP4MediaAtom
 {
 	MP4_BASE_ATOM
@@ -418,7 +429,7 @@ typedef struct MP4MediaAtom
 
 	MP4Err (*setSampleDependency)( struct MP4MediaAtom *self, s32 sample_index, MP4Handle dependencies  );
 	MP4Err (*getSampleDependency)( struct MP4MediaAtom *self, u32 sampleNumber, u8* dependency  );
-    
+	
     MP4Err (*extendLastSampleDuration)( struct MP4MediaAtom *self, u32 duration );
     MP4Err (*setSampleEntry)( struct MP4MediaAtom *self, MP4AtomPtr entry );
     MP4Err (*setExtendedLanguageTag)( struct MP4MediaAtom *self, MP4AtomPtr tag );
@@ -699,7 +710,7 @@ typedef struct MP4TimeToSampleAtom
 	MP4Err (*getTotalDuration)( struct MP4TimeToSampleAtom *self, u32 *outDuration );
 	MP4Err (*addSamples)( struct MP4TimeToSampleAtom *self, u32 sampleCount, MP4Handle durationsH );
     MP4Err (*extendLastSampleDuration)( struct MP4TimeToSampleAtom *self, u32 duration );
-    
+	
 	MP4LinkedList entryList;
 	void *currentEntry;
 	void *foundEntry;
@@ -763,7 +774,7 @@ typedef struct MP4VisualSampleEntryAtom
 	/* u32			reserved3;         uint(32) = 0x01400f0 */
 	u32			width;
 	u32			height;
-	u32         reserved4;          /* uint(32) = 0x0048000 */
+	u32        reserved4;          /* uint(32) = 0x0048000 */
 	u32			reserved5;			/* uint(32) = 0x0048000 */
 	u32			reserved6; /* uint(32) = 0 */
 	u32			reserved7;           /* uint(16) = 1 */
@@ -944,6 +955,28 @@ typedef struct ISOVCConfigAtom
 	MP4LinkedList spsextList;
 } ISOVCConfigAtom, *ISOVCConfigAtomPtr;
 
+typedef struct ISOHEVCConfigAtom {
+	MP4_BASE_ATOM
+		MP4Err(*addParameterSet)(struct ISOHEVCConfigAtom *self, MP4Handle ps, u32 where);
+	MP4Err(*getParameterSet)(struct ISOHEVCConfigAtom *self, MP4Handle ps, u32 where, u32 index);
+	u32 general_profile_idc;
+	u32 general_profile_compatibility_flags;
+	u32 general_level_idc;
+	u32 lengthSizeMinusOne;
+	u32 complete_rep;
+	u32 numOfArrays;
+	struct {
+		u32 array_completeness;
+		u32 NALtype;
+		MP4LinkedList nalList;
+	} arrays[8];
+	u32 chromaFormat;
+	u32 avgFrameRate;
+	u32 sps_temporal_id_nesting_flag;
+	u32 bitDepthLumaMinus8;
+	u32 bitDepthChromaMinus8;
+} ISOHEVCConfigAtom, *ISOHEVCConfigAtomPtr;
+
 typedef struct MP4SampleSizeAtom
 {
 	MP4_FULL_ATOM
@@ -1112,6 +1145,11 @@ typedef struct MP4TrackReferenceTypeAtom
 	u32 *trackIDs;
 } MP4TrackReferenceTypeAtom, *MP4TrackReferenceTypeAtomPtr;
 
+typedef struct MP4TrackGroupTypeAtom {
+	MP4_FULL_ATOM
+		MP4Err(*setGroupID)(struct MP4TrackGroupTypeAtom *self, u32 track_group_id);
+	u32 track_group_id;
+} MP4TrackGroupTypeAtom, *MP4TrackGroupTypeAtomPtr;
 
 
 
@@ -1193,11 +1231,11 @@ typedef struct MP4TrackFragmentAtom
 	MP4AtomPtr	  tfhd;
     MP4AtomPtr	  tfdt;
     MP4AtomPtr    trex;
-    
+	
 	MP4Err (*mergeRuns)( struct MP4TrackFragmentAtom *self, MP4MediaAtomPtr mdia );
 	MP4Err (*calculateDataEnd)( struct MP4TrackFragmentAtom *self, u32* outSize);
     MP4Err (*mergeSampleAuxiliaryInformation)( struct MP4TrackFragmentAtom *self, MP4MediaAtomPtr mdia );
-    
+	
     MP4Err (*getSampleAuxiliaryInfoFromTrackFragment)(struct MP4TrackFragmentAtom *self, u8 isUsingAuxInfoPropertiesFlag, u32 aux_info_type, u32 aux_info_type_parameter,
                                                       MP4SampleAuxiliaryInformationSizesAtomPtr *saizOut, MP4SampleAuxiliaryInformationOffsetsAtomPtr *saioOut);
 	
@@ -1455,7 +1493,7 @@ typedef struct ISOMetaAtom
 	MP4LinkedList atomList;
 	
 	u16 next_item_ID;
-    
+	
     MP4AtomPtr relatedMeco;
 	
 	struct MP4InputStreamRecord* inputStream;
@@ -1637,6 +1675,8 @@ MP4Err MP4CreateTrackAtom( MP4TrackAtomPtr *outAtom );
 MP4Err MP4CreateTrackHeaderAtom( MP4TrackHeaderAtomPtr *outAtom );
 MP4Err MP4CreateTrackReferenceAtom( MP4TrackReferenceAtomPtr *outAtom );
 MP4Err MP4CreateTrackReferenceTypeAtom( u32 atomType, MP4TrackReferenceTypeAtomPtr *outAtom );
+MP4Err MP4CreateTrackGroupAtom(MP4TrackGroupAtomPtr *outAtom);
+MP4Err MP4CreateTrackGroupTypeAtom(u32 atomType, MP4TrackGroupTypeAtomPtr *outAtom);
 MP4Err MP4CreateUnknownAtom( MP4UnknownAtomPtr *outAtom );
 MP4Err MP4CreateUserDataAtom( MP4UserDataAtomPtr *outAtom );
 MP4Err MP4CreateVideoMediaHeaderAtom( MP4VideoMediaHeaderAtomPtr *outAtom );

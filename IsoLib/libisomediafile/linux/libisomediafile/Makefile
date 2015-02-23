@@ -27,6 +27,7 @@ sources = \
 	FreeSpaceAtom.c \
 	GenericSampleEntryAtom.c \
 	HandlerAtom.c \
+	HEVCConfigAtom.c \
 	HintMediaHeaderAtom.c \
 	IPMPToolUpdateCommand.c \
 	MemoryFileMappingObject.c \
@@ -99,6 +100,8 @@ sources = \
 	TrackHeaderAtom.c \
 	TrackReferenceAtom.c \
 	TrackReferenceTypeAtom.c \
+	TrackGroupAtom.c \
+	TrackGroupTypeAtom.c \
 	UnknownAtom.c \
 	UserDataAtom.c \
 	VideoMediaHeaderAtom.c \

@@ -172,6 +172,10 @@ SOURCE=..\..\src\HandlerAtom.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\HEVCConfigAtom.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\HintMediaHeaderAtom.c
 # End Source File
 # Begin Source File
@@ -495,6 +499,14 @@ SOURCE=..\..\src\TrackReferenceAtom.c
 # Begin Source File
 
 SOURCE=..\..\src\TrackReferenceTypeAtom.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\TrackGroupAtom.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\TrackGroupTypeAtom.c
 # End Source File
 # Begin Source File
 

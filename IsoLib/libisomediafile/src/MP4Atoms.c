@@ -156,6 +156,11 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
 		case MP4SyncTrackReferenceAtomType:
 			err = MP4CreateTrackReferenceTypeAtom( atomType, (MP4TrackReferenceTypeAtomPtr*) &newAtom );
 			break;
+
+		/* Track Group Type */
+		case MP4_FOUR_CHAR_CODE('m', 's', 'r', 'c'):
+			err = MP4CreateTrackGroupTypeAtom(atomType, (MP4TrackGroupTypeAtomPtr*)&newAtom);
+			break;
 			
 		case MP4FreeSpaceAtomType:
 		case MP4SkipAtomType:
@@ -245,6 +250,7 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
 
 		case MP4VisualSampleEntryAtomType:
 		case ISOAVCSampleEntryAtomType:
+		case ISOHEVCSampleEntryAtomType:
 		case MP4H263SampleEntryAtomType:
 			err = MP4CreateVisualSampleEntryAtom( (MP4VisualSampleEntryAtomPtr*) &newAtom );
 			break;
@@ -371,6 +377,10 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
 			err = MP4CreateESDAtom( (MP4ESDAtomPtr*) &newAtom );
 			break;
 
+		case ISOHEVCConfigAtomType:
+			err = MP4CreateHEVCConfigAtom((ISOHEVCConfigAtomPtr*)&newAtom);
+			break;
+
 		case ISOVCConfigAtomType:
 			err = MP4CreateVCConfigAtom( (ISOVCConfigAtomPtr*) &newAtom );
 			break;
@@ -385,6 +395,10 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
 			
 		case MP4TrackReferenceAtomType:
 			err = MP4CreateTrackReferenceAtom( (MP4TrackReferenceAtomPtr*) &newAtom );
+			break;
+
+		case MP4TrackGroupAtomType:
+			err = MP4CreateTrackGroupAtom((MP4TrackGroupAtomPtr*)&newAtom);
 			break;
 			
 		case MP4MediaAtomType:
