@@ -1,12 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "favs_example", "favs_example.vcxproj", "{6E5E5E73-DC08-49D2-8236-843448A0BBF4}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A38E1D2C-5C6C-9E6D-5EBD-B4D3B979C9F3} = {A38E1D2C-5C6C-9E6D-5EBD-B4D3B979C9F3}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hevc_muxer", "hevc_muxer.vcxproj", "{6E5E5E73-DC08-49D2-8236-843448A0BBF4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hevc_demuxer", "hevc_demuxer.vcxproj", "{F50C2F2C-1774-484F-8D9D-B18025DA0C9A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,14 +13,14 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A38E1D2C-5C6C-9E6D-5EBD-B4D3B979C9F3}.Debug|Win32.ActiveCfg = Debug|Win32
-		{A38E1D2C-5C6C-9E6D-5EBD-B4D3B979C9F3}.Debug|Win32.Build.0 = Debug|Win32
-		{A38E1D2C-5C6C-9E6D-5EBD-B4D3B979C9F3}.Release|Win32.ActiveCfg = Release|Win32
-		{A38E1D2C-5C6C-9E6D-5EBD-B4D3B979C9F3}.Release|Win32.Build.0 = Release|Win32
 		{6E5E5E73-DC08-49D2-8236-843448A0BBF4}.Debug|Win32.ActiveCfg = Debug|Win32
 		{6E5E5E73-DC08-49D2-8236-843448A0BBF4}.Debug|Win32.Build.0 = Debug|Win32
 		{6E5E5E73-DC08-49D2-8236-843448A0BBF4}.Release|Win32.ActiveCfg = Release|Win32
 		{6E5E5E73-DC08-49D2-8236-843448A0BBF4}.Release|Win32.Build.0 = Release|Win32
+		{F50C2F2C-1774-484F-8D9D-B18025DA0C9A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F50C2F2C-1774-484F-8D9D-B18025DA0C9A}.Debug|Win32.Build.0 = Debug|Win32
+		{F50C2F2C-1774-484F-8D9D-B18025DA0C9A}.Release|Win32.ActiveCfg = Release|Win32
+		{F50C2F2C-1774-484F-8D9D-B18025DA0C9A}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

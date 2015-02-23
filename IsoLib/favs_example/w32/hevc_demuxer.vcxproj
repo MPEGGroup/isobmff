@@ -11,10 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{6E5E5E73-DC08-49D2-8236-843448A0BBF4}</ProjectGuid>
+    <ProjectGuid>{F50C2F2C-1774-484F-8D9D-B18025DA0C9A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>ExampleProject</RootNamespace>
-    <ProjectName>favs_example</ProjectName>
+    <ProjectName>hevc_demuxer</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -84,8 +84,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\demux_main.c" />
     <ClCompile Include="..\src\hevc.c" />
-    <ClCompile Include="..\src\main.c" />
     <ClCompile Include="..\src\tools.c" />
   </ItemGroup>
   <ItemGroup>
