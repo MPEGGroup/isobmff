@@ -6,16 +6,23 @@ CFLAGS = -I. -I../../libisomediafile/linux -I../../libisomediafile/src -O -g -Wa
 
 CC = gcc
 
-FavsSample_src = ../src/main.c ../src/hevc.c ../src/tools.c
+FavsSample_common_src = ../src/hevc.c ../src/tools.c
+FavsSample_muxer_src = ../src/mux_main.c
+FavsSample_demuxer_src = ../src/demux_main.c
 
-FavsSample_obj := $(FavsSample_src:.c=.o)
+FavsSample_obj := $(FavsSample_common_src:.c=.o)
+FavsSample_muxer_obj := $(FavsSample_muxer_src:.c=.o)
+FavsSample_demuxer_obj := $(FavsSample_demuxer_src:.c=.o)
 
 libisomediafile = ../../libisomediafile/linux/libisomediafile/libisomediafile.a
 
-all:	FavsSample
+all:	FavsSample_muxer FavsSample_demuxer
 
-FavsSample:	$(FavsSample_obj) $(libisomediafile)
-	$(CC) -o favssample $(FavsSample_obj) $(libisomediafile) -lm
+FavsSample_muxer:	$(FavsSample_muxer_obj) $(FavsSample_obj) $(libisomediafile)
+	$(CC) -o hevc_muxer $(FavsSample_muxer_obj) $(FavsSample_obj) $(libisomediafile) -lm
+	
+FavsSample_demuxer:	$(FavsSample_demuxer_obj) $(FavsSample_obj) $(libisomediafile)
+	$(CC) -o hevc_demuxer $(FavsSample_demuxer_obj) $(FavsSample_obj) $(libisomediafile) -lm
 
 %.d: %.c
 	$(SHELL) -ec '$(CC) -M $(CFLAGS) $< | sed '\''s/$*.o/& $@/g'\'' > $@'
@@ -23,4 +30,6 @@ FavsSample:	$(FavsSample_obj) $(libisomediafile)
 #
 # Include all dependency files
 #
--include $(FavsSample_src:.c=.d)
+-include $(FavsSample_common_src:.c=.d)
+-include $(FavsSample_muxer_src:.c=.d)
+-include $(FavsSample_demuxer_src:.c=.d)
