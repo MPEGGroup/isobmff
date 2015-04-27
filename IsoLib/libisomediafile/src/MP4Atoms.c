@@ -34,6 +34,7 @@ derivative works. Copyright (c) 1999.
 #include "MJ2Atoms.h"
 #endif
 
+// Static pointer to be used in multiple instances
 static MP4AtomPtr MP4BaseAtomClassPtr = 0;
 
 static char* baseAtomGetName( MP4AtomPtr self )
@@ -44,8 +45,7 @@ static char* baseAtomGetName( MP4AtomPtr self )
 static void  baseAtomDestroy( MP4AtomPtr self )
 {
 	free( self );
-    if ( MP4BaseAtomClassPtr != NULL )
-        free (MP4BaseAtomClassPtr);
+  // Note: MP4BaseAtomClassPtr cannot be freed here because it is a static pointer used in multiple instances
 }
 
 static MP4Err baseAtomCreateFromInputStream( MP4AtomPtr self, MP4AtomPtr proto, MP4InputStreamPtr inputStream )
@@ -85,13 +85,13 @@ bail:
 	return err;
 }
 
+// Static pointer to be used in multiple instances
 static MP4FullAtomPtr MP4FullAtomClassPtr = 0;
 
 static void  fullAtomDestroy( MP4AtomPtr self )
 {
 	baseAtomDestroy( self );
-    if ( MP4FullAtomClassPtr  != NULL)
-        free (MP4FullAtomClassPtr);
+  // Note: MP4FullAtomClassPtr cannot be freed here because it is a static pointer used in multiple instances
 }
 
 static MP4Err fullAtomCreateFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream )
