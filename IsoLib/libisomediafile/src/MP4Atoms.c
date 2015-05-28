@@ -34,7 +34,6 @@ derivative works. Copyright (c) 1999.
 #include "MJ2Atoms.h"
 #endif
 
-// Static pointer to be used in multiple instances
 static MP4AtomPtr MP4BaseAtomClassPtr = 0;
 
 static char* baseAtomGetName( MP4AtomPtr self )
@@ -45,7 +44,14 @@ static char* baseAtomGetName( MP4AtomPtr self )
 static void  baseAtomDestroy( MP4AtomPtr self )
 {
 	free( self );
-  // Note: MP4BaseAtomClassPtr cannot be freed here because it is a static pointer used in multiple instances
+    /* if ( MP4BaseAtomClassPtr != NULL ) {
+        free (MP4BaseAtomClassPtr);
+        MP4BaseAtomClassPtr = NULL;
+    } */
+    /* There is no good time to free these static optimizations; the old code freed them and
+       didn't zero them out, which meant they kept getting used. If you zero them out, they get
+       remade, but there still exist pointers to the now-freed protos. See below for the same for
+       fullatom. */
 }
 
 static MP4Err baseAtomCreateFromInputStream( MP4AtomPtr self, MP4AtomPtr proto, MP4InputStreamPtr inputStream )
@@ -85,13 +91,16 @@ bail:
 	return err;
 }
 
-// Static pointer to be used in multiple instances
 static MP4FullAtomPtr MP4FullAtomClassPtr = 0;
 
 static void  fullAtomDestroy( MP4AtomPtr self )
 {
 	baseAtomDestroy( self );
-  // Note: MP4FullAtomClassPtr cannot be freed here because it is a static pointer used in multiple instances
+    /* if ( MP4FullAtomClassPtr  != NULL) {
+        free (MP4FullAtomClassPtr);
+        MP4FullAtomClassPtr = NULL;
+    } */
+    /* see above for discussion of these protos and when, if ever, they can be freed */
 }
 
 static MP4Err fullAtomCreateFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream )
@@ -155,11 +164,6 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
 		case MP4ODTrackReferenceAtomType:
 		case MP4SyncTrackReferenceAtomType:
 			err = MP4CreateTrackReferenceTypeAtom( atomType, (MP4TrackReferenceTypeAtomPtr*) &newAtom );
-			break;
-
-		/* Track Group Type */
-		case MP4_FOUR_CHAR_CODE('m', 's', 'r', 'c'):
-			err = MP4CreateTrackGroupTypeAtom(atomType, (MP4TrackGroupTypeAtomPtr*)&newAtom);
 			break;
 			
 		case MP4FreeSpaceAtomType:
@@ -250,7 +254,6 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
 
 		case MP4VisualSampleEntryAtomType:
 		case ISOAVCSampleEntryAtomType:
-		case ISOHEVCSampleEntryAtomType:
 		case MP4H263SampleEntryAtomType:
 			err = MP4CreateVisualSampleEntryAtom( (MP4VisualSampleEntryAtomPtr*) &newAtom );
 			break;
@@ -357,10 +360,6 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
 			err = MP4CreateChunkOffsetAtom( (MP4ChunkOffsetAtomPtr*) &newAtom );
 			break;
 
-		case MP4SubSampleInformationAtomType:
-			err = MP4CreateSubSampleInformationAtom((MP4SubSampleInformationAtomPtr*)&newAtom);
-			break;
-
 		case MP4SyncSampleAtomType:
 			err = MP4CreateSyncSampleAtom( (MP4SyncSampleAtomPtr*) &newAtom );
 			break;
@@ -381,10 +380,6 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
 			err = MP4CreateESDAtom( (MP4ESDAtomPtr*) &newAtom );
 			break;
 
-		case ISOHEVCConfigAtomType:
-			err = MP4CreateHEVCConfigAtom((ISOHEVCConfigAtomPtr*)&newAtom);
-			break;
-
 		case ISOVCConfigAtomType:
 			err = MP4CreateVCConfigAtom( (ISOVCConfigAtomPtr*) &newAtom );
 			break;
@@ -399,10 +394,6 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
 			
 		case MP4TrackReferenceAtomType:
 			err = MP4CreateTrackReferenceAtom( (MP4TrackReferenceAtomPtr*) &newAtom );
-			break;
-
-		case MP4TrackGroupAtomType:
-			err = MP4CreateTrackGroupAtom((MP4TrackGroupAtomPtr*)&newAtom);
 			break;
 			
 		case MP4MediaAtomType:
