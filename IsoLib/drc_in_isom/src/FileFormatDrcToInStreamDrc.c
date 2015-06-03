@@ -133,7 +133,6 @@ MP4Err  prepareDrcBitStreamHelper           (DrcBitStreamHelper *drcBitStreamHel
     int         bitErr;
     int         bitsRead;
     int         bytesRead;
-    int         delayMode = 0; /* TODO: check if this always holds for DRC metadata tracks */
     
     logMsg(LOGLEVEL_DEBUG, "Preparing DRC bitstream helper.");
     
@@ -151,7 +150,7 @@ MP4Err  prepareDrcBitStreamHelper           (DrcBitStreamHelper *drcBitStreamHel
                                     &drcBitStreamHelper->hLoudnessInfoSet, &drcBitStreamHelper->hUniDrcGain);
     if (bitErr) BAILWITHERROR(MP4InternalErr);
     
-    bitErr = initUniDrcBitstreamDec(drcBitStreamHelper->hUniDrcBsDecStruct, staticDrcData->sampleRate, 1024, delayMode);
+    bitErr = initUniDrcBitstreamDec(drcBitStreamHelper->hUniDrcBsDecStruct, staticDrcData->sampleRate, 1024);
     if (bitErr) BAILWITHERROR(MP4InternalErr);
     
     bitErr = processUniDrcBitstreamDec_uniDrcConfig(drcBitStreamHelper->hUniDrcBsDecStruct,
