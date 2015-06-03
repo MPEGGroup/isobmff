@@ -38,9 +38,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1805C39F1A3E39A800C55F5F /* libwriteonlybitbuf.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwriteonlybitbuf.a; path = "../../../Part04-Dynamic_Range_Control/trunk/tools/writeonlybitbuf/lib/Darwin_x86_64_D_O0/libwriteonlybitbuf.a"; sourceTree = "<group>"; };
-		1805C3A11A3E39B600C55F5F /* libwavIO.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwavIO.a; path = "../../../Part04-Dynamic_Range_Control/trunk/tools/wavIO/lib/Darwin_x86_64_D_O0/libwavIO.a"; sourceTree = "<group>"; };
-		1805C3A31A3E39C500C55F5F /* libuniDrcBitstreamDecoder.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libuniDrcBitstreamDecoder.a; path = "../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/lib/Darwin_x86_64_D_O0/libuniDrcBitstreamDecoder.a"; sourceTree = "<group>"; };
+		1805C39F1A3E39A800C55F5F /* libwriteonlybitbuf.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwriteonlybitbuf.a; path = "../../../../../../../MPEG-D/Part04-Dynamic_Range_Control/trunk/tools/writeonlybitbuf/lib/Darwin_x86_64_D_O0/libwriteonlybitbuf.a"; sourceTree = "<group>"; };
+		1805C3A11A3E39B600C55F5F /* libwavIO.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwavIO.a; path = "../../../../../../../MPEG-D/Part04-Dynamic_Range_Control/trunk/tools/wavIO/lib/Darwin_x86_64_D_O0/libwavIO.a"; sourceTree = "<group>"; };
+		1805C3A31A3E39C500C55F5F /* libuniDrcBitstreamDecoder.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libuniDrcBitstreamDecoder.a; path = "../../../../../../../MPEG-D/Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/lib/Darwin_x86_64_D_O0/libuniDrcBitstreamDecoder.a"; sourceTree = "<group>"; };
 		187C2FF619BF9BF60044AB58 /* liblibisomediafile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibisomediafile.a; path = ../../../libisomediafile/macosx/libisomediafile/build/Debug/liblibisomediafile.a; sourceTree = "<group>"; };
 		187C301219C0F7EA0044AB58 /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Logger.h; path = ../../src/Logger.h; sourceTree = "<group>"; };
 		187C301519C10C8A0044AB58 /* Logger.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Logger.c; path = ../../src/Logger.c; sourceTree = "<group>"; };
@@ -61,13 +61,13 @@
 		18913AD719E3023A00BFEAC8 /* FileFormatDrcToInStreamDrc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = FileFormatDrcToInStreamDrc.c; path = ../../src/FileFormatDrcToInStreamDrc.c; sourceTree = "<group>"; };
 		18913AD819E3023A00BFEAC8 /* FileFormatDrcToInStreamDrc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileFormatDrcToInStreamDrc.h; path = ../../src/FileFormatDrcToInStreamDrc.h; sourceTree = "<group>"; };
 		18913ADA19E44FDA00BFEAC8 /* DRCAudioSampleEntryAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = DRCAudioSampleEntryAtom.c; path = ../../src/DRCAudioSampleEntryAtom.c; sourceTree = "<group>"; };
-		18B77BB819EDC4BE0078892F /* uniDrcBitstreamDecoder_api.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = uniDrcBitstreamDecoder_api.h; path = "../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/include/uniDrcBitstreamDecoder_api.h"; sourceTree = "<group>"; };
-		18B77BB919EDC4DF0078892F /* writeonlybitbuf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = writeonlybitbuf.h; path = "../../../Part04-Dynamic_Range_Control/trunk/tools/writeonlybitbuf/include/writeonlybitbuf.h"; sourceTree = "<group>"; };
-		18B77BBA19EDC4EE0078892F /* uniDrc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = uniDrc.h; path = "../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcCommon/uniDrc.h"; sourceTree = "<group>"; };
-		18B77BBB19EDC4F50078892F /* uniDrcCommon_api.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = uniDrcCommon_api.h; path = "../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcCommon/uniDrcCommon_api.h"; sourceTree = "<group>"; };
-		18B77BBC19EDC4FB0078892F /* uniDrcCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = uniDrcCommon.h; path = "../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcCommon/uniDrcCommon.h"; sourceTree = "<group>"; };
-		18B77BBD19EDC5020078892F /* uniDrcTables.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = uniDrcTables.h; path = "../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcCommon/uniDrcTables.h"; sourceTree = "<group>"; };
-		18B77BBE19EDC50A0078892F /* wavIO.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = wavIO.h; path = "../../../Part04-Dynamic_Range_Control/trunk/tools/wavIO/include/wavIO.h"; sourceTree = "<group>"; };
+		18B77BB819EDC4BE0078892F /* uniDrcBitstreamDecoder_api.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = uniDrcBitstreamDecoder_api.h; path = "../../../../../../../MPEG-D/Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/include/uniDrcBitstreamDecoder_api.h"; sourceTree = "<group>"; };
+		18B77BB919EDC4DF0078892F /* writeonlybitbuf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = writeonlybitbuf.h; path = "../../../../../../../MPEG-D/Part04-Dynamic_Range_Control/trunk/tools/writeonlybitbuf/include/writeonlybitbuf.h"; sourceTree = "<group>"; };
+		18B77BBA19EDC4EE0078892F /* uniDrc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = uniDrc.h; path = "../../../../../../../MPEG-D/Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcCommon/uniDrc.h"; sourceTree = "<group>"; };
+		18B77BBB19EDC4F50078892F /* uniDrcCommon_api.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = uniDrcCommon_api.h; path = "../../../../../../../MPEG-D/Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcCommon/uniDrcCommon_api.h"; sourceTree = "<group>"; };
+		18B77BBC19EDC4FB0078892F /* uniDrcCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = uniDrcCommon.h; path = "../../../../../../../MPEG-D/Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcCommon/uniDrcCommon.h"; sourceTree = "<group>"; };
+		18B77BBD19EDC5020078892F /* uniDrcTables.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = uniDrcTables.h; path = "../../../../../../../MPEG-D/Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcCommon/uniDrcTables.h"; sourceTree = "<group>"; };
+		18B77BBE19EDC50A0078892F /* wavIO.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = wavIO.h; path = "../../../../../../../MPEG-D/Part04-Dynamic_Range_Control/trunk/tools/wavIO/include/wavIO.h"; sourceTree = "<group>"; };
 		C645AF9119AD206300A93E10 /* StringUtils.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = StringUtils.h; path = ../../src/StringUtils.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -315,15 +315,16 @@
 				HEADER_SEARCH_PATHS = (
 					"${SRCROOT}/../../../libisomediafile/src",
 					"${SRCROOT}/../../../libisomediafile/macosx",
+					"${SRCROOT}/../../../../../../../MPEG-D/Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/include",
+					"${SRCROOT}/../../../../../../../MPEG-D/Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcCommon",
+					"${SRCROOT}/../../../../../../../MPEG-D/Part04-Dynamic_Range_Control/trunk/tools/writeonlybitbuf/include",
+					"${SRCROOT}/../../../../../../../MPEG-D/Part04-Dynamic_Range_Control/trunk/tools/wavIO/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
-					"${SRCROOT}/../../../libisomediafile/macosx/libisomediafile/build/Debug/",
-					"${SRCROOT}/../../../Part04-Dynamic_Range_Control/trunk/tools/writeonlybitbuf/lib/Darwin_x86_64_O0",
-					"${SRCROOT}/../../../Part04-Dynamic_Range_Control/trunk/tools/wavIO/lib/Darwin_x86_64_O0",
-					"${SRCROOT}/../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/lib/Debug",
-					"/Users/apple/Desktop/shared_with_ubuntu/Part04-Dynamic_Range_Control/trunk/tools/writeonlybitbuf/lib/Darwin_x86_64_D_O0",
-					"/Users/apple/Desktop/shared_with_ubuntu/Part04-Dynamic_Range_Control/trunk/tools/wavIO/lib/Darwin_x86_64_D_O0",
-					"/Users/apple/Desktop/shared_with_ubuntu/Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/lib/Darwin_x86_64_D_O0",
+					"${SRCROOT}/../../../../../../../MPEG-04/Part12-ISO_Base_Media_File_Format/trunk/IsoLib/libisomediafile/macosx/libisomediafile/build/Debug",
+					"${SRCROOT}/../../../../../../../MPEG-D/Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/lib/Darwin_x86_64_D_O0",
+					"${SRCROOT}/../../../../../../../MPEG-D/Part04-Dynamic_Range_Control/trunk/tools/wavIO/lib/Darwin_x86_64_D_O0",
+					"${SRCROOT}/../../../../../../../MPEG-D/Part04-Dynamic_Range_Control/trunk/tools/writeonlybitbuf/lib/Darwin_x86_64_D_O0",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = YES;
@@ -363,15 +364,16 @@
 				HEADER_SEARCH_PATHS = (
 					"${SRCROOT}/../../../libisomediafile/src",
 					"${SRCROOT}/../../../libisomediafile/macosx",
+					"${SRCROOT}/../../../../../../../MPEG-D/Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/include",
+					"${SRCROOT}/../../../../../../../MPEG-D/Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcCommon",
+					"${SRCROOT}/../../../../../../../MPEG-D/Part04-Dynamic_Range_Control/trunk/tools/writeonlybitbuf/include",
+					"${SRCROOT}/../../../../../../../MPEG-D/Part04-Dynamic_Range_Control/trunk/tools/wavIO/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
-					"${SRCROOT}/../../../libisomediafile/macosx/libisomediafile/build/Debug/",
-					"${SRCROOT}/../../../Part04-Dynamic_Range_Control/trunk/tools/writeonlybitbuf/lib/Darwin_x86_64_O0",
-					"${SRCROOT}/../../../Part04-Dynamic_Range_Control/trunk/tools/wavIO/lib/Darwin_x86_64_O0",
-					"${SRCROOT}/../../../Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/lib/Debug",
-					"/Users/apple/Desktop/shared_with_ubuntu/Part04-Dynamic_Range_Control/trunk/tools/writeonlybitbuf/lib/Darwin_x86_64_D_O0",
-					"/Users/apple/Desktop/shared_with_ubuntu/Part04-Dynamic_Range_Control/trunk/tools/wavIO/lib/Darwin_x86_64_D_O0",
-					"/Users/apple/Desktop/shared_with_ubuntu/Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/lib/Darwin_x86_64_D_O0",
+					"${SRCROOT}/../../../../../../../MPEG-04/Part12-ISO_Base_Media_File_Format/trunk/IsoLib/libisomediafile/macosx/libisomediafile/build/Debug",
+					"${SRCROOT}/../../../../../../../MPEG-D/Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/lib/Darwin_x86_64_D_O0",
+					"${SRCROOT}/../../../../../../../MPEG-D/Part04-Dynamic_Range_Control/trunk/tools/wavIO/lib/Darwin_x86_64_D_O0",
+					"${SRCROOT}/../../../../../../../MPEG-D/Part04-Dynamic_Range_Control/trunk/tools/writeonlybitbuf/lib/Darwin_x86_64_D_O0",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_NAME = MP4_to_DRC;
