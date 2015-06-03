@@ -673,7 +673,7 @@ MP4Err  addInstructionsUniDRC           (UniDrcConfig *uniDrcConfig, MP4AudioSam
                 GainModifiers                           *gainModifiers;
                 
                 channelGroupGainScaling = calloc(1, sizeof(DRCInstructionsChannelGroupGainScaling));
-                gainModifiers           = &instrUniDrc->gainModifiers[x];
+                gainModifiers           = &instrUniDrc->gainModifiersForChannelGroup[x];
                 
                 channelGroupGainScaling->reserved1                  = 0;
                 channelGroupGainScaling->gain_scaling_present       = gainModifiers->gainScalingPresent;
