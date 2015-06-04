@@ -160,7 +160,8 @@ typedef struct DRCCoefficientUniDRCAtom
     u8              drc_frame_size_present;     // bit(1)
     u8              reserved2;                  // bit(1)
     u16             bs_drc_frame_size;          // uint(15)
-    u8              reserved3;                  // bit(2) = 0
+    u8              reserved3;                  // bit(1) = 0
+    u8              delayMode;                  // bit(1)
     u8              sequence_count;             // uint(6)
     MP4LinkedList   sequences;                  // List of DRCCoefficientUniDRCSequences
 } DRCCoefficientUniDRCAtom;

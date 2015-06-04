@@ -104,7 +104,7 @@ static MP4Err serialize( struct MP4Atom* s, char* buffer )
         PUT16_V(tmp16);
     }
     
-    tmp8 = (self->reserved3 << 6) + self->sequence_count;
+    tmp8 = (self->reserved3 << 7) + (self->delayMode << 6) + self->sequence_count;
     PUT8_V(tmp8);
     
     for (u8 i = 0; i < self->sequence_count; i++)
@@ -251,7 +251,8 @@ static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStr
     }
     
     GET8_V(tmp8);
-    self->reserved3                 = tmp8 >> 6;
+    self->reserved3                 = tmp8 >> 7;
+    self->delayMode                 = (tmp8 >> 6) & 0x01;
     self->sequence_count            = tmp8 & 0x3F;
     
     for (u8 i = 0; i < self->sequence_count; i++)
