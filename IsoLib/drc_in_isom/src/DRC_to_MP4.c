@@ -81,7 +81,6 @@ MP4Err  createMP4Movie      (WAVData *wavData, DRCData *drcData, DRCtoMP4Options
     MP4Movie                    moov;
 	MP4Track                    trak;
 	MP4Media                    media;
-    MP4Handle                   sampleEntryH;
     MP4MediaAtomPtr             mdia;
     MP4AudioSampleEntryAtomPtr  sampleEntry;
 	u8                          OD_profileAndLevel;
@@ -115,7 +114,6 @@ MP4Err  createMP4Movie      (WAVData *wavData, DRCData *drcData, DRCtoMP4Options
     err = MP4NewMovieTrack( moov, MP4NewTrackIsAudio, &trak );                                  if (err) goto bail;
     err = MP4AddTrackToMovieIOD( trak );                                                        if (err) goto bail;
 	err = MP4NewTrackMedia( trak, &media, MP4AudioHandlerType, wavData->sampleRate, NULL );     if (err) goto bail;
-    err = MP4NewHandle( 0, &sampleEntryH );                                                     if (err) goto bail;
     err = MP4SetMediaLanguage( media, "eng" );                                                  if (err) goto bail;
     err = MP4SetMediaExtendedLanguageTag( media, "en-US" );                                     if (err) goto bail;
     
@@ -142,7 +140,6 @@ MP4Err  createMP4Movie      (WAVData *wavData, DRCData *drcData, DRCtoMP4Options
     
 	err = MP4WriteMovieToFile( moov, options->outputFile );                         if (err) goto bail;
     
-    err = MP4DisposeHandle(sampleEntryH);                                           if (err) goto bail;
     err = MP4DisposeMovie(moov);                                                    if (err) goto bail;
     logMsg(LOGLEVEL_DEBUG, "Creating MP4 movie finished successfully.");
 bail:
