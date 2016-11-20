@@ -910,8 +910,9 @@ ISO_EXTERN ( ISOErr ) ISOSetItemInfo( ISOMetaItem item, u16 protection_index, ch
 	
 	if (name) {
 		sz = strlen( name );
-		infe->item_name = (char*) calloc( 1, sz );
+		infe->item_name = (char*) calloc( 1, sz + 1);
 		memcpy( infe->item_name, name, sz );
+		(infe->item_name)[sz] = '\0';
 	} else {
 		infe->item_name = (char*) calloc( 1, 1 );
 		(infe->item_name)[0] = '\0';
@@ -1265,7 +1266,7 @@ ISO_EXTERN ( ISOErr ) ISOGetAllItemsWithType( ISOMeta meta, u32 type, ISOMetaIte
             if (type == outType)
             {
                 *numberOfItemsFound                 = *numberOfItemsFound + 1;
-                *items                              = realloc(*items, *numberOfItemsFound * sizeof(ISOMetaItem));
+                *items                              = realloc(*items, *numberOfItemsFound * sizeof(u32));
                 (*items)[*numberOfItemsFound - 1]   = (ISOMetaItem) a;
             }
         }
@@ -1421,7 +1422,7 @@ ISO_EXTERN ( ISOErr ) ISOGetItemData( ISOMetaItem item, MP4Handle data, u64* bas
             
             if (myItem->construction_method == 0)
             {
-                err = dhlr->copyData( dhlr, b->extent_offset, (*data)+datasize, length ); if (err) goto bail;
+                err = dhlr->copyData( dhlr, b->extent_offset + *base_offset, (*data)+datasize, length ); if (err) goto bail;
             }
             else if (myItem->construction_method == 1)
             {
@@ -1711,3 +1712,91 @@ bail:
 	return err;
 }
 
+ISO_EXTERN(MP4Err)
+ISOAddMetaItemProperty(ISOMetaItem item, MP4GenericAtom* itemProperty, u8 essential)
+{
+	MP4Err								err;
+	ISOMetaAtomPtr                      myMeta;
+	MetaItemLocationPtr                 myItem;
+	MP4ItemPropertiesAtomPtr			iprp;
+	u16									itemId;
+	err = MP4NoErr;
+
+	myItem = (MetaItemLocationPtr) item;
+	if (myItem == NULL)
+		BAILWITHERROR(MP4BadParamErr)
+
+	myMeta = (ISOMetaAtomPtr) myItem->meta;
+	if (myMeta == NULL)
+		BAILWITHERROR(MP4BadDataErr)
+
+	if (myMeta->iprp == NULL)
+	{
+		err = MP4CreateItemPropertiesAtom(&myMeta->iprp); if (err) goto bail;
+		err = MP4AddListEntry(myMeta->iprp, myMeta->atomList); if (err) goto bail;
+	}
+
+	iprp = (MP4ItemPropertiesAtomPtr) myMeta->iprp;
+
+	err = ISOGetItemID(item, &itemId);
+	err = iprp->addItemProperty(iprp, (MP4AtomPtr) itemProperty, itemId, essential); if (err) goto bail;
+		
+bail:
+	TEST_RETURN(err);
+
+	return err;
+}
+
+ISO_EXTERN(MP4Err)
+ISOGetProperitesOfMetaItem(ISOMetaItem item, MP4GenericAtom** properties, u32 *propertiesFound)
+{
+	MP4Err								err;
+	ISOMetaAtomPtr                      myMeta;
+	MetaItemLocationPtr                 myItem;
+	MP4ItemPropertiesAtomPtr			iprp;
+	u16									itemId;
+	MP4LinkedList						properitiesList;
+	u32									listSize;
+	u32									i;
+	MP4GenericAtom						property;
+	MP4GenericAtom						*outProperties;
+	err = MP4NoErr;
+
+	myItem = (MetaItemLocationPtr)item;
+	if (myItem == NULL)
+		BAILWITHERROR(MP4BadParamErr)
+
+		myMeta = (ISOMetaAtomPtr)myItem->meta;
+	if (myMeta == NULL)
+		BAILWITHERROR(MP4BadDataErr)
+
+	if (myMeta->iprp == NULL)
+	{
+		err = MP4CreateItemPropertiesAtom(&myMeta->iprp); if (err) goto bail;
+		err = MP4AddListEntry(myMeta->iprp, myMeta->atomList); if (err) goto bail;
+	}
+
+	iprp = (MP4ItemPropertiesAtomPtr)myMeta->iprp;
+
+	err = ISOGetItemID(item, &itemId); if (err) goto bail;
+	err = iprp->getPropertiesOfItem(iprp, itemId, &properitiesList); if (err) goto bail;
+
+	err = MP4GetListEntryCount(properitiesList, &listSize); if (err) goto bail;
+
+	*propertiesFound = listSize;
+	outProperties = (MP4GenericAtom*)malloc(listSize * sizeof(MP4GenericAtom));
+	
+
+	for (i = 0; i < listSize; i++)
+	{
+		err = MP4GetListEntry(properitiesList, i, (char **)&property); if (err) goto bail;
+		outProperties[i] = (MP4GenericAtom) property;
+	}
+
+	*properties = outProperties;
+
+bail:
+	TEST_RETURN(err);
+
+	return err;
+}

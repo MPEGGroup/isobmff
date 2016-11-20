@@ -90,7 +90,16 @@ static MP4Err serialize( struct MP4Atom* s, char* buffer )
     buffer += self->bytesWritten;
 	
 	err = MP4GetListEntryCount( self->atomList, &count ); if (err) goto bail; 
-	PUT16_V( count );
+
+	if (self->version == 0)
+	{
+		PUT16_V(count);
+	}
+	else
+	{
+		PUT32_V(count);
+	}
+	
 	
     SERIALIZE_ATOM_LIST( atomList ); /* should be sorted by item_id! */
 	assert( self->bytesWritten == self->size );
@@ -108,6 +117,11 @@ static MP4Err calculateSize( struct MP4Atom* s )
 	
 	err = MP4CalculateFullAtomFieldSize( (MP4FullAtomPtr) s ); if (err) goto bail;
 	self->size += 2;
+	if (self->version != 0)
+	{
+		self->size += 2;
+	}
+
 	ADD_ATOM_LIST_SIZE( atomList );
 	
 bail:
@@ -126,11 +140,34 @@ static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStr
 	if ( self == NULL )	BAILWITHERROR( MP4BadParamErr );
 	err = self->super->createFromInputStream( s, proto, (char*) inputStream ); if ( err ) goto bail;
 
+	if (self->version == 0)
+	{
+		GET16_V(in_count);
+	}
+	else
+	{
+		GET32_V(in_count);
+	}
 
-	GET16_V( in_count );
-	
-	PARSE_ATOM_INCLUDES(ISOItemInfoAtom);
-	
+
+	while (self->bytesRead < self->size) 
+	{ 
+		MP4AtomPtr atom; 
+		err = MP4ParseAtom((MP4InputStreamPtr)inputStream, &atom); 
+		if (err) goto bail; 
+			self->bytesRead += atom->size; 
+			if (((atom->type) == MP4FreeSpaceAtomType) || ((atom->type) == MP4SkipAtomType)) 
+				atom->destroy(atom); 
+			else {
+				
+					err = addAtom(self, atom); 
+					if (err) goto bail; 
+			} 
+	} 
+
+	if (self->bytesRead != self->size) 
+		BAILWITHERROR(MP4BadDataErr)
+		
 	err = MP4GetListEntryCount( self->atomList, &list_count ); if (err) goto bail; 
 	if (list_count != in_count) { BAILWITHERROR( MP4BadDataErr ); }
 	

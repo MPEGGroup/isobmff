@@ -470,6 +470,12 @@ ISOGetMetaProtection( ISOMeta meta, u16 protection_index, u32* sch_type, u32* sc
 ISO_EXTERN ( MP4Err )
 ISOGetMetaProtectionInfo( ISOMeta meta, u16 protection_index, u32 atom_type, MP4GenericAtom* schi_atom  );
 
+ISO_EXTERN ( MP4Err )
+ISOAddMetaItemProperty( ISOMetaItem item, MP4GenericAtom* itemProperty, u8 essential );
+
+ISO_EXTERN ( MP4Err )
+ISOGetProperitesOfMetaItem( ISOMetaItem item, MP4GenericAtom** properties, u32 *propertiesFound);
+
 #ifdef PRAGMA_EXPORT
 #pragma export on
 #endif
