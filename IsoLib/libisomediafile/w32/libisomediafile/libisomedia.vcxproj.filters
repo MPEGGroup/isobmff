@@ -10,7 +10,8 @@
       <Extensions>.h</Extensions>
     </Filter>
   </ItemGroup>
-  <ItemGroup>    <ClCompile Include="..\..\src\AudioSampleEntryAtom.c">
+  <ItemGroup>
+    <ClCompile Include="..\..\src\AudioSampleEntryAtom.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\BaseDescriptor.c">
@@ -458,6 +459,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\TrackExtensionPropertiesAtom.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ItemPropertiesAtom.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ItemPropertyAssociationAtom.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ItemPropertyContainerAtom.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

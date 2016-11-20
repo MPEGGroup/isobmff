@@ -157,7 +157,10 @@ sources = \
 	MetaboxRelationAtom.c \
 	ItemReferenceAtom.c \
 	ItemDataAtom.c \
-	SingleItemTypeReferenceAtom.c
+	SingleItemTypeReferenceAtom.c \
+	ItemPropertiesAtom.c \
+	ItemPropertyAssociationAtom.c \
+	ItemPropertyContainerAtom.c
 
 
 

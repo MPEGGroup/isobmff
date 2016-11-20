@@ -25,6 +25,9 @@
 		B4A11E5E1B1FB163002C5FD1 /* SubSampleInformationAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = B4A11E5D1B1FB160002C5FD1 /* SubSampleInformationAtom.c */; };
 		B4A11E601B1FB19D002C5FD1 /* TrackGroupAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = B4A11E5F1B1FB19A002C5FD1 /* TrackGroupAtom.c */; };
 		B4A11E621B1FB1D1002C5FD1 /* TrackGroupTypeAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = B4A11E611B1FB1CE002C5FD1 /* TrackGroupTypeAtom.c */; };
+		C6D454A11DB513B3001B936A /* ItemPropertiesAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = C6D4549E1DB513B3001B936A /* ItemPropertiesAtom.c */; };
+		C6D454A21DB513B3001B936A /* ItemPropertyAssociationAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = C6D4549F1DB513B3001B936A /* ItemPropertyAssociationAtom.c */; };
+		C6D454A31DB513B3001B936A /* ItemPropertyContainerAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = C6D454A01DB513B3001B936A /* ItemPropertyContainerAtom.c */; };
 		C6F5636219ABE6BB0010D96F /* TrackFragmentDecodeTimeAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = C6F5636119ABE6BB0010D96F /* TrackFragmentDecodeTimeAtom.c */; };
 		CB43BA9A0AFF4AB800B31580 /* BitRateAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = CB43BA960AFF4AB800B31580 /* BitRateAtom.c */; };
 		CB43BA9B0AFF4AB800B31580 /* AMRWPSpecificInfoAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = CB43BA970AFF4AB800B31580 /* AMRWPSpecificInfoAtom.c */; };
@@ -195,6 +198,9 @@
 		B4A11E5D1B1FB160002C5FD1 /* SubSampleInformationAtom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = SubSampleInformationAtom.c; path = ../../src/SubSampleInformationAtom.c; sourceTree = "<group>"; };
 		B4A11E5F1B1FB19A002C5FD1 /* TrackGroupAtom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = TrackGroupAtom.c; path = ../../src/TrackGroupAtom.c; sourceTree = "<group>"; };
 		B4A11E611B1FB1CE002C5FD1 /* TrackGroupTypeAtom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = TrackGroupTypeAtom.c; path = ../../src/TrackGroupTypeAtom.c; sourceTree = "<group>"; };
+		C6D4549E1DB513B3001B936A /* ItemPropertiesAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ItemPropertiesAtom.c; path = ../../src/ItemPropertiesAtom.c; sourceTree = "<group>"; };
+		C6D4549F1DB513B3001B936A /* ItemPropertyAssociationAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ItemPropertyAssociationAtom.c; path = ../../src/ItemPropertyAssociationAtom.c; sourceTree = "<group>"; };
+		C6D454A01DB513B3001B936A /* ItemPropertyContainerAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ItemPropertyContainerAtom.c; path = ../../src/ItemPropertyContainerAtom.c; sourceTree = "<group>"; };
 		C6F5636119ABE6BB0010D96F /* TrackFragmentDecodeTimeAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = TrackFragmentDecodeTimeAtom.c; path = ../../src/TrackFragmentDecodeTimeAtom.c; sourceTree = "<group>"; };
 		CB43BA960AFF4AB800B31580 /* BitRateAtom.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = BitRateAtom.c; path = ../../src/BitRateAtom.c; sourceTree = SOURCE_ROOT; };
 		CB43BA970AFF4AB800B31580 /* AMRWPSpecificInfoAtom.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = AMRWPSpecificInfoAtom.c; path = ../../src/AMRWPSpecificInfoAtom.c; sourceTree = SOURCE_ROOT; };
@@ -371,6 +377,9 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				C6D4549E1DB513B3001B936A /* ItemPropertiesAtom.c */,
+				C6D4549F1DB513B3001B936A /* ItemPropertyAssociationAtom.c */,
+				C6D454A01DB513B3001B936A /* ItemPropertyContainerAtom.c */,
 				CB43BA980AFF4AB800B31580 /* AMRSpecificInfoAtom.c */,
 				CB43BA970AFF4AB800B31580 /* AMRWPSpecificInfoAtom.c */,
 				CBAD4E9907B2B3F8005AD21E /* AudioSampleEntryAtom.c */,
@@ -640,6 +649,7 @@
 				CBAD4EA507B2B3F8005AD21E /* VideoMediaHeaderAtom.c in Sources */,
 				CBAD4EA607B2B3F8005AD21E /* UserDataAtom.c in Sources */,
 				CBAD4EA707B2B3F8005AD21E /* UnknownAtom.c in Sources */,
+				C6D454A21DB513B3001B936A /* ItemPropertyAssociationAtom.c in Sources */,
 				18CF72051A0D911B006648A8 /* MetaboxRelationAtom.c in Sources */,
 				CBAD4EA807B2B3F8005AD21E /* TrackReferenceTypeAtom.c in Sources */,
 				188041D919CB724F00FAABCE /* ExtendedLanguageTag.c in Sources */,
@@ -674,6 +684,7 @@
 				CBAD4EC407B2B3F8005AD21E /* QTMovies.c in Sources */,
 				CBAD4EC507B2B3F8005AD21E /* PaddingBitsAtom.c in Sources */,
 				CBAD4EC607B2B3F8005AD21E /* MediaHeaderAtom.c in Sources */,
+				C6D454A11DB513B3001B936A /* ItemPropertiesAtom.c in Sources */,
 				CBAD4EC707B2B3F8005AD21E /* MediaDataAtom.c in Sources */,
 				CBAD4EC807B2B3F8005AD21E /* MediaAtom.c in Sources */,
 				CBAD4ECA07B2B3F8005AD21E /* MP4ES_ID_RefDescriptor.c in Sources */,
@@ -746,6 +757,7 @@
 				CBAD4F1307B2B3F8005AD21E /* VisualSampleEntryAtom.c in Sources */,
 				CBAD4F1407B2B3F8005AD21E /* ObjectDescriptorAtom.c in Sources */,
 				CBAD4F1507B2B3F8005AD21E /* MPEGSampleEntryAtom.c in Sources */,
+				C6D454A31DB513B3001B936A /* ItemPropertyContainerAtom.c in Sources */,
 				B4A11E601B1FB19D002C5FD1 /* TrackGroupAtom.c in Sources */,
 				CBAD4F1607B2B3F8005AD21E /* MPEGMediaHeaderAtom.c in Sources */,
 				CBAD4F1707B2B3F8005AD21E /* MP4UserData.c in Sources */,
