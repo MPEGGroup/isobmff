@@ -289,6 +289,8 @@ function disclosure_triangle(elt) {
 <dd></dd>
 <dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_AddNALUnitToHEVCItemData" target="_top">ISOIFF_AddNALUnitToHEVCItemData</a></tt></dt>
 <dd></dd>
+<dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_CreateHEVCConfigurationAtom" target="_top">ISOIFF_CreateHEVCConfigurationAtom</a></tt></dt>
+<dd></dd>
 <dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_CreateHEVCDecConfRecFromHandle" target="_top">ISOIFF_CreateHEVCDecConfRecFromHandle</a></tt></dt>
 <dd></dd>
 <dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_CreateHEVCDecoderConfigRecord" target="_top">ISOIFF_CreateHEVCDecoderConfigRecord</a></tt></dt>
@@ -297,11 +299,15 @@ function disclosure_triangle(elt) {
 <dd></dd>
 <dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_CreateHEVCItemDataFromHandle" target="_top">ISOIFF_CreateHEVCItemDataFromHandle</a></tt></dt>
 <dd></dd>
+<dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_CreateImageSpatialExtentsPropertyAtom" target="_top">ISOIFF_CreateImageSpatialExtentsPropertyAtom</a></tt></dt>
+<dd></dd>
 <dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_FreeHEVCDecoderConfigRecord" target="_top">ISOIFF_FreeHEVCDecoderConfigRecord</a></tt></dt>
 <dd></dd>
 <dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_FreeHEVCItemData" target="_top">ISOIFF_FreeHEVCItemData</a></tt></dt>
 <dd></dd>
 <dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_GetHEVCDecConfRecordSize" target="_top">ISOIFF_GetHEVCDecConfRecordSize</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_GetHEVCDecoderConfigRecordFromProperty" target="_top">ISOIFF_GetHEVCDecoderConfigRecordFromProperty</a></tt></dt>
 <dd></dd>
 <dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_GetHEVCItemDataLengthSizeMinusOne" target="_top">ISOIFF_GetHEVCItemDataLengthSizeMinusOne</a></tt></dt>
 <dd></dd>
@@ -310,6 +316,8 @@ function disclosure_triangle(elt) {
 <dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_GetNALUDataHandlesFromHEVCItemData" target="_top">ISOIFF_GetNALUDataHandlesFromHEVCItemData</a></tt></dt>
 <dd></dd>
 <dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_GetNALUnitsWithTypeFromHEVCDecConf" target="_top">ISOIFF_GetNALUnitsWithTypeFromHEVCDecConf</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_ParseImageSpatialExtends" target="_top">ISOIFF_ParseImageSpatialExtends</a></tt></dt>
 <dd></dd>
 <dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_PutHEVCDecConfRecordIntoHandle" target="_top">ISOIFF_PutHEVCDecConfRecordIntoHandle</a></tt></dt>
 <dd></dd>
@@ -382,6 +390,36 @@ function disclosure_triangle(elt) {
 <h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
 <!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_AddNALUnitToHEVCItemData;name=start --><p>Adds a NAL unit to a HEVC item data. (This will update the lengthSizeMinusOne field)
 <!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_AddNALUnitToHEVCItemData;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=func;  uid=//apple_ref/c/func/ISOIFF_CreateHEVCConfigurationAtom;   name=ISOIFF_CreateHEVCConfigurationAtom --><a name="//apple_ref/c/func/ISOIFF_CreateHEVCConfigurationAtom"></a>
+<h3><a name="ISOIFF_CreateHEVCConfigurationAtom">ISOIFF_CreateHEVCConfigurationAtom</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/func/ISOIFF_CreateHEVCConfigurationAtom;name=start --><!-- a logicalPath="//apple_ref/c/cl/MP4Err //apple_ref/c/tdef/MP4Err //apple_ref/c/tag/MP4Err //apple_ref/c/struct/MP4Err //apple_ref/c/intf/MP4Err //apple_ref/doc/anysymbol/MP4Err" machineGenerated="true" --><span class="type">MP4Err</span><!-- /a --> <a machinegenerated="true" href="index.html#//apple_ref/c/func/ISOIFF_CreateHEVCConfigurationAtom" logicalPath="//apple_ref/c/instm/ISOIFF_CreateHEVCConfigurationAtom //apple_ref/c/clm/ISOIFF_CreateHEVCConfigurationAtom //apple_ref/c/intfcm/ISOIFF_CreateHEVCConfigurationAtom //apple_ref/c/intfm/ISOIFF_CreateHEVCConfigurationAtom //apple_ref/c/func/ISOIFF_CreateHEVCConfigurationAtom" target="_top"><span class="function">ISOIFF_CreateHEVCConfigurationAtom</span></a> (
+    <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/ISOIFF_HEVCConfigurationAtomPtr" logicalPath="//apple_ref/c/cl/ISOIFF_HEVCConfigurationAtomPtr //apple_ref/c/tdef/ISOIFF_HEVCConfigurationAtomPtr" target="_top"><span class="type">ISOIFF_HEVCConfigurationAtomPtr</span></a> <span class="type">*</span><span class="param">outAtom</span>,
+    <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/ISOIFF_HEVCDecoderConfigRecord" logicalPath="//apple_ref/c/cl/ISOIFF_HEVCDecoderConfigRecord //apple_ref/c/tdef/ISOIFF_HEVCDecoderConfigRecord" target="_top"><span class="type">ISOIFF_HEVCDecoderConfigRecord</span></a> <span class="param">configRecord</span>);  <!-- headerDoc=declaration;uid=//apple_ref/c/func/ISOIFF_CreateHEVCConfigurationAtom;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/ISOIFF_CreateHEVCConfigurationAtom/outAtom;   name=outAtom -->
+<a name="//apple_ref/doc/functionparam/ISOIFF_CreateHEVCConfigurationAtom/outAtom"></a>
+<code>outAtom</code>
+</dt>
+<dd><p>Pointer that will hold a reference to the created HEVCConfigurationAtom</p></dd>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/ISOIFF_CreateHEVCConfigurationAtom/configRecord;   name=configRecord -->
+<a name="//apple_ref/doc/functionparam/ISOIFF_CreateHEVCConfigurationAtom/configRecord"></a>
+<code>configRecord</code>
+</dt>
+<dd><p>HEVCDecoderConfigRecord  that will be put into the atom</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_CreateHEVCConfigurationAtom;name=start --><p>Creates a HEVCConfigurationAtom (Allocates memory and initializes fields)
+<!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_CreateHEVCConfigurationAtom;name=end --><!-- end discussion -->
 </p>
 <hr class="betweenAPIEntries">
 <!-- headerDoc=func;  uid=//apple_ref/c/func/ISOIFF_CreateHEVCDecConfRecFromHandle;   name=ISOIFF_CreateHEVCDecConfRecFromHandle --><a name="//apple_ref/c/func/ISOIFF_CreateHEVCDecConfRecFromHandle"></a>
@@ -497,6 +535,29 @@ function disclosure_triangle(elt) {
 <!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_CreateHEVCItemDataFromHandle;name=end --><!-- end discussion -->
 </p>
 <hr class="betweenAPIEntries">
+<!-- headerDoc=func;  uid=//apple_ref/c/func/ISOIFF_CreateImageSpatialExtentsPropertyAtom;   name=ISOIFF_CreateImageSpatialExtentsPropertyAtom --><a name="//apple_ref/c/func/ISOIFF_CreateImageSpatialExtentsPropertyAtom"></a>
+<h3><a name="ISOIFF_CreateImageSpatialExtentsPropertyAtom">ISOIFF_CreateImageSpatialExtentsPropertyAtom</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/func/ISOIFF_CreateImageSpatialExtentsPropertyAtom;name=start --><!-- a logicalPath="//apple_ref/c/cl/MP4Err //apple_ref/c/tdef/MP4Err //apple_ref/c/tag/MP4Err //apple_ref/c/struct/MP4Err //apple_ref/c/intf/MP4Err //apple_ref/doc/anysymbol/MP4Err" machineGenerated="true" --><span class="type">MP4Err</span><!-- /a --> <a machinegenerated="true" href="index.html#//apple_ref/c/func/ISOIFF_CreateImageSpatialExtentsPropertyAtom" logicalPath="//apple_ref/c/instm/ISOIFF_CreateImageSpatialExtentsPropertyAtom //apple_ref/c/clm/ISOIFF_CreateImageSpatialExtentsPropertyAtom //apple_ref/c/intfcm/ISOIFF_CreateImageSpatialExtentsPropertyAtom //apple_ref/c/intfm/ISOIFF_CreateImageSpatialExtentsPropertyAtom //apple_ref/c/func/ISOIFF_CreateImageSpatialExtentsPropertyAtom" target="_top"><span class="function">ISOIFF_CreateImageSpatialExtentsPropertyAtom</span></a> (
+    <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/ISOIFF_ImageSpatialExtentsPropertyAtomPtr" logicalPath="//apple_ref/c/cl/ISOIFF_ImageSpatialExtentsPropertyAtomPtr //apple_ref/c/tdef/ISOIFF_ImageSpatialExtentsPropertyAtomPtr" target="_top"><span class="type">ISOIFF_ImageSpatialExtentsPropertyAtomPtr</span></a> <span class="type">*</span><span class="param">outAtom</span>);  <!-- headerDoc=declaration;uid=//apple_ref/c/func/ISOIFF_CreateImageSpatialExtentsPropertyAtom;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/ISOIFF_CreateImageSpatialExtentsPropertyAtom/outAtom;   name=outAtom -->
+<a name="//apple_ref/doc/functionparam/ISOIFF_CreateImageSpatialExtentsPropertyAtom/outAtom"></a>
+<code>outAtom</code>
+</dt>
+<dd><p>Pointer that will hold a reference to the created ImageSpatialExtentsPropertyAtom</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_CreateImageSpatialExtentsPropertyAtom;name=start --><p>Creates a ImageSpatialExtentsPropertyAtom (Allocates memory and initializes fields)
+<!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_CreateImageSpatialExtentsPropertyAtom;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
 <!-- headerDoc=func;  uid=//apple_ref/c/func/ISOIFF_FreeHEVCDecoderConfigRecord;   name=ISOIFF_FreeHEVCDecoderConfigRecord --><a name="//apple_ref/c/func/ISOIFF_FreeHEVCDecoderConfigRecord"></a>
 <h3><a name="ISOIFF_FreeHEVCDecoderConfigRecord">ISOIFF_FreeHEVCDecoderConfigRecord</a></h3>
 <hr class="afterName">
@@ -571,6 +632,36 @@ function disclosure_triangle(elt) {
 <h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
 <!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_GetHEVCDecConfRecordSize;name=start --><p>Gets the size of an HEVC decoder configuration record.
 <!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_GetHEVCDecConfRecordSize;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=func;  uid=//apple_ref/c/func/ISOIFF_GetHEVCDecoderConfigRecordFromProperty;   name=ISOIFF_GetHEVCDecoderConfigRecordFromProperty --><a name="//apple_ref/c/func/ISOIFF_GetHEVCDecoderConfigRecordFromProperty"></a>
+<h3><a name="ISOIFF_GetHEVCDecoderConfigRecordFromProperty">ISOIFF_GetHEVCDecoderConfigRecordFromProperty</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/func/ISOIFF_GetHEVCDecoderConfigRecordFromProperty;name=start --><!-- a logicalPath="//apple_ref/c/cl/MP4Err //apple_ref/c/tdef/MP4Err //apple_ref/c/tag/MP4Err //apple_ref/c/struct/MP4Err //apple_ref/c/intf/MP4Err //apple_ref/doc/anysymbol/MP4Err" machineGenerated="true" --><span class="type">MP4Err</span><!-- /a --> <a machinegenerated="true" href="index.html#//apple_ref/c/func/ISOIFF_GetHEVCDecoderConfigRecordFromProperty" logicalPath="//apple_ref/c/instm/ISOIFF_GetHEVCDecoderConfigRecordFromProperty //apple_ref/c/clm/ISOIFF_GetHEVCDecoderConfigRecordFromProperty //apple_ref/c/intfcm/ISOIFF_GetHEVCDecoderConfigRecordFromProperty //apple_ref/c/intfm/ISOIFF_GetHEVCDecoderConfigRecordFromProperty //apple_ref/c/func/ISOIFF_GetHEVCDecoderConfigRecordFromProperty" target="_top"><span class="function">ISOIFF_GetHEVCDecoderConfigRecordFromProperty</span></a>(
+    <!-- a logicalPath="//apple_ref/c/cl/MP4AtomPtr //apple_ref/c/tdef/MP4AtomPtr //apple_ref/c/tag/MP4AtomPtr //apple_ref/c/struct/MP4AtomPtr //apple_ref/c/intf/MP4AtomPtr //apple_ref/doc/anysymbol/MP4AtomPtr" machineGenerated="true" --><span class="type">MP4AtomPtr</span><!-- /a --> <span class="param">property</span>,
+    <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/ISOIFF_HEVCDecoderConfigRecord" logicalPath="//apple_ref/c/cl/ISOIFF_HEVCDecoderConfigRecord //apple_ref/c/tdef/ISOIFF_HEVCDecoderConfigRecord" target="_top"><span class="type">ISOIFF_HEVCDecoderConfigRecord</span></a> <span class="type">*</span><span class="param">decoderConfig</span>);  <!-- headerDoc=declaration;uid=//apple_ref/c/func/ISOIFF_GetHEVCDecoderConfigRecordFromProperty;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/ISOIFF_GetHEVCDecoderConfigRecordFromProperty/property;   name=property -->
+<a name="//apple_ref/doc/functionparam/ISOIFF_GetHEVCDecoderConfigRecordFromProperty/property"></a>
+<code>property</code>
+</dt>
+<dd><p>Property atom that is of type hvcC</p></dd>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/ISOIFF_GetHEVCDecoderConfigRecordFromProperty/decoderConfig;   name=decoderConfig -->
+<a name="//apple_ref/doc/functionparam/ISOIFF_GetHEVCDecoderConfigRecordFromProperty/decoderConfig"></a>
+<code>decoderConfig</code>
+</dt>
+<dd><p>HEVC decoder configuration record, which will be parsed</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_GetHEVCDecoderConfigRecordFromProperty;name=start --><p>Parses a HEVCDecoderConfigRecord from a property atom
+<!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_GetHEVCDecoderConfigRecordFromProperty;name=end --><!-- end discussion -->
 </p>
 <hr class="betweenAPIEntries">
 <!-- headerDoc=func;  uid=//apple_ref/c/func/ISOIFF_GetHEVCItemDataLengthSizeMinusOne;   name=ISOIFF_GetHEVCItemDataLengthSizeMinusOne --><a name="//apple_ref/c/func/ISOIFF_GetHEVCItemDataLengthSizeMinusOne"></a>
@@ -700,6 +791,29 @@ function disclosure_triangle(elt) {
 <!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_GetNALUnitsWithTypeFromHEVCDecConf;name=end --><!-- end discussion -->
 </p>
 <hr class="betweenAPIEntries">
+<!-- headerDoc=func;  uid=//apple_ref/c/func/ISOIFF_ParseImageSpatialExtends;   name=ISOIFF_ParseImageSpatialExtends --><a name="//apple_ref/c/func/ISOIFF_ParseImageSpatialExtends"></a>
+<h3><a name="ISOIFF_ParseImageSpatialExtends">ISOIFF_ParseImageSpatialExtends</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/func/ISOIFF_ParseImageSpatialExtends;name=start --><!-- a logicalPath="//apple_ref/c/cl/MP4Err //apple_ref/c/tdef/MP4Err //apple_ref/c/tag/MP4Err //apple_ref/c/struct/MP4Err //apple_ref/c/intf/MP4Err //apple_ref/doc/anysymbol/MP4Err" machineGenerated="true" --><span class="type">MP4Err</span><!-- /a --> <a machinegenerated="true" href="index.html#//apple_ref/c/func/ISOIFF_ParseImageSpatialExtends" logicalPath="//apple_ref/c/instm/ISOIFF_ParseImageSpatialExtends //apple_ref/c/clm/ISOIFF_ParseImageSpatialExtends //apple_ref/c/intfcm/ISOIFF_ParseImageSpatialExtends //apple_ref/c/intfm/ISOIFF_ParseImageSpatialExtends //apple_ref/c/func/ISOIFF_ParseImageSpatialExtends" target="_top"><span class="function">ISOIFF_ParseImageSpatialExtends</span></a> (
+    <!-- a logicalPath="//apple_ref/c/cl/MP4AtomPtr //apple_ref/c/tdef/MP4AtomPtr //apple_ref/c/tag/MP4AtomPtr //apple_ref/c/struct/MP4AtomPtr //apple_ref/c/intf/MP4AtomPtr //apple_ref/doc/anysymbol/MP4AtomPtr" machineGenerated="true" --><span class="type">MP4AtomPtr</span><!-- /a --> <span class="param">property</span>);  <!-- headerDoc=declaration;uid=//apple_ref/c/func/ISOIFF_ParseImageSpatialExtends;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/ISOIFF_ParseImageSpatialExtends/property;   name=property -->
+<a name="//apple_ref/doc/functionparam/ISOIFF_ParseImageSpatialExtends/property"></a>
+<code>property</code>
+</dt>
+<dd><p>Property atom that is of type ispe</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_ParseImageSpatialExtends;name=start --><p>Parses an ImageSpatialExtentsProperty from a property atom and prints width and height
+<!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_ParseImageSpatialExtends;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
 <!-- headerDoc=func;  uid=//apple_ref/c/func/ISOIFF_PutHEVCDecConfRecordIntoHandle;   name=ISOIFF_PutHEVCDecConfRecordIntoHandle --><a name="//apple_ref/c/func/ISOIFF_PutHEVCDecConfRecordIntoHandle"></a>
 <h3><a name="ISOIFF_PutHEVCDecConfRecordIntoHandle">ISOIFF_PutHEVCDecConfRecordIntoHandle</a></h3>
 <hr class="afterName">
@@ -763,13 +877,61 @@ function disclosure_triangle(elt) {
 <a name="HeaderDoc_datatypes"></a>
 <h2 class="h2tight">Typedefs</h2>
 <dl>
+<dt><tt><a href="index.html#//apple_ref/doc/title:tdef/ISOIFF_HEVCConfigurationAtom" target="_top">ISOIFF_HEVCConfigurationAtom</a></tt></dt>
+<dd><p>HEVCConfigurationBox
+</p></dd>
+<dt><tt><a href="index.html#//apple_ref/c/tdef/ISOIFF_HEVCConfigurationAtomPtr" target="_top">ISOIFF_HEVCConfigurationAtomPtr</a></tt></dt>
+<dd><p>HEVCConfigurationBox
+</p></dd>
 <dt><tt><a href="index.html#//apple_ref/c/tdef/ISOIFF_HEVCDecoderConfigRecord" target="_top">ISOIFF_HEVCDecoderConfigRecord</a></tt></dt>
 <dd><p>HEVC decoder configuration record
 </p></dd>
 <dt><tt><a href="index.html#//apple_ref/c/tdef/ISOIFF_HEVCItemData" target="_top">ISOIFF_HEVCItemData</a></tt></dt>
 <dd><p>Struct that holds HEVC NAL units for usage as an ISOIFF_Image's data
 </p></dd>
+<dt><tt><a href="index.html#//apple_ref/doc/title:tdef/ISOIFF_ImageSpatialExtentsPropertyAtom" target="_top">ISOIFF_ImageSpatialExtentsPropertyAtom</a></tt></dt>
+<dd><p>ImageSpatialExtentsPropertyAtom
+</p></dd>
+<dt><tt><a href="index.html#//apple_ref/c/tdef/ISOIFF_ImageSpatialExtentsPropertyAtomPtr" target="_top">ISOIFF_ImageSpatialExtentsPropertyAtomPtr</a></tt></dt>
+<dd><p>ImageSpatialExtentsPropertyAtom
+</p></dd>
 </dl>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=title:tdef;  uid=//apple_ref/doc/title:tdef/ISOIFF_HEVCConfigurationAtom;   name=ISOIFF_HEVCConfigurationAtom --><a name="//apple_ref/doc/title:tdef/ISOIFF_HEVCConfigurationAtom"></a>
+<h3><a name="ISOIFF_HEVCConfigurationAtom">ISOIFF_HEVCConfigurationAtom</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/doc/title:tdef/ISOIFF_HEVCConfigurationAtom;name=start --><!-- begin abstract --></p>
+<p>HEVCConfigurationBox
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/doc/title:tdef/ISOIFF_HEVCConfigurationAtom;name=end --></p>
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/doc/title:tdef/ISOIFF_HEVCConfigurationAtom;name=start --><span class="keyword">typedef</span> <span class="keyword">struct</span> <a machinegenerated="true" href="index.html#//apple_ref/doc/title:tdef/ISOIFF_HEVCConfigurationAtom" logicalPath="//apple_ref/c/cl/ISOIFF_HEVCConfigurationAtom //apple_ref/c/tdef/ISOIFF_HEVCConfigurationAtom //apple_ref/c/tag/ISOIFF_HEVCConfigurationAtom //apple_ref/c/struct/ISOIFF_HEVCConfigurationAtom //apple_ref/c/intf/ISOIFF_HEVCConfigurationAtom //apple_ref/doc/anysymbol/ISOIFF_HEVCConfigurationAtom" target="_top"><span class="type">ISOIFF_HEVCConfigurationAtom</span></a> { 
+    <!-- a logicalPath="//apple_ref/c/cl/MP4_BASE_ATOM //apple_ref/c/tdef/MP4_BASE_ATOM //apple_ref/c/tag/MP4_BASE_ATOM //apple_ref/c/struct/MP4_BASE_ATOM //apple_ref/c/intf/MP4_BASE_ATOM //apple_ref/doc/anysymbol/MP4_BASE_ATOM" machineGenerated="true" --><span class="type">MP4_BASE_ATOM</span><!-- /a -->  <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/ISOIFF_HEVCDecoderConfigRecord" logicalPath="//apple_ref/c/cl/ISOIFF_HEVCDecoderConfigRecord //apple_ref/c/tdef/ISOIFF_HEVCDecoderConfigRecord" target="_top"><span class="type">ISOIFF_HEVCDecoderConfigRecord</span></a> <!-- a logicalPath="//apple_ref/c/econst/configRecord //apple_ref/c/data/configRecord //apple_ref/c/clconst/configRecord " machineGenerated="true" --><span class="var">configRecord</span><!-- /a -->; 
+    <!-- a logicalPath="//apple_ref/c/cl/MP4Handle //apple_ref/c/tdef/MP4Handle //apple_ref/c/tag/MP4Handle //apple_ref/c/struct/MP4Handle //apple_ref/c/intf/MP4Handle //apple_ref/doc/anysymbol/MP4Handle" machineGenerated="true" --><span class="type">MP4Handle</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/configRecordHandle //apple_ref/c/data/configRecordHandle //apple_ref/c/clconst/configRecordHandle " machineGenerated="true" --><span class="var">configRecordHandle</span><!-- /a -->; 
+} <!-- a logicalPath="//apple_ref/c/econst/ISOIFF_HEVCConfigurationAtom //apple_ref/c/data/ISOIFF_HEVCConfigurationAtom //apple_ref/c/clconst/ISOIFF_HEVCConfigurationAtom " machineGenerated="true" --><span class="var">ISOIFF_HEVCConfigurationAtom</span><!-- /a -->, <span class="type">*</span><!-- a logicalPath="//apple_ref/c/econst/ISOIFF_HEVCConfigurationAtomPtr //apple_ref/c/data/ISOIFF_HEVCConfigurationAtomPtr //apple_ref/c/clconst/ISOIFF_HEVCConfigurationAtomPtr " machineGenerated="true" --><span class="var">ISOIFF_HEVCConfigurationAtomPtr</span><!-- /a -->;  <!-- headerDoc=declaration;uid=//apple_ref/doc/title:tdef/ISOIFF_HEVCConfigurationAtom;name=end --></pre>
+</div>
+<p><b>See Also</b></p>
+<div class="list_indent"><dl>
+<dt><p><a href="index.html#//apple_ref/c/tdef/ISOIFF_HEVCConfigurationAtomPtr" logicalPath="//apple_ref/c/tdef/ISOIFF_HEVCConfigurationAtomPtr" target="_top">ISOIFF_HEVCConfigurationAtomPtr</a></p></dt>
+<dd></dd>
+</dl></div>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=tdef;  uid=//apple_ref/c/tdef/ISOIFF_HEVCConfigurationAtomPtr;   name=ISOIFF_HEVCConfigurationAtomPtr --><a name="//apple_ref/c/tdef/ISOIFF_HEVCConfigurationAtomPtr"></a>
+<h3><a name="ISOIFF_HEVCConfigurationAtomPtr">ISOIFF_HEVCConfigurationAtomPtr</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/ISOIFF_HEVCConfigurationAtomPtr;name=start --><!-- begin abstract --></p>
+<p>HEVCConfigurationBox
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/ISOIFF_HEVCConfigurationAtomPtr;name=end --></p>
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/tdef/ISOIFF_HEVCConfigurationAtomPtr;name=start --><span class="keyword">typedef</span> <span class="keyword">struct</span> <a machinegenerated="true" href="index.html#//apple_ref/doc/title:tdef/ISOIFF_HEVCConfigurationAtom" logicalPath="//apple_ref/c/cl/ISOIFF_HEVCConfigurationAtom //apple_ref/c/tdef/ISOIFF_HEVCConfigurationAtom //apple_ref/c/tag/ISOIFF_HEVCConfigurationAtom //apple_ref/c/struct/ISOIFF_HEVCConfigurationAtom //apple_ref/c/intf/ISOIFF_HEVCConfigurationAtom //apple_ref/doc/anysymbol/ISOIFF_HEVCConfigurationAtom" target="_top"><span class="type">ISOIFF_HEVCConfigurationAtom</span></a> { 
+    <!-- a logicalPath="//apple_ref/c/cl/MP4_BASE_ATOM //apple_ref/c/tdef/MP4_BASE_ATOM //apple_ref/c/tag/MP4_BASE_ATOM //apple_ref/c/struct/MP4_BASE_ATOM //apple_ref/c/intf/MP4_BASE_ATOM //apple_ref/doc/anysymbol/MP4_BASE_ATOM" machineGenerated="true" --><span class="type">MP4_BASE_ATOM</span><!-- /a -->  <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/ISOIFF_HEVCDecoderConfigRecord" logicalPath="//apple_ref/c/cl/ISOIFF_HEVCDecoderConfigRecord //apple_ref/c/tdef/ISOIFF_HEVCDecoderConfigRecord" target="_top"><span class="type">ISOIFF_HEVCDecoderConfigRecord</span></a> <!-- a logicalPath="//apple_ref/c/econst/configRecord //apple_ref/c/data/configRecord //apple_ref/c/clconst/configRecord " machineGenerated="true" --><span class="var">configRecord</span><!-- /a -->; 
+    <!-- a logicalPath="//apple_ref/c/cl/MP4Handle //apple_ref/c/tdef/MP4Handle //apple_ref/c/tag/MP4Handle //apple_ref/c/struct/MP4Handle //apple_ref/c/intf/MP4Handle //apple_ref/doc/anysymbol/MP4Handle" machineGenerated="true" --><span class="type">MP4Handle</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/configRecordHandle //apple_ref/c/data/configRecordHandle //apple_ref/c/clconst/configRecordHandle " machineGenerated="true" --><span class="var">configRecordHandle</span><!-- /a -->; 
+} <!-- a logicalPath="//apple_ref/c/econst/ISOIFF_HEVCConfigurationAtom //apple_ref/c/data/ISOIFF_HEVCConfigurationAtom //apple_ref/c/clconst/ISOIFF_HEVCConfigurationAtom " machineGenerated="true" --><span class="var">ISOIFF_HEVCConfigurationAtom</span><!-- /a -->, <span class="type">*</span><!-- a logicalPath="//apple_ref/c/econst/ISOIFF_HEVCConfigurationAtomPtr //apple_ref/c/data/ISOIFF_HEVCConfigurationAtomPtr //apple_ref/c/clconst/ISOIFF_HEVCConfigurationAtomPtr " machineGenerated="true" --><span class="var">ISOIFF_HEVCConfigurationAtomPtr</span><!-- /a -->;  <!-- headerDoc=declaration;uid=//apple_ref/c/tdef/ISOIFF_HEVCConfigurationAtomPtr;name=end --></pre>
+</div>
+<p><b>See Also</b></p>
+<div class="list_indent"><dl>
+<dt><p><a href="index.html#//apple_ref/doc/title:tdef/ISOIFF_HEVCConfigurationAtom" logicalPath="//apple_ref/doc/title:tdef/ISOIFF_HEVCConfigurationAtom" target="_top">ISOIFF_HEVCConfigurationAtom</a></p></dt>
+<dd></dd>
+</dl></div>
 <hr class="betweenAPIEntries">
 <!-- headerDoc=tdef;  uid=//apple_ref/c/tdef/ISOIFF_HEVCDecoderConfigRecord;   name=ISOIFF_HEVCDecoderConfigRecord --><a name="//apple_ref/c/tdef/ISOIFF_HEVCDecoderConfigRecord"></a>
 <h3><a name="ISOIFF_HEVCDecoderConfigRecord">ISOIFF_HEVCDecoderConfigRecord</a></h3>
@@ -815,6 +977,42 @@ function disclosure_triangle(elt) {
 <div class="declaration_indent">
 <pre><!-- headerDoc=declaration;uid=//apple_ref/c/tdef/ISOIFF_HEVCItemData;name=start --><span class="keyword">typedef</span> <span class="keyword">struct</span> <!-- a logicalPath="//apple_ref/c/cl/ISOIFF_HEVCItemDataS //apple_ref/c/tdef/ISOIFF_HEVCItemDataS //apple_ref/c/tag/ISOIFF_HEVCItemDataS //apple_ref/c/struct/ISOIFF_HEVCItemDataS //apple_ref/c/intf/ISOIFF_HEVCItemDataS //apple_ref/doc/anysymbol/ISOIFF_HEVCItemDataS" machineGenerated="true" --><span class="type">ISOIFF_HEVCItemDataS</span><!-- /a --> <span class="type">*</span><!-- a logicalPath="//apple_ref/c/econst/ISOIFF_HEVCItemData //apple_ref/c/data/ISOIFF_HEVCItemData //apple_ref/c/clconst/ISOIFF_HEVCItemData " machineGenerated="true" --><span class="var">ISOIFF_HEVCItemData</span><!-- /a -->;  <!-- headerDoc=declaration;uid=//apple_ref/c/tdef/ISOIFF_HEVCItemData;name=end --></pre>
 </div>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=title:tdef;  uid=//apple_ref/doc/title:tdef/ISOIFF_ImageSpatialExtentsPropertyAtom;   name=ISOIFF_ImageSpatialExtentsPropertyAtom --><a name="//apple_ref/doc/title:tdef/ISOIFF_ImageSpatialExtentsPropertyAtom"></a>
+<h3><a name="ISOIFF_ImageSpatialExtentsPropertyAtom">ISOIFF_ImageSpatialExtentsPropertyAtom</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/doc/title:tdef/ISOIFF_ImageSpatialExtentsPropertyAtom;name=start --><!-- begin abstract --></p>
+<p>ImageSpatialExtentsPropertyAtom
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/doc/title:tdef/ISOIFF_ImageSpatialExtentsPropertyAtom;name=end --></p>
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/doc/title:tdef/ISOIFF_ImageSpatialExtentsPropertyAtom;name=start --><span class="keyword">typedef</span> <span class="keyword">struct</span> <a machinegenerated="true" href="index.html#//apple_ref/doc/title:tdef/ISOIFF_ImageSpatialExtentsPropertyAtom" logicalPath="//apple_ref/c/cl/ISOIFF_ImageSpatialExtentsPropertyAtom //apple_ref/c/tdef/ISOIFF_ImageSpatialExtentsPropertyAtom //apple_ref/c/tag/ISOIFF_ImageSpatialExtentsPropertyAtom //apple_ref/c/struct/ISOIFF_ImageSpatialExtentsPropertyAtom //apple_ref/c/intf/ISOIFF_ImageSpatialExtentsPropertyAtom //apple_ref/doc/anysymbol/ISOIFF_ImageSpatialExtentsPropertyAtom" target="_top"><span class="type">ISOIFF_ImageSpatialExtentsPropertyAtom</span></a> { 
+    <!-- a logicalPath="//apple_ref/c/cl/MP4_FULL_ATOM //apple_ref/c/tdef/MP4_FULL_ATOM //apple_ref/c/tag/MP4_FULL_ATOM //apple_ref/c/struct/MP4_FULL_ATOM //apple_ref/c/intf/MP4_FULL_ATOM //apple_ref/doc/anysymbol/MP4_FULL_ATOM" machineGenerated="true" --><span class="type">MP4_FULL_ATOM</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/cl/u32 //apple_ref/c/tdef/u32 //apple_ref/c/tag/u32 //apple_ref/c/struct/u32 //apple_ref/c/intf/u32 //apple_ref/doc/anysymbol/u32" machineGenerated="true" --><span class="type">u32</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/image_width //apple_ref/c/data/image_width //apple_ref/c/clconst/image_width " machineGenerated="true" --><span class="var">image_width</span><!-- /a -->; 
+    <!-- a logicalPath="//apple_ref/c/cl/u32 //apple_ref/c/tdef/u32 //apple_ref/c/tag/u32 //apple_ref/c/struct/u32 //apple_ref/c/intf/u32 //apple_ref/doc/anysymbol/u32" machineGenerated="true" --><span class="type">u32</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/image_height //apple_ref/c/data/image_height //apple_ref/c/clconst/image_height " machineGenerated="true" --><span class="var">image_height</span><!-- /a -->; 
+} <!-- a logicalPath="//apple_ref/c/econst/ISOIFF_ImageSpatialExtentsPropertyAtom //apple_ref/c/data/ISOIFF_ImageSpatialExtentsPropertyAtom //apple_ref/c/clconst/ISOIFF_ImageSpatialExtentsPropertyAtom " machineGenerated="true" --><span class="var">ISOIFF_ImageSpatialExtentsPropertyAtom</span><!-- /a -->, <span class="type">*</span><!-- a logicalPath="//apple_ref/c/econst/ISOIFF_ImageSpatialExtentsPropertyAtomPtr //apple_ref/c/data/ISOIFF_ImageSpatialExtentsPropertyAtomPtr //apple_ref/c/clconst/ISOIFF_ImageSpatialExtentsPropertyAtomPtr " machineGenerated="true" --><span class="var">ISOIFF_ImageSpatialExtentsPropertyAtomPtr</span><!-- /a -->;  <!-- headerDoc=declaration;uid=//apple_ref/doc/title:tdef/ISOIFF_ImageSpatialExtentsPropertyAtom;name=end --></pre>
+</div>
+<p><b>See Also</b></p>
+<div class="list_indent"><dl>
+<dt><p><a href="index.html#//apple_ref/c/tdef/ISOIFF_ImageSpatialExtentsPropertyAtomPtr" logicalPath="//apple_ref/c/tdef/ISOIFF_ImageSpatialExtentsPropertyAtomPtr" target="_top">ISOIFF_ImageSpatialExtentsPropertyAtomPtr</a></p></dt>
+<dd></dd>
+</dl></div>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=tdef;  uid=//apple_ref/c/tdef/ISOIFF_ImageSpatialExtentsPropertyAtomPtr;   name=ISOIFF_ImageSpatialExtentsPropertyAtomPtr --><a name="//apple_ref/c/tdef/ISOIFF_ImageSpatialExtentsPropertyAtomPtr"></a>
+<h3><a name="ISOIFF_ImageSpatialExtentsPropertyAtomPtr">ISOIFF_ImageSpatialExtentsPropertyAtomPtr</a></h3>
+<hr class="afterName">
+<p><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/ISOIFF_ImageSpatialExtentsPropertyAtomPtr;name=start --><!-- begin abstract --></p>
+<p>ImageSpatialExtentsPropertyAtom
+<!-- end abstract --><!-- headerDoc=abstract;uid=//apple_ref/c/tdef/ISOIFF_ImageSpatialExtentsPropertyAtomPtr;name=end --></p>
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/tdef/ISOIFF_ImageSpatialExtentsPropertyAtomPtr;name=start --><span class="keyword">typedef</span> <span class="keyword">struct</span> <a machinegenerated="true" href="index.html#//apple_ref/doc/title:tdef/ISOIFF_ImageSpatialExtentsPropertyAtom" logicalPath="//apple_ref/c/cl/ISOIFF_ImageSpatialExtentsPropertyAtom //apple_ref/c/tdef/ISOIFF_ImageSpatialExtentsPropertyAtom //apple_ref/c/tag/ISOIFF_ImageSpatialExtentsPropertyAtom //apple_ref/c/struct/ISOIFF_ImageSpatialExtentsPropertyAtom //apple_ref/c/intf/ISOIFF_ImageSpatialExtentsPropertyAtom //apple_ref/doc/anysymbol/ISOIFF_ImageSpatialExtentsPropertyAtom" target="_top"><span class="type">ISOIFF_ImageSpatialExtentsPropertyAtom</span></a> { 
+    <!-- a logicalPath="//apple_ref/c/cl/MP4_FULL_ATOM //apple_ref/c/tdef/MP4_FULL_ATOM //apple_ref/c/tag/MP4_FULL_ATOM //apple_ref/c/struct/MP4_FULL_ATOM //apple_ref/c/intf/MP4_FULL_ATOM //apple_ref/doc/anysymbol/MP4_FULL_ATOM" machineGenerated="true" --><span class="type">MP4_FULL_ATOM</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/cl/u32 //apple_ref/c/tdef/u32 //apple_ref/c/tag/u32 //apple_ref/c/struct/u32 //apple_ref/c/intf/u32 //apple_ref/doc/anysymbol/u32" machineGenerated="true" --><span class="type">u32</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/image_width //apple_ref/c/data/image_width //apple_ref/c/clconst/image_width " machineGenerated="true" --><span class="var">image_width</span><!-- /a -->; 
+    <!-- a logicalPath="//apple_ref/c/cl/u32 //apple_ref/c/tdef/u32 //apple_ref/c/tag/u32 //apple_ref/c/struct/u32 //apple_ref/c/intf/u32 //apple_ref/doc/anysymbol/u32" machineGenerated="true" --><span class="type">u32</span><!-- /a --> <!-- a logicalPath="//apple_ref/c/econst/image_height //apple_ref/c/data/image_height //apple_ref/c/clconst/image_height " machineGenerated="true" --><span class="var">image_height</span><!-- /a -->; 
+} <!-- a logicalPath="//apple_ref/c/econst/ISOIFF_ImageSpatialExtentsPropertyAtom //apple_ref/c/data/ISOIFF_ImageSpatialExtentsPropertyAtom //apple_ref/c/clconst/ISOIFF_ImageSpatialExtentsPropertyAtom " machineGenerated="true" --><span class="var">ISOIFF_ImageSpatialExtentsPropertyAtom</span><!-- /a -->, <span class="type">*</span><!-- a logicalPath="//apple_ref/c/econst/ISOIFF_ImageSpatialExtentsPropertyAtomPtr //apple_ref/c/data/ISOIFF_ImageSpatialExtentsPropertyAtomPtr //apple_ref/c/clconst/ISOIFF_ImageSpatialExtentsPropertyAtomPtr " machineGenerated="true" --><span class="var">ISOIFF_ImageSpatialExtentsPropertyAtomPtr</span><!-- /a -->;  <!-- headerDoc=declaration;uid=//apple_ref/c/tdef/ISOIFF_ImageSpatialExtentsPropertyAtomPtr;name=end --></pre>
+</div>
+<p><b>See Also</b></p>
+<div class="list_indent"><dl>
+<dt><p><a href="index.html#//apple_ref/doc/title:tdef/ISOIFF_ImageSpatialExtentsPropertyAtom" logicalPath="//apple_ref/doc/title:tdef/ISOIFF_ImageSpatialExtentsPropertyAtom" target="_top">ISOIFF_ImageSpatialExtentsPropertyAtom</a></p></dt>
+<dd></dd>
+</dl></div>
 <hr class="betweenSections">
 <a name="HeaderDoc_structs"></a>
 <h2 class="h2tight">Structs&nbsp;and&nbsp;Unions</h2>

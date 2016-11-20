@@ -285,6 +285,8 @@ function disclosure_triangle(elt) {
 <br><a name="HeaderDoc_functions"></a>
 <h2 class="h2tight">Functions</h2>
 <dl>
+<dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_AddImageProperty" target="_top">ISOIFF_AddImageProperty</a></tt></dt>
+<dd></dd>
 <dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_AddImageRelation" target="_top">ISOIFF_AddImageRelation</a></tt></dt>
 <dd></dd>
 <dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_AddImageToMeta" target="_top">ISOIFF_AddImageToMeta</a></tt></dt>
@@ -304,6 +306,8 @@ function disclosure_triangle(elt) {
 <dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_GetAllMetasWithType" target="_top">ISOIFF_GetAllMetasWithType</a></tt></dt>
 <dd></dd>
 <dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_GetImageData" target="_top">ISOIFF_GetImageData</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_GetImageProperties" target="_top">ISOIFF_GetImageProperties</a></tt></dt>
 <dd></dd>
 <dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_GetImagesOfImageWithType" target="_top">ISOIFF_GetImagesOfImageWithType</a></tt></dt>
 <dd></dd>
@@ -328,6 +332,43 @@ function disclosure_triangle(elt) {
 <dt><tt><a href="index.html#//apple_ref/c/func/ISOIFF_WriteCollectionToFile" target="_top">ISOIFF_WriteCollectionToFile</a></tt></dt>
 <dd></dd>
 </dl>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=func;  uid=//apple_ref/c/func/ISOIFF_AddImageProperty;   name=ISOIFF_AddImageProperty --><a name="//apple_ref/c/func/ISOIFF_AddImageProperty"></a>
+<h3><a name="ISOIFF_AddImageProperty">ISOIFF_AddImageProperty</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/func/ISOIFF_AddImageProperty;name=start --><!-- a logicalPath="//apple_ref/c/cl/MP4Err //apple_ref/c/tdef/MP4Err //apple_ref/c/tag/MP4Err //apple_ref/c/struct/MP4Err //apple_ref/c/intf/MP4Err //apple_ref/doc/anysymbol/MP4Err" machineGenerated="true" --><span class="type">MP4Err</span><!-- /a --> <a machinegenerated="true" href="index.html#//apple_ref/c/func/ISOIFF_AddImageProperty" logicalPath="//apple_ref/c/instm/ISOIFF_AddImageProperty //apple_ref/c/clm/ISOIFF_AddImageProperty //apple_ref/c/intfcm/ISOIFF_AddImageProperty //apple_ref/c/intfm/ISOIFF_AddImageProperty //apple_ref/c/func/ISOIFF_AddImageProperty" target="_top"><span class="function">ISOIFF_AddImageProperty</span></a> (
+    <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/ISOIFF_Image" logicalPath="//apple_ref/c/cl/ISOIFF_Image //apple_ref/c/tdef/ISOIFF_Image" target="_top"><span class="type">ISOIFF_Image</span></a> <span class="param">image</span>,
+    <!-- a logicalPath="//apple_ref/c/cl/MP4AtomPtr //apple_ref/c/tdef/MP4AtomPtr //apple_ref/c/tag/MP4AtomPtr //apple_ref/c/struct/MP4AtomPtr //apple_ref/c/intf/MP4AtomPtr //apple_ref/doc/anysymbol/MP4AtomPtr" machineGenerated="true" --><span class="type">MP4AtomPtr</span><!-- /a --> <span class="param">property</span>,
+    <!-- a logicalPath="//apple_ref/c/cl/u8 //apple_ref/c/tdef/u8 //apple_ref/c/tag/u8 //apple_ref/c/struct/u8 //apple_ref/c/intf/u8 //apple_ref/doc/anysymbol/u8" machineGenerated="true" --><span class="type">u8</span><!-- /a --> <span class="param">essential</span>);  <!-- headerDoc=declaration;uid=//apple_ref/c/func/ISOIFF_AddImageProperty;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/ISOIFF_AddImageProperty/image;   name=image -->
+<a name="//apple_ref/doc/functionparam/ISOIFF_AddImageProperty/image"></a>
+<code>image</code>
+</dt>
+<dd><p>ISOIFF_Image image to which the property gets added</p></dd>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/ISOIFF_AddImageProperty/property;   name=property -->
+<a name="//apple_ref/doc/functionparam/ISOIFF_AddImageProperty/property"></a>
+<code>property</code>
+</dt>
+<dd><p>MP4AtomPtr the property, which is added to the image</p></dd>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/ISOIFF_AddImageProperty/essential;   name=essential -->
+<a name="//apple_ref/doc/functionparam/ISOIFF_AddImageProperty/essential"></a>
+<code>essential</code>
+</dt>
+<dd><p>u8 marks the property as essential for the image</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_AddImageProperty;name=start --><p>Adds a property to the image
+<!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_AddImageProperty;name=end --><!-- end discussion -->
+</p>
 <hr class="betweenAPIEntries">
 <!-- headerDoc=func;  uid=//apple_ref/c/func/ISOIFF_AddImageRelation;   name=ISOIFF_AddImageRelation --><a name="//apple_ref/c/func/ISOIFF_AddImageRelation"></a>
 <h3><a name="ISOIFF_AddImageRelation">ISOIFF_AddImageRelation</a></h3>
@@ -447,7 +488,7 @@ function disclosure_triangle(elt) {
 <pre><!-- headerDoc=declaration;uid=//apple_ref/c/func/ISOIFF_CreateImageCollection;name=start --><!-- a logicalPath="//apple_ref/c/cl/MP4Err //apple_ref/c/tdef/MP4Err //apple_ref/c/tag/MP4Err //apple_ref/c/struct/MP4Err //apple_ref/c/intf/MP4Err //apple_ref/doc/anysymbol/MP4Err" machineGenerated="true" --><span class="type">MP4Err</span><!-- /a --> <a machinegenerated="true" href="index.html#//apple_ref/c/func/ISOIFF_CreateImageCollection" logicalPath="//apple_ref/c/instm/ISOIFF_CreateImageCollection //apple_ref/c/clm/ISOIFF_CreateImageCollection //apple_ref/c/intfcm/ISOIFF_CreateImageCollection //apple_ref/c/intfm/ISOIFF_CreateImageCollection //apple_ref/c/func/ISOIFF_CreateImageCollection" target="_top"><span class="function">ISOIFF_CreateImageCollection</span></a> (
     <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/ISOIFF_ImageCollection" logicalPath="//apple_ref/c/cl/ISOIFF_ImageCollection //apple_ref/c/tdef/ISOIFF_ImageCollection" target="_top"><span class="type">ISOIFF_ImageCollection</span></a> <span class="type">*</span><span class="param">collection</span>,
     <!-- a logicalPath="//apple_ref/c/cl/u32 //apple_ref/c/tdef/u32 //apple_ref/c/tag/u32 //apple_ref/c/struct/u32 //apple_ref/c/intf/u32 //apple_ref/doc/anysymbol/u32" machineGenerated="true" --><span class="type">u32</span><!-- /a --> <span class="param">brand</span>,
-    <!-- a logicalPath="//apple_ref/c/cl/u32 //apple_ref/c/tdef/u32 //apple_ref/c/tag/u32 //apple_ref/c/struct/u32 //apple_ref/c/intf/u32 //apple_ref/doc/anysymbol/u32" machineGenerated="true" --><span class="type">u32</span><!-- /a --> <span class="param">minorversion</span>);  <!-- headerDoc=declaration;uid=//apple_ref/c/func/ISOIFF_CreateImageCollection;name=end --></pre>
+    <!-- a logicalPath="//apple_ref/c/cl/u32 //apple_ref/c/tdef/u32 //apple_ref/c/tag/u32 //apple_ref/c/struct/u32 //apple_ref/c/intf/u32 //apple_ref/doc/anysymbol/u32" machineGenerated="true" --><span class="type">u32</span><!-- /a --> <span class="param">minorVersion</span>);  <!-- headerDoc=declaration;uid=//apple_ref/c/func/ISOIFF_CreateImageCollection;name=end --></pre>
 </div>
 <h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
 <div class="param_indent">
@@ -465,9 +506,9 @@ function disclosure_triangle(elt) {
 </dt>
 <dd><p>The brand of the image collection</p></dd>
 <dt>
-<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/ISOIFF_CreateImageCollection/minorversion;   name=minorversion -->
-<a name="//apple_ref/doc/functionparam/ISOIFF_CreateImageCollection/minorversion"></a>
-<code>minorversion</code>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/ISOIFF_CreateImageCollection/minorVersion;   name=minorVersion -->
+<a name="//apple_ref/doc/functionparam/ISOIFF_CreateImageCollection/minorVersion"></a>
+<code>minorVersion</code>
 </dt>
 <dd><p>The minorversion of the image collection</p></dd>
 </dl>
@@ -662,6 +703,43 @@ function disclosure_triangle(elt) {
 <h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
 <!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_GetImageData;name=start --><p>Gets the data of an image in form of an MP4Handle
 <!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_GetImageData;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=func;  uid=//apple_ref/c/func/ISOIFF_GetImageProperties;   name=ISOIFF_GetImageProperties --><a name="//apple_ref/c/func/ISOIFF_GetImageProperties"></a>
+<h3><a name="ISOIFF_GetImageProperties">ISOIFF_GetImageProperties</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/c/func/ISOIFF_GetImageProperties;name=start --><!-- a logicalPath="//apple_ref/c/cl/MP4Err //apple_ref/c/tdef/MP4Err //apple_ref/c/tag/MP4Err //apple_ref/c/struct/MP4Err //apple_ref/c/intf/MP4Err //apple_ref/doc/anysymbol/MP4Err" machineGenerated="true" --><span class="type">MP4Err</span><!-- /a --> <a machinegenerated="true" href="index.html#//apple_ref/c/func/ISOIFF_GetImageProperties" logicalPath="//apple_ref/c/instm/ISOIFF_GetImageProperties //apple_ref/c/clm/ISOIFF_GetImageProperties //apple_ref/c/intfcm/ISOIFF_GetImageProperties //apple_ref/c/intfm/ISOIFF_GetImageProperties //apple_ref/c/func/ISOIFF_GetImageProperties" target="_top"><span class="function">ISOIFF_GetImageProperties</span></a> (
+    <a machinegenerated="true" href="index.html#//apple_ref/c/tdef/ISOIFF_Image" logicalPath="//apple_ref/c/cl/ISOIFF_Image //apple_ref/c/tdef/ISOIFF_Image" target="_top"><span class="type">ISOIFF_Image</span></a> <span class="param">image</span>,
+    <!-- a logicalPath="//apple_ref/c/cl/MP4GenericAtom //apple_ref/c/tdef/MP4GenericAtom //apple_ref/c/tag/MP4GenericAtom //apple_ref/c/struct/MP4GenericAtom //apple_ref/c/intf/MP4GenericAtom //apple_ref/doc/anysymbol/MP4GenericAtom" machineGenerated="true" --><span class="type">MP4GenericAtom</span><!-- /a --> <span class="type">*</span><span class="type">*</span><span class="param">properties</span>,
+    <!-- a logicalPath="//apple_ref/c/cl/u32 //apple_ref/c/tdef/u32 //apple_ref/c/tag/u32 //apple_ref/c/struct/u32 //apple_ref/c/intf/u32 //apple_ref/doc/anysymbol/u32" machineGenerated="true" --><span class="type">u32</span><!-- /a --> <span class="type">*</span><span class="param">propertiesFound</span>);  <!-- headerDoc=declaration;uid=//apple_ref/c/func/ISOIFF_GetImageProperties;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/ISOIFF_GetImageProperties/image;   name=image -->
+<a name="//apple_ref/doc/functionparam/ISOIFF_GetImageProperties/image"></a>
+<code>image</code>
+</dt>
+<dd><p>ISOIFF_Image image that has properties</p></dd>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/ISOIFF_GetImageProperties/properties;   name=properties -->
+<a name="//apple_ref/doc/functionparam/ISOIFF_GetImageProperties/properties"></a>
+<code>properties</code>
+</dt>
+<dd><p>MP4AtomPtr* array of properties of the image</p></dd>
+<dt>
+<!-- headerDoc=functionparam;  uid=//apple_ref/doc/functionparam/ISOIFF_GetImageProperties/propertiesFound;   name=propertiesFound -->
+<a name="//apple_ref/doc/functionparam/ISOIFF_GetImageProperties/propertiesFound"></a>
+<code>propertiesFound</code>
+</dt>
+<dd><p>u32* the amount of properties found for the image</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_GetImageProperties;name=start --><p>Obtains an array of properties from an image
+<!-- headerDoc=discussion;uid=//apple_ref/c/func/ISOIFF_GetImageProperties;name=end --><!-- end discussion -->
 </p>
 <hr class="betweenAPIEntries">
 <!-- headerDoc=func;  uid=//apple_ref/c/func/ISOIFF_GetImagesOfImageWithType;   name=ISOIFF_GetImagesOfImageWithType --><a name="//apple_ref/c/func/ISOIFF_GetImagesOfImageWithType"></a>
