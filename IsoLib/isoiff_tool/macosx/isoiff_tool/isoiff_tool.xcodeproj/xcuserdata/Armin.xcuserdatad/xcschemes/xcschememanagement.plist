@@ -7,9 +7,14 @@
 		<key>MP4_to_VTT.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>4</integer>
+			<integer>1</integer>
 		</dict>
 		<key>VTT_to_MP4.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>0</integer>
+		</dict>
+		<key>isoiff_tool.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>2</integer>
@@ -17,6 +22,11 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>188041B919CB3CD800FAABCE</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>8DD76FA90486AB0100D96B5E</key>
 		<dict>
 			<key>primary</key>

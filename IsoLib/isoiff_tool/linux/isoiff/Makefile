@@ -9,7 +9,9 @@ ISOIFF_SOURCES = \
 	Logger.c \
 	isoiff.c \
 	HEVCDecoderConfigRecord.c \
-	HEVCItemData.c
+	HEVCItemData.c \
+	HEVCConfigurationAtom.c \
+	ImageSpatialExtentsPropertyAtom.c
 ISOIFF_OBJECTS = $(ISOIFF_SOURCES:.c=.o)
 
 libisomediafile = ../../../libisomediafile/linux/libisomediafile/libisomediafile.a

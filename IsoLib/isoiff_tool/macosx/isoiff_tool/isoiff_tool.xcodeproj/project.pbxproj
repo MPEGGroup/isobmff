@@ -10,8 +10,8 @@
 		1805C3A81A3F55EB00C55F5F /* libisoiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18C784841A1AB26400756142 /* libisoiff.a */; };
 		181E0AAE1A30D4F100D0568A /* hevc_tool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 181E0AAC1A30D4F100D0568A /* hevc_tool.cpp */; };
 		188041C319CB3CD800FAABCE /* isoiff_tool_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 188041B719CB3C8000FAABCE /* isoiff_tool_main.cpp */; };
-		18C784B31A1FB7BC00756142 /* libTLibDecoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18C784B21A1FB7BC00756142 /* libTLibDecoder.a */; };
-		18C784B51A1FB7C800756142 /* libTLibCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18C784B41A1FB7C800756142 /* libTLibCommon.a */; };
+		C6D454A81DB518B6001B936A /* libTLibCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C6D454A61DB518B6001B936A /* libTLibCommon.a */; };
+		C6D454A91DB518B6001B936A /* libTLibDecoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C6D454A71DB518B6001B936A /* libTLibDecoder.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,9 +50,9 @@
 		188041D519CB3CD800FAABCE /* isoiff_tool */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = isoiff_tool; sourceTree = BUILT_PRODUCTS_DIR; };
 		18913AD119DF67CB00BFEAC8 /* Options.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Options.h; path = ../../src/Options.h; sourceTree = "<group>"; };
 		18C7847F1A1AB26300756142 /* isoiff.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = isoiff.xcodeproj; path = isoiff/isoiff.xcodeproj; sourceTree = "<group>"; };
-		18C784B21A1FB7BC00756142 /* libTLibDecoder.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTLibDecoder.a; path = ../../../HM/build/Debug/libTLibDecoder.a; sourceTree = SOURCE_ROOT; };
-		18C784B41A1FB7C800756142 /* libTLibCommon.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTLibCommon.a; path = ../../../HM/build/Debug/libTLibCommon.a; sourceTree = SOURCE_ROOT; };
 		18EC2CB81A366E1800B5ADD5 /* StringUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StringUtils.h; path = ../../src/StringUtils.h; sourceTree = "<group>"; };
+		C6D454A61DB518B6001B936A /* libTLibCommon.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTLibCommon.a; path = "../../../../../../../../../Library/Developer/Xcode/DerivedData/HM-eytzcyzvvcfzfjgipnkhjragvlue/Build/Products/Debug/libTLibCommon.a"; sourceTree = "<group>"; };
+		C6D454A71DB518B6001B936A /* libTLibDecoder.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTLibDecoder.a; path = "../../../../../../../../../Library/Developer/Xcode/DerivedData/HM-eytzcyzvvcfzfjgipnkhjragvlue/Build/Products/Debug/libTLibDecoder.a"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,8 +61,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				1805C3A81A3F55EB00C55F5F /* libisoiff.a in Frameworks */,
-				18C784B51A1FB7C800756142 /* libTLibCommon.a in Frameworks */,
-				18C784B31A1FB7BC00756142 /* libTLibDecoder.a in Frameworks */,
+				C6D454A81DB518B6001B936A /* libTLibCommon.a in Frameworks */,
+				C6D454A91DB518B6001B936A /* libTLibDecoder.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,8 +72,8 @@
 		08FB7794FE84155DC02AAC07 /* audioexample */ = {
 			isa = PBXGroup;
 			children = (
-				18C784B41A1FB7C800756142 /* libTLibCommon.a */,
-				18C784B21A1FB7BC00756142 /* libTLibDecoder.a */,
+				C6D454A61DB518B6001B936A /* libTLibCommon.a */,
+				C6D454A71DB518B6001B936A /* libTLibDecoder.a */,
 				18C7847F1A1AB26300756142 /* isoiff.xcodeproj */,
 				18B77B8B19EDBE450078892F /* Include */,
 				08FB7795FE84155DC02AAC07 /* Source */,
@@ -228,7 +228,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
-				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -250,6 +250,7 @@
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -259,14 +260,13 @@
 				HEADER_SEARCH_PATHS = (
 					"${SRCROOT}/../../../libisomediafile/src",
 					"${SRCROOT}/../../../libisomediafile/macosx",
-					"/Users/apple/Desktop/hevc_ref_sw/trunk/source/Lib/**",
+					"/Users/armin/Dropbox/Apple/Project2016/HM/source/Lib/**",
 				);
 				LIBRARY_SEARCH_PATHS = (
-					"${SRCROOT}/../../../libisomediafile/macosx/libisomediafile/build/Debug/",
-					"${SRCROOT}/../../../libisomediafile/macosx/libisomediafile/build/Debug",
-					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/HM-emcmbmerybpcfobfdvfjxmwmgevs/Build/Products/Debug",
+					"/Users/armin/Library/Developer/Xcode/DerivedData/libisomediafile-apweerusngxhhlabouxwwwxxnvcu/Build/Products/Debug/",
+					"/Users/armin/Library/Developer/Xcode/DerivedData/HM-eytzcyzvvcfzfjgipnkhjragvlue/Build/Products/Debug",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = isoiff_tool;
 				SDKROOT = macosx;
@@ -278,7 +278,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
-				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -295,6 +295,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_VERSION = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -304,14 +305,13 @@
 				HEADER_SEARCH_PATHS = (
 					"${SRCROOT}/../../../libisomediafile/src",
 					"${SRCROOT}/../../../libisomediafile/macosx",
-					"/Users/apple/Desktop/hevc_ref_sw/trunk/source/Lib/**",
+					"/Users/armin/Dropbox/Apple/Project2016/HM/source/Lib/**",
 				);
 				LIBRARY_SEARCH_PATHS = (
-					"${SRCROOT}/../../../libisomediafile/macosx/libisomediafile/build/Debug/",
-					"${SRCROOT}/../../../libisomediafile/macosx/libisomediafile/build/Debug",
-					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/HM-emcmbmerybpcfobfdvfjxmwmgevs/Build/Products/Debug",
+					"/Users/armin/Library/Developer/Xcode/DerivedData/libisomediafile-apweerusngxhhlabouxwwwxxnvcu/Build/Products/Debug/",
+					"/Users/armin/Library/Developer/Xcode/DerivedData/HM-eytzcyzvvcfzfjgipnkhjragvlue/Build/Products/Debug",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_NAME = isoiff_tool;
 				SDKROOT = macosx;
 			};
@@ -320,6 +320,7 @@
 		CB5BCAAA0A2E30930047AF98 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;
@@ -327,6 +328,7 @@
 		CB5BCAAB0A2E30930047AF98 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 			};
 			name = Release;
 		};

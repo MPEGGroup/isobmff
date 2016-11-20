@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -31,13 +31,13 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -67,13 +67,13 @@
     <ClCompile>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
       <Optimization>Disabled</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <MinimalRebuild>true</MinimalRebuild>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\..\libisomediafile\w32;..\..\..\libisomediafile\src;\\psf\Home\Desktop\HM_forW32\trunk\source\Lib;..\..\..\drc_in_isom\w32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\libisomediafile\w32;..\..\..\libisomediafile\src;D:\ArminData\Dropbox\Apple\Project2016\HM\source\Lib;..\..\..\drc_in_isom\w32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Debug\DRC_to_MP4.pch</PrecompiledHeaderOutputFile>
@@ -97,7 +97,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OutputFile>.\Debug\isoiff_tool.exe</OutputFile>
-      <AdditionalDependencies>..\..\..\libisomediafile\w32\libisomediafile\Debug\libisomedia.lib;..\isoiff\Debug\isoiff.lib;\\psf\Home\Desktop\HM_forW32\trunk\build\vc10\Win32\Debug\TLibVideoIo\TLibVideoIo.lib;\\psf\Home\Desktop\HM_forW32\trunk\build\vc10\Win32\Debug\TLibDecoder\TLibDecoder.lib;\\psf\Home\Desktop\HM_forW32\trunk\build\vc10\Win32\Debug\TLibCommon\TLibCommon.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\..\libisomediafile\w32\libisomediafile\Debug\libisomedia.lib;..\isoiff\Debug\isoiff.lib;D:\ArminData\Dropbox\Apple\Project2016\HM\build\vc2015\Win32\Debug\TLibVideoIo\TLibVideoIo.lib;D:\ArminData\Dropbox\Apple\Project2016\HM\build\vc2015\Win32\Debug\TLibDecoder\TLibDecoder.lib;D:\ArminData\Dropbox\Apple\Project2016\HM\build\vc2015\Win32\Debug\TLibCommon\TLibCommon.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

@@ -11,10 +11,12 @@
 		18C7848D1A1AB77A00756142 /* Logger.c in Sources */ = {isa = PBXBuildFile; fileRef = 18C784881A1AB77A00756142 /* Logger.c */; };
 		18C7848E1A1AB77A00756142 /* Logger.h in Headers */ = {isa = PBXBuildFile; fileRef = 18C784891A1AB77A00756142 /* Logger.h */; };
 		18C784AF1A1BC9C000756142 /* isoiff.c in Sources */ = {isa = PBXBuildFile; fileRef = 18C784AE1A1BC9C000756142 /* isoiff.c */; };
-		18C784B11A1BCA5B00756142 /* liblibisomediafile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18C784B01A1BCA5B00756142 /* liblibisomediafile.a */; };
 		18C784BD1A1FDCB500756142 /* isoiff_hevc.h in Headers */ = {isa = PBXBuildFile; fileRef = 18C784BA1A1FDCB500756142 /* isoiff_hevc.h */; };
 		18C784BE1A1FDCB500756142 /* HEVCItemData.c in Sources */ = {isa = PBXBuildFile; fileRef = 18C784BB1A1FDCB500756142 /* HEVCItemData.c */; };
 		18C784C01A1FFAB800756142 /* HEVCDecoderConfigRecord.c in Sources */ = {isa = PBXBuildFile; fileRef = 18C784BF1A1FFAB800756142 /* HEVCDecoderConfigRecord.c */; };
+		C6B2DF931DE04E2E00F8CDAD /* HEVCConfigurationAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = C6B2DF911DE04E2E00F8CDAD /* HEVCConfigurationAtom.c */; };
+		C6B2DF941DE04E2E00F8CDAD /* ImageSpatialExtentsPropertyAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = C6B2DF921DE04E2E00F8CDAD /* ImageSpatialExtentsPropertyAtom.c */; };
+		C6B2DF981DE0577800F8CDAD /* isomediafile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C6B2DF971DE0577800F8CDAD /* isomediafile.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,10 +25,12 @@
 		18C784881A1AB77A00756142 /* Logger.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Logger.c; path = ../../src/Logger.c; sourceTree = "<group>"; };
 		18C784891A1AB77A00756142 /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Logger.h; path = ../../src/Logger.h; sourceTree = "<group>"; };
 		18C784AE1A1BC9C000756142 /* isoiff.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = isoiff.c; path = ../../../src/isoiff.c; sourceTree = "<group>"; };
-		18C784B01A1BCA5B00756142 /* liblibisomediafile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibisomediafile.a; path = ../../../../libisomediafile/macosx/libisomediafile/build/Debug/liblibisomediafile.a; sourceTree = "<group>"; };
 		18C784BA1A1FDCB500756142 /* isoiff_hevc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = isoiff_hevc.h; path = ../../src/isoiff_hevc.h; sourceTree = "<group>"; };
 		18C784BB1A1FDCB500756142 /* HEVCItemData.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = HEVCItemData.c; path = ../../src/HEVCItemData.c; sourceTree = "<group>"; };
 		18C784BF1A1FFAB800756142 /* HEVCDecoderConfigRecord.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = HEVCDecoderConfigRecord.c; path = ../../src/HEVCDecoderConfigRecord.c; sourceTree = "<group>"; };
+		C6B2DF911DE04E2E00F8CDAD /* HEVCConfigurationAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = HEVCConfigurationAtom.c; path = ../../src/HEVCConfigurationAtom.c; sourceTree = "<group>"; };
+		C6B2DF921DE04E2E00F8CDAD /* ImageSpatialExtentsPropertyAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ImageSpatialExtentsPropertyAtom.c; path = ../../src/ImageSpatialExtentsPropertyAtom.c; sourceTree = "<group>"; };
+		C6B2DF971DE0577800F8CDAD /* isomediafile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = isomediafile.a; path = ../../../../../../../../../../Desktop/isomediafile.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -34,7 +38,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				18C784B11A1BCA5B00756142 /* liblibisomediafile.a in Frameworks */,
+				C6B2DF981DE0577800F8CDAD /* isomediafile.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,7 +48,7 @@
 		18C7846F1A1AB26300756142 = {
 			isa = PBXGroup;
 			children = (
-				18C784B01A1BCA5B00756142 /* liblibisomediafile.a */,
+				C6B2DF971DE0577800F8CDAD /* isomediafile.a */,
 				18C784851A1AB58500756142 /* Source */,
 				18C784791A1AB26300756142 /* Products */,
 			);
@@ -82,6 +86,8 @@
 		18C784BC1A1FDCB500756142 /* HEVC */ = {
 			isa = PBXGroup;
 			children = (
+				C6B2DF911DE04E2E00F8CDAD /* HEVCConfigurationAtom.c */,
+				C6B2DF921DE04E2E00F8CDAD /* ImageSpatialExtentsPropertyAtom.c */,
 				18C784BA1A1FDCB500756142 /* isoiff_hevc.h */,
 				18C784BB1A1FDCB500756142 /* HEVCItemData.c */,
 				18C784BF1A1FFAB800756142 /* HEVCDecoderConfigRecord.c */,
@@ -159,7 +165,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C6B2DF941DE04E2E00F8CDAD /* ImageSpatialExtentsPropertyAtom.c in Sources */,
 				18C7848D1A1AB77A00756142 /* Logger.c in Sources */,
+				C6B2DF931DE04E2E00F8CDAD /* HEVCConfigurationAtom.c in Sources */,
 				18C784AF1A1BC9C000756142 /* isoiff.c in Sources */,
 				18C784BE1A1FDCB500756142 /* HEVCItemData.c in Sources */,
 				18C784C01A1FFAB800756142 /* HEVCDecoderConfigRecord.c in Sources */,
@@ -252,11 +260,11 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					/Users/apple/Desktop/svns/trunk/IsoLib/libisomediafile/src,
 					/Users/apple/Desktop/svns/trunk/IsoLib/libisomediafile/macosx,
+					"${SRCROOT}/../../../../libisomediafile/src",
+					"${SRCROOT}/../../../../libisomediafile/macosx",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"${SRCROOT}/../../../../libisomediafile/macosx/libisomediafile/build/Debug",
-					/Users/apple/Desktop/svns/trunk/IsoLib/libisomediafile/macosx/libisomediafile/build/Debug,
-				);
+				LIBRARY_SEARCH_PATHS = "${SRCROOT}/../../../../libisomediafile/macosx/libisomediafile/build/Debug";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -270,11 +278,11 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					/Users/apple/Desktop/svns/trunk/IsoLib/libisomediafile/src,
 					/Users/apple/Desktop/svns/trunk/IsoLib/libisomediafile/macosx,
+					"${SRCROOT}/../../../../libisomediafile/src",
+					"${SRCROOT}/../../../../libisomediafile/macosx",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"${SRCROOT}/../../../../libisomediafile/macosx/libisomediafile/build/Debug",
-					/Users/apple/Desktop/svns/trunk/IsoLib/libisomediafile/macosx/libisomediafile/build/Debug,
-				);
+				LIBRARY_SEARCH_PATHS = "${SRCROOT}/../../../../libisomediafile/macosx/libisomediafile/build/Debug";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
