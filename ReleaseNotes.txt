@@ -1,4 +1,16 @@
-Release notes Dez 2014
+Release notes Dec 2016
+
+a) Added support for Item Properties to libisomedia
+
+b) Fixed a bug in ISOMeta.c with mdat construction method
+
+c) Fixed a bug in ItemInfoAtom.c for setting correct sizes depending on the atom version
+
+d) Added support for Item Properties to isoiff library
+
+e) Updated HEVC Still Image Format to be used with Item Properties in isoiff_tool
+
+Release notes Dec 2014
 
 a) Added composition to decode time atom. Also supports signed values.
 
