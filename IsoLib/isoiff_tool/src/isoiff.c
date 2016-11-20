@@ -484,3 +484,20 @@ MP4Err          ISOIFF_FreeImage                    (ISOIFF_Image image)
 bail:
     return err;
 }
+
+MP4Err          ISOIFF_AddImageProperty				(ISOIFF_Image image, MP4AtomPtr property, u8 essential)
+{
+	MP4Err  err;
+	
+	err = ISOAddMetaItemProperty(image->item, (MP4GenericAtom *) property, essential);
+bail:
+	return err;
+}
+MP4Err          ISOIFF_GetImageProperties			(ISOIFF_Image image, MP4GenericAtom **properties, u32 *propertiesFound)
+{
+	MP4Err  err;
+
+	err = ISOGetProperitesOfMetaItem(image->item, properties, propertiesFound);
+bail:
+	return err;
+}

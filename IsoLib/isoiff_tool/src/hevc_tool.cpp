@@ -63,20 +63,20 @@ MP4Err     processHEVC_NALUnits       (ISOIFF_HEVCDecoderConfigRecord record, IS
         MP4Handle           nalData;
         u8                  *buffer;
         
-        byteStreamNALUnit(bytestream, nalUnit, stats);
+        byteStreamNALUnit(bytestream, nalu.getBitstream().getFifo(), stats);
         
-        if (!nalUnit.empty())
+        if (!nalu.getBitstream().getFifo().empty())
         {
-            err     = MP4NewHandle((u32) nalUnit.size(), &nalData);                                     if (err) goto bail;
+            err     = MP4NewHandle((u32) nalu.getBitstream().getFifo().size(), &nalData);                                     if (err) goto bail;
             buffer  = (u8*) *nalData;
             
-            for (u32 i = 0; i < nalUnit.size(); i++)
+            for (u32 i = 0; i < nalu.getBitstream().getFifo().size(); i++)
             {
-                buffer[i] = (u8) nalUnit.at(i);
+                buffer[i] = (u8)nalu.getBitstream().getFifo().at(i);
             }
             
-            read(nalu, nalUnit);
-            
+            read(nalu);
+
             switch (nalu.m_nalUnitType)
             {
                 case NAL_UNIT_VPS:
@@ -145,7 +145,7 @@ MP4Err     processHEVC_SPS            (ISOIFF_HEVCDecoderConfigRecord record, In
     logMsg(LOGLEVEL_INFO, "Processing HEVC SPS NAL Unit.");
     
     m_cEntropyDecoder.setEntropyDecoder(&m_cCavlcDecoder);
-    m_cEntropyDecoder.setBitstream(nalu->m_Bitstream);
+    m_cEntropyDecoder.setBitstream(&nalu->getBitstream());
     m_cEntropyDecoder.decodeSPS(sps);
     
     ptl = sps->getPTL()->getGeneralPTL();
@@ -217,80 +217,157 @@ MP4Err     createHEVC_ImageCollection    (ISOIFF_ImageCollection *collection)
     MP4Err err;
 
     logMsg(LOGLEVEL_INFO, "Creating HEVC image collection.");
-    err = ISOIFF_CreateImageCollection(collection, ISOIFF_4CC_hevc, 0);         if (err) goto bail;
+    err = ISOIFF_CreateImageCollection(collection, ISOIFF_4CC_heic, 0);         if (err) goto bail;
     logMsg(LOGLEVEL_INFO, "Creating HEVC image collection finished.");
 bail:
     return err;
 }
 
-MP4Err     addHEVCImageToCollection    (ISOIFF_ImageCollection collection, ISOIFF_HEVCDecoderConfigRecord record, ISOIFF_HEVCItemData itemData)
+MP4Err     addHEVCImageToCollection    (ISOIFF_ImageCollection collection, ISOIFF_HEVCDecoderConfigRecord record, ISOIFF_HEVCItemData itemData, u32 width, u32 height)
 {
-    MP4Err                  err;
-    MP4Handle               metaData;
-    MP4Handle               imageData;
-    ISOIFF_Image            image;
-    ISOIFF_Meta             meta;
+    MP4Err											err;
+    MP4Handle										imageData;
+    ISOIFF_Image									image;
+	ISOIFF_HEVCConfigurationAtomPtr					hevc;
+	ISOIFF_ImageSpatialExtentsPropertyAtomPtr		ispe;
     
     logMsg(LOGLEVEL_INFO, "Adding HEVC image to collection.");
     
     err = MP4NoErr;
-    err = MP4NewHandle(0, &metaData);                                           if (err) goto bail;
     err = MP4NewHandle(0, &imageData);                                          if (err) goto bail;
     
-    err = ISOIFF_PutHEVCDecConfRecordIntoHandle(record, metaData);              if (err) goto bail;
     err = ISOIFF_PutHEVCItemDataIntoHandle(itemData, imageData);                if (err) goto bail;
-    
     err = ISOIFF_NewImage(collection, &image, ISOIFF_4CC_hvc1, imageData);      if (err) goto bail;
-    err = ISOIFF_NewMeta(collection, &meta, ISOIFF_4CC_hvcC, metaData);         if (err) goto bail;
-    
-    err = ISOIFF_AddMetaToImage(image, meta, ISOIFF_4CC_init);                  if (err) goto bail;
-    
-    err = MP4DisposeHandle(metaData);                                           if (err) goto bail;
+
+	err = ISOIFF_CreateHEVCConfigurationAtom(&hevc, record);					if (err) goto bail;
+	err = ISOIFF_AddImageProperty(image, (MP4AtomPtr) hevc, 1);					if (err) goto bail;
+
+	err = ISOIFF_CreateImageSpatialExtentsPropertyAtom(&ispe);					if (err) goto bail;
+	ispe->image_width  = width;
+	ispe->image_height = height;
+	err = ISOIFF_AddImageProperty(image, (MP4AtomPtr)ispe, 0);					if (err) goto bail;
+
     err = MP4DisposeHandle(imageData);                                          if (err) goto bail;
     err = ISOIFF_FreeImage(image);                                              if (err) goto bail;
-    err = ISOIFF_FreeMeta(meta);                                                if (err) goto bail;
-    
+
     logMsg(LOGLEVEL_INFO, "Adding HEVC image to collection finished.");
 bail:
     return err;
 }
 
-MP4Err     getHEVCImages                 (ISOIFF_ImageCollection collection, ISOIFF_Image **images, ISOIFF_HEVCDecoderConfigRecord **decoderConfigs, u32 *numberOfImagesFound)
+MP4Err     getHEVCImages(ISOIFF_ImageCollection collection, ISOIFF_Image **images, ISOIFF_HEVCDecoderConfigRecord **decoderConfigs, u32 *numberOfImagesFound)
 {
-    MP4Err                  err;
-    u32                     i;
-    
-    logMsg(LOGLEVEL_INFO, "Requesting HEVC images from collection.");
-    
-    err = MP4NoErr;
-    err = ISOIFF_GetAllImagesWithType(collection, ISOIFF_4CC_hvc1, images, numberOfImagesFound);            if (err) goto bail;
-    
-    logMsg(LOGLEVEL_INFO, "Number of images found: %d", *numberOfImagesFound);
-    
-    *decoderConfigs = (ISOIFF_HEVCDecoderConfigRecord *) calloc(*numberOfImagesFound, sizeof(struct ISOIFF_HEVCDecoderConfigRecordS));
-    
-    for (i = 0; i < *numberOfImagesFound; i++)
-    {
-        ISOIFF_Meta                    *metas;
-        MP4Handle                      metaDataH;
-        u32                            numberOfMetasFound;
-        
-        err = MP4NewHandle(0, &metaDataH);                                                                  if (err) goto bail;
-        err = ISOIFF_GetMetasOfImageWithType(*images[i], ISOIFF_4CC_init, &metas, &numberOfMetasFound);     if (err) goto bail;
-        
-        if (numberOfMetasFound == 0)
-            BAILWITHERROR(MP4BadDataErr);
-        
-        err = ISOIFF_GetMetaData(metas[0], metaDataH);                                                      if (err) goto bail;
-        err = ISOIFF_CreateHEVCDecConfRecFromHandle(metaDataH, &(*decoderConfigs[i]));                      if (err) goto bail;
-        
-        err = ISOIFF_FreeMeta(metas[0]);                                                                    if (err) goto bail;
-        err = MP4DisposeHandle(metaDataH);                                                                  if (err) goto bail;
-        free (metas);
-    }
-    
+	MP4Err                  err;
+	u32                     i, j;
+
+
+	logMsg(LOGLEVEL_INFO, "Requesting HEVC images from collection.");
+
+	err = MP4NoErr;
+	err = ISOIFF_GetAllImagesWithType(collection, ISOIFF_4CC_hvc1, images, numberOfImagesFound);            if (err) goto bail;
+
+	logMsg(LOGLEVEL_INFO, "Number of images found: %d", *numberOfImagesFound);
+
+	*decoderConfigs = (ISOIFF_HEVCDecoderConfigRecord *)calloc(*numberOfImagesFound, sizeof(struct ISOIFF_HEVCDecoderConfigRecordS));
+
+	for (i = 0; i < *numberOfImagesFound; i++)
+	{
+		MP4GenericAtom					*properties;
+		u32							   numberOfPropertiesFound;
+
+		properties = NULL;
+		err = ISOIFF_GetImageProperties(*images[i], &properties, &numberOfPropertiesFound);					if (err) goto bail;
+
+		if (numberOfPropertiesFound == 0)
+			BAILWITHERROR(MP4BadDataErr);
+
+		for (j = 0; j < numberOfPropertiesFound; j++)
+		{
+			MP4AtomPtr property;
+			property = (MP4AtomPtr)properties[j];
+			if (property->type == ISOIFF_4CC_hvcC)
+			{
+				err = ISOIFF_GetHEVCDecoderConfigRecordFromProperty(property, &(*decoderConfigs[i])); if (err) goto bail;
+			}
+			else if (property->type == ISOIFF_4CC_ispe)
+			{
+				err = ISOIFF_ParseImageSpatialExtends(property); if (err) goto bail;
+			}
+		}
+
+		free(properties);
+	}
+
 bail:
-    return err;
+	return err;
+}
+
+MP4Err     ISOIFF_GetHEVCDecoderConfigRecordFromProperty(MP4AtomPtr property, ISOIFF_HEVCDecoderConfigRecord *decoderConfig)
+{
+	MP4Err			  err;
+	MP4UnknownAtomPtr hvcC;
+	MP4Handle         metaDataH;
+	u8				  *buffer;
+	err = MP4NoErr;
+
+
+	hvcC = (MP4UnknownAtomPtr) property;
+	char *data = hvcC->data;
+	err = MP4NewHandle(hvcC->dataSize, &metaDataH); if (err) goto bail;
+	buffer = (u8 *)*metaDataH;
+
+	memcpy(buffer, data, hvcC->dataSize);
+	err = ISOIFF_CreateHEVCDecConfRecFromHandle(metaDataH, decoderConfig);
+bail:
+	return err;
+}
+
+MP4Err     ISOIFF_ParseImageSpatialExtends(MP4AtomPtr property)
+{
+	MP4Err			  err;
+	MP4UnknownAtomPtr ispe;
+	MP4Handle         metaDataH;
+	char  		      *buffer;
+	u8				  tmp8;
+	u32				  width;
+	u32				  height;
+	err = MP4NoErr;
+
+
+	ispe = (MP4UnknownAtomPtr) property;
+	buffer = ispe->data;
+
+	buffer += 4;
+
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	width = tmp8 << 24;
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	width |= (tmp8 << 16);
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	width |= (tmp8 << 8);
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	width |= tmp8;
+
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	height = tmp8 << 24;
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	height |= (tmp8 << 16);
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	height |= (tmp8 << 8);
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	height |= tmp8;
+
+	logMsg(LOGLEVEL_INFO, "Parsed image spatial extends. Width: %d, Height: %d", width, height);
+bail:
+	return err;
 }
 
 MP4Err     getHEVCBitstreamFromImage    (ISOIFF_Image image, ISOIFF_HEVCDecoderConfigRecord decoderConfig, MP4Handle bitstreamH)

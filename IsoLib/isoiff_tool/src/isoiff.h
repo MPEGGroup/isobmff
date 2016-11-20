@@ -213,4 +213,20 @@ MP4Err          ISOIFF_FreeMeta                     (ISOIFF_Meta meta);
  */
 MP4Err          ISOIFF_FreeImage                    (ISOIFF_Image image);
 
+/*!
+* @discussion Adds a property to the image
+* @param image ISOIFF_Image image to which the property gets added
+* @param property MP4AtomPtr the property, which is added to the image
+* @param essential u8 marks the property as essential for the image
+*/
+MP4Err          ISOIFF_AddImageProperty				(ISOIFF_Image image, MP4AtomPtr property, u8 essential);
+
+/*!
+* @discussion Obtains an array of properties from an image
+* @param image ISOIFF_Image image that has properties
+* @param properties MP4AtomPtr* array of properties of the image
+* @param propertiesFound u32* the amount of properties found for the image
+*/
+MP4Err          ISOIFF_GetImageProperties			(ISOIFF_Image image, MP4GenericAtom **properties, u32 *propertiesFound);
+
 #endif

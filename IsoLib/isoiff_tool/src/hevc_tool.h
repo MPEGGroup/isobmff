@@ -65,8 +65,10 @@ MP4Err     processHEVC_NALUnits          (ISOIFF_HEVCDecoderConfigRecord record,
  * @param collection The image collection the provided HEVC image will be added to
  * @param record The decoder configuration record (use processHEVC_NALUnits to fill with data)
  * @param itemData The HEVC Item (image) data (use processHEVC_NALUnits to fill with data)
+ * @param width The image width
+ * @param height The image height
  */
-MP4Err     addHEVCImageToCollection      (ISOIFF_ImageCollection collection, ISOIFF_HEVCDecoderConfigRecord record, ISOIFF_HEVCItemData itemData);
+MP4Err     addHEVCImageToCollection      (ISOIFF_ImageCollection collection, ISOIFF_HEVCDecoderConfigRecord record, ISOIFF_HEVCItemData itemData, u32 width, u32 height);
 
 /*!
  * @discussion Collects all HEVC Images from a image collection and provides the results in form of arrays. 

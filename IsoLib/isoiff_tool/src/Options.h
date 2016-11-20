@@ -73,6 +73,8 @@ typedef struct OptionsStruct
     char                *outputFile;
     int                 debugLevel;
     bool                isJustAskingForHelp;
+	int					width;
+	int					height;
 } Options;
 
 /*!
@@ -98,10 +100,12 @@ static inline void printUsage       ()
     printf("\t-m\t\tMode (mandatory) (0 = read bitstream, write file format; 1 = read file format, write bitstream)\n");
     printf("\t-i\t\tInputfile (mandatory)\n");
     printf("\t-o\t\tOutputfile (mandatory)\n");
+	printf("\t-s\t\tWidth Height (mandatory if m = 0)\n");
+	printf("\t-o\t\tOutputfile (mandatory)\n");
     printf("\t-d\t\tDebuglevel. 0 = No Logging, 1 = Error, 2 = Warning, 3 = Info (Default), 4 = Debug, 5 = Trace\n");
     printf("\nExample:\n");
     printf("\tReading HEVC Bitstream and creating ISO Media Based Image File Format:\n");
-    printf("\tisoiff_tool -m 0 -i inputFile.bit -o outputFile.mp4 -d 3\n");
+    printf("\tisoiff_tool -m 0 -i inputFile.bit -o outputFile.mp4 -d 3 -s 1920 1080\n");
     printf("\tReading ISO Media Based Image File Format and creating HEVC Bitstream:\n");
     printf("\tisoiff_tool -m 1 -i inputFile.mp4 -o outputFile.bit -d 3\n");
 }
@@ -112,10 +116,15 @@ static inline void printUsage       ()
  */
 static inline void printOptions     (Options *options)
 {
-    if  (options->mode == 0)
-        logMsg(LOGLEVEL_INFO, "Mode:(Write) Reading HEVC Bitstream and creating ISO Media Based Image File Format");
-    else if (options->mode == 1)
-        logMsg(LOGLEVEL_INFO, "Mode: (Read) Reading ISO Media Based Image File Format and creating HEVC Bitstream");
+	if (options->mode == 0)
+	{
+		logMsg(LOGLEVEL_INFO, "Mode:(Write) Reading HEVC Bitstream and creating ISO Media Based Image File Format");
+		logMsg(LOGLEVEL_INFO, "Mode:(Write) Image dimension: %dx%d", options->width, options->height);
+	}
+	else if (options->mode == 1)
+	{
+		logMsg(LOGLEVEL_INFO, "Mode: (Read) Reading ISO Media Based Image File Format and creating HEVC Bitstream");
+	}
         
     
     logMsg(LOGLEVEL_INFO, "Inputfile: %s", options->inputFile);
@@ -141,6 +150,7 @@ static inline void freeOptions     (Options *options)
  */
 static inline bool parseArguments   (int argc, char **argv, Options *options)
 {
+	bool imageSizeSet = false;
     for (int i = 1; i < argc; ++i )
     {
         if ( !strcmp ( argv[i], "-h" ) )
@@ -197,6 +207,15 @@ static inline bool parseArguments   (int argc, char **argv, Options *options)
             i++;
             continue;
         }
+		else if (!strcmp(argv[i], "-s"))
+		{
+			imageSizeSet = true;
+			options->width = atoi(argv[i + 1]);
+			i++;
+			options->height = atoi(argv[i + 1]);
+			i++;
+			continue;
+		}
         else
         {
             printUsage();
@@ -210,6 +229,15 @@ static inline bool parseArguments   (int argc, char **argv, Options *options)
         printUsage();
         return false;
     }
+
+	if ((options->mode == ISOIFF_ToolMode_Write) && !imageSizeSet)
+	{
+		logMsg(LOGLEVEL_ERROR, "Option '-s width height' is mandatory for write mode (m = 0) execution.");
+		printUsage();
+		return false;
+	}
+
+
     
     if (options->inputFile == NULL)
     {

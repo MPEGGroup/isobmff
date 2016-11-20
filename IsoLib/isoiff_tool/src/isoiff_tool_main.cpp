@@ -23,6 +23,8 @@
 
 #include "hevc_tool.h"
 
+MP4Err  test();
+
 MP4Err  processWriteMode    (Options *options);
 MP4Err  processReadMode     (Options *options);
 
@@ -33,7 +35,7 @@ int     main                ( int argc, char **argv )
     
     logOutput   = stdout;
     err         = MP4NoErr;
-    
+
     setDefaultValues(&options);
     
     if (!parseArguments(argc, argv, &options))
@@ -65,6 +67,15 @@ bail:
 	return err;
 }
 
+MP4Err  test()
+{
+	MP4Err err;
+	err = MP4NoErr;
+
+bail:
+	return err;
+}
+
 MP4Err  processWriteMode    (Options *options)
 {
     MP4Err                              err;
@@ -80,7 +91,8 @@ MP4Err  processWriteMode    (Options *options)
     err = processHEVC_NALUnits(decoderConfigRecord, hevcImageItemData, options);                if (err) goto bail;
     
     err = createHEVC_ImageCollection(&collection);                                              if (err) goto bail;
-    err = addHEVCImageToCollection(collection, decoderConfigRecord, hevcImageItemData);         if (err) goto bail;
+    err = addHEVCImageToCollection(collection, decoderConfigRecord, hevcImageItemData, (u32) options->width, (u32) options->height);
+																								if (err) goto bail;
     
     err = ISOIFF_WriteCollectionToFile(collection, options->outputFile);                        if (err) goto bail;
     

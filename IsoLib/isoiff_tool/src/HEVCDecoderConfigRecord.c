@@ -191,19 +191,35 @@ MP4Err          ISOIFF_PutHEVCDecConfRecordIntoHandle      (ISOIFF_HEVCDecoderCo
     memcpy(buffer, &tmp8, 1);
     buffer += 1;
     
-    memcpy(buffer, &hevcDecConfRec->general_profile_compatibility_flags, 4);
-    buffer += 4;
-    
-    tmp64 = hevcDecConfRec->general_constraint_indicator_flags << 16;
-    memcpy(buffer, &tmp64, 6);
-    buffer += 6;
+	*(u8*)buffer = (u8)((hevcDecConfRec->general_profile_compatibility_flags >> 24) & 0xff);
+	buffer += 1; 
+	*(u8*)buffer = (u8)((hevcDecConfRec->general_profile_compatibility_flags >> 16) & 0xff);
+	buffer += 1; 
+	*(u8*)buffer = (u8)((hevcDecConfRec->general_profile_compatibility_flags >> 8) & 0xff);
+	buffer += 1;
+	*(u8*)buffer = (u8)((hevcDecConfRec->general_profile_compatibility_flags) & 0xff);
+	buffer += 1;
+
+	*(u8*)buffer = (u8)((hevcDecConfRec->general_constraint_indicator_flags >> 40) & 0xff);
+	buffer += 1;
+	*(u8*)buffer = (u8)((hevcDecConfRec->general_constraint_indicator_flags >> 32) & 0xff);
+	buffer += 1;
+	*(u8*)buffer = (u8)((hevcDecConfRec->general_constraint_indicator_flags >> 24) & 0xff);
+	buffer += 1;
+	*(u8*)buffer = (u8)((hevcDecConfRec->general_constraint_indicator_flags >> 16) & 0xff);
+	buffer += 1;
+	*(u8*)buffer = (u8)((hevcDecConfRec->general_constraint_indicator_flags >> 8) & 0xff);
+	buffer += 1;
+	*(u8*)buffer = (u8)((hevcDecConfRec->general_constraint_indicator_flags) & 0xff);
+	buffer += 1;
     
     memcpy(buffer, &hevcDecConfRec->general_level_idc, 1);
     buffer += 1;
     
-    tmp16 = hevcDecConfRec->min_spatial_segmentation_idc | 0xF000;
-    memcpy(buffer, &tmp16, 2);
-    buffer += 2;
+	*(u8*)buffer = (u8)((hevcDecConfRec->min_spatial_segmentation_idc >> 8) & 0xff);
+	buffer += 1;
+	*(u8*)buffer = (u8)((hevcDecConfRec->min_spatial_segmentation_idc) & 0xff);
+	buffer += 1;
     
     tmp8 = 0xFC | hevcDecConfRec->parallelismType;
     memcpy(buffer, &tmp8, 1);
@@ -221,8 +237,10 @@ MP4Err          ISOIFF_PutHEVCDecConfRecordIntoHandle      (ISOIFF_HEVCDecoderCo
     memcpy(buffer, &tmp8, 1);
     buffer += 1;
     
-    memcpy(buffer, &hevcDecConfRec->avgFrameRate, 2);
-    buffer += 2;
+	*(u8*)buffer = (u8)((hevcDecConfRec->avgFrameRate >> 8) & 0xff);
+	buffer += 1;
+	*(u8*)buffer = (u8)((hevcDecConfRec->avgFrameRate) & 0xff);
+	buffer += 1;
     
     tmp8 =  hevcDecConfRec->constantFrameRate << 6;
     tmp8 += hevcDecConfRec->numTemporalLayers << 3;
@@ -244,16 +262,20 @@ MP4Err          ISOIFF_PutHEVCDecConfRecordIntoHandle      (ISOIFF_HEVCDecoderCo
         memcpy(buffer, &tmp8, 1);
         buffer += 1;
         
-        memcpy(buffer, &array->numNalus, 2);
-        buffer += 2;
+		*(u8*)buffer = (u8)((array->numNalus >> 8) & 0xff);
+		buffer += 1;
+		*(u8*)buffer = (u8)((array->numNalus) & 0xff);
+		buffer += 1;
         
         for (j = 0; j < array->nalUnits->entryCount; j++)
         {
             ISOIFF_HEVCItemDataNalUnit  hevcNalUnit;
             err     = MP4GetListEntry(array->nalUnits, j, (char **) &hevcNalUnit); if (err) goto bail;
             
-            memcpy(buffer, &hevcNalUnit->nalUnitLength, 2);
-            buffer += 2;
+			*(u8*)buffer = (u8)((hevcNalUnit->nalUnitLength >> 8) & 0xff);
+			buffer += 1;
+			*(u8*)buffer = (u8)((hevcNalUnit->nalUnitLength) & 0xff);
+			buffer += 1;
             
             memcpy(buffer, (char *) *hevcNalUnit->nalUnitH, hevcNalUnit->nalUnitLength);
             buffer += hevcNalUnit->nalUnitLength;
@@ -264,141 +286,192 @@ bail:
     return err;
 }
 
-MP4Err          ISOIFF_CreateHEVCDecConfRecFromHandle      (MP4Handle recordDataHandle, ISOIFF_HEVCDecoderConfigRecord *outRecord)
+MP4Err          ISOIFF_CreateHEVCDecConfRecFromHandle(MP4Handle recordDataHandle, ISOIFF_HEVCDecoderConfigRecord *outRecord)
 {
-    MP4Err  err;
-    u32     size;
-    u8      *buffer;
-    u8      tmp8;
-    u16     tmp16;
-    u64     tmp64;
-    u32     i;
-    u32     j;
-    
-    ISOIFF_HEVCDecoderConfigRecord hevcDecConfRec;
-    
-    hevcDecConfRec  = calloc(1, sizeof(struct ISOIFF_HEVCDecoderConfigRecordS));
-    err             = MP4GetHandleSize(recordDataHandle, &size);     if (err) goto bail;
-    buffer          = (u8 *) *recordDataHandle;
-    tmp8            = 0;
-    tmp16           = 0;
-    tmp64           = 0;
-    err             = MP4MakeLinkedList(&hevcDecConfRec->arrays);    if (err) goto bail;
-    
-    if (size < 23)
-        BAILWITHERROR(MP4BadDataErr);
-    
-    memcpy( &hevcDecConfRec->configurationVersion, buffer, 1);
-    buffer += 1;
-    
-    memcpy(&tmp8, buffer, 1);
-    buffer += 1;
-    
-    hevcDecConfRec->general_profile_space   = tmp8 >> 6;
-    tmp8                                    = tmp8 & 0x3F;
-    hevcDecConfRec->general_tier_flag       = tmp8 >> 5;
-    hevcDecConfRec->general_profile_idc     = tmp8 & 0x1F;
-    
-    memcpy(&hevcDecConfRec->general_profile_compatibility_flags, buffer, 4);
-    buffer += 4;
-    
-    memcpy( &tmp64, buffer, 6);
-    buffer += 6;
-    hevcDecConfRec->general_constraint_indicator_flags = tmp64 >> 16;
-    
-    memcpy(&hevcDecConfRec->general_level_idc, buffer, 1);
-    buffer += 1;
-    
-    memcpy(&tmp16, buffer, 2);
-    buffer += 2;
-    hevcDecConfRec->min_spatial_segmentation_idc = tmp16 & 0x0FFF;
-    
-    memcpy(&tmp8, buffer, 1);
-    buffer += 1;
-    hevcDecConfRec->parallelismType = tmp8 & 0x03;
-    
-    memcpy(&tmp8, buffer, 1);
-    buffer += 1;
-    hevcDecConfRec->chromaFormat = tmp8 & 0x03;
-    
-    memcpy(&tmp8, buffer, 1);
-    buffer += 1;
-    hevcDecConfRec->bitDepthChromaMinus8 = tmp8 & 0x07;
-    
-    memcpy(&tmp8, buffer, 1);
-    buffer += 1;
-    hevcDecConfRec->bitDepthLumaMinus8 = tmp8 & 0x07;
-    
-    memcpy(&hevcDecConfRec->avgFrameRate, buffer, 2);
-    buffer += 2;
-    
-    memcpy(&tmp8, buffer, 1);
-    buffer += 1;
-    
-    hevcDecConfRec->constantFrameRate       = tmp8 >> 6;
-    tmp8                                    = tmp8 & 0x3F;
-    hevcDecConfRec->numTemporalLayers       = tmp8 >> 3;
-    tmp8                                    = tmp8 & 0x07;
-    hevcDecConfRec->temporalIdNested        = tmp8 >> 2;
-    hevcDecConfRec->lengthSizeMinusOne      = tmp8 & 0x03;
-    
-    memcpy(&hevcDecConfRec->numOfArrays, buffer, 1);
-    buffer += 1;
-    
-    size -= 23;
-    
-    for (i = 0; i < hevcDecConfRec->numOfArrays; i++)
-    {
-        ISOIFF_HEVCDecoderConfigurationRecordArray  array;
-        
-        array   = calloc(1, sizeof(struct ISOIFF_HEVCDecoderConfigurationRecordArrayS));
-        err     = MP4MakeLinkedList(&array->nalUnits); if (err) goto bail;
-        
-        if (size < 3)
-            BAILWITHERROR(MP4BadDataErr);
-        
-        memcpy(&tmp8, buffer, 1);
-        buffer += 1;
-        
-        array->array_completeness   = tmp8 >> 7;
-        array->NAL_unit_type        = tmp8 & 0x3F;
-        
-        memcpy(&array->numNalus, buffer, 2);
-        buffer += 2;
-        
-        size -= 3;
-        
-        for (j = 0; j < array->numNalus; j++)
-        {
-            ISOIFF_HEVCItemDataNalUnit  hevcNalUnit;
+	MP4Err  err;
+	u32     size;
+	u8      *buffer;
+	u8      tmp8;
+	u16     tmp16;
+	u64     tmp64;
+	u32     i;
+	u32     j;
 
-            if (size < 2)
-                BAILWITHERROR(MP4BadDataErr);
-            
-            hevcNalUnit = calloc(1, sizeof(struct ISOIFF_HEVCItemDataNalUnitS));
-            
-            memcpy(&hevcNalUnit->nalUnitLength, buffer, 2);
-            buffer += 2;
-            size   -= 2;
-            
-            if (size < hevcNalUnit->nalUnitLength)
-                BAILWITHERROR(MP4BadDataErr);
-            
-            err = MP4NewHandle( hevcNalUnit->nalUnitLength, &hevcNalUnit->nalUnitH); if (err) goto bail;
-            
-            memcpy((char *) *hevcNalUnit->nalUnitH, buffer, hevcNalUnit->nalUnitLength);
-            
-            buffer  += hevcNalUnit->nalUnitLength;
-            size    -= hevcNalUnit->nalUnitLength;
-            
-            err = MP4AddListEntry(hevcNalUnit, array->nalUnits); if (err) goto bail;
-        }
-        err = MP4AddListEntry(array, hevcDecConfRec->arrays); if (err) goto bail;
-    }
-    
-    *outRecord = hevcDecConfRec;
+	ISOIFF_HEVCDecoderConfigRecord hevcDecConfRec;
+
+	hevcDecConfRec = calloc(1, sizeof(struct ISOIFF_HEVCDecoderConfigRecordS));
+	err = MP4GetHandleSize(recordDataHandle, &size);     if (err) goto bail;
+	buffer = (u8 *)*recordDataHandle;
+	tmp8 = 0;
+	tmp16 = 0;
+	tmp64 = 0;
+	err = MP4MakeLinkedList(&hevcDecConfRec->arrays);    if (err) goto bail;
+
+	if (size < 23)
+		BAILWITHERROR(MP4BadDataErr);
+
+	memcpy(&hevcDecConfRec->configurationVersion, buffer, 1);
+	buffer += 1;
+
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+
+	hevcDecConfRec->general_profile_space = tmp8 >> 6;
+	tmp8 = tmp8 & 0x3F;
+	hevcDecConfRec->general_tier_flag = tmp8 >> 5;
+	hevcDecConfRec->general_profile_idc = tmp8 & 0x1F;
+
+	//memcpy(&hevcDecConfRec->general_profile_compatibility_flags, buffer, 4);
+	//buffer += 4;
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	hevcDecConfRec->general_profile_compatibility_flags = (tmp8 << 24);
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	hevcDecConfRec->general_profile_compatibility_flags |= (tmp8 << 16);
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	hevcDecConfRec->general_profile_compatibility_flags |= (tmp8 << 8);
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	hevcDecConfRec->general_profile_compatibility_flags |= tmp8;
+
+
+	//memcpy(&tmp64, buffer, 6);
+	//buffer += 6;
+	//hevcDecConfRec->general_constraint_indicator_flags = tmp64 >> 16;
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	hevcDecConfRec->general_constraint_indicator_flags = tmp8 << 40;
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	hevcDecConfRec->general_constraint_indicator_flags |= (tmp8 << 32);
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	hevcDecConfRec->general_constraint_indicator_flags |= (tmp8 << 24);
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	hevcDecConfRec->general_constraint_indicator_flags |= (tmp8 << 16);
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	hevcDecConfRec->general_constraint_indicator_flags |= (tmp8 << 8);
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	hevcDecConfRec->general_constraint_indicator_flags |= tmp8;
+
+	memcpy(&hevcDecConfRec->general_level_idc, buffer, 1);
+	buffer += 1;
+
+	//memcpy(&tmp16, buffer, 2);
+	//buffer += 2;
+	//hevcDecConfRec->min_spatial_segmentation_idc = tmp16 & 0x0FFF;
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	hevcDecConfRec->min_spatial_segmentation_idc |= (tmp8 << 8);
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	hevcDecConfRec->min_spatial_segmentation_idc |= tmp8;
+	hevcDecConfRec->min_spatial_segmentation_idc &= 0x0FFF;
+
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	hevcDecConfRec->parallelismType = tmp8 & 0x03;
+
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	hevcDecConfRec->chromaFormat = tmp8 & 0x03;
+
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	hevcDecConfRec->bitDepthChromaMinus8 = tmp8 & 0x07;
+
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	hevcDecConfRec->bitDepthLumaMinus8 = tmp8 & 0x07;
+
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	hevcDecConfRec->avgFrameRate = tmp8 << 8;
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	hevcDecConfRec->avgFrameRate |= tmp8;
+
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+
+	hevcDecConfRec->constantFrameRate = tmp8 >> 6;
+	tmp8 = tmp8 & 0x3F;
+	hevcDecConfRec->numTemporalLayers = tmp8 >> 3;
+	tmp8 = tmp8 & 0x07;
+	hevcDecConfRec->temporalIdNested = tmp8 >> 2;
+	hevcDecConfRec->lengthSizeMinusOne = tmp8 & 0x03;
+
+	memcpy(&hevcDecConfRec->numOfArrays, buffer, 1);
+	buffer += 1;
+
+	size -= 23;
+
+	for (i = 0; i < hevcDecConfRec->numOfArrays; i++)
+	{
+		ISOIFF_HEVCDecoderConfigurationRecordArray  array;
+
+		array = calloc(1, sizeof(struct ISOIFF_HEVCDecoderConfigurationRecordArrayS));
+		err = MP4MakeLinkedList(&array->nalUnits); if (err) goto bail;
+
+		if (size < 3)
+			BAILWITHERROR(MP4BadDataErr);
+
+		memcpy(&tmp8, buffer, 1);
+		buffer += 1;
+
+		array->array_completeness = tmp8 >> 7;
+		array->NAL_unit_type = tmp8 & 0x3F;
+
+		memcpy(&tmp8, buffer, 1);
+		buffer += 1;
+		array->numNalus = tmp8 << 8;
+		memcpy(&tmp8, buffer, 1);
+		buffer += 1;
+		array->numNalus |= tmp8;
+
+		size -= 3;
+
+		for (j = 0; j < array->numNalus; j++)
+		{
+			ISOIFF_HEVCItemDataNalUnit  hevcNalUnit;
+
+			if (size < 2)
+				BAILWITHERROR(MP4BadDataErr);
+
+			hevcNalUnit = calloc(1, sizeof(struct ISOIFF_HEVCItemDataNalUnitS));
+
+			memcpy(&tmp8, buffer, 1);
+			buffer += 1;
+			hevcNalUnit->nalUnitLength = tmp8 << 8;
+			memcpy(&tmp8, buffer, 1);
+			buffer += 1;
+			hevcNalUnit->nalUnitLength |= tmp8;
+
+			size -= 2;
+
+			if (size < hevcNalUnit->nalUnitLength)
+				BAILWITHERROR(MP4BadDataErr);
+
+			err = MP4NewHandle(hevcNalUnit->nalUnitLength, &hevcNalUnit->nalUnitH); if (err) goto bail;
+
+			memcpy((char *)*hevcNalUnit->nalUnitH, buffer, hevcNalUnit->nalUnitLength);
+
+			buffer += hevcNalUnit->nalUnitLength;
+			size -= hevcNalUnit->nalUnitLength;
+
+			err = MP4AddListEntry(hevcNalUnit, array->nalUnits); if (err) goto bail;
+		}
+		err = MP4AddListEntry(array, hevcDecConfRec->arrays); if (err) goto bail;
+	}
+
+	*outRecord = hevcDecConfRec;
 bail:
-    return err;
+	return err;
 }
 
 MP4Err          ISOIFF_GetNALUnitsWithTypeFromHEVCDecConf  (ISOIFF_HEVCDecoderConfigRecord hevcDecConfRec, u8 type, MP4LinkedList nalUnits)
