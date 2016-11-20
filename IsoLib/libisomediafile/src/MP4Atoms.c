@@ -563,6 +563,18 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
 		case TGPPBitRateAtomType:
 			err = MP4CreateBitRateAtom( (MP4BitRateAtomPtr *) &newAtom );
 			break;
+
+		case MP4ItemPropertiesAtomType:
+			err = MP4CreateItemPropertiesAtom((MP4ItemPropertiesAtomPtr *)&newAtom);
+			break;
+
+		case MP4ItemPropertyContainerAtomType:
+			err = MP4CreateItemPropertyContainerAtom((MP4ItemPropertyContainerAtomPtr *)&newAtom);
+			break;
+
+		case MP4ItemPropertyAssociationAtomType:
+			err = MP4CreateItemPropertyAssociationAtom((MP4ItemPropertyAssociationAtomPtr *)&newAtom);
+			break;
 			
 		default:
 			err = MP4CreateUnknownAtom( (MP4UnknownAtomPtr*) &newAtom );

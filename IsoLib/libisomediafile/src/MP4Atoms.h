@@ -107,6 +107,9 @@ enum
 	MP4TrackFragmentHeaderAtomType                      = MP4_FOUR_CHAR_CODE( 't', 'f', 'h', 'd' ),
     MP4TrackFragmentDecodeTimeAtomType                  = MP4_FOUR_CHAR_CODE( 't', 'f', 'd', 't' ),
 	MP4TrackRunAtomType    		                        = MP4_FOUR_CHAR_CODE( 't', 'r', 'u', 'n' ),
+	MP4ItemPropertiesAtomType 							= MP4_FOUR_CHAR_CODE( 'i', 'p', 'r', 'p' ),
+	MP4ItemPropertyContainerAtomType					= MP4_FOUR_CHAR_CODE( 'i', 'p', 'c', 'o' ),
+	MP4ItemPropertyAssociationAtomType					= MP4_FOUR_CHAR_CODE( 'i', 'p', 'm', 'a' ),
 	
 	MP4SampleGroupDescriptionAtomType		             = MP4_FOUR_CHAR_CODE( 's', 'g', 'p', 'd' ),
 	MP4SampletoGroupAtomType				             = MP4_FOUR_CHAR_CODE( 's', 'b', 'g', 'p' ),
@@ -1306,6 +1309,49 @@ typedef struct MP4TrackFragmentDecodeTimeAtom
 	u32 baseMediaDecodeTime;
 } MP4TrackFragmentDecodeTimeAtom, *MP4TrackFragmentDecodeTimeAtomPtr;
 
+
+
+typedef struct MP4ItemPropertyContainerAtom
+{
+	MP4_BASE_ATOM
+	MP4LinkedList atomList;
+
+	ISOErr(*addAtom)(struct MP4ItemPropertyContainerAtom* self, MP4AtomPtr atom);
+} MP4ItemPropertyContainerAtom, *MP4ItemPropertyContainerAtomPtr;
+
+
+typedef struct MP4ItemPropertyAssociationEntryPropertyIndex
+{
+	u8  essential;
+	u16 property_index;
+} MP4ItemPropertyAssociationEntryPropertyIndex, *MP4ItemPropertyAssociationEntryPropertyIndexPtr;
+
+typedef struct MP4ItemPropertyAssociationEntry
+{
+	u32 item_ID;
+	MP4LinkedList propertyIndexes;
+} MP4ItemPropertyAssociationEntry, *MP4ItemPropertyAssociationEntryPtr;
+
+typedef struct MP4ItemPropertyAssociationAtom
+{
+	MP4_FULL_ATOM
+	MP4LinkedList entries;
+
+	ISOErr(*addEntry)(struct MP4ItemPropertyAssociationAtom* self, MP4ItemPropertyAssociationEntryPtr entry);
+} MP4ItemPropertyAssociationAtom, *MP4ItemPropertyAssociationAtomPtr;
+
+typedef struct MP4ItemPropertiesAtom
+{
+	MP4_BASE_ATOM
+	MP4ItemPropertyContainerAtomPtr ipco;
+	MP4ItemPropertyAssociationAtomPtr ipma;
+	MP4LinkedList atomList;
+
+	ISOErr(*addAtom)(struct MP4ItemPropertiesAtom* self, MP4AtomPtr atom);
+	ISOErr(*addItemProperty)(struct MP4ItemPropertiesAtom* self, MP4AtomPtr itemProperty, u32 itemID, u8 essential);
+	ISOErr(*getPropertiesOfItem)(struct MP4ItemPropertiesAtom* self, u32 itemID, MP4LinkedList *properties);
+} MP4ItemPropertiesAtom, *MP4ItemPropertiesAtomPtr;
+
 typedef struct MP4TrackRunAtom
 {
 	MP4_FULL_ATOM
@@ -1503,6 +1549,7 @@ typedef struct ISOMetaAtom
     MP4AtomPtr idat;
 	MP4AtomPtr pitm;
 	MP4AtomPtr ipro;
+	MP4AtomPtr iprp;
 	
 	MP4AtomPtr mdat;
 	MP4LinkedList atomList;
@@ -1712,6 +1759,10 @@ MP4Err MP4CreateTrackFragmentHeaderAtom( MP4TrackFragmentHeaderAtomPtr *outAtom 
 MP4Err MP4CreateTrackFragmentDecodeTimeAtom( MP4TrackFragmentDecodeTimeAtomPtr *outAtom );
 MP4Err MP4CreateTrackRunAtom( MP4TrackRunAtomPtr *outAtom );
 MP4Err MP4CreatePaddingBitsAtom( MP4PaddingBitsAtomPtr *outAtom );
+
+MP4Err MP4CreateItemPropertiesAtom(MP4ItemPropertiesAtomPtr *outAtom);
+MP4Err MP4CreateItemPropertyContainerAtom(MP4ItemPropertyContainerAtomPtr *outAtom);
+MP4Err MP4CreateItemPropertyAssociationAtom(MP4ItemPropertyAssociationAtomPtr *outAtom);
 
 #ifdef ISMACrypt
 MP4Err MP4CreateSecurityInfoAtom( MP4SecurityInfoAtomPtr *outAtom );
