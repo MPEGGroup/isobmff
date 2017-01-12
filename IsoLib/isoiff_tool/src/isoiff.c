@@ -501,3 +501,51 @@ MP4Err          ISOIFF_GetImageProperties			(ISOIFF_Image image, MP4GenericAtom 
 bail:
 	return err;
 }
+
+MP4Err			ISOIFF_ParseImageSpatialExtends		(MP4AtomPtr property)
+{
+	MP4Err			  err;
+	MP4UnknownAtomPtr ispe;
+	MP4Handle         metaDataH;
+	char  		      *buffer;
+	u8				  tmp8;
+	u32				  width;
+	u32				  height;
+	err = MP4NoErr;
+
+
+	ispe = (MP4UnknownAtomPtr)property;
+	buffer = ispe->data;
+
+	buffer += 4;
+
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	width = tmp8 << 24;
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	width |= (tmp8 << 16);
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	width |= (tmp8 << 8);
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	width |= tmp8;
+
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	height = tmp8 << 24;
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	height |= (tmp8 << 16);
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	height |= (tmp8 << 8);
+	memcpy(&tmp8, buffer, 1);
+	buffer += 1;
+	height |= tmp8;
+
+	logMsg(LOGLEVEL_INFO, "Parsed image spatial extends. Width: %d, Height: %d", width, height);
+bail:
+	return err;
+}

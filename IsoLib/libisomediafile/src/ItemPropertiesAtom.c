@@ -162,7 +162,7 @@ static MP4Err getPropertiesOfItem(struct MP4ItemPropertiesAtom* self, u32 itemID
 		err = MP4GetListEntryCount(targetEntry->propertyIndexes, &association_count); if (err) goto bail;
 		for (i = 0; i < association_count; i++)
 		{
-			err = MP4GetListEntry(entry->propertyIndexes, i, (char **)&propertyIndex); if (err) goto bail;
+			err = MP4GetListEntry(targetEntry->propertyIndexes, i, (char **)&propertyIndex); if (err) goto bail;
 			err = MP4GetListEntry(self->ipco->atomList, propertyIndex->property_index - 1, (char **)&property); if (err) goto bail;
 			err = MP4AddListEntry(property, outProperties);
 		}

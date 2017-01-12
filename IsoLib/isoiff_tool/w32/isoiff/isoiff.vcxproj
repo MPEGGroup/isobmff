@@ -16,11 +16,13 @@
     <ClCompile Include="..\..\src\HEVCItemData.c" />
     <ClCompile Include="..\..\src\ImageSpatialExtentsPropertyAtom.c" />
     <ClCompile Include="..\..\src\isoiff.c" />
+    <ClCompile Include="..\..\src\JPEGConfigurationAtom.c" />
     <ClCompile Include="..\..\src\Logger.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\isoiff.h" />
     <ClInclude Include="..\..\src\isoiff_hevc.h" />
+    <ClInclude Include="..\..\src\isoiff_jpeg.h" />
     <ClInclude Include="..\..\src\Logger.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

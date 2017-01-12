@@ -10,6 +10,8 @@ d) Added support for Item Properties to isoiff library
 
 e) Updated HEVC Still Image Format to be used with Item Properties in isoiff_tool
 
+f) Added AVC and JPEG Image Format support to isoiff_tool
+
 Release notes Dec 2014
 
 a) Added composition to decode time atom. Also supports signed values.

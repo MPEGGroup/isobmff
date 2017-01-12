@@ -41,9 +41,7 @@ enum
     ISOIFF_4CC_hevc  = MP4_FOUR_CHAR_CODE('h', 'e', 'v', 'c'),
 	ISOIFF_4CC_heic  = MP4_FOUR_CHAR_CODE('h', 'e', 'i', 'c'),
     ISOIFF_4CC_hvc1  = MP4_FOUR_CHAR_CODE('h', 'v', 'c', '1'),
-    ISOIFF_4CC_hvcC  = MP4_FOUR_CHAR_CODE('h', 'v', 'c', 'C'),
-    ISOIFF_4CC_init  = MP4_FOUR_CHAR_CODE('i', 'n', 'i', 't'),
-	ISOIFF_4CC_ispe  = MP4_FOUR_CHAR_CODE('i', 's', 'p', 'e')
+    ISOIFF_4CC_hvcC  = MP4_FOUR_CHAR_CODE('h', 'v', 'c', 'C')
 };
 
 /*!
@@ -93,29 +91,11 @@ typedef struct ISOIFF_HEVCConfigurationAtom
 } ISOIFF_HEVCConfigurationAtom, *ISOIFF_HEVCConfigurationAtomPtr;
 
 /*!
-* @typedef ISOIFF_ImageSpatialExtentsPropertyAtom
-* @brief ImageSpatialExtentsPropertyAtom
-*/
-typedef struct ISOIFF_ImageSpatialExtentsPropertyAtom
-{
-	MP4_FULL_ATOM
-	u32 image_width;
-	u32 image_height;
-} ISOIFF_ImageSpatialExtentsPropertyAtom, *ISOIFF_ImageSpatialExtentsPropertyAtomPtr;
-
-/*!
 * @discussion Creates a HEVCConfigurationAtom (Allocates memory and initializes fields)
 * @param outAtom Pointer that will hold a reference to the created HEVCConfigurationAtom
 * @param configRecord HEVCDecoderConfigRecord  that will be put into the atom
 */
 MP4Err ISOIFF_CreateHEVCConfigurationAtom					(ISOIFF_HEVCConfigurationAtomPtr *outAtom, ISOIFF_HEVCDecoderConfigRecord configRecord);
-
-/*!
-* @discussion Creates a ImageSpatialExtentsPropertyAtom (Allocates memory and initializes fields)
-* @param outAtom Pointer that will hold a reference to the created ImageSpatialExtentsPropertyAtom
-*/
-MP4Err ISOIFF_CreateImageSpatialExtentsPropertyAtom			(ISOIFF_ImageSpatialExtentsPropertyAtomPtr *outAtom);
-
 
 /*!
  * @discussion Creates a HEVC item data (Allocates memory and initializes fields)
@@ -227,11 +207,5 @@ MP4Err          ISOIFF_FreeHEVCDecoderConfigRecord         (ISOIFF_HEVCDecoderCo
 * @param decoderConfig HEVC decoder configuration record, which will be parsed
 */
 MP4Err			ISOIFF_GetHEVCDecoderConfigRecordFromProperty(MP4AtomPtr property, ISOIFF_HEVCDecoderConfigRecord *decoderConfig);
-
-/*!
-* @discussion Parses an ImageSpatialExtentsProperty from a property atom and prints width and height
-* @param property Property atom that is of type ispe
-*/
-MP4Err			ISOIFF_ParseImageSpatialExtends				(MP4AtomPtr property);
 
 #endif

@@ -75,6 +75,7 @@ typedef struct OptionsStruct
     bool                isJustAskingForHelp;
 	int					width;
 	int					height;
+	char                *inputType;
 } Options;
 
 /*!
@@ -88,6 +89,7 @@ static inline void setDefaultValues (Options *options)
     options->outputFile                         = NULL;
     options->isJustAskingForHelp                = false;
     options->debugLevel                         = logLevel;
+	options->inputType							= NULL;
 }
 
 /*!
@@ -101,11 +103,12 @@ static inline void printUsage       ()
     printf("\t-i\t\tInputfile (mandatory)\n");
     printf("\t-o\t\tOutputfile (mandatory)\n");
 	printf("\t-s\t\tWidth Height (mandatory if m = 0)\n");
+	printf("\t-t\t\tInputType (mandatory if m = 0, 'hevc', 'avc' or 'jpeg')\n");
 	printf("\t-o\t\tOutputfile (mandatory)\n");
     printf("\t-d\t\tDebuglevel. 0 = No Logging, 1 = Error, 2 = Warning, 3 = Info (Default), 4 = Debug, 5 = Trace\n");
     printf("\nExample:\n");
     printf("\tReading HEVC Bitstream and creating ISO Media Based Image File Format:\n");
-    printf("\tisoiff_tool -m 0 -i inputFile.bit -o outputFile.mp4 -d 3 -s 1920 1080\n");
+    printf("\tisoiff_tool -m 0 -i inputFile.bit -o outputFile.mp4 -d 3 -s 1920 1080 -t hevc\n");
     printf("\tReading ISO Media Based Image File Format and creating HEVC Bitstream:\n");
     printf("\tisoiff_tool -m 1 -i inputFile.mp4 -o outputFile.bit -d 3\n");
 }
@@ -151,6 +154,7 @@ static inline void freeOptions     (Options *options)
 static inline bool parseArguments   (int argc, char **argv, Options *options)
 {
 	bool imageSizeSet = false;
+	bool inputTypeSet = false;
     for (int i = 1; i < argc; ++i )
     {
         if ( !strcmp ( argv[i], "-h" ) )
@@ -216,6 +220,22 @@ static inline bool parseArguments   (int argc, char **argv, Options *options)
 			i++;
 			continue;
 		}
+		else if (!strcmp(argv[i], "-t"))
+		{
+			options->inputType = stringAppend(options->inputType, argv[i + 1]);
+
+			if ((strcmp(options->inputType, "hevc") != 0) &&
+				(strcmp(options->inputType, "avc") != 0) &&
+				(strcmp(options->inputType, "jpeg") != 0))
+			{
+				logMsg(LOGLEVEL_ERROR, "Option -t (InputType): %s is not a valid type (must be 'hevc', 'avc' or 'jpeg'])", argv[i + 1]);
+				printUsage();
+				return false;
+			}
+			inputTypeSet = true;
+			i++;
+			continue;
+		}
         else
         {
             printUsage();
@@ -233,6 +253,13 @@ static inline bool parseArguments   (int argc, char **argv, Options *options)
 	if ((options->mode == ISOIFF_ToolMode_Write) && !imageSizeSet)
 	{
 		logMsg(LOGLEVEL_ERROR, "Option '-s width height' is mandatory for write mode (m = 0) execution.");
+		printUsage();
+		return false;
+	}
+
+	if ((options->mode == ISOIFF_ToolMode_Write) && !inputTypeSet)
+	{
+		logMsg(LOGLEVEL_ERROR, "Option '-t inputType' is mandatory for write mode (m = 0) execution.");
 		printUsage();
 		return false;
 	}

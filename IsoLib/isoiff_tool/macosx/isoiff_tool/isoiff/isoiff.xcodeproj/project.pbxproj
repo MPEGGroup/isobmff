@@ -17,6 +17,7 @@
 		C6B2DF931DE04E2E00F8CDAD /* HEVCConfigurationAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = C6B2DF911DE04E2E00F8CDAD /* HEVCConfigurationAtom.c */; };
 		C6B2DF941DE04E2E00F8CDAD /* ImageSpatialExtentsPropertyAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = C6B2DF921DE04E2E00F8CDAD /* ImageSpatialExtentsPropertyAtom.c */; };
 		C6B2DF981DE0577800F8CDAD /* isomediafile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C6B2DF971DE0577800F8CDAD /* isomediafile.a */; };
+		C6EFD4A21E27E391005ADE34 /* JPEGConfigurationAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = C6EFD4A11E27E391005ADE34 /* JPEGConfigurationAtom.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		C6B2DF911DE04E2E00F8CDAD /* HEVCConfigurationAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = HEVCConfigurationAtom.c; path = ../../src/HEVCConfigurationAtom.c; sourceTree = "<group>"; };
 		C6B2DF921DE04E2E00F8CDAD /* ImageSpatialExtentsPropertyAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ImageSpatialExtentsPropertyAtom.c; path = ../../src/ImageSpatialExtentsPropertyAtom.c; sourceTree = "<group>"; };
 		C6B2DF971DE0577800F8CDAD /* isomediafile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = isomediafile.a; path = ../../../../../../../../../../Desktop/isomediafile.a; sourceTree = "<group>"; };
+		C6EFD4A11E27E391005ADE34 /* JPEGConfigurationAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = JPEGConfigurationAtom.c; path = ../../../src/JPEGConfigurationAtom.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +67,7 @@
 		18C784851A1AB58500756142 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				C6EFD4A01E27E37D005ADE34 /* JPEG */,
 				18C784BC1A1FDCB500756142 /* HEVC */,
 				18C7848C1A1AB77A00756142 /* Utils */,
 				18C784AE1A1BC9C000756142 /* isoiff.c */,
@@ -94,6 +97,14 @@
 			);
 			name = HEVC;
 			path = ..;
+			sourceTree = "<group>";
+		};
+		C6EFD4A01E27E37D005ADE34 /* JPEG */ = {
+			isa = PBXGroup;
+			children = (
+				C6EFD4A11E27E391005ADE34 /* JPEGConfigurationAtom.c */,
+			);
+			name = JPEG;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -166,6 +177,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C6B2DF941DE04E2E00F8CDAD /* ImageSpatialExtentsPropertyAtom.c in Sources */,
+				C6EFD4A21E27E391005ADE34 /* JPEGConfigurationAtom.c in Sources */,
 				18C7848D1A1AB77A00756142 /* Logger.c in Sources */,
 				C6B2DF931DE04E2E00F8CDAD /* HEVCConfigurationAtom.c in Sources */,
 				18C784AF1A1BC9C000756142 /* isoiff.c in Sources */,

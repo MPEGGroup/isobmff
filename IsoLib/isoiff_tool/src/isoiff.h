@@ -36,6 +36,15 @@ derivative works. Copyright (c) 2014.
 #include "MP4Movies.h"
 #include "MP4Atoms.h"
 
+enum
+{
+	ISOIFF_4CC_init = MP4_FOUR_CHAR_CODE('i', 'n', 'i', 't'),
+	ISOIFF_4CC_ispe = MP4_FOUR_CHAR_CODE('i', 's', 'p', 'e'),
+	ISOIFF_4CC_mif1 = MP4_FOUR_CHAR_CODE('m', 'i', 'f', '1'),
+	ISOIFF_4CC_avcC = MP4_FOUR_CHAR_CODE('a', 'v', 'c', 'C'),
+	ISOIFF_4CC_avc1 = MP4_FOUR_CHAR_CODE('a', 'v', 'c', '1')
+};
+
 /*!
  * @typedef ISOIFF_ImageCollection
  * @brief Represents a collection of images (Stored conforming to ISO Media Based Image File Format)
@@ -53,6 +62,29 @@ typedef struct  ISOIFF_ImageS                        *ISOIFF_Image;
  * @brief Represents an meta item contained in an ISO Media Based Image File Format image collection
  */
 typedef struct  ISOIFF_MetaS                         *ISOIFF_Meta;
+
+/*!
+* @typedef ISOIFF_ImageSpatialExtentsPropertyAtom
+* @brief ImageSpatialExtentsPropertyAtom
+*/
+typedef struct ISOIFF_ImageSpatialExtentsPropertyAtom
+{
+	MP4_FULL_ATOM
+	u32 image_width;
+	u32 image_height;
+} ISOIFF_ImageSpatialExtentsPropertyAtom, *ISOIFF_ImageSpatialExtentsPropertyAtomPtr;
+
+/*!
+* @discussion Creates a ImageSpatialExtentsPropertyAtom (Allocates memory and initializes fields)
+* @param outAtom Pointer that will hold a reference to the created ImageSpatialExtentsPropertyAtom
+*/
+MP4Err			ISOIFF_CreateImageSpatialExtentsPropertyAtom	(ISOIFF_ImageSpatialExtentsPropertyAtomPtr *outAtom);
+
+/*!
+* @discussion Parses an ImageSpatialExtentsProperty from a property atom and prints width and height
+* @param property Property atom that is of type ispe
+*/
+MP4Err			ISOIFF_ParseImageSpatialExtends					(MP4AtomPtr property);
 
 /*!
  * @discussion Creates an image collection conforming to ISO Base Media Image File Format.

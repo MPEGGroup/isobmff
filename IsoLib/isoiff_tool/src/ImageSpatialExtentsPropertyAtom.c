@@ -24,7 +24,7 @@ derivative works. Copyright (c) 2016.
 $Id: ImageSpatialExtentsPropertyAtom.c,v 1.1.1.1 2016/10/08 08:10:00 armin Exp $
 */
 
-#include "isoiff_hevc.h"
+#include "isoiff.h"
 #include <stdlib.h>
 #include <string.h>
 

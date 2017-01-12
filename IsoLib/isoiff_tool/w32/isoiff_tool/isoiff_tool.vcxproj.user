@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>-m 0 -d 5 -i D:\ArminData\Dropbox\Apple\Project2016\Implementation\trunk\IsoLib\isoiff_tool\w32\isoiff_tool\Debug\bbb_raw_832_480.bin -o D:\ArminData\Dropbox\Apple\Project2016\Implementation\trunk\IsoLib\isoiff_tool\w32\isoiff_tool\Debug\test.mp4 -s 10 10</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-m 1 -i D:\ArminData\Dropbox\Apple\Project2016\Files\BL_001_tGs3.1_tGe1.0_invLux089_set002-BYD_SIS.heif  -o D:\ArminData\Dropbox\Apple\Project2016\Files\BL_001_tGs3.1_tGe1.0_invLux089_set002-BYD_SIS_testout.bin -d 5</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

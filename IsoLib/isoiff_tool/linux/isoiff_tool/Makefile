@@ -11,6 +11,8 @@ SOURCES = \
 	StringUtils.cpp \
 	Options.cpp \
 	hevc_tool.cpp \
+	avc_tool.cpp \
+	jpeg_tool.cpp \
 	isoiff_tool_main.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 

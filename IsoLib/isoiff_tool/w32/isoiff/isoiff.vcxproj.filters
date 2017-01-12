@@ -29,6 +29,9 @@
     <ClCompile Include="..\..\src\ImageSpatialExtentsPropertyAtom.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\JPEGConfigurationAtom.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\isoiff.h">
@@ -38,6 +41,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\Logger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\isoiff_jpeg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

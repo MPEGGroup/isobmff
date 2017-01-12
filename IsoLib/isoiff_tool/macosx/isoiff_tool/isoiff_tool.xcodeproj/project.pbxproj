@@ -12,6 +12,8 @@
 		188041C319CB3CD800FAABCE /* isoiff_tool_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 188041B719CB3C8000FAABCE /* isoiff_tool_main.cpp */; };
 		C6D454A81DB518B6001B936A /* libTLibCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C6D454A61DB518B6001B936A /* libTLibCommon.a */; };
 		C6D454A91DB518B6001B936A /* libTLibDecoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C6D454A71DB518B6001B936A /* libTLibDecoder.a */; };
+		C6EFD4A71E27E40B005ADE34 /* jpeg_tool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C6EFD4A51E27E40B005ADE34 /* jpeg_tool.cpp */; };
+		C6EFD4AA1E27E41F005ADE34 /* avc_tool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C6EFD4A81E27E41F005ADE34 /* avc_tool.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +55,10 @@
 		18EC2CB81A366E1800B5ADD5 /* StringUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StringUtils.h; path = ../../src/StringUtils.h; sourceTree = "<group>"; };
 		C6D454A61DB518B6001B936A /* libTLibCommon.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTLibCommon.a; path = "../../../../../../../../../Library/Developer/Xcode/DerivedData/HM-eytzcyzvvcfzfjgipnkhjragvlue/Build/Products/Debug/libTLibCommon.a"; sourceTree = "<group>"; };
 		C6D454A71DB518B6001B936A /* libTLibDecoder.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTLibDecoder.a; path = "../../../../../../../../../Library/Developer/Xcode/DerivedData/HM-eytzcyzvvcfzfjgipnkhjragvlue/Build/Products/Debug/libTLibDecoder.a"; sourceTree = "<group>"; };
+		C6EFD4A51E27E40B005ADE34 /* jpeg_tool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = jpeg_tool.cpp; path = ../../src/jpeg_tool.cpp; sourceTree = "<group>"; };
+		C6EFD4A61E27E40B005ADE34 /* jpeg_tool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jpeg_tool.h; path = ../../src/jpeg_tool.h; sourceTree = "<group>"; };
+		C6EFD4A81E27E41F005ADE34 /* avc_tool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = avc_tool.cpp; path = ../../src/avc_tool.cpp; sourceTree = "<group>"; };
+		C6EFD4A91E27E41F005ADE34 /* avc_tool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = avc_tool.h; path = ../../src/avc_tool.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +92,8 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				C6EFD4A41E27E3EC005ADE34 /* AVC */,
+				C6EFD4A31E27E3E5005ADE34 /* JPEG */,
 				181E0AAB1A30D4AD00D0568A /* HEVC */,
 				18EAE16D19C750B500F0BC40 /* Utils */,
 				188041B719CB3C8000FAABCE /* isoiff_tool_main.cpp */,
@@ -139,6 +147,24 @@
 			children = (
 			);
 			name = Documentation;
+			sourceTree = "<group>";
+		};
+		C6EFD4A31E27E3E5005ADE34 /* JPEG */ = {
+			isa = PBXGroup;
+			children = (
+				C6EFD4A51E27E40B005ADE34 /* jpeg_tool.cpp */,
+				C6EFD4A61E27E40B005ADE34 /* jpeg_tool.h */,
+			);
+			name = JPEG;
+			sourceTree = "<group>";
+		};
+		C6EFD4A41E27E3EC005ADE34 /* AVC */ = {
+			isa = PBXGroup;
+			children = (
+				C6EFD4A81E27E41F005ADE34 /* avc_tool.cpp */,
+				C6EFD4A91E27E41F005ADE34 /* avc_tool.h */,
+			);
+			name = AVC;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -207,7 +233,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C6EFD4AA1E27E41F005ADE34 /* avc_tool.cpp in Sources */,
 				188041C319CB3CD800FAABCE /* isoiff_tool_main.cpp in Sources */,
+				C6EFD4A71E27E40B005ADE34 /* jpeg_tool.cpp in Sources */,
 				181E0AAE1A30D4F100D0568A /* hevc_tool.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

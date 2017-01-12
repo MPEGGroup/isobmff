@@ -22,13 +22,23 @@
  */
 
 #include "hevc_tool.h"
+#include "avc_tool.h"
+#include "jpeg_tool.h"
+#include <vector>
 
 MP4Err  test();
 
-MP4Err  processWriteMode    (Options *options);
-MP4Err  processReadMode     (Options *options);
+MP4Err  processWriteMode		(Options *options);
+MP4Err  processWriteModeHEVC	(Options *options);
+MP4Err  processWriteModeAVC		(Options *options);
+MP4Err  processWriteModeJPEG	(Options *options);
+MP4Err  processReadMode			(Options *options);
+MP4Err  readHEVCImages			(ISOIFF_ImageCollection collection, MP4Handle bitstreamH, u32 *imgCount);
+MP4Err  readAVCImages			(ISOIFF_ImageCollection collection, MP4Handle bitstreamH, u32 *imgCount);
+MP4Err  readJPEGImages			(ISOIFF_ImageCollection collection, MP4Handle bitstreamH, u32 *imgCount);
+MP4Err  writeHandleToFile		(const char *filename, MP4Handle handle);
 
-int     main                ( int argc, char **argv )
+int     main					( int argc, char **argv )
 {
     MP4Err                          err;
     Options                         options;
@@ -76,47 +86,148 @@ bail:
 	return err;
 }
 
-MP4Err  processWriteMode    (Options *options)
+MP4Err  processWriteMode		(Options *options)
 {
-    MP4Err                              err;
-    ISOIFF_HEVCDecoderConfigRecord      decoderConfigRecord;
-    ISOIFF_HEVCItemData                 hevcImageItemData;
-    ISOIFF_ImageCollection              collection;
-    
-    err = MP4NoErr;
-    
-    err = ISOIFF_CreateHEVCDecoderConfigRecord(&decoderConfigRecord);                           if (err) goto bail;
-    err = ISOIFF_CreateHEVCItemData(&hevcImageItemData);                                        if (err) goto bail;
-    
-    err = processHEVC_NALUnits(decoderConfigRecord, hevcImageItemData, options);                if (err) goto bail;
-    
-    err = createHEVC_ImageCollection(&collection);                                              if (err) goto bail;
-    err = addHEVCImageToCollection(collection, decoderConfigRecord, hevcImageItemData, (u32) options->width, (u32) options->height);
-																								if (err) goto bail;
-    
-    err = ISOIFF_WriteCollectionToFile(collection, options->outputFile);                        if (err) goto bail;
-    
-    if (options->debugLevel >= 4)
-    {
-        err = ISOIFF_ReadCollectionFromFile(&collection, options->outputFile);                  if (err) goto bail;
-    }
-    err = ISOIFF_FreeHEVCItemData(hevcImageItemData);                                           if (err) goto bail;
-    err = ISOIFF_FreeHEVCDecoderConfigRecord(decoderConfigRecord);                              if (err) goto bail;
-    err = ISOIFF_FreeImageCollection(collection);                                               if (err) goto bail;
+	MP4Err err;
+	err = MP4NoErr;
+
+	if (strcmp(options->inputType, "hevc") == 0)
+	{
+		logMsg(LOGLEVEL_INFO, "Processing HEVC Write Mode..");
+		err = processWriteModeHEVC(options);
+	}
+	else if (strcmp(options->inputType, "avc") == 0)
+	{
+		logMsg(LOGLEVEL_INFO, "Processing AVC Write Mode..");
+		err = processWriteModeAVC(options);
+	}
+	else if (strcmp(options->inputType, "jpeg") == 0)
+	{
+		logMsg(LOGLEVEL_INFO, "Processing JPEG Write Mode..");
+		err = processWriteModeJPEG(options);
+	}
+
 bail:
-    return err;
+	return err;
 }
 
-MP4Err  processReadMode     (Options *options)
+MP4Err  processWriteModeHEVC	(Options *options)
+{
+	MP4Err                              err;
+	ISOIFF_HEVCDecoderConfigRecord      decoderConfigRecord;
+	ISOIFF_HEVCItemData                 hevcImageItemData;
+	ISOIFF_ImageCollection              collection;
+
+	err = MP4NoErr;
+
+	err = ISOIFF_CreateHEVCDecoderConfigRecord(&decoderConfigRecord);                           if (err) goto bail;
+	err = ISOIFF_CreateHEVCItemData(&hevcImageItemData);                                        if (err) goto bail;
+
+	err = processHEVC_NALUnits(decoderConfigRecord, hevcImageItemData, options);                if (err) goto bail;
+
+	err = createHEVC_ImageCollection(&collection);                                              if (err) goto bail;
+	err = addHEVCImageToCollection(collection, decoderConfigRecord, hevcImageItemData, (u32)options->width, (u32)options->height);
+	if (err) goto bail;
+
+	err = ISOIFF_WriteCollectionToFile(collection, options->outputFile);                        if (err) goto bail;
+
+	if (options->debugLevel >= 4)
+	{
+		err = ISOIFF_ReadCollectionFromFile(&collection, options->outputFile);                  if (err) goto bail;
+	}
+	err = ISOIFF_FreeHEVCItemData(hevcImageItemData);                                           if (err) goto bail;
+	err = ISOIFF_FreeHEVCDecoderConfigRecord(decoderConfigRecord);                              if (err) goto bail;
+	err = ISOIFF_FreeImageCollection(collection);                                               if (err) goto bail;
+bail:
+	return err;
+}
+
+MP4Err  processWriteModeAVC		(Options *options)
+{
+	MP4Err                              err;
+	ISOVCConfigAtomPtr					avcC;
+	ISOIFF_HEVCItemData                 hevcImageItemData;
+	ISOIFF_ImageCollection              collection;
+
+	err = MP4NoErr;
+
+	err = MP4CreateVCConfigAtom(&avcC);															if (err) goto bail;
+	err = ISOIFF_CreateHEVCItemData(&hevcImageItemData);                                        if (err) goto bail;
+
+	err = processAVC_NALUnits(avcC, hevcImageItemData, options);								if (err) goto bail;
+
+	
+	err = createAVC_ImageCollection(&collection);                                               if (err) goto bail;
+	err = addAVCImageToCollection(collection, avcC, hevcImageItemData, (u32)options->width, (u32)options->height);
+	if (err) goto bail;
+
+	err = ISOIFF_WriteCollectionToFile(collection, options->outputFile);                        if (err) goto bail;
+
+	if (options->debugLevel >= 4)
+	{
+		err = ISOIFF_ReadCollectionFromFile(&collection, options->outputFile);                  if (err) goto bail;
+	}
+	err = ISOIFF_FreeHEVCItemData(hevcImageItemData);                                           if (err) goto bail;
+	avcC->destroy((MP4AtomPtr) avcC);														
+	err = ISOIFF_FreeImageCollection(collection);                                               if (err) goto bail;
+	
+bail:
+	return err;
+}
+
+MP4Err  processWriteModeJPEG	(Options *options)
+{
+	MP4Err                              err;
+	ISOIFF_JPEGConfigurationAtomPtr    	jpgC;
+	MP4Handle							jpegPrefixHeaderH;
+	MP4Handle							jpegImageItemDataH;
+	ISOIFF_ImageCollection              collection;
+	u32									prefixHeaderSize;
+
+	err = MP4NoErr;
+
+	jpgC = NULL;
+	err = MP4NewHandle(0, &jpegImageItemDataH);													if (err) goto bail;
+	err = MP4NewHandle(0, &jpegPrefixHeaderH);													if (err) goto bail;
+
+	err = processJPEGBitstream(jpegPrefixHeaderH, jpegImageItemDataH, options);					if (err) goto bail;
+
+	err = MP4GetHandleSize(jpegPrefixHeaderH, &prefixHeaderSize);								if (err) goto bail;
+
+	if (prefixHeaderSize != 0)
+	{
+		err = ISOIFF_CreateJPEGConfigurationAtom(&jpgC, jpegPrefixHeaderH);						if (err) goto bail;
+	}
+	
+	err = createJPEG_ImageCollection(&collection);												if (err) goto bail;
+	err = addJPEGImageToCollection(collection, jpgC, jpegImageItemDataH, (u32)options->width, (u32)options->height);
+	if (err) goto bail;
+
+	
+	err = ISOIFF_WriteCollectionToFile(collection, options->outputFile);                        if (err) goto bail;
+
+	if (options->debugLevel >= 4)
+	{
+		err = ISOIFF_ReadCollectionFromFile(&collection, options->outputFile);                  if (err) goto bail;
+	}
+
+	if (jpgC)
+	{
+		jpgC->destroy((MP4AtomPtr) jpgC);
+	}
+	err = ISOIFF_FreeImageCollection(collection);                                               if (err) goto bail;
+	
+bail:
+	return err;
+}
+
+MP4Err  processReadMode			(Options *options)
 {
     u32                                 imgCount;
     u32                                 size;
-    u32                                 i;
     MP4Handle                           bitstreamH;
     MP4Err                              err;
     ISOIFF_ImageCollection              collection;
-    ISOIFF_Image                        *images;
-    ISOIFF_HEVCDecoderConfigRecord      *records;
     FILE                                *file;
     
     err = MP4NoErr;
@@ -124,26 +235,141 @@ MP4Err  processReadMode     (Options *options)
     
     err = ISOIFF_ReadCollectionFromFile(&collection, options->inputFile);                       if (err) goto bail;
     
-    err = getHEVCImages(collection, &images, &records, &imgCount);                              if (err) goto bail;
-    err = getHEVCBitstreamFromImage(images[0], records[0], bitstreamH);                         if (err) goto bail;
-    
-    err = MP4GetHandleSize(bitstreamH, &size);                                                  if (err) goto bail;
-    
-    file = fopen(options->outputFile, "wb");
-    fwrite(*bitstreamH, size, 1, file);
-    fclose(file);
-    
-    for (i = 0; i < imgCount; i++)
-    {
-        err = ISOIFF_FreeImage(images[i]);                                                      if (err) goto bail;
-        err = ISOIFF_FreeHEVCDecoderConfigRecord(records[i]);                                   if (err) goto bail;
-        free (images);
-        free (records);
-    }
-    
+	err = readHEVCImages(collection, bitstreamH, &imgCount);									if (err) goto bail;
+
+	if (imgCount >= 1)
+	{
+		logMsg(LOGLEVEL_INFO, "Writing first HEVC Image to output file %s", options->outputFile);
+		err = writeHandleToFile(options->outputFile, bitstreamH);								if (err) goto bail;
+	}
+	else
+	{
+		logMsg(LOGLEVEL_INFO, "No HEVC images found. Looking for AVC images next.");
+		err = readAVCImages(collection, bitstreamH, &imgCount);							        if (err) goto bail;
+
+		if (imgCount >= 1)
+		{
+			logMsg(LOGLEVEL_INFO, "Writing first AVC Image to output file %s", options->outputFile);
+			err = writeHandleToFile(options->outputFile, bitstreamH);							if (err) goto bail;
+		} 
+		else
+		{
+			logMsg(LOGLEVEL_INFO, "No AVC images found. Looking for JPEG images next.");
+			err = readJPEGImages(collection, bitstreamH, &imgCount);							if (err) goto bail;
+
+			if (imgCount >= 1)
+			{
+				logMsg(LOGLEVEL_INFO, "Writing first JPEG Image to output file %s", options->outputFile);
+				err = writeHandleToFile(options->outputFile, bitstreamH);					    if (err) goto bail;
+			}
+		}
+	}
+
     err = MP4DisposeHandle(bitstreamH);                                                         if (err) goto bail;
     err = ISOIFF_FreeImageCollection(collection);                                               if (err) goto bail;
 bail:
     return err;
 }
 
+MP4Err  readHEVCImages			(ISOIFF_ImageCollection collection, MP4Handle bitstreamH, u32 *imgCount)
+{
+	u32                                 i;
+	MP4Err                              err;
+	ISOIFF_Image                        *images;
+	ISOIFF_HEVCDecoderConfigRecord      *records;
+	FILE                                *file;
+
+	logMsg(LOGLEVEL_INFO, "Looking for HEVC Images..\n");
+
+	err = getHEVCImages(collection, &images, &records,  imgCount);                              if (err) goto bail;
+
+	logMsg(LOGLEVEL_INFO, "Found %d HEVC Images.", *imgCount);
+
+	if (*imgCount >= 1)
+		err = getHEVCBitstreamFromImage(images[0], records[0], bitstreamH);                     if (err) goto bail;
+
+	for (i = 0; i < *imgCount; i++)
+	{
+		err = ISOIFF_FreeImage(images[i]);                                                      if (err) goto bail;
+		err = ISOIFF_FreeHEVCDecoderConfigRecord(records[i]);                                   if (err) goto bail;
+	}
+	free(images);
+	free(records);
+
+bail:
+	return err;
+}
+
+MP4Err  readAVCImages			(ISOIFF_ImageCollection collection, MP4Handle bitstreamH, u32 *imgCount)
+{
+	u32                                 i;
+	MP4Err                              err;
+	ISOIFF_Image                        *images;
+	ISOVCConfigAtomPtr					*avcCAtoms;
+	FILE                                *file;
+
+	logMsg(LOGLEVEL_INFO, "Looking for AVC Images..\n");
+
+	err = getAVCImages(collection, &images, &avcCAtoms, imgCount);								if (err) goto bail;
+
+	logMsg(LOGLEVEL_INFO, "Found %d AVC Images.", *imgCount);
+
+	if (*imgCount >= 1)
+		err = getAVCBitstreamFromImage(images[0], avcCAtoms[0], bitstreamH);						if (err) goto bail;
+	/*
+	for (i = 0; i < *imgCount; i++)
+	{
+		err = ISOIFF_FreeImage(images[i]);                                                      if (err) goto bail;	
+	}
+	*/
+
+	free(images);
+	free(avcCAtoms);
+
+bail:
+	return err;
+}
+
+MP4Err  readJPEGImages(ISOIFF_ImageCollection collection, MP4Handle bitstreamH, u32 *imgCount)
+{
+	u32                                 i;
+	MP4Err                              err;
+	ISOIFF_Image                        *images;
+	ISOIFF_JPEGConfigurationAtomPtr  	*jpgCAtoms;
+	FILE                                *file;
+
+	logMsg(LOGLEVEL_INFO, "Looking for JPEG Images..\n");
+
+	err = getJPEGImages(collection, &images, &jpgCAtoms, imgCount);								if (err) goto bail;
+
+	logMsg(LOGLEVEL_INFO, "Found %d JPEG Images.", *imgCount);
+
+	if (*imgCount >= 1)
+		err = getJPEGBitstreamFromImage(images[0], jpgCAtoms[0], bitstreamH);						if (err) goto bail;
+
+	for (i = 0; i < *imgCount; i++)
+	{
+		err = ISOIFF_FreeImage(images[i]);                                                      if (err) goto bail;
+	}
+
+	free(images);
+	free(jpgCAtoms);
+
+bail:
+	return err;
+}
+
+MP4Err  writeHandleToFile	(const char *filename, MP4Handle handle)
+{
+	MP4Err                              err;
+	u32                                 size;
+	FILE                                *file;
+
+	err = MP4GetHandleSize(handle, &size);  if (err) goto bail;
+
+	file = fopen(filename, "wb");
+	fwrite(*handle, size, 1, file);
+	fclose(file);
+bail:
+	return err;
+}

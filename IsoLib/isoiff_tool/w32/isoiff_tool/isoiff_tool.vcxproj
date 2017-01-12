@@ -11,14 +11,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\avc_tool.h" />
+    <ClInclude Include="..\..\src\hevc_tool.h" />
     <ClInclude Include="..\..\src\isoiff.h" />
     <ClInclude Include="..\..\src\isoiff_hevc.h" />
+    <ClInclude Include="..\..\src\jpeg_tool.h" />
     <ClInclude Include="..\..\src\Options.h" />
     <ClInclude Include="..\..\src\StringUtils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\avc_tool.cpp" />
     <ClCompile Include="..\..\src\hevc_tool.cpp" />
     <ClCompile Include="..\..\src\isoiff_tool_main.cpp" />
+    <ClCompile Include="..\..\src\jpeg_tool.cpp" />
     <ClCompile Include="..\..\src\Options.cpp" />
     <ClCompile Include="..\..\src\StringUtils.cpp" />
   </ItemGroup>
