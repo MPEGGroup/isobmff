@@ -1,25 +1,31 @@
-/*
-This software module was originally developed by Apple Computer, Inc.
-in the course of development of MPEG-4. 
-This software module is an implementation of a part of one or 
-more MPEG-4 tools as specified by MPEG-4. 
-ISO/IEC gives users of MPEG-4 free license to this
-software module or modifications thereof for use in hardware 
-or software products claiming conformance to MPEG-4.
-Those intending to use this software module in hardware or software
-products are advised that its use may infringe existing patents.
-The original developer of this software module and his/her company,
-the subsequent editors and their companies, and ISO/IEC have no
-liability for use of this software module or modifications thereof
-in an implementation.
-Copyright is not released for non MPEG-4 conforming
-products. Apple Computer, Inc. retains full right to use the code for its own
-purpose, assign or donate the code to a third party and to
-inhibit third parties from using the code for non 
-MPEG-4 conforming products.
-This copyright notice must be included in all copies or
-derivative works. Copyright (c) 1999, 2000.
+/* This software module was originally developed by Apple Computer, Inc.
+ * in the course of development of MPEG-4.
+ * This software module is an implementation of a part of one or
+ * more MPEG-4 tools as specified by MPEG-4.
+ * ISO/IEC gives users of MPEG-4 free license to this
+ * software module or modifications thereof for use in hardware
+ * or software products claiming conformance to MPEG-4 only for evaluation and testing purposes.
+ * Those intending to use this software module in hardware or software
+ * products are advised that its use may infringe existing patents.
+ * The original developer of this software module and his/her company,
+ * the subsequent editors and their companies, and ISO/IEC have no
+ * liability for use of this software module or modifications thereof
+ * in an implementation.
+ *
+ * Copyright is not released for non MPEG-4 conforming
+ * products. Apple Computer, Inc. retains full right to use the code for its own
+ * purpose, assign or donate the code to a third party and to
+ * inhibit third parties from using the code for non
+ * MPEG-4 conforming products.
+ * This copyright notice must be included in all copies or
+ * derivative works. */
+
+/* Copyright© 2017 Gesellschaft zur Foerderung der angewandten Forschung e.V.
+ * acting on behalf of its Fraunhofer Institute for Telecommunications,
+ * Heinrich Hertz Institute, HHI
+ * All rights reserved.
 */
+
 /*
 	$Id: MP4Media.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
 */
@@ -1052,6 +1058,94 @@ bail:
 	if (entry)
 		entry->destroy((MP4AtomPtr)entry);
 	return err;
+}
+
+MP4_EXTERN(MP4Err) ISOGetRESVSampleDescriptionPS(MP4Handle sampleEntryH,
+                                                 MP4Handle ps,
+                                                 u32 where,
+                                                 u32 index) {
+    MP4Err err = MP4NoErr;
+    MP4VisualSampleEntryAtomPtr entry = NULL;
+    ISOHEVCConfigAtomPtr			 config;
+
+    err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType); if (err) goto bail;
+
+    if (entry->type != MP4RestrictedVideoAtomType) BAILWITHERROR(MP4BadParamErr);
+
+    err = MP4GetListEntryAtom(entry->ExtensionAtomList, ISOHEVCConfigAtomType, (MP4AtomPtr*)&config);
+    if (err == MP4NotFoundErr) {
+        BAILWITHERROR(MP4BadDataErr);
+    }
+
+    err = config->getParameterSet(config, ps, where, index); if (err) goto bail;
+
+bail:
+    if (entry)
+        entry->destroy((MP4AtomPtr)entry);
+    return err;
+}
+
+MP4_EXTERN(MP4Err) ISOGetRESVLengthSizeMinusOne(MP4Handle sampleEntryH, u32* out)
+{
+    if(!out) goto bail;
+    MP4Err err = MP4NoErr;
+    MP4VisualSampleEntryAtomPtr entry = NULL;
+    ISOHEVCConfigAtomPtr			 config;
+
+    err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType); if (err) goto bail;
+
+    if (entry->type != MP4RestrictedVideoAtomType) BAILWITHERROR(MP4BadParamErr);
+
+    err = MP4GetListEntryAtom(entry->ExtensionAtomList, ISOHEVCConfigAtomType, (MP4AtomPtr*)&config);
+    if (err == MP4NotFoundErr) {
+        BAILWITHERROR(MP4BadDataErr);
+    }
+
+    *out = config->lengthSizeMinusOne;
+
+bail:
+    if (entry)
+        entry->destroy((MP4AtomPtr)entry);
+    return err;
+}
+
+MP4_EXTERN(MP4Err) ISOGetRESVOriginalFormat(MP4Handle sampleEntryH,
+                                            char* pOrigFmt)
+{
+    MP4Err err = MP4NoErr;
+    MP4VisualSampleEntryAtomPtr entry = NULL;
+    MP4RestrictedInfoAtomPtr    config;
+    MP4Handle rinfHandle;
+
+    ISONewHandle(1, &rinfHandle);
+
+    err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType); if (err) goto bail;
+
+    if (entry->type != MP4RestrictedVideoAtomType) BAILWITHERROR(MP4BadParamErr);
+
+    err = MP4GetListEntryAtom(entry->ExtensionAtomList, MP4RestrictedInfoAtomType, (MP4AtomPtr*)&config);
+    if (err == MP4NotFoundErr) {
+        BAILWITHERROR(MP4BadDataErr);
+    }
+
+    /* todo: this should be done in another way. reimplement it.*/
+
+    err = config->calculateSize( (MP4AtomPtr) config ); if (err) goto bail;
+    err = MP4SetHandleSize( rinfHandle, config->size ); if (err) goto bail;
+    err = config->serialize( (MP4AtomPtr) config, *rinfHandle ); if (err) goto bail;
+
+    if(pOrigFmt)
+    {
+        /* OriginalFormatBox is the first box in 'rinf'. Skip 16 bytes to get data_format */
+        memcpy(pOrigFmt, *rinfHandle+16, 4);
+        pOrigFmt[4] = '\0';
+    }
+
+bail:
+    ISODisposeHandle(rinfHandle);
+    if (entry)
+        entry->destroy((MP4AtomPtr)entry);
+    return err;
 }
 
 MP4_EXTERN(MP4Err) ISONewHEVCSampleDescription(MP4Track theTrack,

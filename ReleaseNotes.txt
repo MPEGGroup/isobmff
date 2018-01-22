@@ -1,3 +1,7 @@
+Release notes Jan 2018
+
+a) Added application for support of HEVC extractors, see input contribution m41627 for more details
+
 Release notes Dec 2016
 
 a) Added support for Item Properties to libisomedia
