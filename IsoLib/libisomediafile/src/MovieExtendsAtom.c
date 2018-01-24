@@ -108,7 +108,6 @@ static MP4Err   setCompositionToDecodeProperties(struct MP4MovieExtendsAtom *sel
     MP4Err                              err;
     MP4TrackExtensionPropertiesAtomPtr  trep;
     MP4CompositionToDecodeAtomPtr       cslg;
-    MP4CompositionToDecodeAtomPtr       cslgOfSampleTable;
     u8                                  createCslg;
     
     err         = MP4NoErr;

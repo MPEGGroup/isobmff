@@ -1,0 +1,434 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="10.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <SccProjectName />
+    <SccLocalPath />
+    <ProjectGuid>{28F7076E-930E-11E3-AB6A-003048FFD893}</ProjectGuid>
+    <RootNamespace>libisomedia</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)lib\$(Platform)_$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)obj\$(Platform)_$(Configuration)\$(ProjectName)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)lib\$(Platform)_$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)obj\$(Platform)_$(Configuration)\$(ProjectName)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)lib\$(Platform)_$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)obj\$(Platform)_$(Configuration)\$(ProjectName)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)lib\$(Platform)_$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)obj\$(Platform)_$(Configuration)\$(ProjectName)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <MinimalRebuild>true</MinimalRebuild>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>..\..\..\w32;..\..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;WIN32;_WINDOWS;ISOMP4DLLAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)$(ProjectName)_vc11.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>$(OutDir)libisomedia.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <RedirectOutputAndErrors>NUL</RedirectOutputAndErrors>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>$(OutDir)libisomedia.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <LinkDLL>true</LinkDLL>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(OutDir)libisomedia.dll</OutputFile>
+      <ImportLibrary>$(OutDir)libisomedia.lib</ImportLibrary>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>..\..\..\w32;..\..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;WIN32;_WINDOWS;ISOMP4DLLAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)$(ProjectName)_vc11.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>$(OutDir)libisomedia.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <RedirectOutputAndErrors>NUL</RedirectOutputAndErrors>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>$(OutDir)libisomedia.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <LinkDLL>true</LinkDLL>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(OutDir)libisomedia.dll</OutputFile>
+      <ImportLibrary>$(OutDir)libisomedia.lib</ImportLibrary>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>..\..\..\w32;..\..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;WIN32;_WINDOWS;ISOMP4DLLAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BrowseInformation>true</BrowseInformation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)$(ProjectName)_vc11.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>$(OutDir)libisomedia.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <RedirectOutputAndErrors>NUL</RedirectOutputAndErrors>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>$(OutDir)libisomedia.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <LinkDLL>true</LinkDLL>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(OutDir)libisomedia.dll</OutputFile>
+      <ImportLibrary>$(OutDir)libisomedia.lib</ImportLibrary>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>..\..\..\w32;..\..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;WIN32;_WINDOWS;ISOMP4DLLAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BrowseInformation>true</BrowseInformation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)$(ProjectName)_vc11.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>$(OutDir)libisomedia.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <RedirectOutputAndErrors>NUL</RedirectOutputAndErrors>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>$(OutDir)libisomedia.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <LinkDLL>true</LinkDLL>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(OutDir)libisomedia.dll</OutputFile>
+      <ImportLibrary>$(OutDir)libisomedia.lib</ImportLibrary>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\AdditionalMetaDataContainerAtom.c" />
+    <ClCompile Include="..\..\..\src\ChannelLayoutAtom.c" />
+    <ClCompile Include="..\..\..\src\CompositionToDecodeAtom.c" />
+    <ClCompile Include="..\..\..\src\DownMixInstructionsAtom.c" />
+    <ClCompile Include="..\..\..\src\ExtendedLanguageTag.c" />
+    <ClCompile Include="..\..\..\src\ItemDataAtom.c" />
+    <ClCompile Include="..\..\..\src\ItemPropertiesAtom.c" />
+    <ClCompile Include="..\..\..\src\ItemPropertyAssociationAtom.c" />
+    <ClCompile Include="..\..\..\src\ItemPropertyContainerAtom.c" />
+    <ClCompile Include="..\..\..\src\ItemReferenceAtom.c" />
+    <ClCompile Include="..\..\..\src\LoudnessAtom.c" />
+    <ClCompile Include="..\..\..\src\LoudnessBaseAtom.c" />
+    <ClCompile Include="..\..\..\src\MetaboxRelationAtom.c" />
+    <ClCompile Include="..\..\..\src\SampleAuxiliaryInformationOffsetsAtom.c" />
+    <ClCompile Include="..\..\..\src\SampleAuxiliaryInformationSizesAtom.c" />
+    <ClCompile Include="..\..\..\src\SingleItemTypeReferenceAtom.c" />
+    <ClCompile Include="..\..\..\src\TrackExtensionPropertiesAtom.c" />
+    <ClCompile Include="..\..\..\src\TrackFragmentDecodeTimeAtom.c" />
+    <ClCompile Include="..\..\..\src\AudioSampleEntryAtom.c" />
+    <ClCompile Include="..\..\..\src\BaseDescriptor.c" />
+    <ClCompile Include="..\..\..\src\ChunkOffsetAtom.c" />
+    <ClCompile Include="..\..\..\src\ClockReferenceMediaHeader.c" />
+    <ClCompile Include="..\..\..\src\CopyrightAtom.c" />
+    <ClCompile Include="..\..\..\src\DataEntryURLAtom.c" />
+    <ClCompile Include="..\..\..\src\DataEntryURNAtom.c" />
+    <ClCompile Include="..\..\..\src\DataInformationAtom.c" />
+    <ClCompile Include="..\..\..\src\DataReferenceAtom.c" />
+    <ClCompile Include="..\..\..\src\DecodingOffsetAtom.c" />
+    <ClCompile Include="..\..\..\src\DegradationPriorityAtom.c" />
+    <ClCompile Include="..\..\..\src\EditAtom.c" />
+    <ClCompile Include="..\..\..\src\EditListAtom.c" />
+    <ClCompile Include="..\..\..\src\ESDAtom.c" />
+    <ClCompile Include="..\..\..\src\ESUpdateCommand.c" />
+    <ClCompile Include="..\..\..\src\FileMappingDataHandler.c" />
+    <ClCompile Include="..\..\..\src\FreeSpaceAtom.c" />
+    <ClCompile Include="..\..\..\src\GenericSampleEntryAtom.c" />
+    <ClCompile Include="..\..\..\src\HandlerAtom.c" />
+    <ClCompile Include="..\..\..\src\HEVCConfigAtom.c" />
+    <ClCompile Include="..\..\..\src\HintMediaHeaderAtom.c" />
+    <ClCompile Include="..\..\..\src\IPMPToolUpdateCommand.c" />
+    <ClCompile Include="..\..\..\src\MdatDataHandler.c" />
+    <ClCompile Include="..\..\..\src\MediaAtom.c" />
+    <ClCompile Include="..\..\..\src\MediaDataAtom.c" />
+    <ClCompile Include="..\..\..\src\MediaHeaderAtom.c" />
+    <ClCompile Include="..\..\..\src\MediaInformationAtom.c" />
+    <ClCompile Include="..\..\..\src\MemoryFileMappingObject.c" />
+    <ClCompile Include="..\..\..\src\MJ2BitsPerComponentAtom.c" />
+    <ClCompile Include="..\..\..\src\MJ2ColorSpecificationAtom.c" />
+    <ClCompile Include="..\..\..\src\MJ2FileTypeAtom.c" />
+    <ClCompile Include="..\..\..\src\MJ2HeaderAtom.c" />
+    <ClCompile Include="..\..\..\src\MJ2ImageHeaderAtom.c" />
+    <ClCompile Include="..\..\..\src\MJ2Movies.c" />
+    <ClCompile Include="..\..\..\src\MJ2SignatureAtom.c" />
+    <ClCompile Include="..\..\..\src\MovieAtom.c" />
+    <ClCompile Include="..\..\..\src\MovieExtendsAtom.c" />
+    <ClCompile Include="..\..\..\src\MovieFragmentAtom.c" />
+    <ClCompile Include="..\..\..\src\MovieFragmentHeaderAtom.c" />
+    <ClCompile Include="..\..\..\src\MovieHeaderAtom.c" />
+    <ClCompile Include="..\..\..\src\MovieTracks.c" />
+    <ClCompile Include="..\..\..\src\MP4Atoms.c" />
+    <ClCompile Include="..\..\..\src\MP4Commands.c" />
+    <ClCompile Include="..\..\..\src\MP4DataHandler.c" />
+    <ClCompile Include="..\..\..\src\MP4DecoderConfigDescriptor.c" />
+    <ClCompile Include="..\..\..\src\MP4DefaultCommand.c" />
+    <ClCompile Include="..\..\..\src\MP4DefaultDescriptor.c" />
+    <ClCompile Include="..\..\..\src\MP4Descriptors.c" />
+    <ClCompile Include="..\..\..\src\MP4ES_ID_IncDescriptor.c" />
+    <ClCompile Include="..\..\..\src\MP4ES_ID_RefDescriptor.c" />
+    <ClCompile Include="..\..\..\src\MP4ESDescriptor.c" />
+    <ClCompile Include="..\..\..\src\MP4FileMappingInputStream.c" />
+    <ClCompile Include="..\..\..\src\MP4Handle.c" />
+    <ClCompile Include="..\..\..\src\MP4InitialObjectDescriptor.c" />
+    <ClCompile Include="..\..\..\src\MP4InputStream.c" />
+    <ClCompile Include="..\..\..\src\MP4IPMPDescriptorPointer.c" />
+    <ClCompile Include="..\..\..\src\MP4IPMPInitialize.c" />
+    <ClCompile Include="..\..\..\src\MP4IPMPTool.c" />
+    <ClCompile Include="..\..\..\src\MP4IPMPToolDescriptor.c" />
+    <ClCompile Include="..\..\..\src\MP4IPMPToolList.c" />
+    <ClCompile Include="..\..\..\src\MP4IPMPX.c" />
+    <ClCompile Include="..\..\..\src\MP4IPMPXData.c" />
+    <ClCompile Include="..\..\..\src\MP4IPMPXDefaultData.c" />
+    <ClCompile Include="..\..\..\src\MP4LinkedList.c" />
+    <ClCompile Include="..\..\..\src\MP4Media.c" />
+    <ClCompile Include="..\..\..\src\MP4MemoryInputStream.c" />
+    <ClCompile Include="..\..\..\src\MP4MovieFile.c" />
+    <ClCompile Include="..\..\..\src\MP4Movies.c" />
+    <ClCompile Include="..\..\..\src\MP4ObjectDescriptor.c" />
+    <ClCompile Include="..\..\..\src\MP4ODTrackReader.c" />
+    <ClCompile Include="..\..\..\src\MP4OrdinaryTrackReader.c" />
+    <ClCompile Include="..\..\..\src\MP4SLPacket.c" />
+    <ClCompile Include="..\..\..\src\MP4TrackReader.c" />
+    <ClCompile Include="..\..\..\src\MP4UserData.c" />
+    <ClCompile Include="..\..\..\src\MPEGMediaHeaderAtom.c" />
+    <ClCompile Include="..\..\..\src\MPEGSampleEntryAtom.c" />
+    <ClCompile Include="..\..\..\src\ObjectDescriptorAtom.c" />
+    <ClCompile Include="..\..\..\src\ObjectDescriptorMediaHeader.c" />
+    <ClCompile Include="..\..\..\src\ODUpdateCommand.c" />
+    <ClCompile Include="..\..\..\src\PaddingBitsAtom.c" />
+    <ClCompile Include="..\..\..\src\QTMovies.c" />
+    <ClCompile Include="..\..\..\src\SampleDescriptionAtom.c" />
+    <ClCompile Include="..\..\..\src\SampleSizeAtom.c" />
+    <ClCompile Include="..\..\..\src\SampleTableAtom.c" />
+    <ClCompile Include="..\..\..\src\SampleToChunkAtom.c" />
+    <ClCompile Include="..\..\..\src\SampleGroupDescriptionAtom.c" />
+    <ClCompile Include="..\..\..\src\SampleToGroupAtom.c" />
+    <ClCompile Include="..\..\..\src\SceneDescriptionMediaHeader.c" />
+    <ClCompile Include="..\..\..\src\ShadowSyncAtom.c" />
+    <ClCompile Include="..\..\..\src\SLConfigDescriptor.c" />
+    <ClCompile Include="..\..\..\src\SoundMediaHeaderAtom.c" />
+    <ClCompile Include="..\..\..\src\SubSampleInformationAtom.c" />
+    <ClCompile Include="..\..\..\src\SyncSampleAtom.c" />
+    <ClCompile Include="..\..\..\src\TimeToSampleAtom.c" />
+    <ClCompile Include="..\..\..\src\TrackAtom.c" />
+    <ClCompile Include="..\..\..\src\TrackExtendsAtom.c" />
+    <ClCompile Include="..\..\..\src\TrackFragmentAtom.c" />
+    <ClCompile Include="..\..\..\src\TrackFragmentHeaderAtom.c" />
+    <ClCompile Include="..\..\..\src\TrackFragmentRunAtom.c" />
+    <ClCompile Include="..\..\..\src\TrackGroupAtom.c" />
+    <ClCompile Include="..\..\..\src\TrackGroupTypeAtom.c" />
+    <ClCompile Include="..\..\..\src\TrackHeaderAtom.c" />
+    <ClCompile Include="..\..\..\src\TrackReferenceAtom.c" />
+    <ClCompile Include="..\..\..\src\TrackReferenceTypeAtom.c" />
+    <ClCompile Include="..\..\..\src\UnknownAtom.c" />
+    <ClCompile Include="..\..\..\src\UserDataAtom.c" />
+    <ClCompile Include="..\..\..\src\VideoMediaHeaderAtom.c" />
+    <ClCompile Include="..\..\..\src\VisualSampleEntryAtom.c" />
+    <ClCompile Include="..\..\W32FileMappingObject.c" />
+    <ClCompile Include="..\..\..\src\SecuritySchemeAtom.c" />
+    <ClCompile Include="..\..\..\src\SecurityInfoAtom.c" />
+    <ClCompile Include="..\..\..\src\OriginalFormatAtom.c" />
+    <ClCompile Include="..\..\..\src\SchemeInfoAtom.c" />
+    <ClCompile Include="..\..\..\src\EncVisualSampleEntryAtom.c" />
+    <ClCompile Include="..\..\..\src\EncAudioSampleEntryAtom.c" />
+    <ClCompile Include="..\..\..\src\ISMASampleFormatAtom.c" />
+    <ClCompile Include="..\..\..\src\ISMAKMSAtom.c" />
+    <ClCompile Include="..\..\..\src\ISMASaltAtom.c" />
+    <ClCompile Include="..\..\..\src\ISMASecurity.c" />
+    <ClCompile Include="..\..\..\src\ISOMeta.c" />
+    <ClCompile Include="..\..\..\src\ItemInfoAtom.c" />
+    <ClCompile Include="..\..\..\src\ItemInfoEntryAtom.c" />
+    <ClCompile Include="..\..\..\src\ItemLocationAtom.c" />
+    <ClCompile Include="..\..\..\src\ItemProtectionAtom.c" />
+    <ClCompile Include="..\..\..\src\MetaAtom.c" />
+    <ClCompile Include="..\..\..\src\PrimaryItemAtom.c" />
+    <ClCompile Include="..\..\..\src\ISOSampleDescriptions.c" />
+    <ClCompile Include="..\..\..\src\VCConfigAtom.c" />
+    <ClCompile Include="..\..\..\src\TextMetaSampleEntry.c" />
+    <ClCompile Include="..\..\..\src\XMLMetaSampleEntry.c" />
+    <ClCompile Include="..\..\..\src\BitRateAtom.c" />
+    <ClCompile Include="..\..\..\src\AMRWPSpecificInfoAtom.c" />
+    <ClCompile Include="..\..\..\src\AMRSpecificInfoAtom.c" />
+    <ClCompile Include="..\..\..\src\H263SpecificInfoAtom.c" />
+    <ClCompile Include="..\..\..\src\SampleDependencyAtom.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\FileMappingDataHandler.h" />
+    <ClInclude Include="..\..\..\src\FileMappingObject.h" />
+    <ClInclude Include="..\..\..\src\ISOMovies.h" />
+    <ClInclude Include="..\..\..\src\MdatDataHandler.h" />
+    <ClInclude Include="..\..\..\src\MJ2Atoms.h" />
+    <ClInclude Include="..\..\..\src\MovieTracks.h" />
+    <ClInclude Include="..\..\..\src\MP4Atoms.h" />
+    <ClInclude Include="..\..\..\src\MP4DataHandler.h" />
+    <ClInclude Include="..\..\..\src\MP4Descriptors.h" />
+    <ClInclude Include="..\..\..\src\MP4Impl.h" />
+    <ClInclude Include="..\..\..\src\MP4InputStream.h" />
+    <ClInclude Include="..\..\..\src\MP4IPMPXData.h" />
+    <ClInclude Include="..\..\..\src\MP4LinkedList.h" />
+    <ClInclude Include="..\..\..\src\MP4Movies.h" />
+    <ClInclude Include="..\..\MP4OSMacros.h" />
+    <ClInclude Include="..\..\..\src\MP4TrackReader.h" />
+    <ClInclude Include="..\..\W32FileMappingObject.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -236,6 +236,9 @@ typedef ISOMetaItemRecord*	ISOMetaItem;
 #define ISONewUUIDAtom								MP4NewUUIDAtom
 #define ISOAddAtomToTrack							MP4AddAtomToTrack
 
+#define ISOGetTrackEditlistEntryCount				MP4GetTrackEditlistEntryCount
+#define ISOGetTrackEditlist							MP4GetTrackEditlist
+
 #define ISOGenericAtom								MP4GenericAtom
 
 #define MJ2TrackReaderGetNextSample					MP4TrackReaderGetNextAccessUnit

@@ -111,11 +111,13 @@ bail:
 
 static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream )
 {
-	MP4Err err;
+    MP4Err err;
     u32    i;
     char   typeString[8];
     char   msgString[ 80 ];
-    
+
+    void MP4TypeToString( u32 inType, char* ioStr );
+
 	ISOSingleItemTypeReferenceAtomPtr self = (ISOSingleItemTypeReferenceAtomPtr) s;
 	
 	err = MP4NoErr;
@@ -128,9 +130,7 @@ static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStr
     MP4TypeToString( self->type, typeString );
     sprintf( msgString, "type is '%s'", typeString );
     inputStream->msg( inputStream, msgString );
-    
-    void MP4TypeToString( u32 inType, char* ioStr );
-	
+
     if (self->isLarge == 0)
     {
         GET16( from_item_ID );

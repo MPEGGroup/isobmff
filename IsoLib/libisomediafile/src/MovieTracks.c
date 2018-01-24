@@ -133,10 +133,11 @@ MP4_EXTERN(MP4Err) MP4AddSubSampleInformationToTrack(MP4Track theTrack, MP4Gener
 	MP4Err err;
 	MP4TrackAtomPtr trak;
 	MP4MediaAtomPtr mdia;
-	MP4MediaInformationAtomPtr minf = NULL;
-	err = MP4NoErr;
 	u32 entryCount,i;
 	MP4SampleTableAtomPtr stbl = NULL;
+	MP4MediaInformationAtomPtr minf = NULL;
+
+	err = MP4NoErr;
 
 	if ((theTrack == NULL))
 		BAILWITHERROR(MP4BadParamErr);
@@ -270,7 +271,6 @@ MP4_EXTERN(MP4Err) MP4AddSubSampleInformationEntry(MP4GenericAtom subsample, u32
 								MP4Handle subsample_discardable_array) {
 	MP4Err err;
 	MP4SubSampleInformationAtomPtr subs;
-	u32 current_entry;
 
 	err = MP4NoErr;
 	if ((subsample == NULL))
@@ -573,8 +573,7 @@ MP4_EXTERN(MP4Err) MP4GetTrackGroup(MP4Track theTrack, u32 groupType, u32 *outGr
 	MP4Movie moov;
 	MP4TrackGroupAtomPtr trgr;
 	MP4TrackGroupTypeAtomPtr msrc;
-	u32 selectedTrackID;
-	 
+
 	err = MP4NoErr;
 	if ((theTrack == NULL) || (groupType == 0))
 		BAILWITHERROR(MP4BadParamErr);
@@ -986,4 +985,92 @@ bail:
 
    return err;
 
+}
+
+MP4_EXTERN ( MP4Err ) MP4GetTrackEditlistEntryCount( MP4Track theTrack, u32* entryCount )
+{
+  MP4Err             err;
+  MP4TrackAtomPtr    trak;
+  MP4EditAtomPtr     edts;
+  MP4EditListAtomPtr elst;
+
+  err = MP4NoErr;
+  if (theTrack == 0) {
+    BAILWITHERROR( MP4BadParamErr );
+  }
+
+  trak = (MP4TrackAtomPtr) theTrack;
+  edts = (MP4EditAtomPtr) trak->trackEditAtom;
+  
+  *entryCount = 0;
+  if (edts == 0) {
+    /* no edits */
+    BAILWITHERROR( MP4NotFoundErr );
+  } else {
+    /* edit atom is present */
+    elst = (MP4EditListAtomPtr)edts->editListAtom;
+
+    if (elst != 0) {
+      *entryCount = elst->getEntryCount(elst); 
+    }
+  }
+
+bail:
+  TEST_RETURN( err );
+  return err;
+}
+
+MP4_EXTERN ( MP4Err ) MP4GetTrackEditlist( MP4Track theTrack, u64* outSegmentDuration, s64* outMediaTime, u32 entryIndex )
+{
+  MP4Err             err;
+  MP4TrackAtomPtr    trak;
+  MP4EditAtomPtr     edts;
+  MP4EditListAtomPtr elst;
+
+  err = MP4NoErr;
+  if ((theTrack == 0) || (outSegmentDuration == 0) || (outMediaTime == 0)) {
+    BAILWITHERROR( MP4BadParamErr );
+  }
+
+  trak = (MP4TrackAtomPtr) theTrack;
+  edts = (MP4EditAtomPtr) trak->trackEditAtom;
+
+  if (edts == 0) {
+    /* no edits */
+    BAILWITHERROR( MP4NotFoundErr );
+  } else {
+    /* edit atom is present */
+    u32 editCount;
+      
+    elst = (MP4EditListAtomPtr) edts->editListAtom;
+    if (elst != 0) {
+      editCount = elst->getEntryCount(elst); 
+    } else {
+      editCount = 0;
+    }
+
+    if (entryIndex > editCount) {
+      BAILWITHERROR( MP4BadParamErr );
+    }
+
+    if (editCount == 0) {
+      /* edit atom but no useful edit list, hmm... */
+      BAILWITHERROR( MP4NotFoundErr );
+    } else {
+      /* edit list is present and has entries */
+      err = elst->getIndSegmentTime((MP4AtomPtr)elst,
+                                    entryIndex,             /* segmentIndex, one based */
+                                    0,
+                                    outMediaTime,
+                                    outSegmentDuration);
+      if (err) {
+        goto bail;
+      }
+    }
+  }
+  
+ bail:
+  TEST_RETURN( err );
+
+  return err;
 }

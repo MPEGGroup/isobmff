@@ -80,33 +80,31 @@ bail:
 
 static MP4Err serialize( struct MP4Atom* s, char* buffer )
 {
-	MP4Err err;
-	ISOItemInfoAtomPtr self = (ISOItemInfoAtomPtr) s;
-	u32 count;
-	
-	err = MP4NoErr;
-	
-	err = MP4SerializeCommonFullAtomFields( (MP4FullAtomPtr) s, buffer ); if (err) goto bail;
-    buffer += self->bytesWritten;
-	
-	err = MP4GetListEntryCount( self->atomList, &count ); if (err) goto bail; 
+  MP4Err err;
+  ISOItemInfoAtomPtr self = (ISOItemInfoAtomPtr) s;
+  u32 count;
 
-	if (self->version == 0)
-	{
-		PUT16_V(count);
-	}
-	else
-	{
-		PUT32_V(count);
-	}
-	
-	
-    SERIALIZE_ATOM_LIST( atomList ); /* should be sorted by item_id! */
-	assert( self->bytesWritten == self->size );
+  err = MP4NoErr;
+  err = MP4SerializeCommonFullAtomFields( (MP4FullAtomPtr) s, buffer ); if (err) goto bail;
+  buffer += self->bytesWritten;
+
+  err = MP4GetListEntryCount( self->atomList, &count ); if (err) goto bail; 
+
+  if (self->version == 0)
+  {
+    PUT16_V(count);
+  }
+  else
+  {
+    PUT32_V(count);
+  }
+
+  SERIALIZE_ATOM_LIST( atomList ); /* should be sorted by item_id! */
+  assert( self->bytesWritten == self->size );
 bail:
-	TEST_RETURN( err );
+  TEST_RETURN( err );
 
-	return err;
+  return err;
 }
 
 static MP4Err calculateSize( struct MP4Atom* s )
@@ -114,16 +112,17 @@ static MP4Err calculateSize( struct MP4Atom* s )
 	MP4Err err;
 	ISOItemInfoAtomPtr self = (ISOItemInfoAtomPtr) s;
 	err = MP4NoErr;
-	
+
 	err = MP4CalculateFullAtomFieldSize( (MP4FullAtomPtr) s ); if (err) goto bail;
 	self->size += 2;
+
 	if (self->version != 0)
 	{
 		self->size += 2;
 	}
 
 	ADD_ATOM_LIST_SIZE( atomList );
-	
+
 bail:
 	TEST_RETURN( err );
 
@@ -149,7 +148,6 @@ static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStr
 		GET32_V(in_count);
 	}
 
-
 	while (self->bytesRead < self->size) 
 	{ 
 		MP4AtomPtr atom; 
@@ -164,13 +162,12 @@ static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStr
 					if (err) goto bail; 
 			} 
 	} 
-
 	if (self->bytesRead != self->size) 
 		BAILWITHERROR(MP4BadDataErr)
-		
+
 	err = MP4GetListEntryCount( self->atomList, &list_count ); if (err) goto bail; 
 	if (list_count != in_count) { BAILWITHERROR( MP4BadDataErr ); }
-	
+
 bail:
 	TEST_RETURN( err );
 

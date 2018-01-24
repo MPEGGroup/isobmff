@@ -83,6 +83,7 @@ bail:
 static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream )
 {
 	MP4Err err;
+	u32 dataSize = 0;
 	MP4ExtendedLanguageTagAtomPtr self = (MP4ExtendedLanguageTagAtomPtr) s;
 	
 	err = MP4NoErr;
@@ -90,7 +91,7 @@ static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStr
 		BAILWITHERROR( MP4BadParamErr )
         err = self->super->createFromInputStream( s, proto, (char*) inputStream ); if ( err ) goto bail;
     
-    u32 dataSize = self->size - self->bytesRead;
+	dataSize = self->size - self->bytesRead;
 	self->extended_language = (char*) malloc( dataSize );
 	TESTMALLOC( self->extended_language );
 	GETBYTES( dataSize, extended_language );

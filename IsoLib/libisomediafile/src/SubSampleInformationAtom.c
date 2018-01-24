@@ -100,7 +100,7 @@ bail:
 static MP4Err calculateSize( struct MP4Atom* s )
 {
 	MP4Err err;
-	u32 i, j;
+	u32 i;
 	MP4SubSampleInformationAtomPtr self = (MP4SubSampleInformationAtomPtr) s;
 	err = MP4NoErr;
 	
@@ -178,7 +178,6 @@ static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStr
 {
 	MP4Err err;
 	u32 i,j;
-	u32* p;
 	MP4SubSampleInformationAtomPtr self = (MP4SubSampleInformationAtomPtr) s;
 	
 	err = MP4NoErr;
@@ -235,15 +234,16 @@ MP4Err MP4CreateSubSampleInformationAtom( MP4SubSampleInformationAtomPtr *outAto
 	TESTMALLOC( self )
 
 	err = MP4CreateFullAtom( (MP4AtomPtr) self );	if ( err ) goto bail;
-	self->type = MP4SubSampleInformationAtomType;
-	self->name                = "sub-sample information";
+	self->type                  = MP4SubSampleInformationAtomType;
+	self->name                  = "sub-sample information";
 	self->createFromInputStream = (cisfunc) createFromInputStream;
-	self->destroy             = destroy;
+	self->destroy               = destroy;
 	self->calculateSize         = calculateSize;
 	self->serialize             = serialize;
-	self->addEntry = addEntry;
-	*outAtom = self;
-	self->entry_count = 0;
+	self->addEntry              = addEntry;
+	*outAtom                    = self;
+	self->entry_count           = 0;
+
 bail:
 	TEST_RETURN( err );
 

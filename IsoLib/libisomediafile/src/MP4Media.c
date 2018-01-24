@@ -789,26 +789,26 @@ MP4_EXTERN ( MP4Err ) MP4GetMediaDecoderConfig( MP4Media theMedia, u32 sampleDes
    {
       BAILWITHERROR( MP4InvalidMediaErr );
    }
-   err = MP4GetListEntryAtom( entry->ExtensionAtomList, MP4ESDAtomType, (MP4AtomPtr*) &ESD ); 
-   if ( err == MP4NotFoundErr )
-   {
-      BAILWITHERROR( MP4InvalidMediaErr );
-   }
-   esdDescriptor = (MP4ES_DescriptorPtr) ESD->descriptor;
-   if ( esdDescriptor == NULL )
-   {
-      BAILWITHERROR( MP4InvalidMediaErr );
-   }
-   decoderConfig = esdDescriptor->decoderConfig;
-   if ( decoderConfig )
-   {
-      err = decoderConfig->calculateSize( decoderConfig ); if (err) goto bail;
-      err = MP4SetHandleSize( decoderConfigH, decoderConfig->size ); if (err) goto bail;
-      if ( decoderConfig->size )
-      {
-         err = decoderConfig->serialize( decoderConfig, *decoderConfigH ); if (err) goto bail;
-      }
-   }
+     err = MP4GetListEntryAtom( entry->ExtensionAtomList, MP4ESDAtomType, (MP4AtomPtr*) &ESD ); 
+     if ( err == MP4NotFoundErr )
+     {
+        BAILWITHERROR( MP4InvalidMediaErr );
+     }
+     esdDescriptor = (MP4ES_DescriptorPtr) ESD->descriptor;
+     if ( esdDescriptor == NULL )
+     {
+        BAILWITHERROR( MP4InvalidMediaErr );
+     }
+     decoderConfig = esdDescriptor->decoderConfig;
+     if ( decoderConfig )
+     {
+        err = decoderConfig->calculateSize( decoderConfig ); if (err) goto bail;
+        err = MP4SetHandleSize( decoderConfigH, decoderConfig->size ); if (err) goto bail;
+        if ( decoderConfig->size )
+        {
+           err = decoderConfig->serialize( decoderConfig, *decoderConfigH ); if (err) goto bail;
+        }
+     }
    else
    {
       MP4SetHandleSize( decoderConfigH, 0 );
@@ -883,76 +883,76 @@ MP4GetMediaDecoderInformation( MP4Media theMedia,
    {
       BAILWITHERROR( MP4InvalidMediaErr );
    }
-   err = MP4GetListEntryAtom( entry->ExtensionAtomList, MP4ESDAtomType, (MP4AtomPtr*) &ESD ); 
-   if ( err == MP4NotFoundErr )
-   {
-      BAILWITHERROR( MP4InvalidMediaErr );
-   }
-   esdDescriptor = (MP4ES_DescriptorPtr) ESD->descriptor;
-   if ( esdDescriptor == NULL )
-   {
-      BAILWITHERROR( MP4InvalidMediaErr );
-   }
-   decoderConfig = (MP4DecoderConfigDescriptorPtr) esdDescriptor->decoderConfig;
-   if ( decoderConfig )
-   {
-      MP4DescriptorPtr specificInfo;
-      *outObjectType = decoderConfig->objectTypeIndication;
-      *outStreamType = decoderConfig->streamType;
-      *outBufferSize = decoderConfig->bufferSizeDB;
-      if ( outUpstream )
-      {
-        *outUpstream = decoderConfig->upstream;
-      }
-      if ( outMaxBitrate )
-      {
-        *outMaxBitrate = decoderConfig->maxBitrate;
-      }
-      if ( outAvgBitrate )
-      {
-        *outAvgBitrate = decoderConfig->avgBitrate;
-      }
-      if ( specificInfoH )
-      {
+     err = MP4GetListEntryAtom( entry->ExtensionAtomList, MP4ESDAtomType, (MP4AtomPtr*) &ESD ); 
+     if ( err == MP4NotFoundErr )
+     {
+       BAILWITHERROR( MP4InvalidMediaErr );
+     }
+     esdDescriptor = (MP4ES_DescriptorPtr) ESD->descriptor;
+     if ( esdDescriptor == NULL )
+     {
+       BAILWITHERROR( MP4InvalidMediaErr );
+     }
+     decoderConfig = (MP4DecoderConfigDescriptorPtr) esdDescriptor->decoderConfig;
+     if ( decoderConfig )
+     {
+       MP4DescriptorPtr specificInfo;
+       *outObjectType = decoderConfig->objectTypeIndication;
+       *outStreamType = decoderConfig->streamType;
+       *outBufferSize = decoderConfig->bufferSizeDB;
+       if ( outUpstream )
+       {
+         *outUpstream = decoderConfig->upstream;
+       }
+       if ( outMaxBitrate )
+       {
+         *outMaxBitrate = decoderConfig->maxBitrate;
+       }
+       if ( outAvgBitrate )
+       {
+         *outAvgBitrate = decoderConfig->avgBitrate;
+       }
+       if ( specificInfoH )
+       {
          specificInfo = decoderConfig->decoderSpecificInfo;
          if ( specificInfo )
          {
-            err = specificInfo->calculateSize( specificInfo ); if (err) goto bail;
-            err = MP4SetHandleSize( specificInfoH, specificInfo->size ); if (err) goto bail;
-            if ( specificInfo->size )
-            {
-               u32 bytesSkipped;
-               char *cp = *specificInfoH;
-               err = specificInfo->serialize( specificInfo, *specificInfoH ); if (err) goto bail;
-               cp++; /* skip tag; */
-               for( bytesSkipped = 1; *cp & 0x80; )
-               {
-                  cp++;
-                  bytesSkipped++;
-                  if ( bytesSkipped == specificInfo->size )
-                  {
-                     BAILWITHERROR( MP4InvalidMediaErr );
-                  }
-               }
+           err = specificInfo->calculateSize( specificInfo ); if (err) goto bail;
+           err = MP4SetHandleSize( specificInfoH, specificInfo->size ); if (err) goto bail;
+           if ( specificInfo->size )
+           {
+             u32 bytesSkipped;
+             char *cp = *specificInfoH;
+             err = specificInfo->serialize( specificInfo, *specificInfoH ); if (err) goto bail;
+             cp++; /* skip tag; */
+             for( bytesSkipped = 1; *cp & 0x80; )
+             {
+               cp++;
                bytesSkipped++;
-               /* rtm: changed memcpy to memmove, since memory may overlap */
-               memmove( *specificInfoH, *specificInfoH + bytesSkipped, specificInfo->size - bytesSkipped );
-               err = MP4SetHandleSize( specificInfoH, specificInfo->size - bytesSkipped ); if (err) goto bail;
-            }
+               if ( bytesSkipped == specificInfo->size )
+               {
+                 BAILWITHERROR( MP4InvalidMediaErr );
+               }
+             }
+             bytesSkipped++;
+             /* rtm: changed memcpy to memmove, since memory may overlap */
+             memmove( *specificInfoH, *specificInfoH + bytesSkipped, specificInfo->size - bytesSkipped );
+             err = MP4SetHandleSize( specificInfoH, specificInfo->size - bytesSkipped ); if (err) goto bail;
+           }
          }
-      }
-      else
-      {
+       }
+       else
+       {
          MP4SetHandleSize( specificInfoH, 0 );
-      }
-   }
-   else
-   {
-      if ( specificInfoH )
-      {
+       }
+     }
+     else
+     {
+       if ( specificInfoH )
+       {
          MP4SetHandleSize( specificInfoH, 0 );
-      }
-   }
+       }
+     }
 
   bail:
    TEST_RETURN( err );
@@ -2083,7 +2083,6 @@ MP4SetupSampleAuxiliaryInformation( MP4Media theMedia, u8 isUsingAuxInfoProperti
     MP4SampleAuxiliaryInformationOffsetsAtomPtr     saioExisting;
     MP4SampleAuxiliaryInformationSizesAtomPtr       saiz;
     MP4SampleAuxiliaryInformationOffsetsAtomPtr     saio;
-    u32                                             i;
     
     err     = MP4NoErr;
     mdia    = NULL;
@@ -2274,7 +2273,6 @@ MP4GetSampleAuxiliaryInformationForSample( MP4Media theMedia, u8 isUsingAuxInfoP
     u32 sampleDescriptionIndex;
     u32 dataReferenceIndex;
     u32 firstSampleNumberInChunk;
-    u32 sampleOffsetWithinChunk;
     
     err         = MP4NoErr;
     mdia        = NULL;

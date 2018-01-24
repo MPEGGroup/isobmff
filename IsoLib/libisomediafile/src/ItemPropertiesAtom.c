@@ -133,7 +133,6 @@ static MP4Err getPropertiesOfItem(struct MP4ItemPropertiesAtom* self, u32 itemID
 {
 	MP4Err												err;
 	u32													i;
-	u32													property_index;
 	u32													entry_count;
 	u32													association_count;
 	MP4LinkedList										outProperties;

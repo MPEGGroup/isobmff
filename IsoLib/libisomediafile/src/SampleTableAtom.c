@@ -649,7 +649,7 @@ MP4Err getSampleAuxiliaryInformation(   struct MP4SampleTableAtom *self, u8 isUs
             *saioOut = saioExisting;
         }
     }
-bail:
+
     TEST_RETURN( err );
     
     return err;

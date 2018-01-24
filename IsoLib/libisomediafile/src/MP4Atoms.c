@@ -584,7 +584,7 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
     case ISOHEVCConfigAtomType:
       err = MP4CreateHEVCConfigAtom((ISOHEVCConfigAtomPtr *)&newAtom);
       break;
-			
+
 		default:
 			err = MP4CreateUnknownAtom( (MP4UnknownAtomPtr*) &newAtom );
 			newAtom->type = atomType;

@@ -47,23 +47,22 @@ bail:
 
 static MP4Err serialize( struct MP4Atom* s, char* buffer )
 {
-	MP4Err err;
-	ISOItemDataAtomPtr self = (ISOItemDataAtomPtr) s;
-    u32     i;
+    MP4Err err;
+    ISOItemDataAtomPtr self = (ISOItemDataAtomPtr) s;
     u32     dataSize;
-	err = MP4NoErr;
-	
-	err = MP4SerializeCommonBaseAtomFields( s, buffer ); if (err) goto bail;
+    err = MP4NoErr;
+
+    err = MP4SerializeCommonBaseAtomFields( s, buffer ); if (err) goto bail;
     buffer += self->bytesWritten;
 
     err = MP4GetHandleSize(self->data, &dataSize); if (err) goto bail;
     PUTBYTES((char *) *self->data, dataSize);
-    
-	assert( self->bytesWritten == self->size );
-bail:
-	TEST_RETURN( err );
 
-	return err;
+    assert( self->bytesWritten == self->size );
+bail:
+    TEST_RETURN( err );
+
+    return err;
 }
 
 static MP4Err calculateSize( struct MP4Atom* s )

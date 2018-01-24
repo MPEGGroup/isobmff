@@ -44,20 +44,16 @@ MP4Err MP4ParseAtomUsingProtoList( MP4InputStreamPtr inputStream, u32* protoList
 
 
 #ifdef ISMACrypt
-
-u32 MP4SampleEntryProtos[] = { MP4MPEGSampleEntryAtomType, MP4VisualSampleEntryAtomType, MP4AudioSampleEntryAtomType, 
+		u32 MP4SampleEntryProtos[] = { MP4MPEGSampleEntryAtomType, MP4VisualSampleEntryAtomType, MP4AudioSampleEntryAtomType, 
 		MP4EncAudioSampleEntryAtomType, MP4EncVisualSampleEntryAtomType, 
 		MP4XMLMetaSampleEntryAtomType, MP4TextMetaSampleEntryAtomType, 
 		MP4AMRSampleEntryAtomType, MP4AWBSampleEntryAtomType, MP4AMRWPSampleEntryAtomType, MP4H263SampleEntryAtomType, 
 		0 };
-
 #else
-
-u32 MP4SampleEntryProtos[] = { MP4MPEGSampleEntryAtomType, MP4VisualSampleEntryAtomType, MP4AudioSampleEntryAtomType, 
+		u32 MP4SampleEntryProtos[] = { MP4MPEGSampleEntryAtomType, MP4VisualSampleEntryAtomType, MP4AudioSampleEntryAtomType, 
 		MP4XMLMetaSampleEntryAtomType, MP4TextMetaSampleEntryAtomType, 
 		MP4AMRSampleEntryAtomType, MP4AWBSampleEntryAtomType, MP4AMRWPSampleEntryAtomType, MP4H263SampleEntryAtomType, 
 		0 };
-
 #endif
 
 MP4Err sampleEntryHToAtomPtr( MP4Handle sampleEntryH, MP4AtomPtr* entryPtr, u32 defaultType ) 
@@ -530,17 +526,17 @@ MP4_EXTERN ( MP4Err ) ISONewXMLMetaDataSampleDescription(  MP4Track theTrack,
    entry->dataReferenceIndex = dataReferenceIndex;
 
 	if (content_encoding) { 
-		entry->content_encoding = calloc( strlen(content_encoding)+1, 1 );
+		entry->content_encoding = (char*)calloc( strlen(content_encoding)+1, 1 );
 		TESTMALLOC( entry->content_encoding );
 		strcpy( entry->content_encoding, content_encoding );
 	} else entry->content_encoding = NULL;
 	if (xml_namespace) { 
-		entry->xml_namespace = calloc( strlen(xml_namespace)+1, 1 );
+		entry->xml_namespace = (char*)calloc( strlen(xml_namespace)+1, 1 );
 		TESTMALLOC( entry->xml_namespace );
 		strcpy( entry->xml_namespace, xml_namespace );
 	} else entry->xml_namespace = NULL;
 	if (schema_location) { 
-		entry->schema_location = calloc( strlen(schema_location)+1, 1 );
+		entry->schema_location = (char*)calloc( strlen(schema_location)+1, 1 );
 		TESTMALLOC( entry->schema_location );
 		strcpy( entry->schema_location, schema_location );
 	} else entry->schema_location = NULL;
@@ -577,12 +573,12 @@ MP4_EXTERN ( MP4Err ) ISONewTextMetaDataSampleDescription(  MP4Track theTrack,
    entry->dataReferenceIndex = dataReferenceIndex;
 
 	if (content_encoding) { 
-		entry->content_encoding = calloc( strlen(content_encoding)+1, 1 );
+		entry->content_encoding = (char*)calloc( strlen(content_encoding)+1, 1 );
 		TESTMALLOC( entry->content_encoding );
 		strcpy( entry->content_encoding, content_encoding );
 	} else entry->content_encoding = NULL;
 	if (mime_format) { 
-		entry->mime_format = calloc( strlen(mime_format)+1, 1 );
+		entry->mime_format = (char*)calloc( strlen(mime_format)+1, 1 );
 		TESTMALLOC( entry->mime_format );
 		strcpy( entry->mime_format, mime_format );
 	} else entry->mime_format = NULL;
@@ -1087,14 +1083,22 @@ bail:
 
 MP4_EXTERN(MP4Err) ISOGetRESVLengthSizeMinusOne(MP4Handle sampleEntryH, u32* out)
 {
-    if(!out) goto bail;
     MP4Err err = MP4NoErr;
     MP4VisualSampleEntryAtomPtr entry = NULL;
-    ISOHEVCConfigAtomPtr			 config;
+    ISOHEVCConfigAtomPtr config;
 
-    err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType); if (err) goto bail;
+    if (!out) {
+      goto bail;
+    }
 
-    if (entry->type != MP4RestrictedVideoAtomType) BAILWITHERROR(MP4BadParamErr);
+    err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType);
+    if (err) {
+      goto bail;
+    }
+
+    if (entry->type != MP4RestrictedVideoAtomType) {
+      BAILWITHERROR(MP4BadParamErr);
+    }
 
     err = MP4GetListEntryAtom(entry->ExtensionAtomList, ISOHEVCConfigAtomType, (MP4AtomPtr*)&config);
     if (err == MP4NotFoundErr) {
@@ -1104,8 +1108,10 @@ MP4_EXTERN(MP4Err) ISOGetRESVLengthSizeMinusOne(MP4Handle sampleEntryH, u32* out
     *out = config->lengthSizeMinusOne;
 
 bail:
-    if (entry)
+    if (entry) {
         entry->destroy((MP4AtomPtr)entry);
+    }
+
     return err;
 }
 
@@ -1167,7 +1173,8 @@ MP4_EXTERN(MP4Err) ISONewHEVCSampleDescription(MP4Track theTrack,
 
 	u32 the_size, y, width, height;
 	u8 x;
-	u32 i,ii;
+	u32 ii;
+	u8 i;
 	u8 sps_max_sub_layers;
 	u8 sub_layer_profile_present_flag[8];
 	u8 sub_layer_level_present_flag[8];

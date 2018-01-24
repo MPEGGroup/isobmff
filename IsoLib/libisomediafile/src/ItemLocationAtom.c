@@ -302,7 +302,6 @@ static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStr
 	if ( self == NULL )	BAILWITHERROR( MP4BadParamErr )
 	err = self->super->createFromInputStream( s, proto, (char*) inputStream ); if ( err ) goto bail;
 
-	
 	GET8_V( x );
 	self->offset_size = (x>>4);
 	self->length_size = (x & 0xF);

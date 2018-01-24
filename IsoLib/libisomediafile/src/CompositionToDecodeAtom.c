@@ -27,6 +27,7 @@
 #include "MP4Atoms.h"
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 
 static void destroy( MP4AtomPtr s )
 {
@@ -122,10 +123,10 @@ static MP4Err updateFields( struct MP4Atom* s, u32 sampleCount, MP4Handle durati
             self->compositionToDTSShift = -1 * self->leastDecodeToDisplayDelta;
         
         if ((self->totalDuration + offset) < self->compositionStartTime)
-            self->compositionStartTime = self->totalDuration + offset;
+            self->compositionStartTime = (s32)(self->totalDuration + (s64)offset);
             
         if ((self->totalDuration + offset) > self->compositionEndTime)
-            self->compositionEndTime = self->totalDuration + offset;
+            self->compositionEndTime = (s32)(self->totalDuration + (s64)offset);
         
         self->totalDuration += duration;
     }
@@ -173,32 +174,32 @@ bail:
 
 MP4Err MP4CreateCompositionToDecodeAtom( MP4CompositionToDecodeAtomPtr *outAtom )
 {
-	MP4Err err;
-	MP4CompositionToDecodeAtomPtr self;
-	
-	self = (MP4CompositionToDecodeAtomPtr) calloc( 1, sizeof(MP4CompositionToDecodeAtom) );
-	TESTMALLOC( self );
-    
-	err = MP4CreateFullAtom( (MP4AtomPtr) self );
-	if ( err ) goto bail;
-	self->type                  = MP4CompositionToDecodeAtomType;
-	self->name                  = "composition to decode";
-	self->createFromInputStream = (cisfunc) createFromInputStream;
-	self->destroy               = destroy;
-	self->calculateSize         = calculateSize;
-	self->serialize             = serialize;
+    MP4Err err;
+    MP4CompositionToDecodeAtomPtr self;
+
+    self = (MP4CompositionToDecodeAtomPtr) calloc( 1, sizeof(MP4CompositionToDecodeAtom) );
+    TESTMALLOC( self );
+
+    err = MP4CreateFullAtom( (MP4AtomPtr) self );
+    if ( err ) goto bail;
+    self->type                  = MP4CompositionToDecodeAtomType;
+    self->name                  = "composition to decode";
+    self->createFromInputStream = (cisfunc) createFromInputStream;
+    self->destroy               = destroy;
+    self->calculateSize         = calculateSize;
+    self->serialize             = serialize;
     self->updateFields          = updateFields;
-    
+
     self->compositionToDTSShift         = 0;
-    self->leastDecodeToDisplayDelta     = 2147483647;
-    self->greatestDecodeToDisplayDelta  = - 2147483648;
-    self->compositionStartTime          = 2147483647;
-    self->compositionEndTime            = - 2147483648;
+    self->leastDecodeToDisplayDelta     = INT_MAX;      /*  2147483647; */
+    self->greatestDecodeToDisplayDelta  = INT_MIN;      /* -2147483648; */
+    self->compositionStartTime          = INT_MAX;      /*  2147483647; */
+    self->compositionEndTime            = INT_MIN;      /* -2147483648; */
     self->totalDuration                 = 0;
     
-	*outAtom = self;
+    *outAtom = self;
 bail:
-	TEST_RETURN( err );
-    
-	return err;
+    TEST_RETURN( err );
+
+    return err;
 }

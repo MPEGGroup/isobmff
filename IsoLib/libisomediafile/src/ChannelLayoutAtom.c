@@ -154,13 +154,12 @@ bail:
 
 static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream )
 {
-    u32     tmp8;
-	MP4Err  err;
-    MP4ChannelLayoutDefinedLayout   *definedLayoutStruct;
-	MP4ChannelLayoutAtomPtr         self = (MP4ChannelLayoutAtomPtr) s;
-	
-	err = MP4NoErr;
-	if ( self == NULL )	BAILWITHERROR( MP4BadParamErr )
+  u32     tmp8;
+  MP4Err  err;
+  MP4ChannelLayoutAtomPtr         self = (MP4ChannelLayoutAtomPtr) s;
+
+  err = MP4NoErr;
+  if ( self == NULL )	BAILWITHERROR( MP4BadParamErr )
         err = self->super->createFromInputStream( s, proto, (char*) inputStream ); if ( err ) goto bail;
 
 
@@ -201,11 +200,11 @@ static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStr
         GET8(object_count);
     }
 
-	assert( self->bytesRead == self->size );
+  assert( self->bytesRead == self->size );
 bail:
-	TEST_RETURN( err );
+  TEST_RETURN( err );
 
-	return err;
+  return err;
 }
 
 MP4Err MP4CreateChannelLayoutAtom( MP4ChannelLayoutAtomPtr *outAtom )

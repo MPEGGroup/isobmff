@@ -146,8 +146,6 @@ static MP4Err addSizes( MP4AtomPtr s, u32 sampleCount, MP4Handle sizesH )
     u32     sizeCount;
     u32     onlySize;
     MP4Err  err;
-    u32     dataSize;
-    u8      *buffer;
     MP4SampleAuxiliaryInformationSizesAtomPtr self = (MP4SampleAuxiliaryInformationSizesAtomPtr) s;
     
     err         = MP4NoErr;

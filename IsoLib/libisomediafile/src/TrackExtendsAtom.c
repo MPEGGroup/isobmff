@@ -55,7 +55,7 @@ static MP4Err serialize( struct MP4Atom* s, char* buffer )
 	PUT32( default_sample_size );
 	PUT32( default_sample_flags );
 
-	assert( self->bytesWritten == self->size);
+	assert( self->bytesWritten == self->size );
 bail:
 	TEST_RETURN( err );
 

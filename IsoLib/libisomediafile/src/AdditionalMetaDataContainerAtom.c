@@ -69,37 +69,47 @@ bail:
 
 static MP4Err serialize( struct MP4Atom* s, char* buffer )
 {
-	MP4Err err;
-	ISOAdditionalMetaDataContainerAtomPtr self = (ISOAdditionalMetaDataContainerAtomPtr) s;
-	u8 x;
-	err = MP4NoErr;
-	
-	err = MP4SerializeCommonBaseAtomFields( s, buffer ); if (err) goto bail;
-    buffer += self->bytesWritten;
+  MP4Err err;
+  ISOAdditionalMetaDataContainerAtomPtr self = (ISOAdditionalMetaDataContainerAtomPtr) s;
+  err = MP4NoErr;
 
-	SERIALIZE_ATOM_LIST( metaList );
-    SERIALIZE_ATOM_LIST( relationList );
-	assert( self->bytesWritten == self->size );
+  err = MP4SerializeCommonBaseAtomFields(s, buffer);
+
+  if (err) {
+    goto bail;
+  }
+
+  buffer += self->bytesWritten;
+
+  SERIALIZE_ATOM_LIST(metaList);
+  SERIALIZE_ATOM_LIST(relationList);
+  assert(self->bytesWritten == self->size);
+
 bail:
-	TEST_RETURN( err );
+  TEST_RETURN(err);
 
-	return err;
+  return err;
 }
 
 static MP4Err calculateSize( struct MP4Atom* s )
 {
-	MP4Err err;
-	ISOAdditionalMetaDataContainerAtomPtr self = (ISOAdditionalMetaDataContainerAtomPtr) s;
-	err = MP4NoErr;
-	
-	err = MP4CalculateBaseAtomFieldSize( s ); if (err) goto bail;
+  MP4Err err;
+  ISOAdditionalMetaDataContainerAtomPtr self = (ISOAdditionalMetaDataContainerAtomPtr) s;
+  err = MP4NoErr;
 
-	ADD_ATOM_LIST_SIZE( metaList );
-    ADD_ATOM_LIST_SIZE( relationList );
+  err = MP4CalculateBaseAtomFieldSize(s);
+
+  if (err) {
+    goto bail;
+  }
+
+  ADD_ATOM_LIST_SIZE(metaList);
+  ADD_ATOM_LIST_SIZE(relationList);
+
 bail:
-	TEST_RETURN( err );
+  TEST_RETURN(err);
 
-	return err;
+  return err;
 }
 
 static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream )
@@ -141,7 +151,6 @@ static MP4Err getMeta( struct ISOAdditionalMetaDataContainerAtom* self, u32 type
 {
     u32                                     i;
     MP4Err                                  err;
-    ISOMetaAtomPtr                          metaPtr;
     MP4HandlerAtomPtr                       hdlr;
     
     err         = MP4NoErr;

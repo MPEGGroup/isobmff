@@ -835,7 +835,7 @@ MP4NewIPMPToolListDescriptor( MP4Handle ipmpToolListDescrH );
 /* JB_RESO 09/02 adding support for IPMPX */
 MP4_EXTERN ( MP4Err )
 MP4AddToolToIPMPToolList( MP4Handle ipmpToolListDescrH,
-                          MP4Handle ipmpToolH );                
+                          MP4Handle ipmpToolH );
 
 /* JB_RESO 09/02 adding support for IPMPX */
 MP4_EXTERN ( MP4Err )
@@ -880,7 +880,7 @@ MP4AddIPMPToolDescriptorToUpdate( MP4Handle ipmpToolDescrUpdateH,
 MP4_EXTERN ( MP4Err ) ISMATransformSampleEntry( u32 newTrackFlags, MP4Handle insampleEntryH,
 		u8 selective_encryption, u8 key_indicator_length, u8 IV_length,
 		char* kms_URL,
-		MP4Handle outsampleEntryH );	
+		MP4Handle outsampleEntryH );
 
 MP4_EXTERN ( MP4Err ) ISMAUnTransformSampleEntry( MP4Handle insampleEntryH,
 		u8* selective_encryption, u8* key_indicator_length, u8* IV_length,
@@ -890,16 +890,21 @@ MP4_EXTERN ( MP4Err ) ISMAUnTransformSampleEntry( MP4Handle insampleEntryH,
 MP4_EXTERN ( MP4Err ) ISMATransformSampleEntrySalt( u32 newTrackFlags, MP4Handle insampleEntryH,
 		u8 selective_encryption, u8 key_indicator_length, u8 IV_length,
 		char* kms_URL, u64 salt,
-		MP4Handle outsampleEntryH );	
+		MP4Handle outsampleEntryH );
 
 MP4_EXTERN ( MP4Err ) ISMAUnTransformSampleEntrySalt( MP4Handle insampleEntryH,
 		u8* selective_encryption, u8* key_indicator_length, u8* IV_length,
 		char** kms_URL, u64* salt,
 		MP4Handle outsampleEntryH );
-		
-#define ISMA_selective_encrypt 0x80
 
-#endif   
+#define ISMA_selective_encrypt 0x80
+#endif
+
+MP4_EXTERN ( MP4Err )
+MP4GetTrackEditlistEntryCount( MP4Track theTrack, u32* entryCount );
+
+MP4_EXTERN ( MP4Err )
+MP4GetTrackEditlist( MP4Track theTrack, u64* outSegmentDuration, s64* outMediaTime, u32 entryIndex /* index is one based */ );
 
 #ifdef __cplusplus
 }

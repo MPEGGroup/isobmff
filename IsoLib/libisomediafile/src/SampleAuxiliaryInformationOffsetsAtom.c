@@ -205,10 +205,9 @@ static MP4Err mdatMoved  (MP4AtomPtr s, u64 mdatBase, u64 mdatEnd, s32 mdatOffse
         if ((self->offsets[j] >= mdatBase) && (self->offsets[j] < mdatEnd))
             self->offsets[j] += mdatOffset;
     }
-    
-bail:
+
     TEST_RETURN( err );
-    
+
     return err;
 }
 
@@ -227,7 +226,7 @@ MP4Err mergeOffsets ( MP4AtomPtr s, MP4AtomPtr otherSaio, u64 baseOffset )
     err = MP4NoErr;
     
     
-    self->offsets = realloc(self->offsets, (self->entry_count + other->entry_count) * 8);
+    self->offsets = (u64*)realloc(self->offsets, (self->entry_count + other->entry_count) * 8);
     
     for (i = 0; i < other->entry_count; i++)
     {
@@ -236,8 +235,7 @@ MP4Err mergeOffsets ( MP4AtomPtr s, MP4AtomPtr otherSaio, u64 baseOffset )
     
     self->totalOffset = other->totalOffset;
     self->entry_count += other->entry_count;
-    
-bail:
+
     TEST_RETURN( err );
     
     return err;

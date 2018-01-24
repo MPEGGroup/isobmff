@@ -67,10 +67,9 @@ bail:
 MP4_EXTERN ( MP4Err )
 MP4TrackReaderGetCurrentDecoderConfig( MP4TrackReader theReader, MP4Handle decoderConfigH )
 {
-	MP4Err err;
+	MP4Err err = MP4NoErr;
 	MP4TrackReaderPtr reader;
-	
-	err = MP4NoErr;
+
 	if ( (theReader == 0) || (decoderConfigH == 0) )
 		BAILWITHERROR( MP4BadParamErr )
 	reader = (MP4TrackReaderPtr) theReader;

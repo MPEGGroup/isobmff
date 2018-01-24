@@ -1,11 +1,11 @@
-# $Id: Makefile,v 1.2 2002/09/27 13:41:22 julien Exp $
+# $Id: Makefile,v 1.1.1.1 2009-05-29 14:10:44 mul Exp $
 
 
 VPATH = .. ../../src
 
-override CFLAGS += -I.. -I../../src -O -g -Wall -W -ansi -pedantic -Wno-long-long -Wmissing-prototypes -DLINUX
+override CFLAGS += -I.. -I../../src -O -g -Wall -W -ansi -Wno-long-long -Wmissing-prototypes
 
-CC = gcc
+CC = cc
 
 sources = \
 	AudioSampleEntryAtom.c \

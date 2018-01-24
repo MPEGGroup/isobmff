@@ -33,9 +33,7 @@ static void destroy(MP4AtomPtr s)
 	MP4Err  err;
 	u32		i, j;
 	u32		entry_count;
-	u8		association_count;
-	u32		item_ID;
-	u16		property_index;
+	u32		association_count;
 	MP4ItemPropertyAssociationEntryPtr entry;
 	MP4ItemPropertyAssociationEntryPropertyIndexPtr propertyIndex;
 	MP4ItemPropertyAssociationAtomPtr self = (MP4ItemPropertyAssociationAtomPtr)s;
@@ -79,8 +77,7 @@ static MP4Err serialize(struct MP4Atom* s, char* buffer)
 	MP4Err	err;
 	u32		i, j;
 	u32		entry_count;
-	u8		association_count;
-	u32		item_ID;
+	u32		association_count;
 	u16		property_index;
 	MP4ItemPropertyAssociationEntryPtr entry;
 	MP4ItemPropertyAssociationEntryPropertyIndexPtr propertyIndex;
@@ -108,7 +105,7 @@ static MP4Err serialize(struct MP4Atom* s, char* buffer)
 		if (entry->propertyIndexes == NULL)
 			BAILWITHERROR(MP4InternalErr)
 
-			err = MP4GetListEntryCount(entry->propertyIndexes, &association_count); if (err) goto bail;
+		err = MP4GetListEntryCount(entry->propertyIndexes, &association_count); if (err) goto bail;
 		PUT8_V(association_count);
 		for (j = 0; j < association_count; j++)
 		{
@@ -136,10 +133,10 @@ bail:
 
 static MP4Err calculateSize(struct MP4Atom* s)
 {
-	MP4Err								err;
+	MP4Err							err;
 	u32									i;
 	u32									entry_count;
-	u8									association_count;
+	u32									association_count;
 	MP4ItemPropertyAssociationEntryPtr	entry;
 	MP4ItemPropertyAssociationAtomPtr	self = (MP4ItemPropertyAssociationAtomPtr)s;
 	err = MP4NoErr;
@@ -180,7 +177,6 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
 	u32													i, j;
 	u32													entry_count;
 	u32													tmp32;
-	u32													tmp2;
 	u8													association_count;
 	MP4ItemPropertyAssociationEntryPtr					entry;
 	MP4ItemPropertyAssociationEntryPropertyIndexPtr		propertyIndex;

@@ -208,7 +208,6 @@ static MP4Err addAtom( ISOMetaAtomPtr self, MP4AtomPtr atom )
 			if (self->ipro) { BAILWITHERROR(MP4BadParamErr); }
 			self->ipro = atom;
 			break;
-
 		case MP4ItemPropertiesAtomType:
 			if (self->iprp) { BAILWITHERROR(MP4BadParamErr); }
 			self->iprp = atom;
@@ -293,35 +292,37 @@ static 	MP4Err mdatMoved(ISOMetaAtomPtr self, u64 mdatBase, u64 mdatEnd, s32 mda
 
 MP4Err ISOCreateMetaAtom( ISOMetaAtomPtr *outAtom )
 {
-	MP4Err err;
-	ISOMetaAtomPtr self;
-	
-	self = (ISOMetaAtomPtr) calloc( 1, sizeof(ISOMetaAtom) );
-	TESTMALLOC( self )
-
-	err = MP4CreateFullAtom( (MP4AtomPtr) self );
-	if ( err ) goto bail;
-	self->type = ISOMetaAtomType;
-	self->name                = "meta";
-	self->createFromInputStream = (cisfunc) createFromInputStream;
-	self->destroy             = destroy;
-	err = MP4MakeLinkedList( &self->atomList ); if (err) goto bail;
-	self->calculateSize         = calculateSize;
-	self->serialize             = serialize;
-	self->addAtom				= addAtom;
-	self->setMdat				= setMdat;
-	self->mdatMoved				= mdatMoved;
-	self->getData				= getData;
-	self->next_item_ID			= 1;
-	self->openDataHandler		= openDataHandler;
-	self->closeDataHandler		= closeDataHandler;
-	self->dataEntryIndex		= -1;
+    MP4Err err;
+    ISOMetaAtomPtr self;
+    
+    self = (ISOMetaAtomPtr) calloc( 1, sizeof(ISOMetaAtom) );
+    TESTMALLOC( self )
+    
+    err = MP4CreateFullAtom( (MP4AtomPtr) self );
+    if ( err ) goto bail;
+    self->type                  = ISOMetaAtomType;
+    self->name                  = "meta";
+    self->createFromInputStream = (cisfunc) createFromInputStream;
+    self->destroy               = destroy;
+    err = MP4MakeLinkedList( &self->atomList );
+    if ( err ) goto bail;
+    self->calculateSize         = calculateSize;
+    self->serialize             = serialize;
+    self->addAtom               = addAtom;
+    self->setMdat               = setMdat;
+    self->mdatMoved             = mdatMoved;
+    self->getData               = getData;
+    self->next_item_ID          = 1;
+    self->openDataHandler       = openDataHandler;
+    self->closeDataHandler      = closeDataHandler;
+    self->dataEntryIndex        = -1;
     self->relatedMeco           = NULL;
     self->iref                  = NULL;
-	self->iprp					= NULL;
-	*outAtom = self;
-bail:
-	TEST_RETURN( err );
+    self->iprp                  = NULL;
 
-	return err;
+    *outAtom = self;
+bail:
+    TEST_RETURN( err );
+
+    return err;
 }

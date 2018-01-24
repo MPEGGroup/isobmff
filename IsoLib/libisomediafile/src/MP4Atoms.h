@@ -41,128 +41,122 @@ ISOErr MP4GetCurrentTime( u64 *outTime );
 
 enum
 {
-	MP4AudioSampleEntryAtomType                         = MP4_FOUR_CHAR_CODE( 'm', 'p', '4', 'a' ),
+    MP4AudioSampleEntryAtomType                         = MP4_FOUR_CHAR_CODE( 'm', 'p', '4', 'a' ),
     MP4ChannelLayoutAtomType                            = MP4_FOUR_CHAR_CODE( 'c', 'h', 'n', 'l' ),
     MP4DownMixInstructionsAtomType                      = MP4_FOUR_CHAR_CODE( 'd', 'm', 'i', 'x' ),
     MP4TrackLoudnessInfoAtomType                        = MP4_FOUR_CHAR_CODE( 't', 'l', 'o', 'u' ),
     MP4AlbumLoudnessInfoAtomType                        = MP4_FOUR_CHAR_CODE( 'a', 'l', 'o', 'u' ),
     MP4LoudnessAtomType                                 = MP4_FOUR_CHAR_CODE( 'l', 'u', 'd', 't' ),
-	MP4ChunkLargeOffsetAtomType                         = MP4_FOUR_CHAR_CODE( 'c', 'o', '6', '4' ),
-	MP4ChunkOffsetAtomType                              = MP4_FOUR_CHAR_CODE( 's', 't', 'c', 'o' ),
-	MP4ClockReferenceMediaHeaderAtomType                = MP4_FOUR_CHAR_CODE( 'c', 'r', 'h', 'd' ),
-	MP4CompositionOffsetAtomType                        = MP4_FOUR_CHAR_CODE( 'c', 't', 't', 's' ),
+    MP4ChunkLargeOffsetAtomType                         = MP4_FOUR_CHAR_CODE( 'c', 'o', '6', '4' ),
+    MP4ChunkOffsetAtomType                              = MP4_FOUR_CHAR_CODE( 's', 't', 'c', 'o' ),
+    MP4ClockReferenceMediaHeaderAtomType                = MP4_FOUR_CHAR_CODE( 'c', 'r', 'h', 'd' ),
+    MP4CompositionOffsetAtomType                        = MP4_FOUR_CHAR_CODE( 'c', 't', 't', 's' ),
     MP4CompositionToDecodeAtomType                      = MP4_FOUR_CHAR_CODE( 'c', 's', 'l', 'g' ),
-	MP4CopyrightAtomType                                = MP4_FOUR_CHAR_CODE( 'c', 'p', 'r', 't' ),
-	MP4DataEntryURLAtomType                             = MP4_FOUR_CHAR_CODE( 'u', 'r', 'l', ' ' ),
-	MP4DataEntryURNAtomType                             = MP4_FOUR_CHAR_CODE( 'u', 'r', 'n', ' ' ),
-	MP4DataInformationAtomType                          = MP4_FOUR_CHAR_CODE( 'd', 'i', 'n', 'f' ),
-	MP4DataReferenceAtomType                            = MP4_FOUR_CHAR_CODE( 'd', 'r', 'e', 'f' ),
-	MP4DegradationPriorityAtomType                      = MP4_FOUR_CHAR_CODE( 's', 't', 'd', 'p' ),
-	MP4ESDAtomType                                      = MP4_FOUR_CHAR_CODE( 'e', 's', 'd', 's' ),
-	MP4EditAtomType                                     = MP4_FOUR_CHAR_CODE( 'e', 'd', 't', 's' ),
-	MP4EditListAtomType                                 = MP4_FOUR_CHAR_CODE( 'e', 'l', 's', 't' ),
-	MP4ExtendedAtomType                                 = MP4_FOUR_CHAR_CODE( 'u', 'u', 'i', 'd' ),
-	MP4FreeSpaceAtomType                                = MP4_FOUR_CHAR_CODE( 'f', 'r', 'e', 'e' ),
-	MP4GenericSampleEntryAtomType		                = MP4_FOUR_CHAR_CODE( '!', 'g', 'n', 'r' ),
-	MP4HandlerAtomType                                  = MP4_FOUR_CHAR_CODE( 'h', 'd', 'l', 'r' ),
-	MP4HintMediaHeaderAtomType                          = MP4_FOUR_CHAR_CODE( 'h', 'm', 'h', 'd' ),
-	MP4HintTrackReferenceAtomType                       = MP4_FOUR_CHAR_CODE( 'h', 'i', 'n', 't' ),
-	MP4MPEGMediaHeaderAtomType                          = MP4_FOUR_CHAR_CODE( 'n', 'm', 'h', 'd' ),
-	MP4MPEGSampleEntryAtomType                          = MP4_FOUR_CHAR_CODE( 'm', 'p', '4', 's' ),
-	MP4MediaAtomType                                    = MP4_FOUR_CHAR_CODE( 'm', 'd', 'i', 'a' ),
-	MP4MediaDataAtomType                                = MP4_FOUR_CHAR_CODE( 'm', 'd', 'a', 't' ),
-	MP4MediaHeaderAtomType                              = MP4_FOUR_CHAR_CODE( 'm', 'd', 'h', 'd' ),
-	MP4MediaInformationAtomType                         = MP4_FOUR_CHAR_CODE( 'm', 'i', 'n', 'f' ),
+    MP4CopyrightAtomType                                = MP4_FOUR_CHAR_CODE( 'c', 'p', 'r', 't' ),
+    MP4DataEntryURLAtomType                             = MP4_FOUR_CHAR_CODE( 'u', 'r', 'l', ' ' ),
+    MP4DataEntryURNAtomType                             = MP4_FOUR_CHAR_CODE( 'u', 'r', 'n', ' ' ),
+    MP4DataInformationAtomType                          = MP4_FOUR_CHAR_CODE( 'd', 'i', 'n', 'f' ),
+    MP4DataReferenceAtomType                            = MP4_FOUR_CHAR_CODE( 'd', 'r', 'e', 'f' ),
+    MP4DegradationPriorityAtomType                      = MP4_FOUR_CHAR_CODE( 's', 't', 'd', 'p' ),
+    MP4ESDAtomType                                      = MP4_FOUR_CHAR_CODE( 'e', 's', 'd', 's' ),
+    MP4EditAtomType                                     = MP4_FOUR_CHAR_CODE( 'e', 'd', 't', 's' ),
+    MP4EditListAtomType                                 = MP4_FOUR_CHAR_CODE( 'e', 'l', 's', 't' ),
+    MP4ExtendedAtomType                                 = MP4_FOUR_CHAR_CODE( 'u', 'u', 'i', 'd' ),
+    MP4FreeSpaceAtomType                                = MP4_FOUR_CHAR_CODE( 'f', 'r', 'e', 'e' ),
+    MP4GenericSampleEntryAtomType                       = MP4_FOUR_CHAR_CODE( '!', 'g', 'n', 'r' ),
+    MP4HandlerAtomType                                  = MP4_FOUR_CHAR_CODE( 'h', 'd', 'l', 'r' ),
+    MP4HintMediaHeaderAtomType                          = MP4_FOUR_CHAR_CODE( 'h', 'm', 'h', 'd' ),
+    MP4HintTrackReferenceAtomType                       = MP4_FOUR_CHAR_CODE( 'h', 'i', 'n', 't' ),
+    MP4MPEGMediaHeaderAtomType                          = MP4_FOUR_CHAR_CODE( 'n', 'm', 'h', 'd' ),
+    MP4MPEGSampleEntryAtomType                          = MP4_FOUR_CHAR_CODE( 'm', 'p', '4', 's' ),
+    MP4MediaAtomType                                    = MP4_FOUR_CHAR_CODE( 'm', 'd', 'i', 'a' ),
+    MP4MediaDataAtomType                                = MP4_FOUR_CHAR_CODE( 'm', 'd', 'a', 't' ),
+    MP4MediaHeaderAtomType                              = MP4_FOUR_CHAR_CODE( 'm', 'd', 'h', 'd' ),
+    MP4MediaInformationAtomType                         = MP4_FOUR_CHAR_CODE( 'm', 'i', 'n', 'f' ),
     MP4ExtendedLanguageTagAtomType                      = MP4_FOUR_CHAR_CODE( 'e', 'l', 'n', 'g' ),
-	MP4MovieAtomType                                    = MP4_FOUR_CHAR_CODE( 'm', 'o', 'o', 'v' ),
-	MP4MovieHeaderAtomType                              = MP4_FOUR_CHAR_CODE( 'm', 'v', 'h', 'd' ),
-	MP4ObjectDescriptorAtomType                         = MP4_FOUR_CHAR_CODE( 'i', 'o', 'd', 's' ),
-	MP4ObjectDescriptorMediaHeaderAtomType              = MP4_FOUR_CHAR_CODE( 'o', 'd', 'h', 'd' ),
-	MP4ODTrackReferenceAtomType                         = MP4_FOUR_CHAR_CODE( 'm', 'p', 'o', 'd' ),
-	MP4SampleDescriptionAtomType                        = MP4_FOUR_CHAR_CODE( 's', 't', 's', 'd' ),
-	MP4SampleSizeAtomType                               = MP4_FOUR_CHAR_CODE( 's', 't', 's', 'z' ),
-	MP4CompactSampleSizeAtomType                        = MP4_FOUR_CHAR_CODE( 's', 't', 'z', '2' ),
-	MP4SampleTableAtomType                              = MP4_FOUR_CHAR_CODE( 's', 't', 'b', 'l' ),
-	MP4SampleToChunkAtomType                            = MP4_FOUR_CHAR_CODE( 's', 't', 's', 'c' ),
+    MP4MovieAtomType                                    = MP4_FOUR_CHAR_CODE( 'm', 'o', 'o', 'v' ),
+    MP4MovieHeaderAtomType                              = MP4_FOUR_CHAR_CODE( 'm', 'v', 'h', 'd' ),
+    MP4ObjectDescriptorAtomType                         = MP4_FOUR_CHAR_CODE( 'i', 'o', 'd', 's' ),
+    MP4ObjectDescriptorMediaHeaderAtomType              = MP4_FOUR_CHAR_CODE( 'o', 'd', 'h', 'd' ),
+    MP4ODTrackReferenceAtomType                         = MP4_FOUR_CHAR_CODE( 'm', 'p', 'o', 'd' ),
+    MP4SampleDescriptionAtomType                        = MP4_FOUR_CHAR_CODE( 's', 't', 's', 'd' ),
+    MP4SampleSizeAtomType                               = MP4_FOUR_CHAR_CODE( 's', 't', 's', 'z' ),
+    MP4CompactSampleSizeAtomType                        = MP4_FOUR_CHAR_CODE( 's', 't', 'z', '2' ),
+    MP4SampleTableAtomType                              = MP4_FOUR_CHAR_CODE( 's', 't', 'b', 'l' ),
+    MP4SampleToChunkAtomType                            = MP4_FOUR_CHAR_CODE( 's', 't', 's', 'c' ),
     MP4SampleAuxiliaryInformationSizesAtomType          = MP4_FOUR_CHAR_CODE( 's', 'a', 'i', 'z' ),
     MP4SampleAuxiliaryInformationOffsetsAtomType        = MP4_FOUR_CHAR_CODE( 's', 'a', 'i', 'o' ),
-	MP4SceneDescriptionMediaHeaderAtomType              = MP4_FOUR_CHAR_CODE( 's', 'd', 'h', 'd' ),
-	MP4ShadowSyncAtomType                               = MP4_FOUR_CHAR_CODE( 's', 't', 's', 'h' ),
-	MP4SkipAtomType                                     = MP4_FOUR_CHAR_CODE( 's', 'k', 'i', 'p' ),
-	MP4SoundMediaHeaderAtomType                         = MP4_FOUR_CHAR_CODE( 's', 'm', 'h', 'd' ),
-	MP4StreamDependenceAtomType                         = MP4_FOUR_CHAR_CODE( 'd', 'p', 'n', 'd' ),
-	MP4SubSampleInformationAtomType                     = MP4_FOUR_CHAR_CODE( 's', 'u', 'b', 's' ),
-	MP4SyncSampleAtomType                               = MP4_FOUR_CHAR_CODE( 's', 't', 's', 's' ),
-	MP4SyncTrackReferenceAtomType                       = MP4_FOUR_CHAR_CODE( 's', 'y', 'n', 'c' ),
-	MP4TimeToSampleAtomType                             = MP4_FOUR_CHAR_CODE( 's', 't', 't', 's' ),
-	MP4TrackAtomType                                    = MP4_FOUR_CHAR_CODE( 't', 'r', 'a', 'k' ),
-	MP4TrackHeaderAtomType                              = MP4_FOUR_CHAR_CODE( 't', 'k', 'h', 'd' ),
-	MP4TrackReferenceAtomType                           = MP4_FOUR_CHAR_CODE( 't', 'r', 'e', 'f' ),
-	MP4TrackGroupAtomType                               = MP4_FOUR_CHAR_CODE( 't', 'r', 'g', 'r' ),
-	MP4UserDataAtomType                                 = MP4_FOUR_CHAR_CODE( 'u', 'd', 't', 'a' ),
-	MP4VideoMediaHeaderAtomType                         = MP4_FOUR_CHAR_CODE( 'v', 'm', 'h', 'd' ),
-	MP4VisualSampleEntryAtomType                        = MP4_FOUR_CHAR_CODE( 'm', 'p', '4', 'v' ),
-	MP4PaddingBitsAtomType                              = MP4_FOUR_CHAR_CODE( 'p', 'a', 'd', 'b' ),
-	MP4MovieExtendsAtomType                             = MP4_FOUR_CHAR_CODE( 'm', 'v', 'e', 'x' ),
+    MP4SceneDescriptionMediaHeaderAtomType              = MP4_FOUR_CHAR_CODE( 's', 'd', 'h', 'd' ),
+    MP4ShadowSyncAtomType                               = MP4_FOUR_CHAR_CODE( 's', 't', 's', 'h' ),
+    MP4SkipAtomType                                     = MP4_FOUR_CHAR_CODE( 's', 'k', 'i', 'p' ),
+    MP4SoundMediaHeaderAtomType                         = MP4_FOUR_CHAR_CODE( 's', 'm', 'h', 'd' ),
+    MP4StreamDependenceAtomType                         = MP4_FOUR_CHAR_CODE( 'd', 'p', 'n', 'd' ),
+    MP4SubSampleInformationAtomType                     = MP4_FOUR_CHAR_CODE( 's', 'u', 'b', 's' ),
+    MP4SyncSampleAtomType                               = MP4_FOUR_CHAR_CODE( 's', 't', 's', 's' ),
+    MP4SyncTrackReferenceAtomType                       = MP4_FOUR_CHAR_CODE( 's', 'y', 'n', 'c' ),
+    MP4TimeToSampleAtomType                             = MP4_FOUR_CHAR_CODE( 's', 't', 't', 's' ),
+    MP4TrackAtomType                                    = MP4_FOUR_CHAR_CODE( 't', 'r', 'a', 'k' ),
+    MP4TrackHeaderAtomType                              = MP4_FOUR_CHAR_CODE( 't', 'k', 'h', 'd' ),
+    MP4TrackReferenceAtomType                           = MP4_FOUR_CHAR_CODE( 't', 'r', 'e', 'f' ),
+    MP4TrackGroupAtomType                               = MP4_FOUR_CHAR_CODE( 't', 'r', 'g', 'r' ),
+    MP4UserDataAtomType                                 = MP4_FOUR_CHAR_CODE( 'u', 'd', 't', 'a' ),
+    MP4VideoMediaHeaderAtomType                         = MP4_FOUR_CHAR_CODE( 'v', 'm', 'h', 'd' ),
+    MP4VisualSampleEntryAtomType                        = MP4_FOUR_CHAR_CODE( 'm', 'p', '4', 'v' ),
+    MP4PaddingBitsAtomType                              = MP4_FOUR_CHAR_CODE( 'p', 'a', 'd', 'b' ),
+    MP4MovieExtendsAtomType                             = MP4_FOUR_CHAR_CODE( 'm', 'v', 'e', 'x' ),
     MP4TrackExtensionPropertiesAtomType                 = MP4_FOUR_CHAR_CODE( 't', 'r', 'e', 'p' ),
-	MP4TrackExtendsAtomType                             = MP4_FOUR_CHAR_CODE( 't', 'r', 'e', 'x' ),
-	MP4MovieFragmentAtomType                            = MP4_FOUR_CHAR_CODE( 'm', 'o', 'o', 'f' ),
-	MP4MovieFragmentHeaderAtomType                      = MP4_FOUR_CHAR_CODE( 'm', 'f', 'h', 'd' ),
-	MP4TrackFragmentAtomType                            = MP4_FOUR_CHAR_CODE( 't', 'r', 'a', 'f' ),
-	MP4TrackFragmentHeaderAtomType                      = MP4_FOUR_CHAR_CODE( 't', 'f', 'h', 'd' ),
+    MP4TrackExtendsAtomType                             = MP4_FOUR_CHAR_CODE( 't', 'r', 'e', 'x' ),
+    MP4MovieFragmentAtomType                            = MP4_FOUR_CHAR_CODE( 'm', 'o', 'o', 'f' ),
+    MP4MovieFragmentHeaderAtomType                      = MP4_FOUR_CHAR_CODE( 'm', 'f', 'h', 'd' ),
+    MP4TrackFragmentAtomType                            = MP4_FOUR_CHAR_CODE( 't', 'r', 'a', 'f' ),
+    MP4TrackFragmentHeaderAtomType                      = MP4_FOUR_CHAR_CODE( 't', 'f', 'h', 'd' ),
     MP4TrackFragmentDecodeTimeAtomType                  = MP4_FOUR_CHAR_CODE( 't', 'f', 'd', 't' ),
-	MP4TrackRunAtomType    		                        = MP4_FOUR_CHAR_CODE( 't', 'r', 'u', 'n' ),
-	MP4ItemPropertiesAtomType 							= MP4_FOUR_CHAR_CODE( 'i', 'p', 'r', 'p' ),
-	MP4ItemPropertyContainerAtomType					= MP4_FOUR_CHAR_CODE( 'i', 'p', 'c', 'o' ),
-	MP4ItemPropertyAssociationAtomType					= MP4_FOUR_CHAR_CODE( 'i', 'p', 'm', 'a' ),
-	
-	MP4SampleGroupDescriptionAtomType		             = MP4_FOUR_CHAR_CODE( 's', 'g', 'p', 'd' ),
-	MP4SampletoGroupAtomType				             = MP4_FOUR_CHAR_CODE( 's', 'b', 'g', 'p' ),
-	
-	MP4SampleDependencyAtomType				             = MP4_FOUR_CHAR_CODE( 's', 'd', 't', 'p' ),
-
-	ISOMetaAtomType							             = MP4_FOUR_CHAR_CODE( 'm', 'e', 't', 'a' ),
-	ISOPrimaryItemAtomType					             = MP4_FOUR_CHAR_CODE( 'p', 'i', 't', 'm' ),
-	ISOItemLocationAtomType					             = MP4_FOUR_CHAR_CODE( 'i', 'l', 'o', 'c' ),
-	ISOItemProtectionAtomType				             = MP4_FOUR_CHAR_CODE( 'i', 'p', 'r', 'o' ),
-	ISOItemInfoAtomType						             = MP4_FOUR_CHAR_CODE( 'i', 'i', 'n', 'f' ),
-	ISOItemInfoEntryAtomType				             = MP4_FOUR_CHAR_CODE( 'i', 'n', 'f', 'e' ),
-    ISOAdditionalMetaDataContainerAtomType               = MP4_FOUR_CHAR_CODE( 'm', 'e', 'c', 'o' ),
-    ISOMetaboxRelationAtomType                           = MP4_FOUR_CHAR_CODE( 'm', 'e', 'r', 'e' ),
-    ISOItemDataAtomType                                  = MP4_FOUR_CHAR_CODE( 'i', 'd', 'a', 't' ),
-    ISOItemReferenceAtomType                             = MP4_FOUR_CHAR_CODE( 'i', 'r', 'e', 'f' ),
-	
-	ISOVCConfigAtomType						             = MP4_FOUR_CHAR_CODE( 'a', 'v', 'c', 'C' ),
-	ISOHEVCConfigAtomType                                = MP4_FOUR_CHAR_CODE( 'h', 'v', 'c', 'C' ),
-	ISOAVCSampleEntryAtomType                            = MP4_FOUR_CHAR_CODE( 'a', 'v', 'c', '1' ),
-	ISOHEVCSampleEntryAtomType                           = MP4_FOUR_CHAR_CODE( 'h', 'v', 'c', '1' ),
-	MP4XMLMetaSampleEntryAtomType                        = MP4_FOUR_CHAR_CODE( 'm', 'e', 't', 'x' ),
-	MP4TextMetaSampleEntryAtomType                       = MP4_FOUR_CHAR_CODE( 'm', 'e', 't', 't' ),
-
-	MP4AMRSampleEntryAtomType				             = MP4_FOUR_CHAR_CODE( 's', 'a', 'm', 'r' ),
-	MP4AMRSpecificInfoAtomType				             = MP4_FOUR_CHAR_CODE( 'd', 'a', 'm', 'r' ),
-	MP4AWBSampleEntryAtomType				             = MP4_FOUR_CHAR_CODE( 's', 'a', 'w', 'b' ),
-	MP4AMRWPSampleEntryAtomType				             = MP4_FOUR_CHAR_CODE( 's', 'a', 'w', 'p' ),
-	MP4AMRWPSpecificInfoAtomType			             = MP4_FOUR_CHAR_CODE( 'd', 'a', 'w', 'p' ),
-	MP4H263SampleEntryAtomType				             = MP4_FOUR_CHAR_CODE( 's', '2', '6', '3' ),
-	MP4H263SpecificInfoAtomType				             = MP4_FOUR_CHAR_CODE( 'd', '2', '6', '3' ),
-	MP4BitRateAtomType						             = MP4_FOUR_CHAR_CODE( 'b', 't', 'r', 't' ),
-	TGPPBitRateAtomType						             = MP4_FOUR_CHAR_CODE( 'b', 'i', 't', 'r' )
+    MP4TrackRunAtomType                                 = MP4_FOUR_CHAR_CODE( 't', 'r', 'u', 'n' ),
+    MP4ItemPropertiesAtomType                           = MP4_FOUR_CHAR_CODE( 'i', 'p', 'r', 'p' ),
+    MP4ItemPropertyContainerAtomType                    = MP4_FOUR_CHAR_CODE( 'i', 'p', 'c', 'o' ),
+    MP4ItemPropertyAssociationAtomType                  = MP4_FOUR_CHAR_CODE( 'i', 'p', 'm', 'a' ),
+    MP4SampleGroupDescriptionAtomType                   = MP4_FOUR_CHAR_CODE( 's', 'g', 'p', 'd' ),
+    MP4SampletoGroupAtomType                            = MP4_FOUR_CHAR_CODE( 's', 'b', 'g', 'p' ),
+    MP4SampleDependencyAtomType                         = MP4_FOUR_CHAR_CODE( 's', 'd', 't', 'p' ),
+    ISOMetaAtomType                                     = MP4_FOUR_CHAR_CODE( 'm', 'e', 't', 'a' ),
+    ISOPrimaryItemAtomType                              = MP4_FOUR_CHAR_CODE( 'p', 'i', 't', 'm' ),
+    ISOItemLocationAtomType                             = MP4_FOUR_CHAR_CODE( 'i', 'l', 'o', 'c' ),
+    ISOItemProtectionAtomType                           = MP4_FOUR_CHAR_CODE( 'i', 'p', 'r', 'o' ),
+    ISOItemInfoAtomType                                 = MP4_FOUR_CHAR_CODE( 'i', 'i', 'n', 'f' ),
+    ISOItemInfoEntryAtomType                            = MP4_FOUR_CHAR_CODE( 'i', 'n', 'f', 'e' ),
+    ISOAdditionalMetaDataContainerAtomType              = MP4_FOUR_CHAR_CODE( 'm', 'e', 'c', 'o' ),
+    ISOMetaboxRelationAtomType                          = MP4_FOUR_CHAR_CODE( 'm', 'e', 'r', 'e' ),
+    ISOItemDataAtomType                                 = MP4_FOUR_CHAR_CODE( 'i', 'd', 'a', 't' ),
+    ISOItemReferenceAtomType                            = MP4_FOUR_CHAR_CODE( 'i', 'r', 'e', 'f' ),
+    ISOVCConfigAtomType                                 = MP4_FOUR_CHAR_CODE( 'a', 'v', 'c', 'C' ),
+    ISOHEVCConfigAtomType                               = MP4_FOUR_CHAR_CODE( 'h', 'v', 'c', 'C' ),
+    ISOAVCSampleEntryAtomType                           = MP4_FOUR_CHAR_CODE( 'a', 'v', 'c', '1' ),
+    ISOHEVCSampleEntryAtomType                          = MP4_FOUR_CHAR_CODE( 'h', 'v', 'c', '1' ),
+    MP4XMLMetaSampleEntryAtomType                       = MP4_FOUR_CHAR_CODE( 'm', 'e', 't', 'x' ),
+    MP4TextMetaSampleEntryAtomType                      = MP4_FOUR_CHAR_CODE( 'm', 'e', 't', 't' ),
+    MP4AMRSampleEntryAtomType                           = MP4_FOUR_CHAR_CODE( 's', 'a', 'm', 'r' ),
+    MP4AMRSpecificInfoAtomType                          = MP4_FOUR_CHAR_CODE( 'd', 'a', 'm', 'r' ),
+    MP4AWBSampleEntryAtomType                           = MP4_FOUR_CHAR_CODE( 's', 'a', 'w', 'b' ),
+    MP4AMRWPSampleEntryAtomType                         = MP4_FOUR_CHAR_CODE( 's', 'a', 'w', 'p' ),
+    MP4AMRWPSpecificInfoAtomType                        = MP4_FOUR_CHAR_CODE( 'd', 'a', 'w', 'p' ),
+    MP4H263SampleEntryAtomType                          = MP4_FOUR_CHAR_CODE( 's', '2', '6', '3' ),
+    MP4H263SpecificInfoAtomType                         = MP4_FOUR_CHAR_CODE( 'd', '2', '6', '3' ),
+    MP4BitRateAtomType                                  = MP4_FOUR_CHAR_CODE( 'b', 't', 'r', 't' ),
+    TGPPBitRateAtomType                                 = MP4_FOUR_CHAR_CODE( 'b', 'i', 't', 'r' )
 }; 
-
 
 #ifdef ISMACrypt
 enum {
-	MP4SecurityInfoAtomType					             = MP4_FOUR_CHAR_CODE( 's', 'i', 'n', 'f' ),
-	MP4OriginalFormatAtomType				             = MP4_FOUR_CHAR_CODE( 'f', 'r', 'm', 'a' ),
-	MP4SecuritySchemeAtomType				             = MP4_FOUR_CHAR_CODE( 's', 'c', 'h', 'm' ),
-	MP4SchemeInfoAtomType					             = MP4_FOUR_CHAR_CODE( 's', 'c', 'h', 'i' ),
-	ISMAKMSAtomType							             = MP4_FOUR_CHAR_CODE( 'i', 'K', 'M', 'S' ),
-	ISMASampleFormatAtomType				             = MP4_FOUR_CHAR_CODE( 'i', 'S', 'F', 'M' ),
-	ISMASaltAtomType						             = MP4_FOUR_CHAR_CODE( 'i', 'S', 'L', 'T' ),
-	MP4EncAudioSampleEntryAtomType                       = MP4_FOUR_CHAR_CODE( 'e', 'n', 'c', 'a' ),
-	MP4EncVisualSampleEntryAtomType                      = MP4_FOUR_CHAR_CODE( 'e', 'n', 'c', 'v' ),
-	ISMACryptAESCounterType					             = MP4_FOUR_CHAR_CODE( 'i', 'A', 'E', 'C' )
+    MP4SecurityInfoAtomType                             = MP4_FOUR_CHAR_CODE( 's', 'i', 'n', 'f' ),
+    MP4OriginalFormatAtomType                           = MP4_FOUR_CHAR_CODE( 'f', 'r', 'm', 'a' ),
+    MP4SecuritySchemeAtomType                           = MP4_FOUR_CHAR_CODE( 's', 'c', 'h', 'm' ),
+    MP4SchemeInfoAtomType                               = MP4_FOUR_CHAR_CODE( 's', 'c', 'h', 'i' ),
+    ISMAKMSAtomType                                     = MP4_FOUR_CHAR_CODE( 'i', 'K', 'M', 'S' ),
+    ISMASampleFormatAtomType                            = MP4_FOUR_CHAR_CODE( 'i', 'S', 'F', 'M' ),
+    ISMASaltAtomType                                    = MP4_FOUR_CHAR_CODE( 'i', 'S', 'L', 'T' ),
+    MP4EncAudioSampleEntryAtomType                      = MP4_FOUR_CHAR_CODE( 'e', 'n', 'c', 'a' ),
+    MP4EncVisualSampleEntryAtomType                     = MP4_FOUR_CHAR_CODE( 'e', 'n', 'c', 'v' ),
+    ISMACryptAESCounterType                             = MP4_FOUR_CHAR_CODE( 'i', 'A', 'E', 'C' )
 };
 #endif
 
@@ -176,8 +170,6 @@ enum {
 #endif
     MP4SchemeTypeAtomType                     = MP4_FOUR_CHAR_CODE( 's', 'c', 'h', 'm' )
 };
-
-
 
 #define MP4_BASE_ATOM    \
 	u32	   type;         \
@@ -1325,8 +1317,6 @@ typedef struct MP4TrackFragmentDecodeTimeAtom
 	u32 baseMediaDecodeTime;
 } MP4TrackFragmentDecodeTimeAtom, *MP4TrackFragmentDecodeTimeAtomPtr;
 
-
-
 typedef struct MP4ItemPropertyContainerAtom
 {
 	MP4_BASE_ATOM
@@ -1564,24 +1554,24 @@ typedef struct ISOMetaAtom
 	MP4Err (*closeDataHandler)( struct ISOMetaAtom* self );
 	MP4Err (*openDataHandler)( struct ISOMetaAtom* self, u32 dataEntryIndex );
 	MP4Err (*getData)( struct ISOMetaAtom* self, u32 box_type, MP4Handle data, u8 is_full_atom );
-	
+
 	MP4AtomPtr hdlr;
 	MP4AtomPtr dinf;
 	MP4AtomPtr iloc;
 	MP4AtomPtr iinf;
-    MP4AtomPtr iref;
-    MP4AtomPtr idat;
+	MP4AtomPtr iref;
+	MP4AtomPtr idat;
 	MP4AtomPtr pitm;
 	MP4AtomPtr ipro;
 	MP4AtomPtr iprp;
-	
+
 	MP4AtomPtr mdat;
 	MP4LinkedList atomList;
-	
+
 	u16 next_item_ID;
-	
-    MP4AtomPtr relatedMeco;
-	
+
+	MP4AtomPtr relatedMeco;
+
 	struct MP4InputStreamRecord* inputStream;
 	void       *dataHandler;
 	s32         dataEntryIndex;	
@@ -1771,7 +1761,6 @@ MP4Err MP4CreateVisualSampleEntryAtom( MP4VisualSampleEntryAtomPtr *outAtom );
 
 MP4Err MP4CreateXMLMetaSampleEntryAtom( MP4XMLMetaSampleEntryAtomPtr *outAtom );
 MP4Err MP4CreateTextMetaSampleEntryAtom( MP4TextMetaSampleEntryAtomPtr *outAtom );
-
 
 MP4Err MP4CreateMovieExtendsAtom( MP4MovieExtendsAtomPtr *outAtom );
 MP4Err MP4CreateTrackExtensionPropertiesAtom( MP4TrackExtensionPropertiesAtomPtr *outAtom );

@@ -134,7 +134,6 @@ static MP4Err addSamples( struct MP4MediaInformationAtom *s, MP4Handle sampleH,
 	u32* decodes;
 	MP4TrackFragmentAtomPtr self;
     MP4TrackExtendsAtomPtr trex;
-    MP4CompositionToDecodeAtomPtr cslg;
     
 		
 	self = (MP4TrackFragmentAtomPtr) s;
@@ -601,7 +600,7 @@ MP4Err getSampleAuxiliaryInfoFromTrackFragment (struct MP4TrackFragmentAtom *sel
             *saioOut = saioExisting;
         }
     }
-bail:
+
     TEST_RETURN( err );
     
     return err;

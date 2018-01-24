@@ -37,7 +37,6 @@ static void destroy( MP4AtomPtr s )
 static MP4Err serialize( struct MP4Atom* s, char* buffer )
 {
 	MP4Err err;
-	u32 i;
 	MP4TrackGroupTypeAtomPtr self = (MP4TrackGroupTypeAtomPtr) s;
 	err = MP4NoErr;
 	
@@ -69,7 +68,6 @@ static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStr
 {
 	MP4Err err;
 	long bytesToRead;
-	u32 i;
 	MP4TrackGroupTypeAtomPtr self = (MP4TrackGroupTypeAtomPtr) s;
 	
 	err = MP4NoErr;
@@ -88,12 +86,10 @@ bail:
 static MP4Err setGroupID(struct MP4TrackGroupTypeAtom *self, u32 track_group_id)
 {
 	MP4Err err;
-	u32 i;
 	err = MP4NoErr;	
 
 	self->track_group_id = track_group_id;
 
-bail:
 	TEST_RETURN( err );
 	return err;
 }

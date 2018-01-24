@@ -1,6 +1,9 @@
 Release notes Jan 2018
 
-a) Added application for support of HEVC extractors, see input contribution m41627 for more details
+a) Added support for Visual Studio 2008 (required also fixing some minor compiler errors)
+
+b) Added new functions ISOGetTrackEditlistEntryCount and ISOGetTrackEditlist for transporting Elst information
+
 
 Release notes Dec 2016
 

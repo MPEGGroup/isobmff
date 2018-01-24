@@ -44,6 +44,10 @@ typedef short s16;
 typedef char s8;
 
 #define MP4_FOUR_CHAR_CODE( a, b, c, d ) (((a)<<24)|((b)<<16)|((c)<<8)|(d))
+#if defined(_MSC_VER)
+#define strcasecmp _stricmp
+#else
 #define strcasecmp stricmp
+#endif
 
 #endif

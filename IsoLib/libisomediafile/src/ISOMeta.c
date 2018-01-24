@@ -100,11 +100,11 @@ bail:
 
 ISO_EXTERN ( ISOErr ) ISONewMovieMeta( ISOMovie theMovie, u32 metaType, ISOMeta* outMeta )
 {
-	ISOMetaAtomPtr myMeta;
+    ISOMetaAtomPtr myMeta;
     ISOAdditionalMetaDataContainerAtomPtr mecoPtr;
-	GETMOVIEATOM(theMovie);
-	err = newMeta( &myMeta, metaType); if (err) goto bail;
-	
+    GETMOVIEATOM(theMovie);
+    err = newMeta( &myMeta, metaType); if (err) goto bail;
+
     if (moov->meta != NULL)
     {
         if (moov->meta->type == metaType)
@@ -126,25 +126,25 @@ ISO_EXTERN ( ISOErr ) ISONewMovieMeta( ISOMovie theMovie, u32 metaType, ISOMeta*
         err = movieAtom->addAtom( movieAtom, (MP4AtomPtr) myMeta );  if (err) goto bail;
     }
     
-	err = myMeta->setMdat( myMeta, moov->mdat ); if (err) goto bail;
-	
-	*outMeta = (ISOMeta) myMeta;
-	
+    err = myMeta->setMdat( myMeta, moov->mdat ); if (err) goto bail;
+
+    *outMeta = (ISOMeta) myMeta;
+
 bail:
-	TEST_RETURN( err );
-	return err;
+    TEST_RETURN( err );
+    return err;
 }
 
 ISO_EXTERN ( ISOErr ) ISONewTrackMeta( ISOTrack theTrack, u32 metaType, ISOMeta* outMeta )
 {
-	ISOMetaAtomPtr myMeta;
-	MP4TrackAtomPtr trak;
+    ISOMetaAtomPtr myMeta;
+    MP4TrackAtomPtr trak;
     ISOAdditionalMetaDataContainerAtomPtr mecoPtr;
-	MP4Err err;
+    MP4Err err;
 
-	err = newMeta( &myMeta, metaType); if (err) goto bail;
-	trak = (MP4TrackAtomPtr) theTrack;
-    
+    err = newMeta( &myMeta, metaType); if (err) goto bail;
+    trak = (MP4TrackAtomPtr) theTrack;
+
     if (trak->meta != NULL)
     {
         if (trak->meta->type == metaType)
@@ -166,13 +166,13 @@ ISO_EXTERN ( ISOErr ) ISONewTrackMeta( ISOTrack theTrack, u32 metaType, ISOMeta*
         err = trak->addAtom( trak, (MP4AtomPtr) myMeta );  if (err) goto bail;
     }
 
-	err = myMeta->setMdat( myMeta, trak->mdat ); if (err) goto bail;
-	
-	*outMeta = (ISOMeta) myMeta;
-	
+    err = myMeta->setMdat( myMeta, trak->mdat ); if (err) goto bail;
+
+    *outMeta = (ISOMeta) myMeta;
+
 bail:
-	TEST_RETURN( err );
-	return err;
+    TEST_RETURN( err );
+    return err;
 }
 
 ISO_EXTERN ( ISOErr ) ISOAddMetaBoxRelation( ISOMeta first_meta, ISOMeta second_meta, u8 relation_type  )
@@ -379,7 +379,7 @@ ISO_EXTERN ( ISOErr ) ISOAddMetaItemWithID( ISOMeta meta, ISOMetaItem* outItem, 
 
 	err = requestItemID( myMeta, item_ID ); if (err) goto bail;
 	
-	item = calloc( 1, sizeof(MetaItemLocation) ); 
+	item = (MetaItemLocationPtr)calloc( 1, sizeof(MetaItemLocation) ); 
 	TESTMALLOC( item );
 	
 	item->item_ID               = item_ID;
@@ -413,7 +413,7 @@ ISO_EXTERN ( ISOErr ) ISOAddItemExtent( ISOMetaItem item, MP4Handle data )
 	u32 size, extents;
 	MP4Err err;
 	
-	extent = calloc( 1, sizeof(MetaExtentLocation) ); 
+	extent = (MetaExtentLocationPtr)calloc( 1, sizeof(MetaExtentLocation) ); 
 	TESTMALLOC( extent );
 	
 	myItem = (MetaItemLocationPtr) item;
@@ -457,7 +457,7 @@ ISO_EXTERN ( ISOErr ) ISOAddItemExtentReference( ISOMetaItem item, u64 offset, u
 	MP4Err err;
 	u32 extents;
 	
-	extent = calloc( 1, sizeof(MetaExtentLocation) ); 
+	extent = (MetaExtentLocationPtr)calloc( 1, sizeof(MetaExtentLocation) ); 
 	TESTMALLOC( extent );
 	
 	myItem = (MetaItemLocationPtr) item;
@@ -488,7 +488,6 @@ ISO_EXTERN ( ISOErr ) ISOAddItemExtentUsingItemData( ISOMetaItem item, MP4Handle
 {
     MetaExtentLocationPtr       extent;
     ISOMetaAtomPtr              myMeta;
-    MP4DataInformationAtomPtr   dinf;
     MetaItemLocationPtr         myItem;
     ISOItemLocationAtomPtr      iloc;
     ISOItemDataAtomPtr          idat;
@@ -497,7 +496,7 @@ ISO_EXTERN ( ISOErr ) ISOAddItemExtentUsingItemData( ISOMetaItem item, MP4Handle
     u32                         extents;
     MP4Err                      err;
     
-    extent = calloc( 1, sizeof(MetaExtentLocation) );
+    extent = (MetaExtentLocationPtr)calloc( 1, sizeof(MetaExtentLocation) );
     TESTMALLOC( extent );
     
     myItem = (MetaItemLocationPtr) item;
@@ -548,7 +547,6 @@ ISO_EXTERN ( ISOErr ) ISOAddItemExtentItem( ISOMetaItem item, ISOMetaItem extent
 {
     MetaExtentLocationPtr       extent;
     ISOMetaAtomPtr              myMeta;
-    MP4DataInformationAtomPtr   dinf;
     MetaItemLocationPtr         myItem;
     MetaItemLocationPtr         extentItem;
     ISOItemLocationAtomPtr      iloc;
@@ -556,7 +554,7 @@ ISO_EXTERN ( ISOErr ) ISOAddItemExtentItem( ISOMetaItem item, ISOMetaItem extent
     MP4Err                      err;
     u32                         index;
     
-    extent = calloc( 1, sizeof(MetaExtentLocation) );
+    extent = (MetaExtentLocationPtr)calloc( 1, sizeof(MetaExtentLocation) );
     TESTMALLOC( extent );
     
     myItem      = (MetaItemLocationPtr) item;
@@ -609,7 +607,7 @@ ISO_EXTERN ( ISOErr ) ISOAddPrimaryData( ISOMeta meta, u32 box_type, MP4Handle d
 	err = MP4GetHandleSize( data, &len ); if (err) goto bail;
 	if (is_full_atom) len += 4;
 	
-	dataPtr = calloc( 1, len ); TESTMALLOC( dataPtr );
+	dataPtr = (char*)calloc( 1, len ); TESTMALLOC( dataPtr );
 	myAtom->data     = dataPtr;
 	myAtom->dataSize = len;
 	myAtom->type     = box_type;
@@ -631,7 +629,6 @@ ISO_EXTERN ( ISOErr ) ISOGetItemReferences( ISOMetaItem item, u32 reference_type
     MetaItemLocationPtr                 myItem;
     ISOItemReferenceAtomPtr             irefPtr;
     ISOSingleItemTypeReferenceAtomPtr   singleIrefPtr;
-    u32                                 *toItemIdsArray;
     u32                                 i;
     
     err                 = MP4NoErr;
@@ -700,7 +697,6 @@ ISO_EXTERN ( ISOErr ) ISOAddItemReference( ISOMetaItem item, u32 reference_type,
     MetaItemLocationPtr                 myItem;
     ISOItemReferenceAtomPtr             irefPtr;
     ISOSingleItemTypeReferenceAtomPtr   singleIrefPtr;
-    u32                                 *toItemIdsArray;
     u16                                 existingCount;
     MP4Handle                           toItemIDS;
     u32                                 i;
@@ -736,7 +732,7 @@ ISO_EXTERN ( ISOErr ) ISOAddItemReference( ISOMetaItem item, u32 reference_type,
                 (singleIrefPtr->type == reference_type))
             {
                 singleIrefPtr->reference_count++;
-                singleIrefPtr->to_item_IDs = realloc(singleIrefPtr->to_item_IDs, singleIrefPtr->reference_count * sizeof(u32));
+                singleIrefPtr->to_item_IDs = (u32*)realloc(singleIrefPtr->to_item_IDs, singleIrefPtr->reference_count * sizeof(u32));
                 singleIrefPtr->to_item_IDs[singleIrefPtr->reference_count - 1] = to_item_ID;
                 *outIndex   = singleIrefPtr->reference_count;
                 break;
@@ -777,7 +773,7 @@ ISO_EXTERN ( ISOErr ) ISOAddItemReferences( ISOMetaItem item, u32 reference_type
     singleIrefPtr->reference_count = reference_count;
     toItemIdsArray = (u32*) *to_item_IDs;
     
-    singleIrefPtr->to_item_IDs = calloc(reference_count, sizeof(u32));
+    singleIrefPtr->to_item_IDs = (u32*)calloc(reference_count, sizeof(u32));
     memcpy(singleIrefPtr->to_item_IDs, toItemIdsArray, reference_count * sizeof(u32));
     
     err = MP4AddListEntry(singleIrefPtr, irefPtr->atomList); if (err) goto bail;
@@ -1266,7 +1262,7 @@ ISO_EXTERN ( ISOErr ) ISOGetAllItemsWithType( ISOMeta meta, u32 type, ISOMetaIte
             if (type == outType)
             {
                 *numberOfItemsFound                 = *numberOfItemsFound + 1;
-                *items                              = realloc(*items, *numberOfItemsFound * sizeof(u32));
+                *items                              = (ISOMetaItem*)realloc(*items, *numberOfItemsFound * sizeof(ISOMetaItem));
                 (*items)[*numberOfItemsFound - 1]   = (ISOMetaItem) a;
             }
         }

@@ -48,7 +48,6 @@ static MP4Err serialize( struct MP4Atom* s, char* buffer )
 {
 	MP4Err err;
 	ISOItemReferenceAtomPtr self = (ISOItemReferenceAtomPtr) s;
-	u8 x;
 	err = MP4NoErr;
 	
 	err = MP4SerializeCommonFullAtomFields( (MP4FullAtomPtr) s, buffer ); if (err) goto bail;
