@@ -6,4 +6,4 @@ all:
 	$(MAKE) -C ../hevc_extractors/linux
 	$(MAKE) -C ../ipmp_example/linux
 	$(MAKE) -C ../isoiff_tool/linux/isoiff
-	$(MAKE) -C ../isoiff_tool/linux/isoiff_tool
+#	$(MAKE) -C ../isoiff_tool/linux/isoiff_tool
