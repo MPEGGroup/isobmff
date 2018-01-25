@@ -295,6 +295,10 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
 			err = MP4CreateEncAudioSampleEntryAtom( (MP4EncAudioSampleEntryAtomPtr*) &newAtom );
 			break;
 
+		case MP4RestrictedVideoSampleEntryAtomType:
+			err = MP4CreateRestrictedVideoSampleEntryAtom( (MP4RestrictedVideoSampleEntryAtomPtr*) &newAtom );
+			break;
+
 		case MP4XMLMetaSampleEntryAtomType:
 			err = MP4CreateXMLMetaSampleEntryAtom( (MP4XMLMetaSampleEntryAtomPtr*) &newAtom );
 			break;
@@ -475,22 +479,34 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
 			err = MP4CreateTrackRunAtom( (MP4TrackRunAtomPtr*) &newAtom );
 			break;
 
+		case MP4SchemeTypeAtomType:
+			err = MP4CreateSchemeTypeAtom( (MP4SchemeTypeAtomPtr *) &newAtom );
+			break;
+
+		case MP4OriginalFormatAtomType:
+			err = MP4CreateOriginalFormatAtom((MP4OriginalFormatAtomPtr *)&newAtom);
+			break;
+
+		case MP4SchemeInfoAtomType:
+			err = MP4CreateSchemeInfoAtom((MP4SchemeInfoAtomPtr *)&newAtom);
+			break;
+
+		case MP4CompatibleSchemeTypeAtomType:
+			err = MP4CreateCompatibleSchemeTypeAtom((MP4CompatibleSchemeTypeAtomPtr *)&newAtom);
+			break;
+
+		case MP4RestrictedSchemeInfoAtomType:
+			err = MP4CreateRestrictedSchemeInfoAtom((MP4RestrictedSchemeInfoAtomPtr *)&newAtom);
+			break;
+
 #ifdef ISMACrypt
 		case MP4SecurityInfoAtomType:
 			err = MP4CreateSecurityInfoAtom( (MP4SecurityInfoAtomPtr *) &newAtom );
 			break;
 		
-		case MP4OriginalFormatAtomType:
-			err = MP4CreateOriginalFormatAtom( (MP4OriginalFormatAtomPtr *) &newAtom );
-			break;
-		
-		case MP4SecuritySchemeAtomType:
-			err = MP4CreateSecuritySchemeAtom( (MP4SecuritySchemeAtomPtr *) &newAtom );
-			break;
-		
-		case MP4SchemeInfoAtomType:
-			err = MP4CreateSchemeInfoAtom( (MP4SchemeInfoAtomPtr *) &newAtom );
-			break;
+//		case MP4SecuritySchemeAtomType:
+//			err = MP4CreateSecuritySchemeAtom( (MP4SecuritySchemeAtomPtr *) &newAtom );
+//			break;
 		
 		case ISMAKMSAtomType:
 			err = CreateISMAKMSAtom( (ISMAKMSAtomPtr *) &newAtom );

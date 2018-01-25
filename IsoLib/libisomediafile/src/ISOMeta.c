@@ -1557,7 +1557,7 @@ ISONewMetaProtection( ISOMeta meta, u32 sch_type, u32 sch_version, char* sch_url
 	
 	ISOMetaAtomPtr myMeta;
 	MP4SecurityInfoAtomPtr sinf;
-	MP4SecuritySchemeAtomPtr schm;
+	MP4SchemeTypeAtomPtr schm;
 	MP4SchemeInfoAtomPtr schi;
 	ISOItemProtectionAtomPtr ipro;
 	u32 j;
@@ -1582,7 +1582,7 @@ ISONewMetaProtection( ISOMeta meta, u32 sch_type, u32 sch_version, char* sch_url
 	else schm->scheme_url = NULL;
 
 	err = MP4CreateSecurityInfoAtom( &sinf ); if (err) goto bail;
-	sinf->MP4SecurityScheme = (MP4AtomPtr) schm; schm = NULL;
+	sinf->MP4SchemeType = (MP4AtomPtr) schm; schm = NULL;
 	sinf->MP4SchemeInfo     = (MP4AtomPtr) schi; schi = NULL;
 	
 	ipro = (ISOItemProtectionAtomPtr) myMeta->ipro;
@@ -1638,7 +1638,7 @@ ISOGetMetaProtection( ISOMeta meta, u16 protection_index, u32* sch_type, u32* sc
 	
 	ISOMetaAtomPtr myMeta;
 	MP4SecurityInfoAtomPtr sinf;
-	MP4SecuritySchemeAtomPtr schm;
+	MP4SchemeTypeAtomPtr schm;
 	ISOItemProtectionAtomPtr ipro;
 	
 	err = MP4NoErr;
@@ -1648,7 +1648,7 @@ ISOGetMetaProtection( ISOMeta meta, u16 protection_index, u32* sch_type, u32* sc
 	if (!ipro) BAILWITHERROR( MP4BadParamErr);
 	err  = MP4GetListEntry( ipro->atomList, protection_index-1, (char **) &sinf ); if (err) goto bail;
 	
-	schm = (MP4SecuritySchemeAtomPtr) sinf->MP4SecurityScheme;
+	schm = (MP4SchemeTypeAtomPtr) sinf->MP4SchemeType;
 
 	*sch_type    = schm->scheme_type;
 	*sch_version = schm->scheme_version;

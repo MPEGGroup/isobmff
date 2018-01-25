@@ -153,7 +153,7 @@ static MP4Err transform(struct MP4Atom *s, u32 sch_type, u32 sch_version, char* 
 	MP4EncBaseSampleEntryAtomPtr self = (MP4EncBaseSampleEntryAtomPtr) s;
 	MP4OriginalFormatAtomPtr fmt;
 	MP4SecurityInfoAtomPtr sinf;
-	MP4SecuritySchemeAtomPtr schm;
+	MP4SchemeTypeAtomPtr schm;
 	MP4SchemeInfoAtomPtr schi;
 	char* sch_url_copy = NULL;
 	
@@ -176,7 +176,7 @@ static MP4Err transform(struct MP4Atom *s, u32 sch_type, u32 sch_version, char* 
 
 	err = MP4CreateSecurityInfoAtom( &sinf ); if (err) goto bail;
 	sinf->MP4OriginalFormat = (MP4AtomPtr) fmt; fmt = NULL;
-	sinf->MP4SecurityScheme = (MP4AtomPtr) schm; schm = NULL;
+	sinf->MP4SchemeType = (MP4AtomPtr) schm; schm = NULL;
 	sinf->MP4SchemeInfo     = (MP4AtomPtr) schi; schi = NULL;
 	
 	self->type = self->enc_type;
@@ -290,7 +290,7 @@ static MP4Err getScheme(struct MP4Atom *s, u32* sch_type, u32* sch_version, char
 	MP4Err err;
 	
 	MP4EncBaseSampleEntryAtomPtr self = (MP4EncBaseSampleEntryAtomPtr) s;
-	MP4SecuritySchemeAtomPtr  schm;
+	MP4SchemeTypeAtomPtr  schm;
 	MP4SecurityInfoAtomPtr sinf;
 	char* sch_url_copy;
 
@@ -299,7 +299,7 @@ static MP4Err getScheme(struct MP4Atom *s, u32* sch_type, u32* sch_version, char
 	sinf = (MP4SecurityInfoAtomPtr) self->SecurityInfo;
 	if (!sinf) { err = MP4BadParamErr; goto bail; }
 	
-	schm = (MP4SecuritySchemeAtomPtr) sinf->MP4SecurityScheme;
+	schm = (MP4SchemeTypeAtomPtr)sinf->MP4SchemeType;
 	if (!schm)  { err = MP4BadDataErr; goto bail; }
 	
 	*sch_type    = schm->scheme_type;

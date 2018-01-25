@@ -1066,7 +1066,7 @@ MP4_EXTERN(MP4Err) ISOGetRESVSampleDescriptionPS(MP4Handle sampleEntryH,
 
     err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType); if (err) goto bail;
 
-    if (entry->type != MP4RestrictedVideoAtomType) BAILWITHERROR(MP4BadParamErr);
+    if (entry->type != MP4RestrictedVideoSampleEntryAtomType) BAILWITHERROR(MP4BadParamErr);
 
     err = MP4GetListEntryAtom(entry->ExtensionAtomList, ISOHEVCConfigAtomType, (MP4AtomPtr*)&config);
     if (err == MP4NotFoundErr) {
@@ -1096,7 +1096,7 @@ MP4_EXTERN(MP4Err) ISOGetRESVLengthSizeMinusOne(MP4Handle sampleEntryH, u32* out
       goto bail;
     }
 
-    if (entry->type != MP4RestrictedVideoAtomType) {
+    if (entry->type != MP4RestrictedVideoSampleEntryAtomType) {
       BAILWITHERROR(MP4BadParamErr);
     }
 
@@ -1120,16 +1120,16 @@ MP4_EXTERN(MP4Err) ISOGetRESVOriginalFormat(MP4Handle sampleEntryH,
 {
     MP4Err err = MP4NoErr;
     MP4VisualSampleEntryAtomPtr entry = NULL;
-    MP4RestrictedInfoAtomPtr    config;
+    MP4RestrictedSchemeInfoAtomPtr    config;
     MP4Handle rinfHandle;
 
     ISONewHandle(1, &rinfHandle);
 
     err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType); if (err) goto bail;
 
-    if (entry->type != MP4RestrictedVideoAtomType) BAILWITHERROR(MP4BadParamErr);
+    if (entry->type != MP4RestrictedVideoSampleEntryAtomType) BAILWITHERROR(MP4BadParamErr);
 
-    err = MP4GetListEntryAtom(entry->ExtensionAtomList, MP4RestrictedInfoAtomType, (MP4AtomPtr*)&config);
+    err = MP4GetListEntryAtom(entry->ExtensionAtomList, MP4RestrictedSchemeInfoAtomType, (MP4AtomPtr*)&config);
     if (err == MP4NotFoundErr) {
         BAILWITHERROR(MP4BadDataErr);
     }

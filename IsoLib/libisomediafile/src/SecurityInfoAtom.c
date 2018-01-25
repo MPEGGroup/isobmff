@@ -44,10 +44,10 @@ static void destroy( MP4AtomPtr s )
 		self->MP4OriginalFormat->destroy( self->MP4OriginalFormat );
 		self->MP4OriginalFormat = NULL;
 	}
-	if ( self->MP4SecurityScheme )
+	if ( self->MP4SchemeType )
 	{
-		self->MP4SecurityScheme->destroy( self->MP4SecurityScheme );
-		self->MP4SecurityScheme = NULL;
+		self->MP4SchemeType->destroy( self->MP4SchemeType );
+		self->MP4SchemeType = NULL;
 	}
 	if ( self->MP4SchemeInfo )
 	{
@@ -75,7 +75,7 @@ static MP4Err serialize( struct MP4Atom* s, char* buffer )
     /* PUT32_V( 0 );	*/	/* version/flags */
     
 	SERIALIZE_ATOM( MP4OriginalFormat );
-	SERIALIZE_ATOM( MP4SecurityScheme );
+	SERIALIZE_ATOM( MP4SchemeType );
 	SERIALIZE_ATOM( MP4SchemeInfo );
 
 	assert( self->bytesWritten == self->size );
@@ -94,7 +94,7 @@ static MP4Err calculateSize( struct MP4Atom* s )
 	err = MP4CalculateBaseAtomFieldSize( s ); if (err) goto bail;
 	self->size += 0;		/* version/flags */
 	ADD_ATOM_SIZE( MP4OriginalFormat );
-	ADD_ATOM_SIZE( MP4SecurityScheme );
+	ADD_ATOM_SIZE( MP4SchemeType );
 	ADD_ATOM_SIZE( MP4SchemeInfo );
 bail:
 	TEST_RETURN( err );
@@ -116,7 +116,7 @@ static MP4Err addAtom( MP4SecurityInfoAtomPtr self, MP4AtomPtr atom )
 	switch( atom->type )
 	{
 		ADDCASE( MP4OriginalFormat );
-		ADDCASE( MP4SecurityScheme );
+		ADDCASE( MP4SchemeType );
 		ADDCASE( MP4SchemeInfo );
 		/* todo: this default is wrong; we should be tolerant and accept unknown atoms */
 		default:

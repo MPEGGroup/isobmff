@@ -24,6 +24,7 @@ derivative works. Copyright (c) 1999.
 	$Id: SecuritySchemeAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
 */
 
+/*
 #include "MP4Atoms.h"
 #include <stdlib.h>
 #include <string.h>
@@ -147,7 +148,7 @@ MP4Err MP4CreateSecuritySchemeAtom( MP4SecuritySchemeAtomPtr *outAtom )
 
 	err = MP4CreateFullAtom( (MP4AtomPtr) self );
 	if ( err ) goto bail;
-	self->type = MP4SecuritySchemeAtomType;
+	self->type = MP4SchemeTypeAtomType;
 	self->name                = "SecurityScheme";
 	self->createFromInputStream = (cisfunc) createFromInputStream;
 	self->destroy             = destroy;
@@ -162,3 +163,4 @@ bail:
 }
 
 #endif
+*/
