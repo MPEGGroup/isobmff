@@ -1,4 +1,4 @@
 language: c
 compiler:
   - gcc
-script: cd IsoLib/libisomediafile/linux/libisomediafile/ && make
+script: cd IsoLib/linux && make
