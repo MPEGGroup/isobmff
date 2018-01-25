@@ -162,7 +162,7 @@ static MP4Err transform(struct MP4Atom *s, u32 sch_type, u32 sch_version, char* 
 
 	err = MP4CreateSchemeInfoAtom( &schi ); if (err) goto bail;
 	
-	err = MP4CreateSecuritySchemeAtom( &schm ); if (err) goto bail;
+	err = MP4CreateSchemeTypeAtom( &schm ); if (err) goto bail;
 	schm->scheme_type    = sch_type;
 	schm->scheme_version = sch_version;
 	
