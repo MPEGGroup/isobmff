@@ -1154,7 +1154,7 @@ bail:
 	return err;	
 }
 
-#define MAC_EPOCH 2082758400;
+#define MAC_EPOCH 2082844800
 
 MP4Err MP4GetCurrentTime( u64 *outTime )
 {
