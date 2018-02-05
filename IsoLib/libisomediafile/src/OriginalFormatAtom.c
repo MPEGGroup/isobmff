@@ -106,7 +106,7 @@ MP4Err MP4CreateOriginalFormatAtom( MP4OriginalFormatAtomPtr *outAtom )
 	err = MP4CreateBaseAtom( (MP4AtomPtr) self );
 	if ( err ) goto bail;
 	self->type = MP4OriginalFormatAtomType;
-	self->name                = "OriginalFormat";
+	self->name                = "OriginalFormatBox";
 	self->createFromInputStream = (cisfunc) createFromInputStream;
 	self->destroy             = destroy;
 	self->calculateSize         = calculateSize;

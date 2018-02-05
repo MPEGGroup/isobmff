@@ -14,6 +14,7 @@ static void destroy(MP4AtomPtr s)
 
 	if (self == NULL)
 		BAILWITHERROR(MP4BadParamErr)
+	
 	if (self->MP4OriginalFormat)
 	{
 		self->MP4OriginalFormat->destroy(self->MP4OriginalFormat);
@@ -171,7 +172,7 @@ MP4Err MP4CreateRestrictedSchemeInfoAtom(MP4RestrictedSchemeInfoAtomPtr *outAtom
 	if (err) goto bail;
 
 	self->type = MP4RestrictedSchemeInfoAtomType;
-	self->name = "RestrictedSchemeInfo";
+	self->name = "RestrictedSchemeInfoBox";
 	self->createFromInputStream = (cisfunc)createFromInputStream;
 	self->destroy = destroy;
 	self->calculateSize = calculateSize;

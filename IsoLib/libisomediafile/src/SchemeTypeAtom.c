@@ -11,7 +11,7 @@ static void destroy(MP4AtomPtr s)
 	err = MP4NoErr;
 
 	if (self == NULL)
-		BAILWITHERROR(MP4BadParamErr)
+		BAILWITHERROR(MP4BadParamErr);
 
 		// if there is a scheme_url field, free it
 	if (self->scheme_url) {
@@ -123,7 +123,7 @@ MP4Err MP4CreateSchemeTypeAtom(MP4SchemeTypeAtomPtr *outAtom)
 	err = MP4CreateFullAtom((MP4AtomPtr)self);
 	if (err) goto bail;
 	self->type = MP4SchemeTypeAtomType;
-	self->name = "SchemeType";
+	self->name = "SchemeTypeBox";
 	self->createFromInputStream = (cisfunc)createFromInputStream;
 	self->destroy = destroy;
 	self->calculateSize = calculateSize;
