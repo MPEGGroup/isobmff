@@ -13,8 +13,12 @@ static void destroy(MP4AtomPtr s)
 	err = MP4NoErr;
 
 	if (self == NULL)
-		BAILWITHERROR(MP4BadParamErr)
+		BAILWITHERROR(MP4BadParamErr);
 	
+		
+	DESTROY_ATOM_LIST_F(atomList);
+	
+	/*
 	if (self->MP4OriginalFormat)
 	{
 		self->MP4OriginalFormat->destroy(self->MP4OriginalFormat);
@@ -29,12 +33,6 @@ static void destroy(MP4AtomPtr s)
 	{
 		self->MP4SchemeInfo->destroy(self->MP4SchemeInfo);
 		self->MP4SchemeInfo = NULL;
-	}
-	// Ahmed: This should be a list (zero or more CompatibleSchemeTypeBox are possible)
-	/*
-	if (self->MP4CompatibleSchemeType)
-	{
-	// TODO
 	}
 	*/
 
@@ -57,10 +55,13 @@ static MP4Err serialize(struct MP4Atom* s, char* buffer)
 
 	/* PUT32_V( 0 );	*/	/* version/flags */
 
+	/*
 	SERIALIZE_ATOM(MP4OriginalFormat);
 	SERIALIZE_ATOM(MP4SchemeType);
 	SERIALIZE_ATOM(MP4SchemeInfo);
-	//SERIALIZE_ATOM(MP4CompatibleSchemeType);
+	*/
+
+	SERIALIZE_ATOM_LIST(atomList);
 
 	assert(self->bytesWritten == self->size);
 bail:
@@ -77,10 +78,9 @@ static MP4Err calculateSize(struct MP4Atom* s)
 
 	err = MP4CalculateBaseAtomFieldSize(s); if (err) goto bail;
 	self->size += 0;		/* version/flags */
-	ADD_ATOM_SIZE(MP4OriginalFormat);
-	ADD_ATOM_SIZE(MP4SchemeType);
-	ADD_ATOM_SIZE(MP4SchemeInfo);
-	//ADD_ATOM_SIZE(MP4CompatibleSchemeType);
+	
+	ADD_ATOM_LIST_SIZE(atomList);
+	
 bail:
 	TEST_RETURN(err);
 
@@ -89,10 +89,10 @@ bail:
 
 #define ADDCASE( atomName ) \
 		case atomName ## AtomType: \
-if (self->atomName) \
-	BAILWITHERROR(MP4BadDataErr) \
-	self->atomName = atom; \
-	break
+			if (self->atomName) \
+				BAILWITHERROR(MP4BadDataErr); \
+			self->atomName = atom; \
+			break
 
 
 
@@ -100,17 +100,14 @@ static MP4Err addAtom(MP4RestrictedSchemeInfoAtomPtr self, MP4AtomPtr atom)
 {
 	MP4Err err;
 	err = MP4NoErr;
+
+	err = MP4AddListEntry(atom, self->atomList); if (err) goto bail;
+
 	switch (atom->type)
 	{
 		ADDCASE(MP4OriginalFormat);
 		ADDCASE(MP4SchemeType);
 		ADDCASE(MP4SchemeInfo);
-
-	default:
-		/* TODO: this default is wrong; we should be tolerant and accept unknown atoms */
-		//err = MP4InvalidMediaErr;
-		goto bail;
-		break;
 	}
 bail:
 	TEST_RETURN(err);
@@ -121,38 +118,13 @@ bail:
 static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream)
 {
 
-	PARSE_ATOM_LIST(MP4RestrictedSchemeInfoAtom)
-
-#if 0
-		MP4Err err; \
-
-		MP4RestrictedSchemeInfoAtomPtr self = (MP4RestrictedSchemeInfoAtomPtr)s; \
-
-		err = MP4NoErr; \
-	if (self == NULL)	BAILWITHERROR(MP4BadParamErr) \
-		err = self->super->createFromInputStream(s, proto, (char*)inputStream); if (err) goto bail; \
-		GET32_V(junk);			/* version/flags */
-	while (self->bytesRead < self->size) \
-	{ \
-	MP4AtomPtr atom; \
-	err = MP4ParseAtom((MP4InputStreamPtr)inputStream, &atom); \
-	if (err) goto bail; \
-		self->bytesRead += atom->size; \
-	if (((atom->type) == MP4FreeSpaceAtomType) || ((atom->type) == MP4SkipAtomType)) \
-		atom->destroy(atom); \
-	else {
-		\
-			err = addAtom(self, atom); \
-		if (err) goto bail; \
-	} \
-	} \
-	if (self->bytesRead != self->size) \
-		BAILWITHERROR(MP4BadDataErr) \
-
-#endif
+	PARSE_ATOM_LIST(MP4RestrictedSchemeInfoAtom);
 
 
-	bail:
+
+
+
+bail:
 	TEST_RETURN(err);
 
 	return err;
@@ -168,8 +140,7 @@ MP4Err MP4CreateRestrictedSchemeInfoAtom(MP4RestrictedSchemeInfoAtomPtr *outAtom
 	self = (MP4RestrictedSchemeInfoAtomPtr)calloc(1, sizeof(MP4RestrictedSchemeInfoAtom));
 	TESTMALLOC(self);
 
-	err = MP4CreateBaseAtom((MP4AtomPtr)self);
-	if (err) goto bail;
+	err = MP4CreateBaseAtom((MP4AtomPtr)self); if (err) goto bail;
 
 	self->type = MP4RestrictedSchemeInfoAtomType;
 	self->name = "RestrictedSchemeInfoBox";
@@ -177,6 +148,9 @@ MP4Err MP4CreateRestrictedSchemeInfoAtom(MP4RestrictedSchemeInfoAtomPtr *outAtom
 	self->destroy = destroy;
 	self->calculateSize = calculateSize;
 	self->serialize = serialize;
+	self->addAtom = addAtom;
+
+	err = MP4MakeLinkedList(&self->atomList); if (err) goto bail;
 
 	*outAtom = self;
 bail:

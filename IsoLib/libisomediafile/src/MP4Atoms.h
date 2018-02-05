@@ -1434,7 +1434,11 @@ typedef struct MP4RestrictedSchemeInfoAtom
 	MP4AtomPtr MP4OriginalFormat;				//			('frma')
 	MP4AtomPtr MP4SchemeType;					//          ('schm')
 	MP4AtomPtr MP4SchemeInfo;					// optional ('schi')
+
+	MP4LinkedList atomList;						// may contain one or more instances of CompatibleSchemeTypeBox
 	//MP4AtomPtr MP4CompatibleSchemeType;		//
+	
+	MP4Err(*addAtom)(struct MP4RestrictedSchemeInfoAtom* self, MP4AtomPtr atom);
 
 } MP4RestrictedSchemeInfoAtom, *MP4RestrictedSchemeInfoAtomPtr;
 

@@ -8,8 +8,10 @@ static void destroy(MP4AtomPtr s)
 	MP4StereoVideoAtomPtr self;
 
 	self = (MP4StereoVideoAtomPtr)s;
-	if (self == NULL) BAILWITHERROR(MP4BadParamErr)
-		DESTROY_ATOM_LIST_F(atomList);
+	if (self == NULL) 
+		BAILWITHERROR(MP4BadParamErr);
+		
+	DESTROY_ATOM_LIST_F(atomList);
 
 	if (self->super)
 		self->super->destroy(s);
@@ -107,7 +109,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
 
 	GET32_V(tmp32);
 	self->reserved = (tmp32 >> 2) & 0x3FFF;
-	self->stereo_indication_type = (u8)(tmp32 & 0x3);
+	self->single_view_allowed = (u8)(tmp32 & 0x3);
 	GET32(stereo_scheme);
 	GET32(length);
 	self->stereo_indication_type = calloc(self->length, sizeof(u8));
@@ -116,6 +118,35 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
 	}
 
 	assert(self->bytesRead == self->size);
+bail:
+	TEST_RETURN(err);
+
+	return err;
+}
+
+
+MP4Err MP4CreateStereoVideoAtom(MP4StereoVideoAtomPtr *outAtom)
+{
+	MP4Err err;
+	MP4StereoVideoAtomPtr self;
+
+	self = (MP4StereoVideoAtomPtr)calloc(1, sizeof(MP4StereoVideoAtom));
+	TESTMALLOC(self);
+	
+	err = MP4CreateFullAtom((MP4AtomPtr)self); if (err) goto bail;
+	
+	self->type = MP4StereoVideoAtomType;
+	self->name = "StereoVideoBox";
+	self->destroy = destroy;
+	self->createFromInputStream = (cisfunc)createFromInputStream;
+	self->calculateSize = calculateSize;
+	self->serialize = serialize;
+
+	self->addAtom = addAtom;
+
+	err = MP4MakeLinkedList(&self->atomList); if (err) goto bail;
+
+	*outAtom = self;
 bail:
 	TEST_RETURN(err);
 
