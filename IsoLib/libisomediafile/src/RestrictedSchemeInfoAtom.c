@@ -142,13 +142,13 @@ MP4Err MP4CreateRestrictedSchemeInfoAtom(MP4RestrictedSchemeInfoAtomPtr *outAtom
 
 	err = MP4CreateBaseAtom((MP4AtomPtr)self); if (err) goto bail;
 
-	self->type = MP4RestrictedSchemeInfoAtomType;
-	self->name = "RestrictedSchemeInfoBox";
-	self->createFromInputStream = (cisfunc)createFromInputStream;
-	self->destroy = destroy;
-	self->calculateSize = calculateSize;
-	self->serialize = serialize;
-	self->addAtom = addAtom;
+	self->type						= MP4RestrictedSchemeInfoAtomType;
+	self->name						= "RestrictedSchemeInfoBox";
+	self->createFromInputStream		= (cisfunc)createFromInputStream;
+	self->destroy					= destroy;
+	self->calculateSize				= calculateSize;
+	self->serialize					= serialize;
+	self->addAtom					= addAtom;
 
 	err = MP4MakeLinkedList(&self->atomList); if (err) goto bail;
 

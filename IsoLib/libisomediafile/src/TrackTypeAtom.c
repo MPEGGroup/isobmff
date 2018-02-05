@@ -195,20 +195,21 @@ ISOErr MP4CreateTrackTypeAtom(MP4TrackTypeAtomPtr *outAtom)
 	err = MP4CreateFullAtom((MP4AtomPtr)self);  // Full atom
 	if (err) goto bail;
 
-	self->type = MP4TrackTypeAtomType;
-	self->name = "TrackTypeBox";
-	self->destroy = destroy;
-	self->createFromInputStream = (cisfunc)createFromInputStream;
-	self->calculateSize = calculateSize;
-	self->serialize = serialize;
-	self->addStandard = addStandard;
-	self->setBrand = setBrand;
-	self->getBrand = getBrand;
-	self->getStandard = getStandard;
+	self->type						= MP4TrackTypeAtomType;
+	self->name						= "TrackTypeBox";
+	self->destroy					= destroy;
+	self->createFromInputStream		= (cisfunc)createFromInputStream;
+	self->calculateSize				= calculateSize;
+	self->serialize					= serialize;
+	self->addStandard				= addStandard;
+	self->setBrand					= setBrand;
+	self->getBrand					= getBrand;
+	self->getStandard				= getStandard;
 
-	self->majorBrand = 0; /* was ISOISOBrand */
-	self->minorVersion = (u32)0;
-	self->compatibilityList = (u32*)calloc(1, sizeof(u32));
+	self->majorBrand				= 0; /* was ISOISOBrand */
+	self->minorVersion				= (u32)0;
+
+	self->compatibilityList			= (u32*)calloc(1, sizeof(u32));	
 	TESTMALLOC(self->compatibilityList);
 
 	/* self->compatibilityList[0]	= ISOISOBrand; */

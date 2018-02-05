@@ -135,16 +135,20 @@ MP4Err MP4CreateStereoVideoAtom(MP4StereoVideoAtomPtr *outAtom)
 	
 	err = MP4CreateFullAtom((MP4AtomPtr)self); if (err) goto bail;
 	
-	self->type = MP4StereoVideoAtomType;
-	self->name = "StereoVideoBox";
-	self->destroy = destroy;
-	self->createFromInputStream = (cisfunc)createFromInputStream;
-	self->calculateSize = calculateSize;
-	self->serialize = serialize;
-
-	self->addAtom = addAtom;
+	self->type						= MP4StereoVideoAtomType;
+	self->name						= "StereoVideoBox";
+	self->destroy					= destroy;
+	self->createFromInputStream		= (cisfunc)createFromInputStream;
+	self->calculateSize				= calculateSize;
+	self->serialize					= serialize;
+	self->addAtom					= addAtom;
 
 	err = MP4MakeLinkedList(&self->atomList); if (err) goto bail;
+
+	/*
+	self->stereo_indication_type = (u8*)calloc(1, sizeof(u8));
+	TESTMALLOC(self->stereo_indication_type);
+	*/
 
 	*outAtom = self;
 bail:
