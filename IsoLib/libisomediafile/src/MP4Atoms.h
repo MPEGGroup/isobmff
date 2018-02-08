@@ -1387,11 +1387,10 @@ typedef struct ISOFileTypeAtom
 
 
 
-//
+// Box type: 'ttyp'
 typedef struct MP4TrackTypeAtom
 {
 	MP4_FULL_ATOM
-	//MP4_BASE_ATOM
 
 	ISOErr(*addStandard)(struct MP4TrackTypeAtom *self, u32 standard);
 	ISOErr(*setBrand)(struct MP4TrackTypeAtom *self, u32 standard, u32 minorversion);
@@ -1436,7 +1435,6 @@ typedef struct MP4RestrictedSchemeInfoAtom
 	MP4AtomPtr MP4SchemeInfo;					// optional ('schi')
 
 	MP4LinkedList atomList;						// may contain one or more instances of CompatibleSchemeTypeBox
-	//MP4AtomPtr MP4CompatibleSchemeType;		//
 	
 	MP4Err(*addAtom)(struct MP4RestrictedSchemeInfoAtom* self, MP4AtomPtr atom);
 
@@ -1515,7 +1513,7 @@ typedef struct MP4SchemeInfoAtom
 
 #ifdef ISMACrypt
 
-// Box 'sinf'
+// Box type: 'sinf'
 typedef struct MP4SecurityInfoAtom
 {
 	MP4_BASE_ATOM
@@ -1877,10 +1875,11 @@ MP4Err MP4CreateRestrictedSchemeInfoAtom(MP4RestrictedSchemeInfoAtomPtr *outAtom
 MP4Err MP4CreateSchemeTypeAtom(MP4SchemeTypeAtomPtr *outAtom);
 MP4Err MP4CreateCompatibleSchemeTypeAtom(MP4CompatibleSchemeTypeAtomPtr *outAtom);
 MP4Err MP4CreateRestrictedVideoSampleEntryAtom(MP4RestrictedVideoSampleEntryAtomPtr *outAtom);
+MP4Err MP4CreateTrackTypeAtom(MP4TrackTypeAtomPtr *outAtom);
+MP4Err MP4CreateStereoVideoAtom(MP4StereoVideoAtomPtr *outAtom);
 
 #ifdef ISMACrypt
 MP4Err MP4CreateSecurityInfoAtom( MP4SecurityInfoAtomPtr *outAtom );
-//MP4Err MP4CreateSecuritySchemeAtom( MP4SecuritySchemeAtomPtr *outAtom );
 MP4Err CreateISMAKMSAtom( ISMAKMSAtomPtr *outAtom );
 MP4Err CreateISMASampleFormatAtom( ISMASampleFormatAtomPtr *outAtom );
 MP4Err CreateISMASaltAtom( ISMASaltAtomPtr *outAtom );

@@ -499,14 +499,18 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
 			err = MP4CreateRestrictedSchemeInfoAtom((MP4RestrictedSchemeInfoAtomPtr *)&newAtom);
 			break;
 
+		case MP4TrackTypeAtomType:
+			err = MP4CreateTrackTypeAtom((MP4TrackTypeAtomPtr *) &newAtom);
+			break;
+
+		case MP4StereoVideoAtomType:
+			err = MP4CreateStereoVideoAtom((MP4StereoVideoAtomPtr *)&newAtom);
+			break;
+
 #ifdef ISMACrypt
 		case MP4SecurityInfoAtomType:
 			err = MP4CreateSecurityInfoAtom( (MP4SecurityInfoAtomPtr *) &newAtom );
 			break;
-		
-//		case MP4SecuritySchemeAtomType:
-//			err = MP4CreateSecuritySchemeAtom( (MP4SecuritySchemeAtomPtr *) &newAtom );
-//			break;
 		
 		case ISMAKMSAtomType:
 			err = CreateISMAKMSAtom( (ISMAKMSAtomPtr *) &newAtom );
