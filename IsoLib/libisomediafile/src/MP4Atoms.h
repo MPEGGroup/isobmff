@@ -142,7 +142,17 @@ enum
     MP4H263SampleEntryAtomType                          = MP4_FOUR_CHAR_CODE( 's', '2', '6', '3' ),
     MP4H263SpecificInfoAtomType                         = MP4_FOUR_CHAR_CODE( 'd', '2', '6', '3' ),
     MP4BitRateAtomType                                  = MP4_FOUR_CHAR_CODE( 'b', 't', 'r', 't' ),
-    TGPPBitRateAtomType                                 = MP4_FOUR_CHAR_CODE( 'b', 'i', 't', 'r' )
+    TGPPBitRateAtomType                                 = MP4_FOUR_CHAR_CODE( 'b', 'i', 't', 'r' ),
+	// OMAF extensions
+	MP4OriginalFormatAtomType							= MP4_FOUR_CHAR_CODE( 'f', 'r', 'm', 'a' ),
+	MP4SchemeTypeAtomType								= MP4_FOUR_CHAR_CODE( 's', 'c', 'h', 'm' ),
+	MP4SchemeInfoAtomType								= MP4_FOUR_CHAR_CODE( 's', 'c', 'h', 'i' ),
+	MP4StereoVideoAtomType								= MP4_FOUR_CHAR_CODE( 's', 't', 'v', 'i' ),
+	MP4CompatibleSchemeTypeAtomType						= MP4_FOUR_CHAR_CODE( 'c', 's', 'c', 'h' ),
+	MP4RestrictedSchemeInfoAtomType						= MP4_FOUR_CHAR_CODE( 'r', 'i', 'n', 'f' ),
+	MP4TrackGroupTypeAtomType							= MP4_FOUR_CHAR_CODE( 's', 't', 'e', 'r' ),
+	MP4TrackTypeAtomType								= MP4_FOUR_CHAR_CODE( 't', 't', 'y', 'p' ),
+	MP4RestrictedVideoSampleEntryAtomType				= MP4_FOUR_CHAR_CODE( 'r', 'e', 's', 'v' )
 }; 
 
 #ifdef ISMACrypt
@@ -157,6 +167,7 @@ enum {
 };
 #endif
 
+/*
 // restricted schemes and OMAF support
 enum {
 	// atom types
@@ -171,6 +182,7 @@ enum {
 	// sample entry types
 	MP4RestrictedVideoSampleEntryAtomType				= MP4_FOUR_CHAR_CODE( 'r', 'e', 's', 'v' )
 };
+*/
 
 #define MP4_BASE_ATOM    \
 	u32	   type;         \
