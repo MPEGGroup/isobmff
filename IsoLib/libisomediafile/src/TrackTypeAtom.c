@@ -72,7 +72,7 @@ static ISOErr serialize(struct MP4Atom* s, char* buffer)
 
 	err = ISONoErr;
 
-	err = MP4SerializeCommonFullAtomFields((MP4FullAtom*)s, buffer); if (err) goto bail;  // Full Atom
+	err = MP4SerializeCommonFullAtomFields((MP4FullAtom*)s, buffer); if (err) goto bail;  /* Full Atom */
 	buffer += self->bytesWritten;
 
 	PUT32(majorBrand);
@@ -96,7 +96,7 @@ static ISOErr calculateSize(struct MP4Atom* s)
 	MP4TrackTypeAtomPtr self = (MP4TrackTypeAtomPtr)s;
 	err = ISONoErr;
 
-	err = MP4CalculateFullAtomFieldSize((MP4FullAtomPtr)s); if (err) goto bail; // Full Atom
+	err = MP4CalculateFullAtomFieldSize((MP4FullAtomPtr)s); if (err) goto bail; /* Full Atom */
 	self->size += 2 * sizeof(u32);								/* brand and minorVersion */
 	self->size += self->itemCount * sizeof(u32);				/* compatibilityList */
 bail:
@@ -224,7 +224,7 @@ ISOErr MP4CreateTrackTypeAtom(MP4TrackTypeAtomPtr *outAtom)
 	self = (MP4TrackTypeAtomPtr)calloc(1, sizeof(MP4TrackTypeAtom));
 	TESTMALLOC(self);
 
-	err = MP4CreateFullAtom((MP4AtomPtr)self);  // Full atom
+	err = MP4CreateFullAtom((MP4AtomPtr)self);  /* Full atom */
 	if (err) goto bail;
 
 	self->type						= MP4TrackTypeAtomType;

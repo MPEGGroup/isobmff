@@ -1484,7 +1484,7 @@ typedef struct MP4SchemeInfoAtom
 {
 	MP4_BASE_ATOM
 
-	MP4LinkedList atomList;  // this atom may include a variable number of atoms
+	MP4LinkedList atomList;  /* this atom may include a variable number of atoms */
 	ISOErr(*addAtom)(struct MP4SchemeInfoAtom* self, MP4AtomPtr atom);
 
 } MP4SchemeInfoAtom, *MP4SchemeInfoAtomPtr;

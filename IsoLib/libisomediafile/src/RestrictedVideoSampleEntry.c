@@ -101,7 +101,7 @@ static MP4Err calculateSize(struct MP4Atom* s)
 	err = MP4NoErr;
 
 	err = MP4CalculateBaseAtomFieldSize(s); if (err) goto bail;
-	self->size += (6 + 16 + 31 + (4 * 2) + (1 * 1) + (4 * 4));  // TODO this probably includes restriction_type
+	self->size += (6 + 16 + 31 + (4 * 2) + (1 * 1) + (4 * 4));  /* TODO this probably includes restriction_type */
 	ADD_ATOM_SIZE(MP4RestrictedSchemeInfo);
 	ADD_ATOM_LIST_SIZE(ExtensionAtomList);
 bail:
@@ -185,14 +185,11 @@ static MP4Err transform(struct MP4Atom *s, u32 sch_type, u32 sch_version, char* 
 	MP4SchemeInfoAtomPtr schi;
 	char* sch_url_copy = NULL;
 
-	// 
 	err = MP4CreateOriginalFormatAtom(&frma); if (err) goto bail;
 	frma->original_format = self->type;
 
-	//
 	err = MP4CreateSchemeInfoAtom(&schi); if (err) goto bail;
 
-	//
 	err = MP4CreateSchemeTypeAtom(&schm); if (err) goto bail;
 	schm->scheme_type = sch_type;
 	schm->scheme_version = sch_version;
@@ -205,17 +202,17 @@ static MP4Err transform(struct MP4Atom *s, u32 sch_type, u32 sch_version, char* 
 	}
 	else schm->scheme_url = NULL;
 
-	// create 'rinf' atom
+	/* create 'rinf' atom */
 	err = MP4CreateRestrictedSchemeInfoAtom(&rinf); if (err) goto bail;
 
-	// assign
+	/* assign */
 	rinf->MP4OriginalFormat = (MP4AtomPtr)frma; frma = NULL;
 	rinf->MP4SchemeType = (MP4AtomPtr)schm; schm = NULL;
 	rinf->MP4SchemeInfo = (MP4AtomPtr)schi; schi = NULL;
 
 	self->type = self->restriction_type;
 
-	// set
+	/* set */
 	self->MP4RestrictedSchemeInfo = (MP4AtomPtr)rinf;
 
 bail:
