@@ -143,7 +143,6 @@ enum
     MP4H263SpecificInfoAtomType                         = MP4_FOUR_CHAR_CODE( 'd', '2', '6', '3' ),
     MP4BitRateAtomType                                  = MP4_FOUR_CHAR_CODE( 'b', 't', 'r', 't' ),
     TGPPBitRateAtomType                                 = MP4_FOUR_CHAR_CODE( 'b', 'i', 't', 'r' ),
-	// OMAF extensions
 	MP4OriginalFormatAtomType							= MP4_FOUR_CHAR_CODE( 'f', 'r', 'm', 'a' ),
 	MP4SchemeTypeAtomType								= MP4_FOUR_CHAR_CODE( 's', 'c', 'h', 'm' ),
 	MP4SchemeInfoAtomType								= MP4_FOUR_CHAR_CODE( 's', 'c', 'h', 'i' ),
