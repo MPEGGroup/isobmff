@@ -166,23 +166,6 @@ enum {
 };
 #endif
 
-/*
-// restricted schemes and OMAF support
-enum {
-	// atom types
-	MP4OriginalFormatAtomType							= MP4_FOUR_CHAR_CODE( 'f', 'r', 'm', 'a' ),
-	MP4SchemeTypeAtomType								= MP4_FOUR_CHAR_CODE( 's', 'c', 'h', 'm' ),
-	MP4SchemeInfoAtomType								= MP4_FOUR_CHAR_CODE( 's', 'c', 'h', 'i' ),
-	MP4StereoVideoAtomType								= MP4_FOUR_CHAR_CODE( 's', 't', 'v', 'i'),
-	MP4CompatibleSchemeTypeAtomType						= MP4_FOUR_CHAR_CODE( 'c', 's', 'c', 'h' ),	
-	MP4RestrictedSchemeInfoAtomType						= MP4_FOUR_CHAR_CODE( 'r', 'i', 'n', 'f' ),
-	MP4TrackGroupTypeAtomType							= MP4_FOUR_CHAR_CODE( 's', 't', 'e', 'r' ),
-	MP4TrackTypeAtomType								= MP4_FOUR_CHAR_CODE( 't', 't', 'y', 'p' ),
-	// sample entry types
-	MP4RestrictedVideoSampleEntryAtomType				= MP4_FOUR_CHAR_CODE( 'r', 'e', 's', 'v' )
-};
-*/
-
 #define MP4_BASE_ATOM    \
 	u32	   type;         \
 	u8   uuid[16];       \
@@ -1396,9 +1379,6 @@ typedef struct ISOFileTypeAtom
 	u32 *compatibilityList;								/* standards this file conforms to */
 } ISOFileTypeAtom, *ISOFileTypeAtomPtr;
 
-
-
-// Box type: 'ttyp'
 typedef struct MP4TrackTypeAtom
 {
 	MP4_FULL_ATOM
@@ -1415,7 +1395,6 @@ typedef struct MP4TrackTypeAtom
 
 } MP4TrackTypeAtom, *MP4TrackTypeAtomPtr;
 
-// Box type: 'schm'
 typedef struct MP4SchemeTypeAtom
 {
 	MP4_FULL_ATOM
@@ -1426,7 +1405,6 @@ typedef struct MP4SchemeTypeAtom
 
 } MP4SchemeTypeAtom, *MP4SchemeTypeAtomPtr;
 
-// Box type: 'csch'
 typedef struct MP4CompatibleSchemeTypeAtom
 {
 	MP4_FULL_ATOM
@@ -1436,8 +1414,6 @@ typedef struct MP4CompatibleSchemeTypeAtom
 	char* scheme_url;
 } MP4CompatibleSchemeTypeAtom, *MP4CompatibleSchemeTypeAtomPtr;
 
-
-// Box type: 'rinf'
 typedef struct MP4RestrictedSchemeInfoAtom
 {
 	MP4_BASE_ATOM
@@ -1451,8 +1427,6 @@ typedef struct MP4RestrictedSchemeInfoAtom
 
 } MP4RestrictedSchemeInfoAtom, *MP4RestrictedSchemeInfoAtomPtr;
 
-
-// Box 'stvi'
 typedef struct MP4StereoVideoAtom {
 	
 	MP4_FULL_ATOM
@@ -1469,8 +1443,6 @@ typedef struct MP4StereoVideoAtom {
 
 } MP4StereoVideoAtom, *MP4StereoVideoAtomPtr;
 
-
-// Box 'resv'
 typedef struct MP4RestrictedVideoSampleEntryAtom {
 	MP4_BASE_ATOM
 	COMMON_SAMPLE_ENTRY_FIELDS
@@ -1501,7 +1473,6 @@ typedef struct MP4RestrictedVideoSampleEntryAtom {
 
 } MP4RestrictedVideoSampleEntryAtom, *MP4RestrictedVideoSampleEntryAtomPtr;
 
-// Common to both Restricted Video and Protection schemes
 typedef struct MP4OriginalFormatAtom
 {
 	MP4_BASE_ATOM
@@ -1509,7 +1480,6 @@ typedef struct MP4OriginalFormatAtom
 
 } MP4OriginalFormatAtom, *MP4OriginalFormatAtomPtr;
 
-// Common to both Restricted Video and Protection schemes
 typedef struct MP4SchemeInfoAtom
 {
 	MP4_BASE_ATOM
@@ -1523,8 +1493,6 @@ typedef struct MP4SchemeInfoAtom
 
 
 #ifdef ISMACrypt
-
-// Box type: 'sinf'
 typedef struct MP4SecurityInfoAtom
 {
 	MP4_BASE_ATOM
