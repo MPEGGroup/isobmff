@@ -1401,7 +1401,7 @@ typedef struct MP4SchemeTypeAtom
 	u32	scheme_type;
 	u32 scheme_version;
 
-	char* scheme_url;  // if (flags & 0x000001), a scheme URL is present
+	char* scheme_url;  /* if (flags & 0x000001), a scheme URL is present */
 
 } MP4SchemeTypeAtom, *MP4SchemeTypeAtomPtr;
 
@@ -1417,11 +1417,11 @@ typedef struct MP4CompatibleSchemeTypeAtom
 typedef struct MP4RestrictedSchemeInfoAtom
 {
 	MP4_BASE_ATOM
-	MP4AtomPtr MP4OriginalFormat;				//			('frma')
-	MP4AtomPtr MP4SchemeType;					//          ('schm')
-	MP4AtomPtr MP4SchemeInfo;					// optional ('schi')
+	MP4AtomPtr MP4OriginalFormat;				/*			('frma') */
+	MP4AtomPtr MP4SchemeType;					/*          ('schm') */
+	MP4AtomPtr MP4SchemeInfo;					/* optional ('schi') */
 
-	MP4LinkedList atomList;						// may contain one or more instances of CompatibleSchemeTypeBox
+	MP4LinkedList atomList;						/* may contain one or more instances of CompatibleSchemeTypeBox */
 	
 	MP4Err(*addAtom)(struct MP4RestrictedSchemeInfoAtom* self, MP4AtomPtr atom);
 
@@ -1431,13 +1431,13 @@ typedef struct MP4StereoVideoAtom {
 	
 	MP4_FULL_ATOM
 
-	u32		reserved;								// unsigned int(30) = 0
-	u8		single_view_allowed;					// unsigned int(2)	
-	u32		stereo_scheme;							// unsigned int(32)	
-	u32		length;									// unsigned int(32)
-	u8		*stereo_indication_type;				// unsigned int(8)[length]
+	u32		reserved;								/* unsigned int(30) = 0 */
+	u8		single_view_allowed;					/* unsigned int(2) */
+	u32		stereo_scheme;							/* unsigned int(32)	*/
+	u32		length;									/* unsigned int(32) */
+	u8		*stereo_indication_type;				/* unsigned int(8)[length] */
 	
-	MP4LinkedList atomList;							// optional
+	MP4LinkedList atomList;							/* optional */
 	
 	MP4Err(*addAtom)(struct MP4StereoVideoAtom* self, MP4AtomPtr atom);
 
