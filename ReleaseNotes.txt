@@ -1,3 +1,8 @@
+Release notes Feb 2018
+
+a) Added new atoms defined in OMAF FDIS [N17235] as extensions to ISO/IEC 14496-12 and ISO/IEC 14496-15. 
+
+
 Release notes Jan 2018
 
 a) Added support for Visual Studio 2008 (required also fixing some minor compiler errors)
