@@ -47,7 +47,7 @@ static void destroy(MP4AtomPtr s)
 	if (self == NULL)
 		BAILWITHERROR(MP4BadParamErr);
 
-	// if there is a scheme_url field, free it
+	/* if there is a scheme_url field, free it */
 	if (self->scheme_url) {
 		free(self->scheme_url);
 		self->scheme_url = NULL;
@@ -93,11 +93,11 @@ static MP4Err calculateSize(struct MP4Atom* s)
 	err = MP4NoErr;
 
 	err = MP4CalculateFullAtomFieldSize((MP4FullAtomPtr)s); if (err) goto bail;
-	self->size += 8;  // 4 bytes (scheme_type) + 4 bytes (scheme_version)
+	self->size += 8;  /* 4 bytes (scheme_type) + 4 bytes (scheme_version) */
 	if ((self->scheme_url) && (strlen(self->scheme_url) > 0))
 	{
 		self->flags = 1;
-		self->size += 1 + strlen(self->scheme_url); // strlen ignores \0
+		self->size += 1 + strlen(self->scheme_url); /* strlen ignores \0 */
 	}
 	else self->flags = 0;
 
