@@ -160,8 +160,14 @@ sources = \
 	SingleItemTypeReferenceAtom.c \
 	ItemPropertiesAtom.c \
 	ItemPropertyAssociationAtom.c \
-	ItemPropertyContainerAtom.c
-
+	ItemPropertyContainerAtom.c \
+	SchemeTypeAtom.c \
+	CompatibleSchemeTypeAtom.c \
+	RestrictedSchemeInfoAtom.c \
+	StereoVideoAtom.c \
+	TrackTypeAtom.c \
+	RestrictedVideoSampleEntry.c
+	
 
 
 
