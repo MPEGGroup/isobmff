@@ -21,6 +21,12 @@
 		18CF72071A0D9419006648A8 /* ItemReferenceAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CF72061A0D9419006648A8 /* ItemReferenceAtom.c */; };
 		18CF72091A0D966E006648A8 /* SingleItemTypeReferenceAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CF72081A0D966E006648A8 /* SingleItemTypeReferenceAtom.c */; };
 		18CF720B1A12C7E2006648A8 /* ItemDataAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CF720A1A12C7E2006648A8 /* ItemDataAtom.c */; };
+		3A25425820317010001A7B60 /* CompatibleSchemeTypeAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = 3A25425220317010001A7B60 /* CompatibleSchemeTypeAtom.c */; };
+		3A25425920317010001A7B60 /* RestrictedSchemeInfoAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = 3A25425320317010001A7B60 /* RestrictedSchemeInfoAtom.c */; };
+		3A25425A20317010001A7B60 /* RestrictedVideoSampleEntry.c in Sources */ = {isa = PBXBuildFile; fileRef = 3A25425420317010001A7B60 /* RestrictedVideoSampleEntry.c */; };
+		3A25425B20317010001A7B60 /* SchemeTypeAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = 3A25425520317010001A7B60 /* SchemeTypeAtom.c */; };
+		3A25425C20317010001A7B60 /* StereoVideoAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = 3A25425620317010001A7B60 /* StereoVideoAtom.c */; };
+		3A25425D20317010001A7B60 /* TrackTypeAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = 3A25425720317010001A7B60 /* TrackTypeAtom.c */; };
 		B4A11E5C1B1FB11E002C5FD1 /* HEVCConfigAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = B4A11E5B1B1FB11B002C5FD1 /* HEVCConfigAtom.c */; };
 		B4A11E5E1B1FB163002C5FD1 /* SubSampleInformationAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = B4A11E5D1B1FB160002C5FD1 /* SubSampleInformationAtom.c */; };
 		B4A11E601B1FB19D002C5FD1 /* TrackGroupAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = B4A11E5F1B1FB19A002C5FD1 /* TrackGroupAtom.c */; };
@@ -194,6 +200,12 @@
 		18CF72061A0D9419006648A8 /* ItemReferenceAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ItemReferenceAtom.c; path = ../../src/ItemReferenceAtom.c; sourceTree = "<group>"; };
 		18CF72081A0D966E006648A8 /* SingleItemTypeReferenceAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = SingleItemTypeReferenceAtom.c; path = ../../src/SingleItemTypeReferenceAtom.c; sourceTree = "<group>"; };
 		18CF720A1A12C7E2006648A8 /* ItemDataAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ItemDataAtom.c; path = ../../src/ItemDataAtom.c; sourceTree = "<group>"; };
+		3A25425220317010001A7B60 /* CompatibleSchemeTypeAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = CompatibleSchemeTypeAtom.c; path = ../../src/CompatibleSchemeTypeAtom.c; sourceTree = "<group>"; };
+		3A25425320317010001A7B60 /* RestrictedSchemeInfoAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = RestrictedSchemeInfoAtom.c; path = ../../src/RestrictedSchemeInfoAtom.c; sourceTree = "<group>"; };
+		3A25425420317010001A7B60 /* RestrictedVideoSampleEntry.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = RestrictedVideoSampleEntry.c; path = ../../src/RestrictedVideoSampleEntry.c; sourceTree = "<group>"; };
+		3A25425520317010001A7B60 /* SchemeTypeAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = SchemeTypeAtom.c; path = ../../src/SchemeTypeAtom.c; sourceTree = "<group>"; };
+		3A25425620317010001A7B60 /* StereoVideoAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = StereoVideoAtom.c; path = ../../src/StereoVideoAtom.c; sourceTree = "<group>"; };
+		3A25425720317010001A7B60 /* TrackTypeAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = TrackTypeAtom.c; path = ../../src/TrackTypeAtom.c; sourceTree = "<group>"; };
 		B4A11E5B1B1FB11B002C5FD1 /* HEVCConfigAtom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = HEVCConfigAtom.c; path = ../../src/HEVCConfigAtom.c; sourceTree = "<group>"; };
 		B4A11E5D1B1FB160002C5FD1 /* SubSampleInformationAtom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = SubSampleInformationAtom.c; path = ../../src/SubSampleInformationAtom.c; sourceTree = "<group>"; };
 		B4A11E5F1B1FB19A002C5FD1 /* TrackGroupAtom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = TrackGroupAtom.c; path = ../../src/TrackGroupAtom.c; sourceTree = "<group>"; };
@@ -451,6 +463,12 @@
 				CBAD4E8907B2B3F8005AD21E /* MovieAtom.c */,
 				CBAD4E8807B2B3F8005AD21E /* MovieExtendsAtom.c */,
 				189725A919F82063001D1219 /* TrackExtensionPropertiesAtom.c */,
+				3A25425220317010001A7B60 /* CompatibleSchemeTypeAtom.c */,
+				3A25425320317010001A7B60 /* RestrictedSchemeInfoAtom.c */,
+				3A25425420317010001A7B60 /* RestrictedVideoSampleEntry.c */,
+				3A25425520317010001A7B60 /* SchemeTypeAtom.c */,
+				3A25425620317010001A7B60 /* StereoVideoAtom.c */,
+				3A25425720317010001A7B60 /* TrackTypeAtom.c */,
 				CBAD4E8707B2B3F8005AD21E /* MovieFragmentAtom.c */,
 				CBAD4E8607B2B3F8005AD21E /* MovieFragmentHeaderAtom.c */,
 				CBAD4E8507B2B3F8005AD21E /* MovieHeaderAtom.c */,
@@ -646,6 +664,7 @@
 				CBAD4EA207B2B3F8005AD21E /* DataReferenceAtom.c in Sources */,
 				CBAD4EA307B2B3F8005AD21E /* DataInformationAtom.c in Sources */,
 				CBAD4EA407B2B3F8005AD21E /* DataEntryURNAtom.c in Sources */,
+				3A25425A20317010001A7B60 /* RestrictedVideoSampleEntry.c in Sources */,
 				CBAD4EA507B2B3F8005AD21E /* VideoMediaHeaderAtom.c in Sources */,
 				CBAD4EA607B2B3F8005AD21E /* UserDataAtom.c in Sources */,
 				CBAD4EA707B2B3F8005AD21E /* UnknownAtom.c in Sources */,
@@ -666,6 +685,7 @@
 				CBAD4EB207B2B3F8005AD21E /* GenericSampleEntryAtom.c in Sources */,
 				CBAD4EB307B2B3F8005AD21E /* FreeSpaceAtom.c in Sources */,
 				CBAD4EB507B2B3F8005AD21E /* MP4InitialObjectDescriptor.c in Sources */,
+				3A25425D20317010001A7B60 /* TrackTypeAtom.c in Sources */,
 				188041DD19CBA54300FAABCE /* DownMixInstructionsAtom.c in Sources */,
 				CBAD4EB707B2B3F8005AD21E /* IPMPToolUpdateCommand.c in Sources */,
 				CBAD4EB807B2B3F8005AD21E /* HintMediaHeaderAtom.c in Sources */,
@@ -676,6 +696,7 @@
 				CBAD4EBD07B2B3F8005AD21E /* MP4MemoryInputStream.c in Sources */,
 				CBAD4EBE07B2B3F8005AD21E /* MP4Media.c in Sources */,
 				188041E119CCA28A00FAABCE /* LoudnessAtom.c in Sources */,
+				3A25425820317010001A7B60 /* CompatibleSchemeTypeAtom.c in Sources */,
 				CBAD4EBF07B2B3F8005AD21E /* SceneDescriptionMediaHeader.c in Sources */,
 				CBAD4EC007B2B3F8005AD21E /* SampleToChunkAtom.c in Sources */,
 				CBAD4EC107B2B3F8005AD21E /* SampleTableAtom.c in Sources */,
@@ -695,6 +716,7 @@
 				CBAD4ED007B2B3F8005AD21E /* ESDAtom.c in Sources */,
 				CBAD4ED107B2B3F8005AD21E /* EncVisualSampleEntryAtom.c in Sources */,
 				CBAD4ED207B2B3F8005AD21E /* TrackFragmentAtom.c in Sources */,
+				3A25425920317010001A7B60 /* RestrictedSchemeInfoAtom.c in Sources */,
 				CBAD4ED307B2B3F8005AD21E /* TrackExtendsAtom.c in Sources */,
 				CBAD4ED407B2B3F8005AD21E /* TrackAtom.c in Sources */,
 				CBAD4ED507B2B3F8005AD21E /* SecuritySchemeAtom.c in Sources */,
@@ -710,6 +732,7 @@
 				CBAD4EE107B2B3F8005AD21E /* MP4LinkedList.c in Sources */,
 				CBAD4EE207B2B3F8005AD21E /* MP4IPMPXDefaultData.c in Sources */,
 				CBAD4EE407B2B3F8005AD21E /* MP4IPMPXData.c in Sources */,
+				3A25425C20317010001A7B60 /* StereoVideoAtom.c in Sources */,
 				CBAD4EE507B2B3F8005AD21E /* SoundMediaHeaderAtom.c in Sources */,
 				CBAD4EE607B2B3F8005AD21E /* SLConfigDescriptor.c in Sources */,
 				CBAD4EE707B2B3F8005AD21E /* ShadowSyncAtom.c in Sources */,
@@ -785,6 +808,7 @@
 				CB9CF8290AD57A4200F8F722 /* ISOSampleDescriptions.c in Sources */,
 				C6F5636219ABE6BB0010D96F /* TrackFragmentDecodeTimeAtom.c in Sources */,
 				CB9CF8350AD57AEC00F8F722 /* VCConfigAtom.c in Sources */,
+				3A25425B20317010001A7B60 /* SchemeTypeAtom.c in Sources */,
 				B4A11E5C1B1FB11E002C5FD1 /* HEVCConfigAtom.c in Sources */,
 				CBF7AFDD0AEDE9CA0027965D /* XMLMetaSampleEntry.c in Sources */,
 				189725AC19F966C6001D1219 /* SampleAuxiliaryInformationSizesAtom.c in Sources */,
