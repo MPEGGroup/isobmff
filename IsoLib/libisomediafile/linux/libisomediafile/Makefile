@@ -165,6 +165,7 @@ sources = \
 	CompatibleSchemeTypeAtom.c \
 	RestrictedSchemeInfoAtom.c \
 	StereoVideoAtom.c \
+	StereoVideoGroupAtom.c \
 	TrackTypeAtom.c \
 	RestrictedVideoSampleEntry.c
 	

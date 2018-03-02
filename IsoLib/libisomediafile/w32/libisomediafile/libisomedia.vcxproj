@@ -271,6 +271,7 @@
     <ClCompile Include="..\..\src\SchemeTypeAtom.c" />
     <ClCompile Include="..\..\src\SingleItemTypeReferenceAtom.c" />
     <ClCompile Include="..\..\src\StereoVideoAtom.c" />
+    <ClCompile Include="..\..\src\StereoVideoGroupAtom.c" />
     <ClCompile Include="..\..\src\TrackExtensionPropertiesAtom.c" />
     <ClCompile Include="..\..\src\TrackFragmentDecodeTimeAtom.c" />
     <ClCompile Include="..\..\src\AudioSampleEntryAtom.c" />

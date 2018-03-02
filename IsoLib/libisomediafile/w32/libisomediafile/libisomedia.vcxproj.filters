@@ -488,6 +488,9 @@
     <ClCompile Include="..\..\src\StereoVideoAtom.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\StereoVideoGroupAtom.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\FileMappingDataHandler.h">
