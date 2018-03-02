@@ -149,7 +149,7 @@ enum
 	MP4StereoVideoAtomType								= MP4_FOUR_CHAR_CODE( 's', 't', 'v', 'i' ),
 	MP4CompatibleSchemeTypeAtomType						= MP4_FOUR_CHAR_CODE( 'c', 's', 'c', 'h' ),
 	MP4RestrictedSchemeInfoAtomType						= MP4_FOUR_CHAR_CODE( 'r', 'i', 'n', 'f' ),
-	MP4TrackGroupTypeAtomType							= MP4_FOUR_CHAR_CODE( 's', 't', 'e', 'r' ),
+	MP4StereoVideoGroupAtomType						    = MP4_FOUR_CHAR_CODE( 's', 't', 'e', 'r' ),
 	MP4TrackTypeAtomType								= MP4_FOUR_CHAR_CODE( 't', 't', 'y', 'p' ),
 	MP4RestrictedVideoSampleEntryAtomType				= MP4_FOUR_CHAR_CODE( 'r', 'e', 's', 'v' )
 }; 
@@ -1442,6 +1442,17 @@ typedef struct MP4StereoVideoAtom {
 	MP4Err(*addAtom)(struct MP4StereoVideoAtom* self, MP4AtomPtr atom);
 
 } MP4StereoVideoAtom, *MP4StereoVideoAtomPtr;
+
+typedef struct MP4StereoVideoGroupAtom {
+
+	MP4_FULL_ATOM
+
+	u32 trackGroupID;								/* unsigned int(32), inherited from TrackGroupTypeAtom */
+
+	u8 leftViewFlag;								/* unsigned int(1) */
+	char reserved[4];								/* bit(31) = 0 */
+
+} MP4StereoVideoGroupAtom, *MP4StereoVideoGroupAtomPtr;
 
 typedef struct MP4RestrictedVideoSampleEntryAtom {
 	MP4_BASE_ATOM
