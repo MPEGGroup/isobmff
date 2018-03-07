@@ -1867,6 +1867,7 @@ MP4Err MP4CreateCompatibleSchemeTypeAtom(MP4CompatibleSchemeTypeAtomPtr *outAtom
 MP4Err MP4CreateRestrictedVideoSampleEntryAtom(MP4RestrictedVideoSampleEntryAtomPtr *outAtom);
 MP4Err MP4CreateTrackTypeAtom(MP4TrackTypeAtomPtr *outAtom);
 MP4Err MP4CreateStereoVideoAtom(MP4StereoVideoAtomPtr *outAtom);
+MP4Err MP4CreateStereoVideoGroupAtom(MP4StereoVideoGroupAtomPtr *outAtom);
 
 #ifdef ISMACrypt
 MP4Err MP4CreateSecurityInfoAtom( MP4SecurityInfoAtomPtr *outAtom );
