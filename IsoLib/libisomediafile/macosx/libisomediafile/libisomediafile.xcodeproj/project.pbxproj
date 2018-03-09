@@ -27,6 +27,7 @@
 		3A25425B20317010001A7B60 /* SchemeTypeAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = 3A25425520317010001A7B60 /* SchemeTypeAtom.c */; };
 		3A25425C20317010001A7B60 /* StereoVideoAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = 3A25425620317010001A7B60 /* StereoVideoAtom.c */; };
 		3A25425D20317010001A7B60 /* TrackTypeAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = 3A25425720317010001A7B60 /* TrackTypeAtom.c */; };
+		3AE6A1A420522FA300032735 /* StereoVideoGroupAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = 3AE6A1A320522FA300032735 /* StereoVideoGroupAtom.c */; };
 		B4A11E5C1B1FB11E002C5FD1 /* HEVCConfigAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = B4A11E5B1B1FB11B002C5FD1 /* HEVCConfigAtom.c */; };
 		B4A11E5E1B1FB163002C5FD1 /* SubSampleInformationAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = B4A11E5D1B1FB160002C5FD1 /* SubSampleInformationAtom.c */; };
 		B4A11E601B1FB19D002C5FD1 /* TrackGroupAtom.c in Sources */ = {isa = PBXBuildFile; fileRef = B4A11E5F1B1FB19A002C5FD1 /* TrackGroupAtom.c */; };
@@ -206,6 +207,7 @@
 		3A25425520317010001A7B60 /* SchemeTypeAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = SchemeTypeAtom.c; path = ../../src/SchemeTypeAtom.c; sourceTree = "<group>"; };
 		3A25425620317010001A7B60 /* StereoVideoAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = StereoVideoAtom.c; path = ../../src/StereoVideoAtom.c; sourceTree = "<group>"; };
 		3A25425720317010001A7B60 /* TrackTypeAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = TrackTypeAtom.c; path = ../../src/TrackTypeAtom.c; sourceTree = "<group>"; };
+		3AE6A1A320522FA300032735 /* StereoVideoGroupAtom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = StereoVideoGroupAtom.c; path = ../../src/StereoVideoGroupAtom.c; sourceTree = "<group>"; };
 		B4A11E5B1B1FB11B002C5FD1 /* HEVCConfigAtom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = HEVCConfigAtom.c; path = ../../src/HEVCConfigAtom.c; sourceTree = "<group>"; };
 		B4A11E5D1B1FB160002C5FD1 /* SubSampleInformationAtom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = SubSampleInformationAtom.c; path = ../../src/SubSampleInformationAtom.c; sourceTree = "<group>"; };
 		B4A11E5F1B1FB19A002C5FD1 /* TrackGroupAtom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = TrackGroupAtom.c; path = ../../src/TrackGroupAtom.c; sourceTree = "<group>"; };
@@ -389,6 +391,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				3AE6A1A320522FA300032735 /* StereoVideoGroupAtom.c */,
 				C6D4549E1DB513B3001B936A /* ItemPropertiesAtom.c */,
 				C6D4549F1DB513B3001B936A /* ItemPropertyAssociationAtom.c */,
 				C6D454A01DB513B3001B936A /* ItemPropertyContainerAtom.c */,
@@ -705,6 +708,7 @@
 				CBAD4EC407B2B3F8005AD21E /* QTMovies.c in Sources */,
 				CBAD4EC507B2B3F8005AD21E /* PaddingBitsAtom.c in Sources */,
 				CBAD4EC607B2B3F8005AD21E /* MediaHeaderAtom.c in Sources */,
+				3AE6A1A420522FA300032735 /* StereoVideoGroupAtom.c in Sources */,
 				C6D454A11DB513B3001B936A /* ItemPropertiesAtom.c in Sources */,
 				CBAD4EC707B2B3F8005AD21E /* MediaDataAtom.c in Sources */,
 				CBAD4EC807B2B3F8005AD21E /* MediaAtom.c in Sources */,
