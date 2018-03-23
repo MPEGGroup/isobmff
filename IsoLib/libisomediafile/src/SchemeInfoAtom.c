@@ -28,7 +28,7 @@ derivative works. Copyright (c) 1999.
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef ISMACrypt
+
 
 static void destroy( MP4AtomPtr s )
 {
@@ -38,8 +38,9 @@ static void destroy( MP4AtomPtr s )
 	MP4SchemeInfoAtomPtr self = (MP4SchemeInfoAtomPtr) s;
     err = MP4NoErr;
 
-	if ( self == NULL )
-		BAILWITHERROR( MP4BadParamErr )
+	if (self == NULL)
+		BAILWITHERROR(MP4BadParamErr);
+
 	DESTROY_ATOM_LIST
 
 	if ( self->super )
@@ -147,16 +148,17 @@ MP4Err MP4CreateSchemeInfoAtom( MP4SchemeInfoAtomPtr *outAtom )
 	self = (MP4SchemeInfoAtomPtr) calloc( 1, sizeof(MP4SchemeInfoAtom) );
 	TESTMALLOC( self );
 
-	err = MP4CreateBaseAtom( (MP4AtomPtr) self );
-	if ( err ) goto bail;
-	self->type = 			MP4SchemeInfoAtomType;
-	self->name                = "MP4SchemeInfo";
-	err = MP4MakeLinkedList( &self->atomList ); if (err) goto bail;
-	self->createFromInputStream = (cisfunc) createFromInputStream;
-	self->destroy             = destroy;
-	self->calculateSize         = calculateSize;
-	self->serialize             = serialize;
-	self->addAtom				= addAtom;
+	err = MP4CreateBaseAtom( (MP4AtomPtr) self ); if ( err ) goto bail;
+
+	self->type						= MP4SchemeInfoAtomType;
+	self->name						= "SchemeInformationBox";
+	self->createFromInputStream		= (cisfunc) createFromInputStream;
+	self->destroy					= destroy;
+	self->calculateSize				= calculateSize;
+	self->serialize					= serialize;
+	self->addAtom					= addAtom;
+
+	err = MP4MakeLinkedList(&self->atomList); if (err) goto bail;
 
 	*outAtom = self;
 bail:
@@ -165,5 +167,5 @@ bail:
 	return err;
 }
 
-#endif
+
 

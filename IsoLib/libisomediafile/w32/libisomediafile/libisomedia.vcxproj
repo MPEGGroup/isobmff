@@ -252,6 +252,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\AdditionalMetaDataContainerAtom.c" />
     <ClCompile Include="..\..\src\ChannelLayoutAtom.c" />
+    <ClCompile Include="..\..\src\CompatibleSchemeTypeAtom.c" />
     <ClCompile Include="..\..\src\CompositionToDecodeAtom.c" />
     <ClCompile Include="..\..\src\DownMixInstructionsAtom.c" />
     <ClCompile Include="..\..\src\ExtendedLanguageTag.c" />
@@ -263,9 +264,14 @@
     <ClCompile Include="..\..\src\LoudnessAtom.c" />
     <ClCompile Include="..\..\src\LoudnessBaseAtom.c" />
     <ClCompile Include="..\..\src\MetaboxRelationAtom.c" />
+    <ClCompile Include="..\..\src\RestrictedSchemeInfoAtom.c" />
+    <ClCompile Include="..\..\src\RestrictedVideoSampleEntry.c" />
     <ClCompile Include="..\..\src\SampleAuxiliaryInformationOffsetsAtom.c" />
     <ClCompile Include="..\..\src\SampleAuxiliaryInformationSizesAtom.c" />
+    <ClCompile Include="..\..\src\SchemeTypeAtom.c" />
     <ClCompile Include="..\..\src\SingleItemTypeReferenceAtom.c" />
+    <ClCompile Include="..\..\src\StereoVideoAtom.c" />
+    <ClCompile Include="..\..\src\StereoVideoGroupAtom.c" />
     <ClCompile Include="..\..\src\TrackExtensionPropertiesAtom.c" />
     <ClCompile Include="..\..\src\TrackFragmentDecodeTimeAtom.c" />
     <ClCompile Include="..\..\src\AudioSampleEntryAtom.c" />
@@ -372,6 +378,7 @@
     <ClCompile Include="..\..\src\TrackHeaderAtom.c" />
     <ClCompile Include="..\..\src\TrackReferenceAtom.c" />
     <ClCompile Include="..\..\src\TrackReferenceTypeAtom.c" />
+    <ClCompile Include="..\..\src\TrackTypeAtom.c" />
     <ClCompile Include="..\..\src\UnknownAtom.c" />
     <ClCompile Include="..\..\src\UserDataAtom.c" />
     <ClCompile Include="..\..\src\VideoMediaHeaderAtom.c" />

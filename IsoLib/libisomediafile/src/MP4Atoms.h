@@ -142,15 +142,21 @@ enum
     MP4H263SampleEntryAtomType                          = MP4_FOUR_CHAR_CODE( 's', '2', '6', '3' ),
     MP4H263SpecificInfoAtomType                         = MP4_FOUR_CHAR_CODE( 'd', '2', '6', '3' ),
     MP4BitRateAtomType                                  = MP4_FOUR_CHAR_CODE( 'b', 't', 'r', 't' ),
-    TGPPBitRateAtomType                                 = MP4_FOUR_CHAR_CODE( 'b', 'i', 't', 'r' )
+    TGPPBitRateAtomType                                 = MP4_FOUR_CHAR_CODE( 'b', 'i', 't', 'r' ),
+	MP4OriginalFormatAtomType							= MP4_FOUR_CHAR_CODE( 'f', 'r', 'm', 'a' ),
+	MP4SchemeTypeAtomType								= MP4_FOUR_CHAR_CODE( 's', 'c', 'h', 'm' ),
+	MP4SchemeInfoAtomType								= MP4_FOUR_CHAR_CODE( 's', 'c', 'h', 'i' ),
+	MP4StereoVideoAtomType								= MP4_FOUR_CHAR_CODE( 's', 't', 'v', 'i' ),
+	MP4CompatibleSchemeTypeAtomType						= MP4_FOUR_CHAR_CODE( 'c', 's', 'c', 'h' ),
+	MP4RestrictedSchemeInfoAtomType						= MP4_FOUR_CHAR_CODE( 'r', 'i', 'n', 'f' ),
+	MP4StereoVideoGroupAtomType						    = MP4_FOUR_CHAR_CODE( 's', 't', 'e', 'r' ),
+	MP4TrackTypeAtomType								= MP4_FOUR_CHAR_CODE( 't', 't', 'y', 'p' ),
+	MP4RestrictedVideoSampleEntryAtomType				= MP4_FOUR_CHAR_CODE( 'r', 'e', 's', 'v' )
 }; 
 
 #ifdef ISMACrypt
 enum {
     MP4SecurityInfoAtomType                             = MP4_FOUR_CHAR_CODE( 's', 'i', 'n', 'f' ),
-    MP4OriginalFormatAtomType                           = MP4_FOUR_CHAR_CODE( 'f', 'r', 'm', 'a' ),
-    MP4SecuritySchemeAtomType                           = MP4_FOUR_CHAR_CODE( 's', 'c', 'h', 'm' ),
-    MP4SchemeInfoAtomType                               = MP4_FOUR_CHAR_CODE( 's', 'c', 'h', 'i' ),
     ISMAKMSAtomType                                     = MP4_FOUR_CHAR_CODE( 'i', 'K', 'M', 'S' ),
     ISMASampleFormatAtomType                            = MP4_FOUR_CHAR_CODE( 'i', 'S', 'F', 'M' ),
     ISMASaltAtomType                                    = MP4_FOUR_CHAR_CODE( 'i', 'S', 'L', 'T' ),
@@ -159,17 +165,6 @@ enum {
     ISMACryptAESCounterType                             = MP4_FOUR_CHAR_CODE( 'i', 'A', 'E', 'C' )
 };
 #endif
-
-/* restricted info atom types (same as sinf) */
-enum {
-    MP4RestrictedVideoAtomType                = MP4_FOUR_CHAR_CODE( 'r', 'e', 's', 'v' ),
-    MP4RestrictedInfoAtomType                 = MP4_FOUR_CHAR_CODE( 'r', 'i', 'n', 'f' ),
-#ifndef ISMACrypt
-    MP4OriginalFormatAtomType                 = MP4_FOUR_CHAR_CODE( 'f', 'r', 'm', 'a' ),
-    MP4SchemeInfoAtomType                     = MP4_FOUR_CHAR_CODE( 's', 'c', 'h', 'i' ),
-#endif
-    MP4SchemeTypeAtomType                     = MP4_FOUR_CHAR_CODE( 's', 'c', 'h', 'm' )
-};
 
 #define MP4_BASE_ATOM    \
 	u32	   type;         \
@@ -1384,52 +1379,139 @@ typedef struct ISOFileTypeAtom
 	u32 *compatibilityList;								/* standards this file conforms to */
 } ISOFileTypeAtom, *ISOFileTypeAtomPtr;
 
+typedef struct MP4TrackTypeAtom
+{
+	MP4_FULL_ATOM
 
+	ISOErr(*addStandard)(struct MP4TrackTypeAtom *self, u32 standard);
+	ISOErr(*setBrand)(struct MP4TrackTypeAtom *self, u32 standard, u32 minorversion);
+	ISOErr(*getBrand)(struct MP4TrackTypeAtom *self, u32* standard, u32* minorversion);
+	u32(*getStandard)(struct MP4TrackTypeAtom *self, u32 standard);
 
+	u32 majorBrand;										/* the brand of this track */
+	u32 minorVersion;									/* the minor version of this track */
+	u32 itemCount;										/* the number of items in the compatibility list */
+	u32 *compatibilityList;
 
-#ifdef ISMACrypt
+} MP4TrackTypeAtom, *MP4TrackTypeAtomPtr;
+
+typedef struct MP4SchemeTypeAtom
+{
+	MP4_FULL_ATOM
+	u32	scheme_type;
+	u32 scheme_version;
+
+	char* scheme_url;  /* if (flags & 0x000001), a scheme URL is present */
+
+} MP4SchemeTypeAtom, *MP4SchemeTypeAtomPtr;
+
+typedef struct MP4CompatibleSchemeTypeAtom
+{
+	MP4_FULL_ATOM
+	u32 scheme_type;
+	u32 scheme_version;
+
+	char* scheme_url;
+} MP4CompatibleSchemeTypeAtom, *MP4CompatibleSchemeTypeAtomPtr;
+
+typedef struct MP4RestrictedSchemeInfoAtom
+{
+	MP4_BASE_ATOM
+	MP4AtomPtr MP4OriginalFormat;				/*			('frma') */
+	MP4AtomPtr MP4SchemeType;					/*          ('schm') */
+	MP4AtomPtr MP4SchemeInfo;					/* optional ('schi') */
+
+	MP4LinkedList atomList;						/* may contain one or more instances of CompatibleSchemeTypeBox */
+	
+	MP4Err(*addAtom)(struct MP4RestrictedSchemeInfoAtom* self, MP4AtomPtr atom);
+
+} MP4RestrictedSchemeInfoAtom, *MP4RestrictedSchemeInfoAtomPtr;
+
+typedef struct MP4StereoVideoAtom {
+	
+	MP4_FULL_ATOM
+
+	u32		reserved;								/* unsigned int(30) = 0 */
+	u8		single_view_allowed;					/* unsigned int(2) */
+	u32		stereo_scheme;							/* unsigned int(32)	*/
+	u32		length;									/* unsigned int(32) */
+	u8		*stereo_indication_type;				/* unsigned int(8)[length] */
+	
+	MP4LinkedList atomList;							/* optional */
+	
+	MP4Err(*addAtom)(struct MP4StereoVideoAtom* self, MP4AtomPtr atom);
+
+} MP4StereoVideoAtom, *MP4StereoVideoAtomPtr;
+
+typedef struct MP4StereoVideoGroupAtom {
+
+	MP4_FULL_ATOM
+
+	u32 trackGroupID;								/* unsigned int(32), inherited from TrackGroupTypeAtom */
+
+	u8 leftViewFlag;								/* unsigned int(1) */
+	char reserved[4];								/* bit(31) = 0 */
+
+} MP4StereoVideoGroupAtom, *MP4StereoVideoGroupAtomPtr;
+
+typedef struct MP4RestrictedVideoSampleEntryAtom {
+	MP4_BASE_ATOM
+	COMMON_SAMPLE_ENTRY_FIELDS
+
+	MP4AtomPtr MP4RestrictedSchemeInfo;
+	u32 restriction_type;
+
+	MP4Err(*addSchemeInfoAtom) (struct MP4Atom *self, struct MP4Atom *theAtom);
+	MP4Err(*getSchemeInfoAtom) (struct MP4Atom *self, u32 theType, struct MP4Atom **theAtom);
+	MP4Err(*getScheme) (struct MP4Atom *self, u32* sch_type, u32* sch_version, char** sch_url);
+
+	MP4Err(*transform) (struct MP4Atom *self, u32 sch_type, u32 sch_version, char* sch_url);
+	MP4Err(*untransform) (struct MP4Atom *self);
+
+	char		reserved1[6];
+	char		reserved2[16];		/* uint(32)[4] */
+	/* u32			reserved3;         uint(32) = 0x01400f0 */
+	u32			width;
+	u32			height;
+	u32			reserved4;          /* uint(32) = 0x0048000 */
+	u32			reserved5;			/* uint(32) = 0x0048000 */
+	u32			reserved6;			/* uint(32) = 0 */
+	u32			reserved7;          /* uint(16) = 1 */
+	u32			nameLength;
+	char		name31[31];
+	u32			reserved8;			/* uint(16) = 24 */
+	s32			reserved9;			/* int(16) = -1 */
+
+} MP4RestrictedVideoSampleEntryAtom, *MP4RestrictedVideoSampleEntryAtomPtr;
 
 typedef struct MP4OriginalFormatAtom
 {
 	MP4_BASE_ATOM
 	u32	original_format;
-		
-} MP4OriginalFormatAtom, *MP4OriginalFormatAtomPtr;
 
-typedef struct MP4SecuritySchemeAtom
-{
-	MP4_FULL_ATOM
-	u32	scheme_type;
-	u32 scheme_version;
-	
-	char* scheme_url;
-		
-} MP4SecuritySchemeAtom, *MP4SecuritySchemeAtomPtr;
+} MP4OriginalFormatAtom, *MP4OriginalFormatAtomPtr;
 
 typedef struct MP4SchemeInfoAtom
 {
 	MP4_BASE_ATOM
-	
-	MP4LinkedList atomList;	
-	ISOErr (*addAtom)( struct MP4SchemeInfoAtom* self, MP4AtomPtr atom );
+
+	MP4LinkedList atomList;  /* this atom may include a variable number of atoms */
+	ISOErr(*addAtom)(struct MP4SchemeInfoAtom* self, MP4AtomPtr atom);
+
 } MP4SchemeInfoAtom, *MP4SchemeInfoAtomPtr;
 
+
+
+
+#ifdef ISMACrypt
 typedef struct MP4SecurityInfoAtom
 {
 	MP4_BASE_ATOM
 	MP4AtomPtr MP4OriginalFormat;
-	MP4AtomPtr MP4SecurityScheme;
+	MP4AtomPtr MP4SchemeType;
 	MP4AtomPtr MP4SchemeInfo;
 
 } MP4SecurityInfoAtom, *MP4SecurityInfoAtomPtr;
-
-typedef struct MP4RestrictedInfoAtom
-{
-  MP4_BASE_ATOM
-  MP4AtomPtr MP4OriginalFormat; /* frma */
-  MP4AtomPtr MP4SecurityScheme; /* schm */
-  MP4AtomPtr MP4SchemeInfo;     /* schi */
-} MP4RestrictedInfoAtom, *MP4RestrictedInfoAtomPtr;
 
 typedef struct ISMAKMSAtom
 {
@@ -1777,11 +1859,18 @@ MP4Err MP4CreateItemPropertiesAtom(MP4ItemPropertiesAtomPtr *outAtom);
 MP4Err MP4CreateItemPropertyContainerAtom(MP4ItemPropertyContainerAtomPtr *outAtom);
 MP4Err MP4CreateItemPropertyAssociationAtom(MP4ItemPropertyAssociationAtomPtr *outAtom);
 
+MP4Err MP4CreateOriginalFormatAtom(MP4OriginalFormatAtomPtr *outAtom);
+MP4Err MP4CreateSchemeInfoAtom(MP4SchemeInfoAtomPtr *outAtom);
+MP4Err MP4CreateRestrictedSchemeInfoAtom(MP4RestrictedSchemeInfoAtomPtr *outAtom);
+MP4Err MP4CreateSchemeTypeAtom(MP4SchemeTypeAtomPtr *outAtom);
+MP4Err MP4CreateCompatibleSchemeTypeAtom(MP4CompatibleSchemeTypeAtomPtr *outAtom);
+MP4Err MP4CreateRestrictedVideoSampleEntryAtom(MP4RestrictedVideoSampleEntryAtomPtr *outAtom);
+MP4Err MP4CreateTrackTypeAtom(MP4TrackTypeAtomPtr *outAtom);
+MP4Err MP4CreateStereoVideoAtom(MP4StereoVideoAtomPtr *outAtom);
+MP4Err MP4CreateStereoVideoGroupAtom(MP4StereoVideoGroupAtomPtr *outAtom);
+
 #ifdef ISMACrypt
 MP4Err MP4CreateSecurityInfoAtom( MP4SecurityInfoAtomPtr *outAtom );
-MP4Err MP4CreateOriginalFormatAtom( MP4OriginalFormatAtomPtr *outAtom );
-MP4Err MP4CreateSecuritySchemeAtom( MP4SecuritySchemeAtomPtr *outAtom );
-MP4Err MP4CreateSchemeInfoAtom( MP4SchemeInfoAtomPtr *outAtom );
 MP4Err CreateISMAKMSAtom( ISMAKMSAtomPtr *outAtom );
 MP4Err CreateISMASampleFormatAtom( ISMASampleFormatAtomPtr *outAtom );
 MP4Err CreateISMASaltAtom( ISMASaltAtomPtr *outAtom );
