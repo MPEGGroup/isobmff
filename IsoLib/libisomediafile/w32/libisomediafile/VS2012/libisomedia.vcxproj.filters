@@ -164,6 +164,13 @@
     <ClCompile Include="..\..\..\src\AMRSpecificInfoAtom.c" />
     <ClCompile Include="..\..\..\src\H263SpecificInfoAtom.c" />
     <ClCompile Include="..\..\..\src\SampleDependencyAtom.c" />
+    <ClCompile Include="..\..\..\src\CompatibleSchemeTypeAtom.c" />
+    <ClCompile Include="..\..\..\src\RestrictedSchemeInfoAtom.c" />
+    <ClCompile Include="..\..\..\src\RestrictedVideoSampleEntry.c" />
+    <ClCompile Include="..\..\..\src\SchemeTypeAtom.c" />
+    <ClCompile Include="..\..\..\src\StereoVideoAtom.c" />
+    <ClCompile Include="..\..\..\src\StereoVideoGroupAtom.c" />
+    <ClCompile Include="..\..\..\src\TrackTypeAtom.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\FileMappingDataHandler.h" />
