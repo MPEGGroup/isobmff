@@ -700,6 +700,7 @@ MP4_EXTERN ( MP4Err ) MP4InsertMediaIntoTrack( MP4Track track, s32 trackStartTim
    MP4Err err;
    MP4TrackAtomPtr trak;
    MP4MediaAtomPtr mdia;
+   u64 outDuration = 0;
 
    err = MP4NoErr;
    if ( (track == 0) || (mediaRate < 0) || (mediaRate > 1) )
@@ -707,7 +708,13 @@ MP4_EXTERN ( MP4Err ) MP4InsertMediaIntoTrack( MP4Track track, s32 trackStartTim
    trak = (MP4TrackAtomPtr) track;
    mdia = (MP4MediaAtomPtr) trak->trackMedia;
 
-   if ( (trackStartTime == 0) && (mediaStartTime == 0) && (mediaRate == 1) )
+   err = MP4GetTrackDuration( track, &outDuration );
+   if (err)
+   {
+     goto bail;
+   }
+
+   if ( (trackStartTime == 0) && (mediaStartTime == 0) && (mediaRate == 1) && (mediaDuration == outDuration) )
    {
       if ( mediaDuration == 0 )
          BAILWITHERROR( MP4BadParamErr );
@@ -719,17 +726,17 @@ MP4_EXTERN ( MP4Err ) MP4InsertMediaIntoTrack( MP4Track track, s32 trackStartTim
       MP4EditListAtomPtr elst;
       u32 movieTimeScale, mediaTimeScale;
       
-	  err = MP4GetMovieTimeScale( (MP4Movie) trak->moov, &movieTimeScale ); if (err) goto bail;
-	  err = MP4GetMediaTimeScale( (MP4Media) mdia, &mediaTimeScale ); if (err) goto bail;
-	  mediaDuration = (mediaDuration * movieTimeScale) / mediaTimeScale;
-	
+      err = MP4GetMovieTimeScale( (MP4Movie) trak->moov, &movieTimeScale ); if (err) goto bail;
+      err = MP4GetMediaTimeScale( (MP4Media) mdia, &mediaTimeScale ); if (err) goto bail;
+      mediaDuration = (mediaDuration * movieTimeScale) / mediaTimeScale;
+
       edts = (MP4EditAtomPtr) trak->trackEditAtom;
 
       if ( edts == 0 )
       {
          /* no edits yet */
          MP4Err MP4CreateEditAtom( MP4EditAtomPtr *outAtom );
-			
+
          err = MP4CreateEditAtom( &edts ); if (err) goto bail;
          err = trak->addAtom( trak, (MP4AtomPtr) edts ); if (err) goto bail;
       }
@@ -737,7 +744,7 @@ MP4_EXTERN ( MP4Err ) MP4InsertMediaIntoTrack( MP4Track track, s32 trackStartTim
       if ( elst == 0 )
       {
          MP4Err MP4CreateEditListAtom( MP4EditListAtomPtr *outAtom );
-			
+
          err = MP4CreateEditListAtom( &elst ); if (err) goto bail;
          err = edts->addAtom( edts, (MP4AtomPtr) elst ); if (err) goto bail;
       }

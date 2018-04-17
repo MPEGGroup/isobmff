@@ -12,6 +12,7 @@ sources = \
 	BaseDescriptor.c \
 	ChunkOffsetAtom.c \
 	ClockReferenceMediaHeader.c \
+	CompatibleSchemeTypeAtom.c \
 	CopyrightAtom.c \
 	DataEntryURLAtom.c \
 	DataEntryURNAtom.c \
@@ -85,15 +86,20 @@ sources = \
 	ObjectDescriptorAtom.c \
 	ObjectDescriptorMediaHeader.c \
 	QTMovies.c \
+	RestrictedSchemeInfoAtom.c \
+	RestrictedVideoSampleEntry.c \
 	SLConfigDescriptor.c \
 	SampleDescriptionAtom.c \
 	SampleSizeAtom.c \
 	SampleTableAtom.c \
 	SampleToChunkAtom.c \
 	SceneDescriptionMediaHeader.c \
+	SchemeTypeAtom.c \
 	ShadowSyncAtom.c \
 	SimpleFileMappingObject.c \
 	SoundMediaHeaderAtom.c \
+	StereoVideoAtom.c \
+	StereoVideoGroupAtom.c \
 	SubSampleInformationAtom.c \
 	SyncSampleAtom.c \
 	TimeToSampleAtom.c \
@@ -101,6 +107,7 @@ sources = \
 	TrackHeaderAtom.c \
 	TrackReferenceAtom.c \
 	TrackReferenceTypeAtom.c \
+	TrackTypeAtom.c \
 	TrackGroupAtom.c \
 	TrackGroupTypeAtom.c \
 	UnknownAtom.c \
@@ -160,13 +167,7 @@ sources = \
 	SingleItemTypeReferenceAtom.c \
 	ItemPropertiesAtom.c \
 	ItemPropertyAssociationAtom.c \
-	ItemPropertyContainerAtom.c \
-	SchemeTypeAtom.c \
-	CompatibleSchemeTypeAtom.c \
-	RestrictedSchemeInfoAtom.c \
-	StereoVideoAtom.c \
-	TrackTypeAtom.c \
-	RestrictedVideoSampleEntry.c
+	ItemPropertyContainerAtom.c
 
 
 
