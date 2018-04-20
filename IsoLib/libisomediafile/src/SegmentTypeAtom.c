@@ -25,10 +25,10 @@
 
 
 /**
-* @file TrackTypeAtom.c
+* @file SegmentTypeAtom.c
 * @author Ahmed Hamza <Ahmed.Hamza@InterDigital.com>
-* @date
-* @brief Implements functions for reading and writing TrackTypeAtom instances.
+* @date April 19, 2018
+* @brief Implements functions for reading and writing SegmentTypeAtom instances.
 */
 
 
@@ -129,7 +129,7 @@ static u32 getStandard(struct MP4SegmentTypeAtom *self, u32 standard)
     return outval;
 }
 
-/* add a track type to the compatibility list */
+/* add a segment type to the compatibility list */
 static ISOErr addStandard(struct MP4SegmentTypeAtom *self, u32 standard)
 {
     ISOErr err;
@@ -216,7 +216,7 @@ bail:
     return err;
 }
 
-ISOErr MP4CreateTrackTypeAtom(MP4SegmentTypeAtomPtr *outAtom)
+ISOErr MP4CreateSegmentTypeAtom(MP4SegmentTypeAtomPtr *outAtom)
 {
     ISOErr err;
     MP4SegmentTypeAtomPtr self;

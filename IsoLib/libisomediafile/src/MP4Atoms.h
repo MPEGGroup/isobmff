@@ -1794,14 +1794,14 @@ typedef struct
 
 } SIDXReference, *SIDXReferencePtr;
 
-typedef struct
+typedef struct SubsegmentRange
 {
     u8 level;
     u32 rangeSize;
 
 } SubsegmentRange, *SubsegmentRangePtr;
 
-typedef struct
+typedef struct Subsegment
 {
     u32 rangeCount;
     MP4LinkedList rangesList;
@@ -1843,7 +1843,10 @@ typedef struct MP4SegmentIndexAtom
     MP4LinkedList referencesList;
 
     u32(*getReferenceCount)(struct MP4SegmentIndexAtom *self);
-    MP4Err(*addReference)(struct MP4SegmentIndexAtom *self);
+    MP4Err(*addReference)(struct MP4SegmentIndexAtom *self, 
+        u8 referenceType, u32 referencedSize, 
+        u32 subsegmentDuration, 
+        u8 startsWithSAP, u8 SAPType, u32 SAPDeltaTime);
 
 } MP4SegmentIndexAtom, *MP4SegmentIndexAtomPtr;
 

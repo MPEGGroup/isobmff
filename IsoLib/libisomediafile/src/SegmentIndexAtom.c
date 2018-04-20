@@ -42,12 +42,45 @@ static u32 getReferenceCount(struct MP4SegmentIndexAtom *self)
     return referenceCount;
 }
 
-static MP4Err addReference(struct MP4SegmentIndexAtom *self)
+static MP4Err addReference(struct MP4SegmentIndexAtom *self, 
+    u8 referenceType, u32 referencedSize,
+    u32 subsegmentDuration,
+    u8 startsWithSAP, u8 SAPType, u32 SAPDeltaTime)
 {
     MP4Err err;
 
+    SIDXReferencePtr p;
+    SIDXReferencePtr last;
+
+    u32 referenceCount;
+    u8 addnew;
 
     err = MP4NoErr;
+
+    referenceCount = getReferenceCount(self);
+    addnew = 1;
+
+    if (referenceCount > 0)
+    {
+        /* get last refernece */
+        err = MP4GetListEntry(self->referencesList, referenceCount - 1, (char**)&last); if (err) goto bail;
+    }
+
+    if (addnew) {
+
+        p = (SIDXReferencePtr)calloc(1, sizeof(SIDXReference));
+        TESTMALLOC(p);
+
+        p->referenceType = referenceType;
+        p->referencedSize = referencedSize;
+        p->subsegmentDuration = subsegmentDuration;
+        p->startsWithSAP = startsWithSAP;
+        p->SAPType = SAPType;
+        p->SAPDeltaTime = SAPDeltaTime;
+
+        /* add reference to linked list */
+        err = MP4AddListEntry(p, self->referencesList); if (err) goto bail;
+    }
 
 bail:
     TEST_RETURN(err);
@@ -64,6 +97,7 @@ static void destroy(MP4AtomPtr s)
     if (self == NULL)
         BAILWITHERROR(MP4BadParamErr);
 
+    /* TODO destroy list */
 
     if (self->super)
         self->super->destroy(s);
@@ -78,9 +112,39 @@ bail:
 static MP4Err serialize(struct MP4Atom* s, char* buffer)
 {
     MP4Err err;
+    u32 i;
+    u32 tmp32;
 
     MP4SegmentIndexAtomPtr self = (MP4SegmentIndexAtomPtr)s;
     err = MP4NoErr;
+
+    err = MP4SerializeCommonFullAtomFields((MP4FullAtom*)s, buffer); if (err) goto bail;  /* Full Atom */
+    buffer += self->bytesWritten;
+
+    PUT32(referenceId);
+    PUT32(timescale);
+
+    PUT32(earliestPresentationTime);
+    PUT32(firstOffset);
+
+    PUT16(reserved1);
+    PUT16(referenceCount);
+
+    for (i = 0; i < self->referenceCount; i++) {
+
+        SIDXReferencePtr reference;
+        err = MP4GetListEntry(self->referencesList, i, (char**)&reference);
+        if (err) goto bail;
+
+        tmp32 = (reference->referenceType << 31) | (reference->referencedSize);
+        PUT32_V(tmp32);
+
+        PUT32_V(reference->subsegmentDuration);
+
+        tmp32 = (reference->startsWithSAP << 31) | (reference->SAPType << 28) | reference->SAPDeltaTime;
+        PUT32_V(tmp32);
+
+    }
 
 bail:
     TEST_RETURN(err);
@@ -97,7 +161,9 @@ static MP4Err calculateSize(struct MP4Atom* s)
 
     err = MP4CalculateFullAtomFieldSize((MP4FullAtomPtr)s); if (err) goto bail;
 
+    self->size += (4 * 2) + (4 * 2) + (2 * 2);
 
+    self->size += (4 * self->referenceCount);
 
 
 bail:
@@ -122,7 +188,36 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
 
     err = self->super->createFromInputStream(s, proto, (char*)inputStream);
 
+    GET32(referenceId);
+    GET32(timescale);
 
+    GET32(earliestPresentationTime);
+    GET32(firstOffset);
+
+    GET16(reserved1);
+    GET16(referenceCount);
+
+    for (i = 0; i < self->referenceCount; i++) {
+        
+        u8 referenceType;
+        u32 referencedSize;
+        u32 subsegmentDuration;
+        u8 startsWithSAP;
+        u8 SAPType;
+        u32 SAPDeltaTime;
+
+        GET32_V(tmp32);
+        referenceType = (tmp32 >> 31) & 0x01;
+        referencedSize = tmp32 & 0x7FFF;
+        GET32_V(subsegmentDuration);
+        GET32_V(tmp32);
+        startsWithSAP = (tmp32 >> 31) & 0x01;
+        SAPType = (tmp32 >> 28) & 0x07;
+        SAPDeltaTime = tmp32 & 0x0FFFFFFF;
+
+        err = addReference(self, referenceType, referencedSize, subsegmentDuration, startsWithSAP, SAPType, SAPDeltaTime);
+        if (err) goto bail;
+    }
 
     assert(self->bytesRead == self->size);
 bail:
@@ -144,6 +239,8 @@ MP4Err MP4CreateSegmentIndexAtom(MP4SegmentIndexAtomPtr *outAtom)
     TESTMALLOC(self);
 
     err = MP4CreateFullAtom((MP4AtomPtr)self); if (err) goto bail;
+
+    err = MP4MakeLinkedList(&self->referencesList); if (err) goto bail;
 
     self->type = MP4SegmentIndexAtomType;
     self->name = "SegmentIndexBox";
