@@ -1859,7 +1859,9 @@ typedef struct MP4SubsegmentIndexAtom
     MP4LinkedList subsegmentsList;
 
     u32(*getSubsegmentCount)(struct MP4SubsegmentIndexAtom *self);
-    MP4Err(*addSubsegment)(struct MP4SubsegmentIndexAtom *self);
+    MP4Err(*addSubsegment)(struct MP4SubsegmentIndexAtom *self, struct Subsegment *ss);
+    MP4Err(*addSubsegmentRange)(struct Subsegment *self, u8 level, u32 rangeSize);
+    
 
 } MP4SubsegmentIndexAtom, *MP4SubsegmentIndexAtomPtr;
 

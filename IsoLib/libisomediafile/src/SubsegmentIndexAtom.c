@@ -92,7 +92,7 @@ static void destroy(MP4AtomPtr s)
     if (self == NULL)
         BAILWITHERROR(MP4BadParamErr);
 
-    subsegmentCount = getSubsegmentsCount(self);
+    subsegmentCount = getSubsegmentCount(self);
 
     if (subsegmentCount)
     {
@@ -288,6 +288,7 @@ MP4Err MP4CreateSubsegmentIndexAtom(MP4SubsegmentIndexAtomPtr *outAtom)
     self->serialize = serialize;
     self->addSubsegment = addSubsegment;
     self->getSubsegmentCount = getSubsegmentCount;
+    self->addSubsegmentRange = addSubsegmentRange;
 
     *outAtom = self;
 bail:
