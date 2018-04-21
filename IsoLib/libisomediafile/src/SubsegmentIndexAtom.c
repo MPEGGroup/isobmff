@@ -84,13 +84,47 @@ bail:
 static void destroy(MP4AtomPtr s)
 {
     MP4Err err;
+    u32 subsegmentCount;
+    u32 rangeCount;
     MP4SubsegmentIndexAtomPtr self;
 
     self = (MP4SubsegmentIndexAtomPtr)s;
     if (self == NULL)
         BAILWITHERROR(MP4BadParamErr);
 
-    /* TODO destroy list */
+    subsegmentCount = getSubsegmentsCount(self);
+
+    if (subsegmentCount)
+    {
+        u32 i;
+        for (i = 0; i < subsegmentCount; i++)
+        {
+            SubsegmentPtr p;
+            err = MP4GetListEntry(self->subsegmentsList, i, (char**)&p); if (err) goto bail;
+            if (p) {
+
+                rangeCount = p->rangeCount;
+                if (rangeCount) {
+                    u32 j;
+                    for (j = 0; j < rangeCount; j++) {
+
+                        char *r;
+                        err = MP4GetListEntry(p->rangesList, j, &r); if (err) goto bail;
+
+                        if (r) {
+                            free(r);
+                        }
+                    }
+                }
+
+                MP4DeleteLinkedList(p->rangesList);
+
+                free(p);
+            }
+        }
+    }
+
+    MP4DeleteLinkedList(self->subsegmentsList);
 
     if (self->super)
         self->super->destroy(s);

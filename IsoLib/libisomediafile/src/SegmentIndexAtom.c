@@ -91,13 +91,29 @@ bail:
 static void destroy(MP4AtomPtr s)
 {
     MP4Err err;
+    u32 referenceCount;
     MP4SegmentIndexAtomPtr self;
 
     self = (MP4SegmentIndexAtomPtr)s;
     if (self == NULL)
         BAILWITHERROR(MP4BadParamErr);
 
-    /* TODO destroy list */
+    referenceCount = getReferenceCount(self);
+
+    if (referenceCount)
+    {
+        u32 i;
+        for (i = 0; i < referenceCount; i++)
+        {
+            char *p;
+            err = MP4GetListEntry(self->referencesList, i, &p); if (err) goto bail;
+            if (p) {
+                free(p);
+            }
+        }
+    }
+
+    MP4DeleteLinkedList(self->referencesList);
 
     if (self->super)
         self->super->destroy(s);
