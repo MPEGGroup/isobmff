@@ -206,14 +206,18 @@ static MP4Err transform(struct MP4Atom *s, u32 sch_type, u32 sch_version, char* 
 	err = MP4CreateRestrictedSchemeInfoAtom(&rinf); if (err) goto bail;
 
 	/* assign */
-	rinf->MP4OriginalFormat = (MP4AtomPtr)frma; frma = NULL;
-	rinf->MP4SchemeType = (MP4AtomPtr)schm; schm = NULL;
-	rinf->MP4SchemeInfo = (MP4AtomPtr)schi; schi = NULL;
+	//rinf->MP4OriginalFormat = (MP4AtomPtr)frma; frma = NULL;
+	//rinf->MP4SchemeType = (MP4AtomPtr)schm; schm = NULL;
+	//rinf->MP4SchemeInfo = (MP4AtomPtr)schi; schi = NULL;
+	rinf->addAtom(rinf, (MP4AtomPtr)frma); frma = NULL;
+	rinf->addAtom(rinf, (MP4AtomPtr)schm); schm = NULL;
+	rinf->addAtom(rinf, (MP4AtomPtr)schi); schi = NULL;
 
 	self->type = self->restriction_type;
 
 	/* set */
-	self->MP4RestrictedSchemeInfo = (MP4AtomPtr)rinf;
+	//self->MP4RestrictedSchemeInfo = (MP4AtomPtr)rinf;
+	self->addAtom(self, (MP4AtomPtr)rinf);
 
 bail:
 	if (frma)  frma->destroy((MP4AtomPtr)frma);
