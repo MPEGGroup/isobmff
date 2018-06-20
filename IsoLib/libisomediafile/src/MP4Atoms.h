@@ -1468,6 +1468,8 @@ typedef struct MP4RestrictedVideoSampleEntryAtom {
 	MP4Err(*transform) (struct MP4Atom *self, u32 sch_type, u32 sch_version, char* sch_url);
 	MP4Err(*untransform) (struct MP4Atom *self);
 
+	MP4Err(*addAtom)(struct MP4RestrictedVideoSampleEntryAtom* self, MP4AtomPtr atom);
+
 	char		reserved1[6];
 	char		reserved2[16];		/* uint(32)[4] */
 	/* u32			reserved3;         uint(32) = 0x01400f0 */

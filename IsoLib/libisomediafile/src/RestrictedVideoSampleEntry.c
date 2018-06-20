@@ -83,8 +83,8 @@ static MP4Err serialize(struct MP4Atom* s, char* buffer)
 	PUT16(reserved8);
 	PUT16(reserved9);
 
-	SERIALIZE_ATOM_LIST(ExtensionAtomList);
 	SERIALIZE_ATOM(MP4RestrictedSchemeInfo);
+	SERIALIZE_ATOM_LIST(ExtensionAtomList);
 
 	assert(self->bytesWritten == self->size);
 
@@ -148,6 +148,10 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
 	GETBYTES(31, name31);
 	GET16(reserved8);
 	GET16(reserved9);
+	GETATOM(MP4RestrictedSchemeInfo);
+	GETATOM_LIST(ExtensionAtomList);
+	//PARSE_ATOM_INCLUDES(MP4RestrictedVideoSampleEntryAtom);
+	/*
 	while (self->bytesRead < self->size)
 	{
 		MP4AtomPtr atom;
@@ -161,11 +165,12 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
 			if (err) goto bail;
 		}
 	}
+	*/
 
 	if (self->bytesRead != self->size)
-		BAILWITHERROR(MP4BadDataErr)
+		BAILWITHERROR(MP4BadDataErr);
 
-	bail:
+bail:
 	TEST_RETURN(err);
 
 	return err;
@@ -373,6 +378,7 @@ MP4Err MP4CreateRestrictedVideoSampleEntryAtom(MP4RestrictedVideoSampleEntryAtom
 	self->getSchemeInfoAtom = getSchemeInfoAtom;
 	self->getScheme = getScheme;
 	self->transform = transform;
+	self->addAtom = addAtom;
 
 	err = MP4MakeLinkedList(&self->ExtensionAtomList); if (err) goto bail;
 
