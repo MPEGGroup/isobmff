@@ -98,11 +98,11 @@ static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStr
 
 	GETBYTES( 6, reserved );
 	GET16( dataReferenceIndex );
-	self->dataSize = self->size - self->bytesRead;  // NOTE: this will prevent the extention atoms list from being read
+	self->dataSize = self->size - self->bytesRead;  /* NOTE: this will prevent the extention atoms list from being read */
 	self->data = (char*) malloc( self->dataSize );
 	TESTMALLOC( self->data );
 	GETBYTES( self->dataSize, data );
-	GETATOM_LIST(ExtensionAtomList); //
+	GETATOM_LIST(ExtensionAtomList);
 
 	if (self->bytesRead != self->size)
 		BAILWITHERROR(MP4BadDataErr);
