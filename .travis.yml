@@ -1,5 +1,19 @@
 language: c
 compiler:
   - gcc
-before_script: cd IsoLib/HM/build/linux && make
+before_script: cd IsoLib/HM/build/linux && make && cd -
 script: cd IsoLib/linux && make
+
+cache:
+  directories:
+  - IsoLib/HM/build/linux/app/TAppDecoder/objects/
+  - IsoLib/HM/build/linux/app/TAppDecoderAnalyser/objects/
+  - IsoLib/HM/build/linux/app/TAppEncoder/objects/
+  - IsoLib/HM/build/linux/lib/TAppCommon/objects/
+  - IsoLib/HM/build/linux/lib/TLibCommon/objects/
+  - IsoLib/HM/build/linux/lib/TLibDecoder/objects/
+  - IsoLib/HM/build/linux/lib/TLibDecoderAnalyser/objects/
+  - IsoLib/HM/build/linux/lib/TLibEncoder/objects/
+  - IsoLib/HM/build/linux/lib/TLibVideoIO/objects/
+  - IsoLib/HM/build/linux/utils/annexBbytecount/objects/
+  - IsoLib/HM/build/linux/utils/convert_NtoMbit_YCbCr/objects/
