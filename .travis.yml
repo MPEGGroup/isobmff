@@ -1,4 +1,5 @@
 language: c
 compiler:
   - gcc
+before_script: cd IsoLib/HM/build/linux && make
 script: cd IsoLib/linux && make

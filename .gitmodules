@@ -1,0 +1,3 @@
+[submodule "IsoLib/HM"]
+	path = IsoLib/HM
+	url = git://hevc.kw.bbc.co.uk/git/jctvc-hm.git
