@@ -1783,7 +1783,7 @@ typedef struct MP4SampleDependencyAtom
 	MP4Err (*getSampleDependency)( struct MP4SampleDependencyAtom *self, u32 sampleNumber, u8* dependency  );
 } MP4SampleDependencyAtom, *MP4SampleDependencyAtomPtr;
 
-typedef struct
+typedef struct SIDXReference
 {
     u8 referenceType;
     u32 referencedSize;
