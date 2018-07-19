@@ -83,8 +83,8 @@ static MP4Err serialize(struct MP4Atom* s, char* buffer)
 	PUT16(reserved8);
 	PUT16(reserved9);
 
-	SERIALIZE_ATOM_LIST(ExtensionAtomList);
 	SERIALIZE_ATOM(MP4RestrictedSchemeInfo);
+	SERIALIZE_ATOM_LIST(ExtensionAtomList);
 
 	assert(self->bytesWritten == self->size);
 
@@ -148,24 +148,13 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
 	GETBYTES(31, name31);
 	GET16(reserved8);
 	GET16(reserved9);
-	while (self->bytesRead < self->size)
-	{
-		MP4AtomPtr atom;
-		err = MP4ParseAtom((MP4InputStreamPtr)inputStream, &atom);
-		if (err) goto bail;
-		self->bytesRead += atom->size;
-		if (((atom->type) == MP4FreeSpaceAtomType) || ((atom->type) == MP4SkipAtomType))
-			atom->destroy(atom);
-		else {
-			err = addAtom(self, atom);
-			if (err) goto bail;
-		}
-	}
+	GETATOM(MP4RestrictedSchemeInfo);
+	GETATOM_LIST(ExtensionAtomList);
 
 	if (self->bytesRead != self->size)
-		BAILWITHERROR(MP4BadDataErr)
+		BAILWITHERROR(MP4BadDataErr);
 
-	bail:
+bail:
 	TEST_RETURN(err);
 
 	return err;
@@ -206,14 +195,14 @@ static MP4Err transform(struct MP4Atom *s, u32 sch_type, u32 sch_version, char* 
 	err = MP4CreateRestrictedSchemeInfoAtom(&rinf); if (err) goto bail;
 
 	/* assign */
-	rinf->MP4OriginalFormat = (MP4AtomPtr)frma; frma = NULL;
-	rinf->MP4SchemeType = (MP4AtomPtr)schm; schm = NULL;
-	rinf->MP4SchemeInfo = (MP4AtomPtr)schi; schi = NULL;
+	rinf->addAtom(rinf, (MP4AtomPtr)frma); frma = NULL;
+	rinf->addAtom(rinf, (MP4AtomPtr)schm); schm = NULL;
+	rinf->addAtom(rinf, (MP4AtomPtr)schi); schi = NULL;
 
 	self->type = self->restriction_type;
 
 	/* set */
-	self->MP4RestrictedSchemeInfo = (MP4AtomPtr)rinf;
+	self->addAtom(self, (MP4AtomPtr)rinf);
 
 bail:
 	if (frma)  frma->destroy((MP4AtomPtr)frma);
@@ -369,6 +358,7 @@ MP4Err MP4CreateRestrictedVideoSampleEntryAtom(MP4RestrictedVideoSampleEntryAtom
 	self->getSchemeInfoAtom = getSchemeInfoAtom;
 	self->getScheme = getScheme;
 	self->transform = transform;
+	self->addAtom = addAtom;
 
 	err = MP4MakeLinkedList(&self->ExtensionAtomList); if (err) goto bail;
 

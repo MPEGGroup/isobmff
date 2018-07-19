@@ -47,12 +47,12 @@ MP4Err MP4ParseAtomUsingProtoList( MP4InputStreamPtr inputStream, u32* protoList
 		u32 MP4SampleEntryProtos[] = { MP4MPEGSampleEntryAtomType, MP4VisualSampleEntryAtomType, MP4AudioSampleEntryAtomType, 
 		MP4EncAudioSampleEntryAtomType, MP4EncVisualSampleEntryAtomType, 
 		MP4XMLMetaSampleEntryAtomType, MP4TextMetaSampleEntryAtomType, 
-		MP4AMRSampleEntryAtomType, MP4AWBSampleEntryAtomType, MP4AMRWPSampleEntryAtomType, MP4H263SampleEntryAtomType, 
+		MP4AMRSampleEntryAtomType, MP4AWBSampleEntryAtomType, MP4AMRWPSampleEntryAtomType, MP4H263SampleEntryAtomType, MP4RestrictedVideoSampleEntryAtomType, 
 		0 };
 #else
 		u32 MP4SampleEntryProtos[] = { MP4MPEGSampleEntryAtomType, MP4VisualSampleEntryAtomType, MP4AudioSampleEntryAtomType, 
 		MP4XMLMetaSampleEntryAtomType, MP4TextMetaSampleEntryAtomType, 
-		MP4AMRSampleEntryAtomType, MP4AWBSampleEntryAtomType, MP4AMRWPSampleEntryAtomType, MP4H263SampleEntryAtomType, 
+		MP4AMRSampleEntryAtomType, MP4AWBSampleEntryAtomType, MP4AMRWPSampleEntryAtomType, MP4H263SampleEntryAtomType, MP4RestrictedVideoSampleEntryAtomType,
 		0 };
 #endif
 
