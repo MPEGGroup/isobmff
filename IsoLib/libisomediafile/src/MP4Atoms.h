@@ -151,7 +151,12 @@ enum
 	MP4RestrictedSchemeInfoAtomType						= MP4_FOUR_CHAR_CODE( 'r', 'i', 'n', 'f' ),
 	MP4StereoVideoGroupAtomType						    = MP4_FOUR_CHAR_CODE( 's', 't', 'e', 'r' ),
 	MP4TrackTypeAtomType								= MP4_FOUR_CHAR_CODE( 't', 't', 'y', 'p' ),
-	MP4RestrictedVideoSampleEntryAtomType				= MP4_FOUR_CHAR_CODE( 'r', 'e', 's', 'v' )
+	MP4RestrictedVideoSampleEntryAtomType				= MP4_FOUR_CHAR_CODE( 'r', 'e', 's', 'v' ),
+    MP4SegmentTypeAtomType                              = MP4_FOUR_CHAR_CODE( 's', 't', 'y', 'p' ),
+    MP4SegmentIndexAtomType                             = MP4_FOUR_CHAR_CODE( 's', 'i', 'd', 'x' ),
+    MP4SubsegmentIndexAtomType                          = MP4_FOUR_CHAR_CODE( 's', 's', 'i', 'x' ),
+    MP4ProducerReferenceTimeAtomType                    = MP4_FOUR_CHAR_CODE( 'p', 'r', 'f', 't' )
+
 }; 
 
 #ifdef ISMACrypt
@@ -1778,6 +1783,98 @@ typedef struct MP4SampleDependencyAtom
 	MP4Err (*getSampleDependency)( struct MP4SampleDependencyAtom *self, u32 sampleNumber, u8* dependency  );
 } MP4SampleDependencyAtom, *MP4SampleDependencyAtomPtr;
 
+typedef struct SIDXReference
+{
+    u8 referenceType;
+    u32 referencedSize;
+    u32 subsegmentDuration;
+    u8 startsWithSAP;
+    u8 SAPType;
+    u32 SAPDeltaTime;
+
+} SIDXReference, *SIDXReferencePtr;
+
+typedef struct SubsegmentRange
+{
+    u8 level;
+    u32 rangeSize;
+
+} SubsegmentRange, *SubsegmentRangePtr;
+
+typedef struct Subsegment
+{
+    u32 rangeCount;
+    MP4LinkedList rangesList;
+
+    u32(*getRangeCount)(struct Subsegment *self);
+    MP4Err(*addRange)(struct Subsegment *self);
+
+} Subsegment, *SubsegmentPtr;
+
+typedef struct MP4SegmentTypeAtom
+{
+    MP4_FULL_ATOM
+
+    ISOErr(*addStandard)(struct MP4SegmentTypeAtom *self, u32 standard);
+    ISOErr(*setBrand)(struct MP4SegmentTypeAtom *self, u32 standard, u32 minorversion);
+    ISOErr(*getBrand)(struct MP4SegmentTypeAtom *self, u32* standard, u32* minorversion);
+    u32(*getStandard)(struct MP4SegmentTypeAtom *self, u32 standard);
+
+    u32 majorBrand;										/* the brand of this track */
+    u32 minorVersion;									/* the minor version of this track */
+    u32 itemCount;										/* the number of items in the compatibility list */
+    u32 *compatibilityList;
+
+} MP4SegmentTypeAtom, *MP4SegmentTypeAtomPtr;
+
+typedef struct MP4SegmentIndexAtom
+{
+    MP4_FULL_ATOM
+
+    u32 referenceId;
+    u32 timescale;
+
+    u32 earliestPresentationTime;
+    u32 firstOffset;
+
+    u16 reserved1;
+    u16 referenceCount;
+
+    MP4LinkedList referencesList;
+
+    u32(*getReferenceCount)(struct MP4SegmentIndexAtom *self);
+    MP4Err(*addReference)(struct MP4SegmentIndexAtom *self, 
+        u8 referenceType, u32 referencedSize, 
+        u32 subsegmentDuration, 
+        u8 startsWithSAP, u8 SAPType, u32 SAPDeltaTime);
+
+} MP4SegmentIndexAtom, *MP4SegmentIndexAtomPtr;
+
+typedef struct MP4SubsegmentIndexAtom
+{
+    MP4_FULL_ATOM
+
+    u32 subsegmentCount;
+
+    MP4LinkedList subsegmentsList;
+
+    u32(*getSubsegmentCount)(struct MP4SubsegmentIndexAtom *self);
+    MP4Err(*addSubsegment)(struct MP4SubsegmentIndexAtom *self, struct Subsegment *ss);
+    MP4Err(*addSubsegmentRange)(struct Subsegment *self, u8 level, u32 rangeSize);
+    
+
+} MP4SubsegmentIndexAtom, *MP4SubsegmentIndexAtomPtr;
+
+typedef struct MP4ProducerReferenceTimeAtom
+{
+    MP4_FULL_ATOM
+
+    u32 referenceTrackId;
+    u64 ntpTimestamp;
+    u32 mediaTime;
+
+} MP4ProducerReferenceTimeAtom, *MP4ProducerReferenceTimeAtomPtr;
+
 MP4Err MP4GetListEntryAtom( MP4LinkedList list, u32 atomType, MP4AtomPtr* outItem );
 MP4Err MP4DeleteListEntryAtom( MP4LinkedList list, u32 atomType );
 
@@ -1868,6 +1965,11 @@ MP4Err MP4CreateRestrictedVideoSampleEntryAtom(MP4RestrictedVideoSampleEntryAtom
 MP4Err MP4CreateTrackTypeAtom(MP4TrackTypeAtomPtr *outAtom);
 MP4Err MP4CreateStereoVideoAtom(MP4StereoVideoAtomPtr *outAtom);
 MP4Err MP4CreateStereoVideoGroupAtom(MP4StereoVideoGroupAtomPtr *outAtom);
+
+MP4Err MP4CreateSegmentTypeAtom(MP4SegmentTypeAtomPtr *outAtom);
+MP4Err MP4CreateSegmentIndexAtom(MP4SegmentIndexAtomPtr *outAtom);
+MP4Err MP4CreateSubsegmentIndexAtom(MP4SubsegmentIndexAtomPtr *outAtom);
+MP4Err MP4CreateProducerReferenceTimeAtom(MP4ProducerReferenceTimeAtomPtr *outAtom);
 
 #ifdef ISMACrypt
 MP4Err MP4CreateSecurityInfoAtom( MP4SecurityInfoAtomPtr *outAtom );

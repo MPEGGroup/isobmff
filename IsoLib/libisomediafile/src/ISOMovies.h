@@ -119,7 +119,17 @@ enum
 	ISO3GP5Brand							= MP4_FOUR_CHAR_CODE( '3', 'g', 'p', '5' ),		/* 3GPP Release 5 */
 	ISO3GP6Brand							= MP4_FOUR_CHAR_CODE( '3', 'g', 'p', '6' ),		/* 3GPP Release 6 */
 	ISOMPEG21Brand							= MP4_FOUR_CHAR_CODE( 'm', 'p', '2', '1' ),		/* MPEG-21 */
-	ISOUnknownBrand							= MP4_FOUR_CHAR_CODE( ' ', ' ', ' ', ' ' )		/* default 'brand' */
+	ISOUnknownBrand							= MP4_FOUR_CHAR_CODE( ' ', ' ', ' ', ' ' ),		/* default 'brand' */
+
+    /* DASH-related brands (ISO/IEC 23009-1) */
+    ISO_DASH_Brand                          = MP4_FOUR_CHAR_CODE( 'd', 'a', 's', 'h' ),
+    ISO_DASH_DSMS_Brand                     = MP4_FOUR_CHAR_CODE( 'd', 's', 'm', 's' ),     /* self-initializing media segment */
+    ISO_DASH_MSDH_Brand                     = MP4_FOUR_CHAR_CODE( 'm', 's', 'd', 'h' ),     /* general format media segment */
+    ISO_DASH_MSIX_Brand                     = MP4_FOUR_CHAR_CODE( 'm', 's', 'd', 'h' ),     /* indexed media segment */
+    ISO_DASH_RISX_Brand                     = MP4_FOUR_CHAR_CODE( 'r', 'i', 's', 'x' ),     /* representation index segment for MPEG-2 TS media segments */
+    ISO_DASH_LMSG_Brand                     = MP4_FOUR_CHAR_CODE( 'l', 'm', 's', 'g' ),     /* last media segment indicator (ISO BMFF) */
+    ISO_DASH_SISX_Brand                     = MP4_FOUR_CHAR_CODE( 's', 'i', 's', 'x' ),     /* single index segment (MPEG-2 TS) */
+    ISO_DASH_SSSS_Brand                     = MP4_FOUR_CHAR_CODE( 's', 's', 's', 's' )      /* subsegment index segment (MPEG-2 TS) */
 };
 
 /* AVC/SVC PS places */
