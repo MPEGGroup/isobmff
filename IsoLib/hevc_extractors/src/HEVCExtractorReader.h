@@ -143,6 +143,10 @@ private:
   uint32_t          getLengthField(std::vector<char>& rvSample, uint32_t uiPointer) const;
   void              setLengthField(std::vector<char>& rvSample, uint32_t uiPointer, uint32_t uiSize) const;
 
+  // this is a hack function since we don't have seeking implemented now
+  // TODO: implement seeking and remove this method
+  void              skipNotUsedAUs(TrackIDSet& rUsedTrackIds);
+
 ////////////////////////////////// MEMBERS //////////////////////////////////
 private:
   bool              m_bInitialized;     // initialized flag
