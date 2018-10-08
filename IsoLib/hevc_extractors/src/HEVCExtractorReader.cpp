@@ -217,6 +217,15 @@ uint32_t HEVCExtractorReader::getNextSampleNr(uint32_t uiTrackID) const
   return reader->nextSampleNumber;
 }
 
+std::vector<char> HEVCExtractorReader::getNextSample()
+{
+  if(isHvc2Track(m_uiSelectedTrackID))
+  {
+    return getNextAUResolveExtractors();
+  }
+  return getNextAUwithoutExtractors();
+}
+
 int32_t HEVCExtractorReader::getNextAU(uint32_t uiTrackID,
                                  ISOHandle sampleH,
                                  uint32_t* pUiSize)
@@ -296,6 +305,7 @@ std::vector<char> HEVCExtractorReader::getNextAUResolveExtractors()
 
           // set data_offset and data_length fields dependent on length_size_minus_one flag
           uint32_t uiLengthSizeMinusOne = m_mLenSizeMinOne.at(m_uiSelectedTrackID);
+
           switch(uiLengthSizeMinusOne)
           {
           case 0:
@@ -493,13 +503,16 @@ int32_t HEVCExtractorReader::init(std::string strFileName, bool bForce)
     m_mTrackReaders[uiTrackID] = pReader;
 
     // get LengthSizeMinusOne flags
-    uint32_t uiLenSizeMinOne = 0;
-    err = getLengthSizeMinusOneFlag(uiTrackID, uiLenSizeMinOne);
-    if(err)
+    uint32_t uiLenSizeMinOne = m_uiDefLenSizeMinOne;
+    if(m_uiDefLenSizeMinOne==0)
     {
-      std::cerr << "could not get lensizeminusone flag: "<< err << std::endl;
-      if(!bForce) continue;
-      uiLenSizeMinOne = 3;
+      err = getLengthSizeMinusOneFlag(uiTrackID, uiLenSizeMinOne);
+      if(err)
+      {
+        std::cerr << "could not get lensizeminusone flag: "<< err << std::endl;
+        if(!bForce) continue;
+        uiLenSizeMinOne = 3;
+      }
     }
     m_mLenSizeMinOne[uiTrackID] = uiLenSizeMinOne;
 
