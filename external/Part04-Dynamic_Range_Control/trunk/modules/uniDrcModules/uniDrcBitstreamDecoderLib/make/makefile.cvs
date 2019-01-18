@@ -1,0 +1,6 @@
+#local cvs modul definitions for uniDrcBitstreamDecoderLib
+
+# cvsroot<cvsmodulename> <cvsroot>
+
+# maplib<libraryname>$(LIB_SUFFIX) = <cvsmodulename>
+maplibreadonlybitbuf$(LIB_SUFFIX)  = ../../tools/readonlybitbuf

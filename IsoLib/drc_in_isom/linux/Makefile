@@ -2,7 +2,7 @@
 
 VPATH = . ../src
 ISOLIBPATH = ../../libisomediafile
-DRCREFSWPATH = ../../Part04-Dynamic_Range_Control/trunk
+DRCREFSWPATH = ../../../external/Part04-Dynamic_Range_Control/trunk
 
 CFLAGS = -I. -I../src -I$(ISOLIBPATH)/linux -I$(ISOLIBPATH)/src -I$(DRCREFSWPATH)/tools/readonlybitbuf/include -I$(DRCREFSWPATH)/tools/writeonlybitbuf/include -I$(DRCREFSWPATH)/tools/wavIO/include -I$(DRCREFSWPATH)/modules/uniDrcModules/uniDrcBitstreamDecoderLib/include -I$(DRCREFSWPATH)/modules/uniDrcModules/uniDrcCommon -O -g -Wall -w -std=c99
 

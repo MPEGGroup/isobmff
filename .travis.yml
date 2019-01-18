@@ -1,8 +1,24 @@
+stages:
+  - compile
+  - test
+
 language: c
+
 compiler:
   - gcc
+
 before_script: cd IsoLib/HM/build/linux && make && cd -
-script: cd IsoLib/linux && make
+
+jobs:
+  allow_failures:
+    - name: "drc_in_isom" 
+  include:
+    - stage: compile
+      name: "All"
+      script: cd IsoLib/linux && make
+    - stage: compile
+      name: "drc_in_isom"
+      script: cd IsoLib/drc_in_isom/linux && make
 
 cache:
   directories:
