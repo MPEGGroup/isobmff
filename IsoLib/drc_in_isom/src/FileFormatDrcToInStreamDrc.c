@@ -150,7 +150,7 @@ MP4Err  prepareDrcBitStreamHelper           (DrcBitStreamHelper *drcBitStreamHel
                                     &drcBitStreamHelper->hLoudnessInfoSet, &drcBitStreamHelper->hUniDrcGain);
     if (bitErr) BAILWITHERROR(MP4InternalErr);
     
-    bitErr = initUniDrcBitstreamDec(drcBitStreamHelper->hUniDrcBsDecStruct, staticDrcData->sampleRate, 1024);
+    bitErr = initUniDrcBitstreamDec(drcBitStreamHelper->hUniDrcBsDecStruct, staticDrcData->sampleRate, 1024, 0, -1, NULL);
     if (bitErr) BAILWITHERROR(MP4InternalErr);
     
     bitErr = processUniDrcBitstreamDec_uniDrcConfig(drcBitStreamHelper->hUniDrcBsDecStruct,

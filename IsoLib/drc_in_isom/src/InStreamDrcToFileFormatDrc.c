@@ -43,7 +43,7 @@ MP4Err  addCoefficientUniDRC            (UniDrcConfig *uniDrcConfig, MP4AudioSam
 MP4Err  addInstructionsUniDRC           (UniDrcConfig *uniDrcConfig, MP4AudioSampleEntryAtomPtr audioSampleEntry);
 
 MP4Err  addCoeffUniDRCSequences         (DRCCoefficientUniDRCAtomPtr coeffUniDRCAtom, DrcCoefficientsUniDrc *coeffUniDrc);
-MP4Err  addCoeffUniDRCSeqBandInfos      (DRCCoefficientUniDRCSequence *sequence, SequenceParams *sequenceParams);
+MP4Err  addCoeffUniDRCSeqBandInfos      (DRCCoefficientUniDRCSequence *sequence, GainSetParams *sequenceParams);
 
 MP4Err  addInstrAdditionalDownMixIDs    (DRCInstructionsBasicAtomPtr instrBasicAtom, DrcInstructionsBasic *instrBasic);
 
@@ -302,8 +302,8 @@ MP4Err  addInstructionsBasics           (UniDrcConfig *uniDrcConfig, MP4AudioSam
         
         instrBasicAtom->DRC_set_ID                  = instrBasic->drcSetId;
         instrBasicAtom->DRC_location                = DRC_LOCATION;
-        instrBasicAtom->downmix_ID                  = instrBasic->downmixId;
-        instrBasicAtom->additional_dowmix_ID_count  = instrBasic->additionalDownmixIdCount;
+        instrBasicAtom->downmix_ID                  = instrBasic->downmixId[0];
+        instrBasicAtom->additional_dowmix_ID_count  = instrBasic->downmixIdCount - 1;
         
         err = addInstrAdditionalDownMixIDs(instrBasicAtom, instrBasic); if (err) goto bail;
         
@@ -339,13 +339,13 @@ MP4Err  addInstrAdditionalDownMixIDs    (DRCInstructionsBasicAtomPtr instrBasicA
     
     logMsg(LOGLEVEL_DEBUG, "Adding additional downmix ids to instruction basics atom");
     
-    for (int j = 0; j < instrBasic->additionalDownmixIdCount; j++)
+    for (int j = 1; j < instrBasic->downmixIdCount; j++)
     {
         DRCInstructionsAdditionalDownMixID    *downMixID;
         downMixID       = calloc(1, sizeof(DRCInstructionsAdditionalDownMixID));
 
         downMixID->reserved                 = 0;
-        downMixID->additional_dowmix_ID     = instrBasic->additionalDownmixId[j];
+        downMixID->additional_dowmix_ID     = instrBasic->downmixId[j];
         
         err = MP4AddListEntry(downMixID, instrBasicAtom->additionalDownMixIDs); if ( err ) goto bail;
     }
@@ -375,7 +375,7 @@ MP4Err  addCoefficientUniDRC            (UniDrcConfig *uniDrcConfig, MP4AudioSam
         if (coeffUniDrc->drcFrameSizePresent == 1)
             coeffUniDRCAtom->bs_drc_frame_size      = coeffUniDrc->drcFrameSize - 1;
         
-        coeffUniDRCAtom->sequence_count             = coeffUniDrc->sequenceCount;
+        coeffUniDRCAtom->sequence_count             = coeffUniDrc->gainSetCount;
         
         err = addCoeffUniDRCSequences(coeffUniDRCAtom, coeffUniDrc); if (err) goto bail;
         
@@ -393,13 +393,13 @@ MP4Err  addCoeffUniDRCSequences         (DRCCoefficientUniDRCAtomPtr coeffUniDRC
     
     logMsg(LOGLEVEL_DEBUG, "Adding coefficient drc sequences to coefficient uni drc atom");
     
-    for (int j = 0; j < coeffUniDrc->sequenceCount; j++)
+    for (int j = 0; j < coeffUniDrc->gainSetCount; j++)
     {
         DRCCoefficientUniDRCSequence    *sequence;
-        SequenceParams                  *sequenceParams;
+        GainSetParams                  *sequenceParams;
         
         sequence        = calloc(1, sizeof(DRCCoefficientUniDRCSequence));
-        sequenceParams  = &coeffUniDrc->sequenceParams[j];
+        sequenceParams  = &coeffUniDrc->gainSetParams[j];
         
         
         sequence->reserved1                 = 0;
@@ -431,7 +431,7 @@ bail:
     return err;
 }
 
-MP4Err  addCoeffUniDRCSeqBandInfos      (DRCCoefficientUniDRCSequence *sequence, SequenceParams *sequenceParams)
+MP4Err  addCoeffUniDRCSeqBandInfos      (DRCCoefficientUniDRCSequence *sequence, GainSetParams *sequenceParams)
 {
     MP4Err      err;
     
@@ -449,7 +449,7 @@ MP4Err  addCoeffUniDRCSeqBandInfos      (DRCCoefficientUniDRCSequence *sequence,
         bandCharacteristic  = calloc(1, sizeof(DRCCoefficientUniDRCSequenceBandCharacteristic));
         
         bandCharacteristic->reserved            = 0;
-        bandCharacteristic->DRC_characteristic  = gainParams->drcCharacteristics;
+        bandCharacteristic->DRC_characteristic  = gainParams->drcCharacteristic;
 
         
         err = MP4AddListEntry(bandCharacteristic, sequence->bandCharacteristics);   if ( err ) goto bail;
@@ -506,16 +506,16 @@ MP4Err  addInstructionsUniDRC           (UniDrcConfig *uniDrcConfig, MP4AudioSam
         
         instrUniDRCAtom->DRC_set_ID                  = instrUniDrc->drcSetId;
         instrUniDRCAtom->DRC_location                = DRC_LOCATION;
-        instrUniDRCAtom->downmix_ID                  = instrUniDrc->downmixId;
-        instrUniDRCAtom->additional_dowmix_ID_count  = instrUniDrc->additionalDownmixIdCount;
+        instrUniDRCAtom->downmix_ID                  = instrUniDrc->downmixId[0];
+        instrUniDRCAtom->additional_dowmix_ID_count  = instrUniDrc->downmixIdCount;
         
-        for (int j = 0; j < instrUniDrc->additionalDownmixIdCount; j++)
+        for (int j = 1; j < instrUniDrc->downmixIdCount; j++)
         {
             DRCInstructionsAdditionalDownMixID    *downMixID;
             downMixID       = calloc(1, sizeof(DRCInstructionsAdditionalDownMixID));
             
             downMixID->reserved                 = 0;
-            downMixID->additional_dowmix_ID     = instrUniDrc->additionalDownmixId[j];
+            downMixID->additional_dowmix_ID     = instrUniDrc->downmixId[j];
             
             err = MP4AddListEntry(downMixID, instrUniDRCAtom->additionalDownMixIDs); if ( err ) goto bail;
         }
@@ -552,7 +552,7 @@ MP4Err  addInstructionsUniDRC           (UniDrcConfig *uniDrcConfig, MP4AudioSam
             for (u8 m = 0; m < instrUniDRCAtom->channel_count; m++)
             {
                 int found         = -1;
-                u8 sequenceIndex = instrUniDrc->sequenceIndex[m] + 1;
+                u8 sequenceIndex = instrUniDrc->gainSetIndex[m] + 1;
                 float duckingModifier = -10.0;
                 
                 DuckingModifiers *duckingModifierForChannel = &instrUniDrc->duckingModifiersForChannel[m];
@@ -614,17 +614,17 @@ MP4Err  addInstructionsUniDRC           (UniDrcConfig *uniDrcConfig, MP4AudioSam
         }
         else
         {
-            if ((instrUniDrc->downmixId != 0) && (instrUniDrc->downmixId != 0x7F))
+            if ((instrUniDrc->downmixId[0] != 0) && (instrUniDrc->downmixId[0] != 0x7F))
             {
                 for (u32 dmixIndex = 0; dmixIndex < uniDrcConfig->downmixInstructionsCount; dmixIndex++)
                 {
                     DownmixInstructions *downMixIntr;
                     downMixIntr = &uniDrcConfig->downmixInstructions[dmixIndex];
-                    if (instrUniDrc->downmixId == downMixIntr->downmixId)
+                    if (instrUniDrc->downmixId[0] == downMixIntr->downmixId)
                         instrUniDRCAtom->channel_count = downMixIntr->targetChannelCount;
                 }
             }
-            else if (instrUniDrc->downmixId == 0x7F)
+            else if (instrUniDrc->downmixId[0] == 0x7F)
             {
                 instrUniDRCAtom->channel_count = 1;
             }
@@ -632,7 +632,7 @@ MP4Err  addInstructionsUniDRC           (UniDrcConfig *uniDrcConfig, MP4AudioSam
             for (u8 m = 0; m < instrUniDRCAtom->channel_count; m++)
             {
                 int found         = -1;
-                u8 sequenceIndex = instrUniDrc->sequenceIndex[m] + 1;
+                u8 sequenceIndex = instrUniDrc->gainSetIndex[m] + 1;
                 
                 for (int u = 0; u < channelGroupCount; u++)
                 {
@@ -676,18 +676,18 @@ MP4Err  addInstructionsUniDRC           (UniDrcConfig *uniDrcConfig, MP4AudioSam
                 gainModifiers           = &instrUniDrc->gainModifiersForChannelGroup[x];
                 
                 channelGroupGainScaling->reserved1                  = 0;
-                channelGroupGainScaling->gain_scaling_present       = gainModifiers->gainScalingPresent;
+                channelGroupGainScaling->gain_scaling_present       = gainModifiers->gainScalingPresent[0]; // This should be per band!
                 if (channelGroupGainScaling->gain_scaling_present == 1)
                 {
-                    channelGroupGainScaling->bs_attenuation_scaling        = (u8) (gainModifiers->attenuationScaling / 0.125f); //Convert back
-                    channelGroupGainScaling->bs_amplification_scaling      = (u8) (gainModifiers->amplificationScaling / 0.125f);
+                    channelGroupGainScaling->bs_attenuation_scaling        = (u8) (gainModifiers->attenuationScaling[0] / 0.125f); //Convert back
+                    channelGroupGainScaling->bs_amplification_scaling      = (u8) (gainModifiers->amplificationScaling[0] / 0.125f);
                 }
                 channelGroupGainScaling->reserved2                  = 0;
-                channelGroupGainScaling->gain_offset_present        = gainModifiers->gainOffsetPresent;
+                channelGroupGainScaling->gain_offset_present        = gainModifiers->gainOffsetPresent[0];
                 if (channelGroupGainScaling->gain_offset_present == 1)
                 {
                     channelGroupGainScaling->reserved3              = 0;
-                    channelGroupGainScaling->bs_gain_offset         = (u8) ((gainModifiers->gainOffset / 0.25f) - 1);
+                    channelGroupGainScaling->bs_gain_offset         = (u8) ((gainModifiers->gainOffset[0] / 0.25f) - 1);
                 }
                 err = MP4AddListEntry(channelGroupGainScaling, instrUniDRCAtom->channelGroupGainScalings); if ( err ) goto bail;
             }
