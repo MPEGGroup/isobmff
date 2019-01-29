@@ -18,12 +18,13 @@ jobs:
       script: cd IsoLib/linux && make
     - stage: compile
       name: "All + external + drc_in_isom"
-      script: cd external/Part04-Dynamic_Range_Control/trunk/tools/writeonlybitbuf/make/ && make && cd -
-      script: cd external/Part04-Dynamic_Range_Control/trunk/tools/readonlybitbuf/make/ && make && cd -
-      script: cd external/Part04-Dynamic_Range_Control/trunk/tools/wavIO/make/ && make && cd -
-      script: cd external/Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/make/ && make && cd -
-      script: cd IsoLib/linux && make && cd -
-      script: cd IsoLib/drc_in_isom/linux && make
+      script:
+        - cd external/Part04-Dynamic_Range_Control/trunk/tools/writeonlybitbuf/make/ && make && cd -
+        - cd external/Part04-Dynamic_Range_Control/trunk/tools/readonlybitbuf/make/ && make && cd -
+        - cd external/Part04-Dynamic_Range_Control/trunk/tools/wavIO/make/ && make && cd -
+        - cd external/Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/make/ && make && cd -
+        - cd IsoLib/linux && make && cd -
+        - cd IsoLib/drc_in_isom/linux && make
 
 cache:
   directories:
