@@ -1,0 +1,470 @@
+
+ifndef MAKEROOT
+MAKEROOT=..
+endif
+#  The default of configuration parameters is 0 (zero)
+#  which is equivalent to no explicit setting.
+#  There exist some exceptions in the modules.
+#  For determination, review the according makefiles.
+
+#  The global configuration file
+include $(GENERALROOT)/general/makefile.cfg
+
+#  The global configuration file for personal changes (not in CVS)
+-include $(GENERALROOT)/general/makefile.cfg-local
+
+#  Localization might be disabled in makefile.cfg-local
+ifeq "$(LOCALIZATION)" "1"
+
+#  The local configuration file should supersede the global settings
+#  The existence of the file is optional.
+-include makefile.cfg
+
+#  The local configuration file for personal changes (not in CVS)
+-include makefile.cfg-local
+
+endif
+
+#  Recognized by makefile.platform
+#  Variable definitions
+#  general use
+## VERBOSE            the flag whether the making should be more verbose
+## PRINTLEVEL         configure echoing of progress information - can be used together with VERBOSE
+##                    use PRINTLEVEL=X, where X is a string with the list of active print levels
+##                    1: essential (library, binary, ...)
+##                    2: compiler (compiling, dependencies, ...)
+##                    3: cleaning and other information (clean, clobber, ...)
+##                    PRINTLEVEL=123 is all information. use also makefile.cfg-local to configure printout
+## MAKE_CC            selects the compiler
+## LOCALLIBS          if defined the external needed libraries are compiled and linked in.
+##                    if not defined the external needed libraries are linked in from the audio archiv.
+## DIRSYNTAX          select the directory syntax used for saving made targets (1=origin, 2=new)
+##                    DIRSYNTAX=2: objects/dependencies: depending on OBJROOTDIR    and ROOTDIR.
+##                                executables/libraries: depending on TARGETROOTDIR and ROOTDIR.
+##                                ROOTDIR gives the root of the module, is by default `.' and
+##                                acts as fall back for the variables OBJROOTDIR and TARGETROOTDIR.
+##                                If OBJROOTDIR    is set place objects/dependencies to this location.
+##                                If TARGETROOTDIR is set place executables/libraries to this location.
+## LOCALIZATION       if 1 include module local configuration makefiles else do not include.
+## DEBUG              for debugging or not select 1 or 0
+## OPTIM_LEV          = OPTIM the optimization level 0,1,2,3,...
+## OPTIM              see OPTIM_LEV
+## OBJROOTDIR         recogniced for DIRSYNTAX=2 only: the objects root directory for all making output (e.g. *.o, *.d)
+## TARGETROOTDIR      recogniced for DIRSYNTAX=2 only: the targets root directory for all making output (e.g. executables, libraries)
+## OBJROOTWITHOUTPWD  recogniced for DIRSYNTAX=2 only: the current pwd path is not included in the object path
+## DEBUGPLOT          enables plotoutput with plotmtv
+## ISOMP4             the libisomp4.a is linked in, specific defines are set up and the header include path is added
+## USE_AFSP           the libtsp.a    is linked in, specific defines are set up
+## EXPLICITLIBLINK    if defined the libraries are linked with their full pathfilenames instead of
+##                         using the -L and -l linker options
+## SHAREDLIB          SHAREDLIBS=-1 - one absolute static archive library (.a) is generated
+##                    SHAREDLIBS=0  - static archive libraries (.a) are generated
+##                    SHAREDLIBS=1  - static archive libraries (.a) are generated with -fPIC
+##                    SHAREDLIBS=2  - dynamically loaded shared object libraries (.so) are generated
+## GMAKE_UNSET_SHELL_ENVIRONMENT if defined the shell environment is setted empty entering the general makefiles.
+## ZIPSRCS_CONSIDER_DEFFLAGS if not defined the dependencies of c-files from h.files are found using the grep command.
+##                    If defined the dependencies are found using the real gcc -M dependency generation mechanism.
+##                    This needs more time but considers DEFFLAGS.
+
+#+ MAKEROOT           the root directory where the general directory of these makefiles reside
+#+ ROOTDIR            the root directory for all bin and lib making output
+#+ GPROF = PROF       insert profiling code if 1 or not
+#+ GCOV               insert code coverage code if 1 or not - run target coverage for lcov
+
+
+#  sophisticated
+#+ ADDONOBJDIR    part to add into the object directory path, e.g. compiling all for different defines
+#+ ADDONDIR       part to add into the software kit directory path
+
+include $(GENERALROOT)/general/makefile.platform
+
+#  Recognized by makefile.rules
+#  The following input variables are recognized
+#  Directries
+#* TARGETTMPDIR the temporary root directory for all making of the target
+#* PLTDIRTAG  the file tag for signaling directory mades
+#+ SRCDIRS    for the source codes
+#* OBJDIR     for objects and dependencies
+#* BINDIR     for maked binaries
+#* LIBDIR     for maked libraries 
+
+#  General
+#+ TARGET     the target to be made
+#* ENCODE     the flag whether an audio encoder or decoder is made
+#+ BINARY     the flag whether a binary or a link to a binary is made
+#+ FHG_MAKEDUMMYFILE the flag whether dummy files should be generated automatically
+#+ DUMMY_SOURCES the dummy file names
+#+ MODULEDIR  
+#+    with DIRSYNTAX=1 the name of the current cvs module with tag if there is one  (not active since not required here)
+#+    with DIRSYNTAX=2 the name of the current module directory (with cvs tag if applicable)
+#+ INSTALL_ROOT_SOFT_SYSTEM_PATH the root path where bin,lib,include reside for installation
+#+ INSTALLLIBS   the libraries   which should be installed
+#+ INSTALLHDRS   the headerfiles which should be installed
+#+ TARGET_SYSTEM the operating system, which the build is done for (makes cross-system compiling possible)
+#+ TARGET_PLATFORM the processor platform, which the build is done for (makes cross-platform compiling possible)
+
+#  Linking
+#* LINK       the linker
+#+ LDFLAGS    the (dynamic) linker command line flags (exclusiv -L -l flags)
+#+ LIBPATH    the -L... path to libraries (inclusiv -L)
+#+ SYSLIBS    the -l... operating system libraries (inclusiv -l) (are not dependencies)
+#+                -lm is added automatically
+#+ LIBS       the -l... library options (inclusiv -l) exclusive operating system libaries
+#+                Are dependencies. So, if they do not exist they are tried to make.
+#+ COMLIBS    the -l... common libraries exclusive operating system libaries
+#+            if LOCALLIBS is unset then they are not dependencies.
+#+            if LOCALLIBS=FORCE is set then the libraries are regarded to be external
+#+            and are tried to be made by automatic rules.
+#* LIB_SUFFIX the library file suffix
+#* LNK_SUFFIX the linker dependency file suffix
+#* EXE_SUFFIX the executable file suffix
+
+#  Compiling
+#* CC         the compiler
+#* CXX        the .cpp .C .c++ compiler
+#+ DEFFLAGS   the -D... defines
+#+ CFLAGS     the compiler flags
+#+ CFLAGS_EXTRA  optional: to give special cflags on the cmdline
+#+ CONLYFLAGS the compiler flags for .c files
+#+ CPPFLAGS   the compiler flags for .cpp files
+#+ INCL       the -I... includes
+#+ OBJS = SRCS the objects to be used for linking
+#+            OBJS: If giving real object files (*.o) these will of course 
+#+                  not be used using 'zipsrcs' and thus only for compilation.
+#+            SRCS: If giving sources (*.c, *.cpp) these will be used for
+#+                  compilation and when using 'zipsrcs'.
+#+ MOC_H_OBJS the header files for moc
+#* DCC        the dependency compiler
+#* DEPFLAGS   the dependency compiler flags
+#* SED        the sed command for wrapping the dependency compiler output
+#+ INCLDEP    the flag whether the automatically generated dependencies have to be included
+
+#* Internal only
+#* BUSWIDTH   introduced for 64 Bit machines.
+#*            On SGI and Linux, the distinction between 32 and 64 Bit busses
+#*            becomes necessary. Usually 64 Bit executables do not run on
+#*            32 Bit systems.
+#* UNAME_S
+#* CYGNUSNAMES
+#* MODULETAG
+#
+#* CHARSPACE
+#* EMPTY
+#* OPTIONS
+#
+#* CLEANLIBDEPS
+#* CLOBBERLIBDEPS
+#* CVSUPDATELIBDEPS
+#
+#* GNUCOMPILER
+#* CPP
+#* MAKE
+#
+#* CURDIR
+#* DIRDEPS
+#* DIRMOCSRCS
+#* INCDIR
+#* PLTDIR
+#
+#* SETENVVARS
+#* UNSETENVVARS
+#* EXTERNALLIBCMDLINE
+#* LOCALLIBECHO
+#* LIBNAME
+#* LIBNAMEREQ
+#
+#* INSTALLBINS
+#* INSTALLLIBDEPS
+#* LNK
+#* SUFFIXES
+#* MOC
+#* MOCSRCDIR
+#* MOCSRCS
+#* SRCS
+
+
+#% SUMMARY OF STANDARD MAKE TARGETS
+#% ================================
+#% gmake <empty>
+#% gmake all                both compile the default target all and
+#%                              if necessary checks out and compiles the libraries (libs)
+#% gmake cvsup              all modules and the special modul `general' are updated
+#% gmake cvscheckout        external libraries are checked out
+#% gmake clean              cleans the current modul and the external libs
+#% gmake clobber            clobbers the current modul and the external libs
+#% gmake <target>           make target
+#%
+#% All make targets are restrictable to e.g. LOCALLIBRARIES='lib1 lib2' using only
+#% the specified libs lib1 and lib2. Combinations of the targets are possible (e.g.):
+#%
+#% gmake clobber all        First make clobber then make all.
+#%
+#%
+#% COMMANDLINE EXAMPLES (calling the top level makefile (MAKELEVEL 0))
+#% ===================================================================
+#% Library stuff
+#% -------------
+#% Using absolute archives, standard archives, shared object libraries in
+#% conjunction with local libraries or audio archiv libraries. In the
+#% following example lines usual standard archives are generated using
+#% SHAREDLIB=0. If you want shared object libraries specify SHAREDLIB=2.
+#% If the library assumes other libraries to be included, an absolute
+#% static archive can be generated using SHAREDLIB=-1. The latter one
+#% is linkable standalone against the main objects only using the standard
+#% SYSLIBS (-lm (-lsunmath)).
+#% The variable LOCALLIBS considers whether the needed libraries are taken
+#% from the user local versions or from the common audio archiv.
+#%
+#% gmake SHAREDLIB=0 LOCALLIBS=1
+#% gmake SHAREDLIB=0 LOCALLIBS=
+#% gmake SHAREDLIB=2 LOCALLIBS=1
+#% gmake SHAREDLIB=2 LOCALLIBS=
+#% gmake SHAREDLIB=-1 LOCALLIBS=1
+#% gmake SHAREDLIB=-1 LOCALLIBS=
+#%
+#% Clean up stuff
+#% --------------
+#% Recursivly remove compiled objects etc. in current module and only in
+#% the specified local libraries. If the current module needs usually
+#% more local libraries than specified only the specified libraries are
+#% clobbered.
+#%
+#% gmake LOCALLIBRARIES="utillib resamplelib" clobber
+#%
+#% Removing everything which means the compiled objects etc. from the
+#% current module and all the depending local library objects use simply:
+#%
+#% gmake clobber
+#%
+#% Removing the compiled objects only from the current module
+#% (e.g. audiotools):
+#%
+#% gmake LOCALLIBRARIES="audiotools" clobber
+#%
+#% All commands concerning to the target `clobber' also work with the
+#% `clean',`cvsup' and `cvscheckout' targets. The important general rule
+#% for their uses is that the default is to clobber the current module and the
+#% depending local librariy modules. The variable LOCALLIBRARIES lets you
+#% override the default behavior by specifing the particular modules.
+#%
+#% Making standard targets depending on user defines
+#% -------------------------------------------------
+#% Sometimes, the user defines the source files to be used for compilations depending on
+#% a selection variable. In this case, only the given source files are used for compilation
+#% and also for other targets like `clean'. Do not forget that if the selection definition
+#% variable is set to another value only the selective given objects files corresponding
+#% to the given source files are cleaned. In the following example, only the dummy c-file
+#% of the polyphase software kit is cleaned. The other objects (all the objects of the polyphase
+#% software kit) will still reside in the object directory.
+#% 
+#% gmake POLYPHASEDUMMY=1 clean
+
+#%
+#% COMMANDLINE EXAMPLES (calls within the top level makefile (MAKELEVEL 1))
+#% ========================================================================
+#% Making binaries
+#% ---------------
+#% Lets assume the binary which is to build is called `mytarget' and depends on
+#% the module local dependencies (within the current makefile) here called 
+#% `my_module_local_dependencies'. The target - dependency line looks as
+#% makefile usual like below. The rule starts the using `@$(MAKE) TARGET=$@ '.
+#% The variable TARGET want explicitly to know the target. Thus, $@ replaces
+#% the current target of the rule `mytarget'. Moreover, lets assume the source 
+#% files `main.c' and `module.c' are located in the path `../src' relatively from
+#% the current makefile and include a header file located in `../include'. The
+#% search paths for all making processes are given by using the variable SRCDIRS.
+#% In this example you have to give `SRCDIRS="../include ../src"'. Pathname separation
+#% is done using blanks or double colons. If the code is written using conditional
+#% defines the user has to give the current defines using the variable DEFFLAGS.
+#% In our example, DEFFLAGS=-DCALC_ON_SUN has to be given. If the objects to be stored
+#% using different defines should reside permanently in different directories this
+#% could be achieved using the variable ADDONDIR. E.g. setting ADDONDIR=_sun_special
+#% places the objects into a directory adding `_sun_special' to the default distinction path.
+#% `INCLDEP=1' has always to be provided when making library or binary targets. This
+#% ensures that clean targets do not remove objects depending on something. The necessity
+#% can perhaps changed using the MAKECMDGOALS variable internally in the future. So,
+#% INCLDEP=1 is still necessary for library and binary targets to historical reasons.
+#% The source files are given to the variable SRCS. In our example, the two files are
+#% assigned using `SRCS="main.c module.c"'. Currently supported are .c, .cpp and .f files
+#% for GNU compilers. The variable OBJS can be used too. Within the OBJS variable besides
+#% the also possible file extensions in SRCS .o files are recognized; they are assumed 
+#% to be .c files. Using the target zipsrcs, the SRCS variable is scanned too. In this
+#% case the files in OBJS are not considered because they were primilarily designed for
+#% object files which should be zip into source distributions. So, using the SRCS variable
+#% is the prefered way when giving source files names. If the files are using code and
+#% interface from another library then the used libraries have to be specified for the
+#% binary target. There exist three important library specification variables: SYSLIBS,
+#% LIBS and COMLIBS. Operating system libraries like -lm or -lsunmath would have to
+#% be placed in the SYSLIBS variable. -lm is already included by default and -lsunmath
+#% is also included for convenience on sun solaris machines. Thus, -lm and -lsunmath
+#% is no longer necessary. If the referenced library is made in the current module and
+#% the target always depends on this library than the library is to be specified in the
+#% LIBS variable. By default, the `-l' suffix has to be used always. If the referenced
+#% library is not a system operating library and is not made in the current module, the
+#% library has to be put into the COMLIBS variable. Latter stands for `common libraries'
+#% and offers the possiblity for the LOCALLIBS feature explained elsewhere. In our example
+#% the binary needs the common util library here included by using COMLIBS="-lutil".
+#% The command completes giving the target type `binary' (or `library' in a very similar
+#% way). Thus, the following three lines were have to appear in the top level makefile:
+#%
+#% mytarget: my_module_local_dependencies
+#% 	@$(MAKE) TARGET=$@ SRCDIRS="../include ../src" DEFFLAGS=-DCALC_ON_SUN \
+#%               INCLDEP=1 SRCS="main.c module.c" COMLIBS="-lutil" binary
+
+#% One usual way to short the rule line and to take advantage from another feature is
+#% to compose the lot of the variables into one another variable. E.g. usually the
+#% variable SRCDIRS belongs to different rules and has the same value in the software module.
+#% Thats the reason why it make sense to define almost all variables not only in the rule
+#% but global in the top level makefile. The line above is the split up into the following
+#% lines having the same effect for the particular rule:
+#%
+#% SRCS=main.c module.c
+#% SRCDIRS=../include ../src
+#% OPTIONS=SRCDIRS="$(SRCDIRS)" DEFFLAGS=-DCALC_ON_SUN SRCS="$(SRCS)" INCLDEP=1
+#% mytarget: my_module_local_dependencies
+#% 	@$(MAKE) TARGET=$@ $(OPTIONS) COMLIBS="-lutil" binary
+#%
+#% It is the advantage of the above representation that the variables can be shared with
+#% other targets/rules. E.g. the target zipsrcs reads in directly the variables SRCS and
+#% SRCDIRS. The variable OPTIONS can also be used in other rules.
+#%
+#% If operation system libraries (e.g. the libsocket.a) and a module local library
+#% (e.g. the libmath.a in the current module mathlib) is used e.g. use:
+#%
+#%      @$(MAKE) TARGET=$@ $(OPTIONS) SYSLIBS="-lsocket" LIBS="-lmath" binary
+#%
+#% Making libraries
+#% ----------------
+#% The syntax is equivalent to the binary making. Instead of using the target `binary'
+#% use the target `library'. The general makefiles do support the different library
+#% type makings using the variable SHAREDLIB as explained elsewhere. Bear in mind that
+#% during linking not all symbols are usually resolved. Missing libraries like
+#% operation system libraries have to be linked in when making finally a runable
+#% excutable.
+#%
+#%      @$(MAKE) TARGET=$@ $(OPTIONS) library
+#%
+#% The target `clobber' does not need any information about specific object files
+#% deriving from specific source files. Thus, the target `clobber' is a common rule
+#% defined in the general makefiles. On the other hand, the target `clean' needs
+#% to know about the selectively to be cleaned objects. The selective to be cleaned
+#% objects are usually the library or the binary, the objects deriving from the
+#% existing source files on the sometimes specific object path defined by ADDONOBJDIR.
+#% The variable ADDONDIR defines the appendix of the module common object directory.
+#% Within this module common object directory different specific object directories 
+#% can reside. The variable ADDONOBJDIR specifies the appendix to the default path of
+#% the specific object directory. So, if you want to compile a software kit overall
+#% with different preprocessing defines you can place the objects into different specific
+#% object directories. E.g. to clean selectively use the following rule:
+#%
+#% clean:
+#%      @$(MAKE) TARGET=libaacdec$(LIB_SUFFIX) ADDONOBJDIR="$(ADDONOBJDIR)" SRCS="$(SRCS)" $@
+#%
+#% Usually, you do not need the ADDONOBJDIR specification. Thus, leave it out:
+#%
+#%      @$(MAKE) TARGET=libaacdec$(LIB_SUFFIX) SRCS="$(SRCS)" $@
+#%
+#% Multiple targets
+#% ----------------
+#% It is possible to give multiple targets if it makes sense. This is especially true when
+#% trying to clean more than one build executable. The directory where the targets are 
+#% found are determined by the target extension. Libraries are specified with the variable
+#% LIB_SUFFIX in order to enable both shared object library support (.so) and static library
+#% support (.a). So, libraries are removed in the library directory and binaries in the
+#% binary directory.
+#%
+#% clean:
+#%      @$(MAKE) TARGET="binary_a binary_b" SRCS="$(SRCS)" $@
+#%
+#% Cross-platform/cross-system compiling
+#% -------------------------------------
+#% Using TARGET_PLATFORM/TARGET_SYSTEM variables, cross platform/cross-system compiling is possible, 
+#% as far as corresponding rules are defined in makefile.platform. Generic arguments for 
+#% - TARGET_PLATFORM can be retrieved by calling 
+#%   >uname -m | sed -e s/\ //
+#%   (strip whitespaces from uname -m) on the target platform respectively
+#% - TARGET_SYSTEM can be retrieved by calling 
+#%   >uname -s
+#%   on the target system.
+#% Other, non generic arguments might be defined in makefile.platform.
+#% Possible application scenarios are e.g. compiling 32/64-bit code on a 64/32-bit machine, compiling 
+#% PowerPC-code on x86 platforms, cross-compiling...
+
+include $(GENERALROOT)/general/makefile.rules
+
+#% TODO
+#% ====
+#% Resolving LIBPATH problem
+#% -------------------------
+#% On some machines like unix the environment variable LIBPATH is already otherwise in use.
+#% Workaround suggestions:
+#% - Use GMAKE_UNSET_SHELL_ENVIRONMENT to unset all environment variables (except some real
+#%   important).
+#% - Rename LIBPATH inside the general makefiles locally to e.g. LIB2PATH.
+#% - Prefix all variables inside the general makefiles. Hint: Due to the use of the dynamic
+#%   variables name feature of the GNU makefile syntax, this could be very tricky to implement.
+#%
+#% Library Prefixing
+#% -----------------
+#% E.g. -laudio -> -lfhgaudio
+#% There can be a lot of local changes necessary to implement this feature.
+#%
+#% Dependencies
+#% ------------
+#% Other real open issue is whether recompilation should take place if the makefiles changes.
+#% E.g. if the top level makefile changes, it has clearly to be assumend that DEFFLAGS could
+#% have changed. In this case a complete recompilation could make sense. Currently, no
+#% recompilation is made.
+#%
+#% On some systems, the directory time stamps change in another way as assumed when
+#% changing a file within this directory. Because the makefiles consider directory time
+#% stamps in some way, there were observed some additional dependency
+#% generations due to this fact. There were also some problems with server time stamping.
+#% (Made target time stamp more recent than sources but this is a server time problem.)
+#%
+#% Sometimes, some suspicious additonal dependency makings have been observed.
+#% One example for this becomes visible if you gmake a project the first time 
+#% which uses the self checkout mechanism. After the first run some dependencies
+#% are made a second time which shouldn't be necessary. No other drawbacks have
+#% been observed in this case.
+#%
+#% MOC support
+#% -----------
+#% Currently, the moc output is placed in the source directory. This is bad but there
+#% was no real easy way to implement the moc support in a way that lets you place
+#% the moc object files into a separate moc object directory (obj_moc) in the main
+#% object directory path. Additionally, when using moc support, the header files are
+#% given in the variable MOCSRCS and using the moc program processed in order to obtain
+#% .cpp files. The latter files are compiled as usual and linked in with the other ones.
+#%
+#% DIRSYNTAX=? (VM-Syntax)
+#% -----------------------
+#% The general makefiles primilarily deriving from the Verification Model (VM) development
+#% where adapted to Fraunhofer internal use. In the VM software there is no way to place
+#% the makefiles in subdirectories. In these makefiles there is natural support for things
+#% like these. Correlations between these development exist even now but the differences
+#% are very wide spreaded in detail.
+#%
+#% SYSTEM_NAME
+#% -----------
+#% The general makefiles are designed to have the UNIX-like wide open input. So, some things
+#% may be specified using different ways/variables. Usually, the environment variable
+#% SYSTEM_NAME derives from the command `uname -s'. Ambiguities can occur if the environment
+#% variable SYSTEM_NAME is different from the command `uname -s'.
+
+#%  warning: undefined variable :
+#% ADDONDIR
+#% ADDONOBJDIR
+#% COMLIBS
+#% DUMMY_SOURCES
+#% EXE_SUFFIX
+#% FORCE_LINKING
+#% INCL
+#% INCLDEP
+#% LIBPATH
+#% LIBS
+#% MOC_H_OBJS
+#% OBJROOTDIR
+#% OBJS
+#% OLDLNK
+#% SRCDIRS
