@@ -1,0 +1,981 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		188041BF19CB3CD800FAABCE /* Logger.c in Sources */ = {isa = PBXBuildFile; fileRef = 187C301519C10C8A0044AB58 /* Logger.c */; };
+		188041FB19D36DFE00FAABCE /* WAVData.c in Sources */ = {isa = PBXBuildFile; fileRef = 188041F919D36DFE00FAABCE /* WAVData.c */; };
+		18B77BB019EDC2FB0078892F /* liblibisomediafile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B77BAF19EDC2FB0078892F /* liblibisomediafile.a */; };
+		84906DFE21C4951C0042DDE8 /* CompareWAV.c in Sources */ = {isa = PBXBuildFile; fileRef = 84906DFD21C4951C0042DDE8 /* CompareWAV.c */; };
+		84906E0021C495370042DDE8 /* TestBoxes.c in Sources */ = {isa = PBXBuildFile; fileRef = 84906DFF21C495370042DDE8 /* TestBoxes.c */; };
+		84906E0821C4971C0042DDE8 /* libwavIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84906E0521C496850042DDE8 /* libwavIO.a */; };
+		84906E0A21C499DB0042DDE8 /* liblibisomediafile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B77BAF19EDC2FB0078892F /* liblibisomediafile.a */; };
+		84AFF7CE21B60DBA00177423 /* liblibisomediafile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B77BAF19EDC2FB0078892F /* liblibisomediafile.a */; };
+		84AFF7D321B6102800177423 /* WAV_to_MP4.c in Sources */ = {isa = PBXBuildFile; fileRef = 84AFF7D221B6102800177423 /* WAV_to_MP4.c */; };
+		84AFF7D521B6104F00177423 /* MP4_to_WAV.c in Sources */ = {isa = PBXBuildFile; fileRef = 84AFF7D421B6104F00177423 /* MP4_to_WAV.c */; };
+		84AFF7F321B619C000177423 /* libwavIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84AFF7F221B619C000177423 /* libwavIO.a */; };
+		84AFF7F421B619C000177423 /* libwavIO.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84AFF7F221B619C000177423 /* libwavIO.a */; };
+		84AFF7FA21B6EB3000177423 /* PCMAtoms.c in Sources */ = {isa = PBXBuildFile; fileRef = 84AFF7F921B6EB3000177423 /* PCMAtoms.c */; };
+		84AFF7FB21B6EB3000177423 /* PCMAtoms.c in Sources */ = {isa = PBXBuildFile; fileRef = 84AFF7F921B6EB3000177423 /* PCMAtoms.c */; };
+		84AFF80221B6F4BF00177423 /* PCMToFileFormat.c in Sources */ = {isa = PBXBuildFile; fileRef = 84AFF80021B6F4BF00177423 /* PCMToFileFormat.c */; };
+		84AFF80321B6F4BF00177423 /* PCMToFileFormat.c in Sources */ = {isa = PBXBuildFile; fileRef = 84AFF80021B6F4BF00177423 /* PCMToFileFormat.c */; };
+		84E0E74B21B73F2E004CCF2B /* PCMFormatData.c in Sources */ = {isa = PBXBuildFile; fileRef = 84E0E74A21B73F2E004CCF2B /* PCMFormatData.c */; };
+		84E0E74C21B73F2E004CCF2B /* PCMFormatData.c in Sources */ = {isa = PBXBuildFile; fileRef = 84E0E74A21B73F2E004CCF2B /* PCMFormatData.c */; };
+		84E0E75221B9AFB1004CCF2B /* WAVData.c in Sources */ = {isa = PBXBuildFile; fileRef = 188041F919D36DFE00FAABCE /* WAVData.c */; };
+		84E0E75321B9B0F4004CCF2B /* Logger.c in Sources */ = {isa = PBXBuildFile; fileRef = 187C301519C10C8A0044AB58 /* Logger.c */; };
+		84E0E77321B9B994004CCF2B /* FileFormatToPCM.c in Sources */ = {isa = PBXBuildFile; fileRef = 84E0E77121B9B994004CCF2B /* FileFormatToPCM.c */; };
+		84E0E77F21BA1126004CCF2B /* Testing.c in Sources */ = {isa = PBXBuildFile; fileRef = 188041EF19D1D7DE00FAABCE /* Testing.c */; };
+		84E0E78221BA122D004CCF2B /* Logger.c in Sources */ = {isa = PBXBuildFile; fileRef = 187C301519C10C8A0044AB58 /* Logger.c */; };
+		84E0E78321BA1305004CCF2B /* PCMAtoms.c in Sources */ = {isa = PBXBuildFile; fileRef = 84AFF7F921B6EB3000177423 /* PCMAtoms.c */; };
+		84E0E78621BA1317004CCF2B /* PCMFormatData.c in Sources */ = {isa = PBXBuildFile; fileRef = 84E0E74A21B73F2E004CCF2B /* PCMFormatData.c */; };
+		84E0E7A421C18F65004CCF2B /* WAVData.c in Sources */ = {isa = PBXBuildFile; fileRef = 188041F919D36DFE00FAABCE /* WAVData.c */; };
+		84E0E7A521C19760004CCF2B /* Logger.c in Sources */ = {isa = PBXBuildFile; fileRef = 187C301519C10C8A0044AB58 /* Logger.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		84906E0421C496850042DDE8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 84E0E76621B9B413004CCF2B /* wavIO.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 84E0E75F21B9B413004CCF2B;
+			remoteInfo = wavIO;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		188041D119CB3CD800FAABCE /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		84AFF7C421B60C8100177423 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		84E0E77621BA1077004CCF2B /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		84E0E79921C1805B004CCF2B /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		187C301219C0F7EA0044AB58 /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Logger.h; path = ../../src/Logger.h; sourceTree = "<group>"; };
+		187C301519C10C8A0044AB58 /* Logger.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Logger.c; path = ../../src/Logger.c; sourceTree = "<group>"; };
+		188041D519CB3CD800FAABCE /* WAV_to_MP4 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WAV_to_MP4; sourceTree = BUILT_PRODUCTS_DIR; };
+		188041EF19D1D7DE00FAABCE /* Testing.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Testing.c; path = ../../src/Testing.c; sourceTree = "<group>"; };
+		188041F019D1D7DE00FAABCE /* Testing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Testing.h; path = ../../src/Testing.h; sourceTree = "<group>"; };
+		188041F919D36DFE00FAABCE /* WAVData.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = WAVData.c; path = ../../src/WAVData.c; sourceTree = "<group>"; };
+		188041FA19D36DFE00FAABCE /* WAVData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WAVData.h; path = ../../src/WAVData.h; sourceTree = "<group>"; };
+		18B77BAF19EDC2FB0078892F /* liblibisomediafile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibisomediafile.a; path = ../../../libisomediafile/macosx/libisomediafile/build/Debug/liblibisomediafile.a; sourceTree = "<group>"; };
+		84906DFD21C4951C0042DDE8 /* CompareWAV.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = CompareWAV.c; path = ../../src/CompareWAV.c; sourceTree = "<group>"; };
+		84906DFF21C495370042DDE8 /* TestBoxes.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = TestBoxes.c; path = ../../src/TestBoxes.c; sourceTree = "<group>"; };
+		84AFF7C621B60C8100177423 /* MP4_to_WAV */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MP4_to_WAV; sourceTree = BUILT_PRODUCTS_DIR; };
+		84AFF7D221B6102800177423 /* WAV_to_MP4.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = WAV_to_MP4.c; path = ../../src/WAV_to_MP4.c; sourceTree = "<group>"; };
+		84AFF7D421B6104F00177423 /* MP4_to_WAV.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = MP4_to_WAV.c; path = ../../src/MP4_to_WAV.c; sourceTree = "<group>"; };
+		84AFF7F221B619C000177423 /* libwavIO.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwavIO.a; path = build/Debug/libwavIO.a; sourceTree = "<group>"; };
+		84AFF7F821B6EB3000177423 /* PCMAtoms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PCMAtoms.h; path = ../../src/PCMAtoms.h; sourceTree = "<group>"; };
+		84AFF7F921B6EB3000177423 /* PCMAtoms.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = PCMAtoms.c; path = ../../src/PCMAtoms.c; sourceTree = "<group>"; };
+		84AFF80021B6F4BF00177423 /* PCMToFileFormat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = PCMToFileFormat.c; path = ../../src/PCMToFileFormat.c; sourceTree = "<group>"; };
+		84AFF80121B6F4BF00177423 /* PCMToFileFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PCMToFileFormat.h; path = ../../src/PCMToFileFormat.h; sourceTree = "<group>"; };
+		84AFF80421B6FB8100177423 /* MP4ToWAVOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP4ToWAVOptions.h; path = ../../src/MP4ToWAVOptions.h; sourceTree = "<group>"; };
+		84AFF80521B6FEFB00177423 /* WAVToMP4Options.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WAVToMP4Options.h; path = ../../src/WAVToMP4Options.h; sourceTree = "<group>"; };
+		84E0E74921B73F2E004CCF2B /* PCMFormatData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PCMFormatData.h; path = ../../src/PCMFormatData.h; sourceTree = "<group>"; };
+		84E0E74A21B73F2E004CCF2B /* PCMFormatData.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = PCMFormatData.c; path = ../../src/PCMFormatData.c; sourceTree = "<group>"; };
+		84E0E76621B9B413004CCF2B /* wavIO.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = wavIO.xcodeproj; path = wavIO/wavIO.xcodeproj; sourceTree = "<group>"; };
+		84E0E77121B9B994004CCF2B /* FileFormatToPCM.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = FileFormatToPCM.c; path = ../../src/FileFormatToPCM.c; sourceTree = "<group>"; };
+		84E0E77221B9B994004CCF2B /* FileFormatToPCM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileFormatToPCM.h; path = ../../src/FileFormatToPCM.h; sourceTree = "<group>"; };
+		84E0E77821BA1077004CCF2B /* TestBoxes */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TestBoxes; sourceTree = BUILT_PRODUCTS_DIR; };
+		84E0E79B21C1805B004CCF2B /* CompareWAV */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CompareWAV; sourceTree = BUILT_PRODUCTS_DIR; };
+		84E0E7A221C181CE004CCF2B /* CompareWAVOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CompareWAVOptions.h; path = ../../src/CompareWAVOptions.h; sourceTree = "<group>"; };
+		C645AF9119AD206300A93E10 /* StringUtils.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = StringUtils.h; path = ../../src/StringUtils.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		188041CF19CB3CD800FAABCE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				84AFF7F321B619C000177423 /* libwavIO.a in Frameworks */,
+				18B77BB019EDC2FB0078892F /* liblibisomediafile.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		84AFF7C321B60C8100177423 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				84AFF7F421B619C000177423 /* libwavIO.a in Frameworks */,
+				84AFF7CE21B60DBA00177423 /* liblibisomediafile.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		84E0E77521BA1077004CCF2B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				84906E0A21C499DB0042DDE8 /* liblibisomediafile.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		84E0E79821C1805B004CCF2B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				84906E0821C4971C0042DDE8 /* libwavIO.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* audioexample */ = {
+			isa = PBXGroup;
+			children = (
+				84E0E76621B9B413004CCF2B /* wavIO.xcodeproj */,
+				08FB7795FE84155DC02AAC07 /* Source */,
+				C6A0FF2B0290797F04C91782 /* Documentation */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+				84AFF7CD21B60DBA00177423 /* Frameworks */,
+			);
+			name = audioexample;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				188041EE19D1D78A00FAABCE /* Testing */,
+				18EAE16D19C750B500F0BC40 /* Options */,
+				187C301019C0F7DA0044AB58 /* Logging */,
+				C645AF8F19AD15F000A93E10 /* Utils */,
+				188041E219CCA6B900FAABCE /* PCMAtoms */,
+				84AFF7FF21B6F4A000177423 /* PCM */,
+				188041F819D36D8500FAABCE /* WAV */,
+				84AFF7D221B6102800177423 /* WAV_to_MP4.c */,
+				84AFF7D421B6104F00177423 /* MP4_to_WAV.c */,
+				84906DFD21C4951C0042DDE8 /* CompareWAV.c */,
+				84906DFF21C495370042DDE8 /* TestBoxes.c */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		187C301019C0F7DA0044AB58 /* Logging */ = {
+			isa = PBXGroup;
+			children = (
+				187C301519C10C8A0044AB58 /* Logger.c */,
+				187C301219C0F7EA0044AB58 /* Logger.h */,
+			);
+			name = Logging;
+			sourceTree = "<group>";
+		};
+		188041E219CCA6B900FAABCE /* PCMAtoms */ = {
+			isa = PBXGroup;
+			children = (
+				84AFF7F921B6EB3000177423 /* PCMAtoms.c */,
+				84AFF7F821B6EB3000177423 /* PCMAtoms.h */,
+			);
+			name = PCMAtoms;
+			sourceTree = "<group>";
+		};
+		188041EE19D1D78A00FAABCE /* Testing */ = {
+			isa = PBXGroup;
+			children = (
+				188041EF19D1D7DE00FAABCE /* Testing.c */,
+				188041F019D1D7DE00FAABCE /* Testing.h */,
+			);
+			name = Testing;
+			sourceTree = "<group>";
+		};
+		188041F819D36D8500FAABCE /* WAV */ = {
+			isa = PBXGroup;
+			children = (
+				188041F919D36DFE00FAABCE /* WAVData.c */,
+				188041FA19D36DFE00FAABCE /* WAVData.h */,
+			);
+			name = WAV;
+			sourceTree = "<group>";
+		};
+		18EAE16D19C750B500F0BC40 /* Options */ = {
+			isa = PBXGroup;
+			children = (
+				84E0E7A221C181CE004CCF2B /* CompareWAVOptions.h */,
+				84AFF80421B6FB8100177423 /* MP4ToWAVOptions.h */,
+				84AFF80521B6FEFB00177423 /* WAVToMP4Options.h */,
+			);
+			name = Options;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				188041D519CB3CD800FAABCE /* WAV_to_MP4 */,
+				84AFF7C621B60C8100177423 /* MP4_to_WAV */,
+				84E0E77821BA1077004CCF2B /* TestBoxes */,
+				84E0E79B21C1805B004CCF2B /* CompareWAV */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		84906E0121C496850042DDE8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				84906E0521C496850042DDE8 /* libwavIO.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		84AFF7CD21B60DBA00177423 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				18B77BAF19EDC2FB0078892F /* liblibisomediafile.a */,
+				84AFF7F221B619C000177423 /* libwavIO.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		84AFF7FF21B6F4A000177423 /* PCM */ = {
+			isa = PBXGroup;
+			children = (
+				84E0E74A21B73F2E004CCF2B /* PCMFormatData.c */,
+				84E0E74921B73F2E004CCF2B /* PCMFormatData.h */,
+				84AFF80021B6F4BF00177423 /* PCMToFileFormat.c */,
+				84AFF80121B6F4BF00177423 /* PCMToFileFormat.h */,
+				84E0E77121B9B994004CCF2B /* FileFormatToPCM.c */,
+				84E0E77221B9B994004CCF2B /* FileFormatToPCM.h */,
+			);
+			name = PCM;
+			sourceTree = "<group>";
+		};
+		C645AF8F19AD15F000A93E10 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				C645AF9119AD206300A93E10 /* StringUtils.h */,
+			);
+			name = Utils;
+			sourceTree = "<group>";
+		};
+		C6A0FF2B0290797F04C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		188041B919CB3CD800FAABCE /* WAV_to_MP4 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 188041D219CB3CD800FAABCE /* Build configuration list for PBXNativeTarget "WAV_to_MP4" */;
+			buildPhases = (
+				188041BA19CB3CD800FAABCE /* Sources */,
+				188041CF19CB3CD800FAABCE /* Frameworks */,
+				188041D119CB3CD800FAABCE /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WAV_to_MP4;
+			productName = VTT_to_MP4;
+			productReference = 188041D519CB3CD800FAABCE /* WAV_to_MP4 */;
+			productType = "com.apple.product-type.tool";
+		};
+		84AFF7C521B60C8100177423 /* MP4_to_WAV */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 84AFF7CA21B60C8100177423 /* Build configuration list for PBXNativeTarget "MP4_to_WAV" */;
+			buildPhases = (
+				84AFF7C221B60C8100177423 /* Sources */,
+				84AFF7C321B60C8100177423 /* Frameworks */,
+				84AFF7C421B60C8100177423 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MP4_to_WAV;
+			productName = MP4_to_WAV;
+			productReference = 84AFF7C621B60C8100177423 /* MP4_to_WAV */;
+			productType = "com.apple.product-type.tool";
+		};
+		84E0E77721BA1077004CCF2B /* TestBoxes */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 84E0E77C21BA1077004CCF2B /* Build configuration list for PBXNativeTarget "TestBoxes" */;
+			buildPhases = (
+				84E0E77421BA1077004CCF2B /* Sources */,
+				84E0E77521BA1077004CCF2B /* Frameworks */,
+				84E0E77621BA1077004CCF2B /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TestBoxes;
+			productName = TestBoxes;
+			productReference = 84E0E77821BA1077004CCF2B /* TestBoxes */;
+			productType = "com.apple.product-type.tool";
+		};
+		84E0E79A21C1805B004CCF2B /* CompareWAV */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 84E0E79F21C1805B004CCF2B /* Build configuration list for PBXNativeTarget "CompareWAV" */;
+			buildPhases = (
+				84E0E79721C1805B004CCF2B /* Sources */,
+				84E0E79821C1805B004CCF2B /* Frameworks */,
+				84E0E79921C1805B004CCF2B /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CompareWAV;
+			productName = CompareWAV;
+			productReference = 84E0E79B21C1805B004CCF2B /* CompareWAV */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+				TargetAttributes = {
+					84AFF7C521B60C8100177423 = {
+						CreatedOnToolsVersion = 10.0;
+						ProvisioningStyle = Manual;
+					};
+					84E0E77721BA1077004CCF2B = {
+						CreatedOnToolsVersion = 10.0;
+						ProvisioningStyle = Automatic;
+					};
+					84E0E79A21C1805B004CCF2B = {
+						CreatedOnToolsVersion = 10.0;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = CB5BCAA90A2E30930047AF98 /* Build configuration list for PBXProject "WAV_conversion" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 08FB7794FE84155DC02AAC07 /* audioexample */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 84906E0121C496850042DDE8 /* Products */;
+					ProjectRef = 84E0E76621B9B413004CCF2B /* wavIO.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				188041B919CB3CD800FAABCE /* WAV_to_MP4 */,
+				84AFF7C521B60C8100177423 /* MP4_to_WAV */,
+				84E0E77721BA1077004CCF2B /* TestBoxes */,
+				84E0E79A21C1805B004CCF2B /* CompareWAV */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		84906E0521C496850042DDE8 /* libwavIO.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libwavIO.a;
+			remoteRef = 84906E0421C496850042DDE8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXSourcesBuildPhase section */
+		188041BA19CB3CD800FAABCE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				84E0E74B21B73F2E004CCF2B /* PCMFormatData.c in Sources */,
+				188041BF19CB3CD800FAABCE /* Logger.c in Sources */,
+				84AFF7D321B6102800177423 /* WAV_to_MP4.c in Sources */,
+				84AFF7FA21B6EB3000177423 /* PCMAtoms.c in Sources */,
+				188041FB19D36DFE00FAABCE /* WAVData.c in Sources */,
+				84AFF80221B6F4BF00177423 /* PCMToFileFormat.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		84AFF7C221B60C8100177423 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				84AFF7FB21B6EB3000177423 /* PCMAtoms.c in Sources */,
+				84E0E75321B9B0F4004CCF2B /* Logger.c in Sources */,
+				84E0E74C21B73F2E004CCF2B /* PCMFormatData.c in Sources */,
+				84E0E77321B9B994004CCF2B /* FileFormatToPCM.c in Sources */,
+				84AFF7D521B6104F00177423 /* MP4_to_WAV.c in Sources */,
+				84E0E75221B9AFB1004CCF2B /* WAVData.c in Sources */,
+				84AFF80321B6F4BF00177423 /* PCMToFileFormat.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		84E0E77421BA1077004CCF2B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				84E0E77F21BA1126004CCF2B /* Testing.c in Sources */,
+				84E0E78621BA1317004CCF2B /* PCMFormatData.c in Sources */,
+				84906E0021C495370042DDE8 /* TestBoxes.c in Sources */,
+				84E0E78221BA122D004CCF2B /* Logger.c in Sources */,
+				84E0E78321BA1305004CCF2B /* PCMAtoms.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		84E0E79721C1805B004CCF2B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				84E0E7A421C18F65004CCF2B /* WAVData.c in Sources */,
+				84906DFE21C4951C0042DDE8 /* CompareWAV.c in Sources */,
+				84E0E7A521C19760004CCF2B /* Logger.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		188041D319CB3CD800FAABCE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = WAV_to_MP4;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		188041D419CB3CD800FAABCE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_NAME = WAV_to_MP4;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		84AFF7CB21B60C8100177423 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		84AFF7CC21B60C8100177423 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		84E0E77D21BA1077004CCF2B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		84E0E77E21BA1077004CCF2B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		84E0E7A021C1805B004CCF2B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "${inherited}";
+				LIBRARY_SEARCH_PATHS = "${inherited}";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		84E0E7A121C1805B004CCF2B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "${inherited}";
+				LIBRARY_SEARCH_PATHS = "${inherited}";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		CB5BCAAA0A2E30930047AF98 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				HEADER_SEARCH_PATHS = (
+					"${SRCROOT}/../../../libisomediafile/src",
+					"${SRCROOT}/../../../../external/Part04-Dynamic_Range_Control/trunk/tools/wavIO/include",
+					"${SRCROOT}/../../../libisomediafile/macosx",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"${SRCROOT}/../../../libisomediafile/macosx/libisomediafile/build/Debug",
+					"$(PROJECT_DIR)/build/Debug",
+				);
+				ONLY_ACTIVE_ARCH = YES;
+				USER_HEADER_SEARCH_PATHS = "";
+			};
+			name = Debug;
+		};
+		CB5BCAAB0A2E30930047AF98 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				HEADER_SEARCH_PATHS = (
+					"${SRCROOT}/../../../libisomediafile/src",
+					"${SRCROOT}/../../../../external/Part04-Dynamic_Range_Control/trunk/tools/wavIO/include",
+					"${SRCROOT}/../../../libisomediafile/macosx",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"${SRCROOT}/../../../libisomediafile/macosx/libisomediafile/build/Debug",
+					"$(PROJECT_DIR)/build/Debug",
+				);
+				USER_HEADER_SEARCH_PATHS = "";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		188041D219CB3CD800FAABCE /* Build configuration list for PBXNativeTarget "WAV_to_MP4" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				188041D319CB3CD800FAABCE /* Debug */,
+				188041D419CB3CD800FAABCE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		84AFF7CA21B60C8100177423 /* Build configuration list for PBXNativeTarget "MP4_to_WAV" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				84AFF7CB21B60C8100177423 /* Debug */,
+				84AFF7CC21B60C8100177423 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		84E0E77C21BA1077004CCF2B /* Build configuration list for PBXNativeTarget "TestBoxes" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				84E0E77D21BA1077004CCF2B /* Debug */,
+				84E0E77E21BA1077004CCF2B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		84E0E79F21C1805B004CCF2B /* Build configuration list for PBXNativeTarget "CompareWAV" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				84E0E7A021C1805B004CCF2B /* Debug */,
+				84E0E7A121C1805B004CCF2B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		CB5BCAA90A2E30930047AF98 /* Build configuration list for PBXProject "WAV_conversion" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB5BCAAA0A2E30930047AF98 /* Debug */,
+				CB5BCAAB0A2E30930047AF98 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

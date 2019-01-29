@@ -86,6 +86,7 @@ sources = \
 	ObjectDescriptorAtom.c \
 	ObjectDescriptorMediaHeader.c \
 	ProducerReferenceTimeAtom.c \
+	PCMConfigAtom.c \
 	QTMovies.c \
 	RestrictedSchemeInfoAtom.c \
 	RestrictedVideoSampleEntry.c \
@@ -172,7 +173,6 @@ sources = \
 	ItemPropertiesAtom.c \
 	ItemPropertyAssociationAtom.c \
 	ItemPropertyContainerAtom.c
-
 
 
 

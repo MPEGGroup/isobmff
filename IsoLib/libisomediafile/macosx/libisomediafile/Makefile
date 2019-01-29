@@ -85,6 +85,7 @@ sources = \
 	ODUpdateCommand.c \
 	ObjectDescriptorAtom.c \
 	ObjectDescriptorMediaHeader.c \
+	PCMConfigAtom.c \
 	ProducerReferenceTimeAtom.c \
 	QTMovies.c \
 	RestrictedSchemeInfoAtom.c \

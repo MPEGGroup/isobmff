@@ -42,6 +42,9 @@ ISOErr MP4GetCurrentTime( u64 *outTime );
 enum
 {
     MP4AudioSampleEntryAtomType                         = MP4_FOUR_CHAR_CODE( 'm', 'p', '4', 'a' ),
+    AudioIntegerPCMSampleEntryType                      = MP4_FOUR_CHAR_CODE( 'i', 'p', 'c', 'm' ),
+    AudioFloatPCMSampleEntryType                        = MP4_FOUR_CHAR_CODE( 'f', 'p', 'c', 'm' ),
+    MP4PCMConfigAtomType                                = MP4_FOUR_CHAR_CODE( 'p', 'c', 'm', 'C' ),
     MP4ChannelLayoutAtomType                            = MP4_FOUR_CHAR_CODE( 'c', 'h', 'n', 'l' ),
     MP4DownMixInstructionsAtomType                      = MP4_FOUR_CHAR_CODE( 'd', 'm', 'i', 'x' ),
     MP4TrackLoudnessInfoAtomType                        = MP4_FOUR_CHAR_CODE( 't', 'l', 'o', 'u' ),
@@ -810,23 +813,36 @@ typedef struct MP4AudioSampleEntryAtom
 	
 } MP4AudioSampleEntryAtom, *MP4AudioSampleEntryAtomPtr;
 
+typedef struct MP4PCMConfigAtom
+{
+    MP4_FULL_ATOM
+    u8      format_flags;              /* uint(8) */
+    u8      PCM_sample_size;           /* uint(8) */
+} MP4PCMConfigAtom, *MP4PCMConfigAtomPtr;
+
 typedef struct MP4ChannelLayoutDefinedLayout
 {
-    u8      explicit_position;     /* bit(1) */
-    u8      elevation;             /* bit(7) */
-    u8      azimuth;               /* bit(7) */
-    u8      speaker_position;      /* bit(7) */
+    u8      speaker_position;      /* uint(8) */
+    s16     azimuth;               /* sint(16) */
+    s8      elevation;             /* sint(8) */
 } MP4ChannelLayoutDefinedLayout;
 
 typedef struct MP4ChannelLayoutAtom
 {
     MP4_FULL_ATOM
-    u16             channelCount;           /* comes from the sample entry */
-    u8              stream_structure;
-    u8              definedLayout;
+                                 /* format in Version 0, version 1 */
+    u16             channelCount;           /*    (0)               comes from the sample entry */
+    u8              stream_structure;       /* uint(8),  uint(4)  */
+    u8              definedLayout;          /* int(8),   int(8)   */
     MP4LinkedList   definedLayouts;
-    u64             omittedChannelsMap;
-    u8              object_count;
+    u64             omittedChannelsMap;     /* uint(64), uint(64) */
+    u8              object_count;           /* uint(8),  uint(8)  */
+    /* for version > 0 */
+    u8              formatOrdering;         /*         , int(4)   */
+    u16             baseChannelCount;       /*         , uint(8)  */
+    u16             layoutChannelCount;     /*         , uint(8)  */
+    u8              channelOrderDefinition; /*         , uint(3)  */
+    u8              omittedChannelsPresent; /*         , unit(1)  */
 } MP4ChannelLayoutAtom, *MP4ChannelLayoutAtomPtr;
 
 typedef struct MP4DownMixInstructionsAtom
@@ -1884,6 +1900,7 @@ MP4Err sampleEntryHToAtomPtr( MP4Handle sampleEntryH, MP4AtomPtr* entryPtr, u32 
 MP4Err atomPtrToSampleEntryH( MP4Handle sampleEntryH, MP4AtomPtr entry );
 
 MP4Err MP4CreateAudioSampleEntryAtom( MP4AudioSampleEntryAtomPtr *outAtom );
+MP4Err MP4CreatePCMConfigAtom ( MP4PCMConfigAtomPtr *outAtom );
 MP4Err MP4CreateChannelLayoutAtom( MP4ChannelLayoutAtomPtr *outAtom );
 MP4Err MP4CreateDownMixInstructionsAtom( MP4DownMixInstructionsAtomPtr *outAtom );
 MP4Err MP4CreateLoudnessBaseAtom( MP4LoudnessBaseAtomPtr *outAtom, u32 type );
@@ -1967,12 +1984,12 @@ MP4Err MP4CreateRestrictedVideoSampleEntryAtom(MP4RestrictedVideoSampleEntryAtom
 MP4Err MP4CreateTrackTypeAtom(MP4TrackTypeAtomPtr *outAtom);
 MP4Err MP4CreateStereoVideoAtom(MP4StereoVideoAtomPtr *outAtom);
 MP4Err MP4CreateStereoVideoGroupAtom(MP4StereoVideoGroupAtomPtr *outAtom);
-
+/*
 MP4Err MP4CreateSegmentTypeAtom(MP4SegmentTypeAtomPtr *outAtom);
 MP4Err MP4CreateSegmentIndexAtom(MP4SegmentIndexAtomPtr *outAtom);
 MP4Err MP4CreateSubsegmentIndexAtom(MP4SubsegmentIndexAtomPtr *outAtom);
 MP4Err MP4CreateProducerReferenceTimeAtom(MP4ProducerReferenceTimeAtomPtr *outAtom);
-
+*/
 #ifdef ISMACrypt
 MP4Err MP4CreateSecurityInfoAtom( MP4SecurityInfoAtomPtr *outAtom );
 MP4Err CreateISMAKMSAtom( ISMAKMSAtomPtr *outAtom );
