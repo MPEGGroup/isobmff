@@ -7,24 +7,19 @@ language: c
 compiler:
   - gcc
 
-before_script: cd IsoLib/HM/build/linux && make && cd -
+# Build dependencies
+before_script:
+  - cd IsoLib/HM/build/linux && make && cd -
+  - cd external/Part04-Dynamic_Range_Control/trunk/tools/writeonlybitbuf/make/ && make && cd -
+  - cd external/Part04-Dynamic_Range_Control/trunk/tools/readonlybitbuf/make/ && make && cd -
+  - cd external/Part04-Dynamic_Range_Control/trunk/tools/wavIO/make/ && make && cd -
+  - cd external/Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/make/ && make && cd -
 
 jobs:
-  allow_failures:
-    - name: "drc_in_isom" 
   include:
     - stage: compile
       name: "All"
       script: cd IsoLib/linux && make
-    - stage: compile
-      name: "drc_in_isom"
-      script:
-        - cd external/Part04-Dynamic_Range_Control/trunk/tools/writeonlybitbuf/make/ && make && cd -
-        - cd external/Part04-Dynamic_Range_Control/trunk/tools/readonlybitbuf/make/ && make && cd -
-        - cd external/Part04-Dynamic_Range_Control/trunk/tools/wavIO/make/ && make && cd -
-        - cd external/Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/make/ && make && cd -
-        - cd IsoLib/linux && make && cd -
-        - cd IsoLib/drc_in_isom/linux && make
 
 cache:
   directories:
