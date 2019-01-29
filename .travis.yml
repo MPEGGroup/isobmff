@@ -17,7 +17,7 @@ jobs:
       name: "All"
       script: cd IsoLib/linux && make
     - stage: compile
-      name: "All + external + drc_in_isom"
+      name: "drc_in_isom"
       script:
         - cd external/Part04-Dynamic_Range_Control/trunk/tools/writeonlybitbuf/make/ && make && cd -
         - cd external/Part04-Dynamic_Range_Control/trunk/tools/readonlybitbuf/make/ && make && cd -

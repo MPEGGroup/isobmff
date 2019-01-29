@@ -15,10 +15,10 @@ MP4_to_DRC_OBJECTS = $(filter-out ../src/DRC_to_MP4.o,$(OBJECTS))
 
 
 libisomediafile = $(ISOLIBPATH)/linux/libisomediafile/libisomediafile.a
-libreadonlybitbuf = $(DRCREFSWPATH)/tools/readonlybitbuf/lib/Linux_x86_64_D_O0/libreadonlybitbuf.a
-libwriteonlybitbuf = $(DRCREFSWPATH)/tools/writeonlybitbuf/lib/Linux_x86_64_D_O0/libwriteonlybitbuf.a
-libwavIO = $(DRCREFSWPATH)/tools/wavIO/lib/Linux_x86_64_D_O0/libwavIO.a
-libuniDrcBitstreamDecoderLib = $(DRCREFSWPATH)/modules/uniDrcModules/uniDrcBitstreamDecoderLib/lib/Linux_x86_64_D_O0/libuniDrcBitstreamDecoder.a
+libreadonlybitbuf = $(DRCREFSWPATH)/tools/readonlybitbuf/lib/Linux_x86_64_O0/libreadonlybitbuf.a
+libwriteonlybitbuf = $(DRCREFSWPATH)/tools/writeonlybitbuf/lib/Linux_x86_64_O0/libwriteonlybitbuf.a
+libwavIO = $(DRCREFSWPATH)/tools/wavIO/lib/Linux_x86_64_O0/libwavIO.a
+libuniDrcBitstreamDecoderLib = $(DRCREFSWPATH)/modules/uniDrcModules/uniDrcBitstreamDecoderLib/lib/Linux_x86_64_O0/libuniDrcBitstreamDecoder.a
 
 
 all:	MP4_to_DRC DRC_to_MP4
