@@ -1,0 +1,424 @@
+# $Id: makefile.rules,v 1.130 2012-08-14 12:26:49 haertlml Exp $
+#
+
+ifneq "$(MAKELEVEL)" "0"
+ifndef OBJS
+ifdef SRCS
+OBJS:=$(SRCS)
+endif
+endif
+
+override OBJS := $(patsubst %,%.o,$(OBJS:%.o=%.c))
+
+MOCSRCS=$(MOC_H_OBJS:%.h=%_moc.cpp)
+MOCSRCDIR=$(OBJDIR)/moc
+#MOCSRCDIR=$(OBJDIR)
+DIRMOCSRCS=$(MOCSRCS:%=$(MOCSRCDIR)/%)
+ifdef MOC_H_OBJS
+EXTRADIR=$(MOCSRCDIR)
+endif
+
+MOCOBJS=$(MOCSRCS:%=%.o)
+DIRMOCOBJS=$(MOCOBJS:%=$(OBJDIR)/%)
+DIROBJS = $(OBJS:%=$(OBJDIR)/%)
+DIRALLOBJS = $(DIRMOCOBJS) $(DIROBJS)
+
+DIRDEPS = $(DIROBJS:%.o=%.d)
+DIRMOCDEPS = $(DIRMOCOBJS:%.o=%.d)
+DIRALLDEPS = $(DIRMOCDEPS) $(DIRDEPS)
+
+override SRCDIRS := $(subst :, ,$(SRCDIRS))
+override INCL := $(addprefix -I,$(SRCDIRS)) $(INCL) # add local first
+vpath %.h   $(SRCDIRS)
+vpath %.c   $(SRCDIRS)
+vpath %.cpp $(SRCDIRS)
+vpath %.f   $(SRCDIRS)
+
+SYSLIBS += -lm
+VERBOSECHAR=@
+ifeq "$(VERBOSE)" "1"
+VERBOSECHAR=
+endif
+CURMODDIRLIBS := $(addsuffix $(LIB_SUFFIX),$(subst -l,$(LIBDIR)/lib,$(LIBS)))
+DIRTARGET =  $(addprefix $(LIBDIR)/,   $(filter     %$(LIB_SUFFIX),$(TARGET)))
+DIRTARGET += $(addprefix $(BINDIR)/,   $(filter-out %$(LIB_SUFFIX),$(TARGET)))
+LNK = $(DIRALLOBJS) $(LIBPATH) $(LIBS) $(COMLIBS)
+-include $(addsuffix $(LNK_SUFFIX),$(DIRTARGET)) $(LNK_SUFFIX)
+
+FORCE:
+LOCALLIBS=FORCE
+ifdef LOCALLIBS
+
+-include makefile.cvs
+
+LIBNAMEREQ=$(COMLIBS:-l%=%) # as first
+ifdef LOCALLIBRARIES
+LIBNAMELOCAL=$(LOCALLIBRARIES:%lib=%)
+LIBNAME = $(filter $(LIBNAMELOCAL), $(LIBNAMEREQ))
+else
+LIBNAME = $(LIBNAMEREQ)
+endif
+
+LIBNAME := $(LIBNAME:tsp=)
+LIBNAME := $(LIBNAME:isomp4=)
+ifeq "$(LIBDIR:/%=%)" "$(LIBDIR)"
+DIRLIBS = $(foreach lib,$(LIBNAME), $(MAKEROOT)/$(maplib$(lib)$(LIB_SUFFIX))/make/$(LIBDIR)/lib$(lib)$(LIB_SUFFIX) )
+else
+DIRLIBS = $(foreach lib,$(LIBNAME), $(LIBDIR)/lib$(lib)$(LIB_SUFFIX) )
+endif
+
+INCLDIRLIBS = $(foreach lib,$(LIBNAME), $(MAKEROOT)/$(maplib$(lib)$(LIB_SUFFIX))/include )
+override INCL    := $(addprefix -I,$(INCLDIRLIBS)) $(INCL)
+
+ifndef EXPLICITLIBLINK
+EXPLICITLIBLINK=1
+endif
+ifeq "$(EXPLICITLIBLINK)" "1"
+override LIBPATH := $(DIRLIBS) $(LIBPATH)
+ # this does not work in general, but only if the libs to be excluded
+ # are at the beginning or at the end or the list (sps:2002-01-11)
+ #override COMLIBS := $(subst $(sort $(LIBNAME:%=-l%)),,$(sort $(COMLIBS)))
+ # it has therefore been replaced by this:
+override COMLIBS := $(filter-out $(LIBNAME:%=-l%),$(COMLIBS))
+else
+override LIBPATH := $(patsubst %,-L%, $(dir $(DIRLIBS))) $(LIBPATH)
+endif
+
+# the variable LOCALLIBDIRS is required for the cvs checkout mechanism in makefile.cvs
+LOCALLIBDIRS=$(foreach lib,$(LIBNAME), $(MAKEROOT)/$(maplib$(lib)$(LIB_SUFFIX)))
+LOCALLIBECHO = "         --> used local libs: $(LOCALLIBDIRS)"
+INSTALLLIBDEPS=$(patsubst %,install/%,$(notdir $(DIRLIBS)))
+CLEANLIBDEPS=$(patsubst %,clean/%,$(notdir $(DIRLIBS)))
+CLOBBERLIBDEPS=$(patsubst %,clobber/%,$(notdir $(DIRLIBS)))
+CVSUPDATELIBDEPS=$(patsubst %,cvsupdate/%,$(notdir $(DIRLIBS)))
+LCOVRUNLIBDEPS=$(patsubst %,lcov-run/%,$(notdir $(DIRLIBS)))
+LCOVRESETLIBDEPS=$(patsubst %,lcov-reset/%,$(notdir $(DIRLIBS)))
+
+# A list of VARIABLES, that are defined in the actual makefile, but should not in a subsequent one
+REPL:= -D%
+UNPRESETENVVARS := $(subst =,,$(filter %=,$(subst =,= ,${-*-command-variables-*-})))
+UNSETENVVARS := $(filter-out $(REPL),$(UNPRESETENVVARS))
+UNSETENVVARS += MAKELEVEL MAKEOVERRIDES MFLAGS MAKEFLAGS $(DEFINED_ENV_VARS)
+PARALLELBUILD_MAKEFLAGS=$(filter -j%,$(MAKEFLAGS)) $(filter --jobserver%,$(MAKEFLAGS))
+
+# A list of VARIABLES, that should be handed over from the actual makefile to a subsequent one
+SETENVVARS=VERBOSE=$(VERBOSE) PRINTLEVEL="$(PRINTLEVEL)" MAKE_CC=$(MAKE_CC) OPTIM_LEV=$(OPTIM_LEV) DEBUG=$(DEBUG) PLOT=$(PLOT) GPROF=$(GPROF) GCOV=$(GCOV) DIRSYNTAX=$(DIRSYNTAX) ADDONDIR=$(ADDONDIR) OBJROOTDIR=$(OBJROOTDIR) TARGETROOTDIR=$(TARGETROOTDIR) OBJROOTWITHOUTPWD=$(OBJROOTWITHOUTPWD) SHAREDLIB=$(SHAREDLIB) LOCALLIBS=$(LOCALLIBS) TARGET_SYSTEM=$(TARGET_SYSTEM) TARGET_PLATFORM=$(TARGET_PLATFORM) GLOBOPTS="$(GLOBOPTS)" $(GLOBOPTS) MACOSX_VERSION_MIN="$(MACOSX_VERSION_MIN)" CFLAGS_EXTRA="$(CFLAGS_EXTRA)"
+# How to call a subsequent makefile, e.g. to build a library neede for the actual project
+EXTERNALLIBCMDLINE= unset $(UNSETENVVARS); cd $(MAKEROOT)/$(map$(@F))/make && $(MAKE) $(PARALLELBUILD_MAKEFLAGS) $(SETENVVARS)
+
+$(LOCALLIBDIRS):
+	$(if $(findstring 2,$(PRINTLEVEL)),@echo "$(LEVEL_2)checking out module $(@F) ...")
+	$(VERBOSECHAR)if [ x"$(cvsroot$(@F))" != x"" ]; then cd $(MAKEROOT); cvs -d $(cvsroot$(@F)) checkout $(cvsextra$(@F)) $(@F) 2>&1 | grep -v 'cvs server: Updating'; exit 0; fi
+	$(VERBOSECHAR)if [ x"$(svnurl$(@F))" != x"" ]; then cd $(MAKEROOT); svn co $(svnextra$(@F)) $(svnurl$(@F)) $(@F) ; exit 0; fi
+	$(VERBOSECHAR)if [ ! -d $(MAKEROOT)/$(@F) ]; then echo "could not checkout module $(@F)"; exit -1; fi; 
+
+$(DIRLIBS): $(LOCALLIBDIRS) FORCE
+	@$(EXTERNALLIBCMDLINE) $(@F)
+
+$(CLOBBERLIBDEPS) $(CLEANLIBDEPS) $(INSTALLLIBDEPS) $(CVSUPDATELIBDEPS) $(LCOVRUNLIBDEPS) $(LCOVRESETLIBDEPS): FORCE
+	@($(EXTERNALLIBCMDLINE) $(@D)) 2> /dev/null; exit 0
+else
+ifeq "$(EXPLICITLIBLINK)" "1"
+#override LIBPATH := $(COMLIBS:-l%=$(REFSOFT_LIBRARY_PATH)/lib%$(LIB_SUFFIX))
+#override COMLIBS :=
+endif
+endif
+
+# module internal libs
+ifeq "$(EXPLICITLIBLINK)" "1"
+override LIBPATH := $(filter-out -L$(LIBDIR),$(LIBPATH))
+override LIBS :=
+endif
+ifneq "$(COMLIBS)" ""
+override LIBPATH := $(LIBPATH) -L$(REFSOFT_LIBRARY_PATH)
+endif
+
+
+MODULEDIRECTORY:=$(shell pwd) # take directory make because of time-stamp
+
+$(MODULEDIRECTORY): FORCE
+	$(if $(findstring 2,$(PRINTLEVEL)),@echo "$(LEVEL_2)updating module `cd $@/$(ROOTDIR); cat CVS/Repository` ...")
+	$(VERBOSECHAR)cd $@/$(ROOTDIR); cvs up 2>&1 | grep -v 'cvs server: Updating'| grep -v 'cvs checkout: Updating'| grep -v 'cvs update: Updating'; exit 0
+
+ifneq "$(strip $(OLDLNK))" "$(strip $(LNK))"
+FORCE_LINKING = force
+endif
+
+.PHONY: force makedirs binary library depend dummies clean clobber distclean lcov-reset lcov-run
+
+.FORCE:
+
+force :
+	$(if $(findstring 2,$(PRINTLEVEL)),@echo "$(LEVEL_2)force linking")
+
+makedirs : $(PLTDIRTAG)
+
+binary : $(PLTDIRTAG)
+binary : $(DIRTARGET)$(EXE_SUFFIX)
+#	$(if $(findstring 1,$(PRINTLEVEL)),@echo "$(LEVEL_1)binary okay: $(notdir $(DIRTARGET)$(EXE_SUFFIX))")
+	$(if $(findstring 1,$(PRINTLEVEL)),@echo "$(LEVEL_1)binary okay: $(DIRTARGET)$(EXE_SUFFIX)")
+	$(if $(LOCALLIBDIRS),$(if $(findstring 1,$(PRINTLEVEL)),@echo "$(LEVEL_1)$(LOCALLIBECHO)"),)
+
+library : $(PLTDIRTAG)
+library : $(DIRTARGET)
+#	$(if $(findstring 1,$(PRINTLEVEL)),@echo "$(LEVEL_1)library okay: $(notdir $(DIRTARGET))")
+	$(if $(findstring 1,$(PRINTLEVEL)),@echo "$(LEVEL_1)library okay: $(DIRTARGET)")
+
+depend : $(PLTDIRTAG)
+depend : $(DIRALLDEPS)
+	$(if $(findstring 1,$(PRINTLEVEL)),@echo "$(LEVEL_1)dependencies okay for: $(DIRTARGET)")
+
+dummies: $(DUMMY_SOURCES)
+
+makelink: $(PLTDIRTAG)
+makelink: $(DIRTARGET)
+	$(if $(findstring 1,$(PRINTLEVEL)),@echo "$(LEVEL_1)symbolic link okay: $(<F)")
+
+ifeq "$(suffix $(TARGET))" "$(ARCHIV_SUFFIX)"
+# compose library
+$(DIRTARGET) : $(PLTDIRTAG)
+DIREXTERNLIBS=$(filter %$(ARCHIV_SUFFIX),$(LIBPATH))# $(DIRLIBS)
+ifneq "$(ADDONLIBS)" ""
+DIREXTERNLIBS+=$(ADDONLIBS)
+endif
+
+$(DIRTARGET) : $(DIRLIBS) $(DIRALLOBJS)
+	$(if $(findstring 2,$(PRINTLEVEL)),@echo "$(LEVEL_2)composing library $@ ...")
+	@-rm -f $(DIRTARGET)
+ifeq "$(SHAREDLIB)" "-1"
+ifneq "$(DIREXTERNLIBS)" ""
+	$(if $(findstring 2,$(PRINTLEVEL)),@echo "$(LEVEL_2)adding external libraries "$(DIREXTERNLIBS)" ...")
+	$(VERBOSECHAR)cp $(DIREXTERNLIBS) $(LIBDIR)
+
+	$(VERBOSECHAR)cd $(LIBDIR); for LIBRARY in $(notdir $(DIREXTERNLIBS)); do $(AR) -x $$LIBRARY ; done
+	$(VERBOSECHAR)$(AR) $(ARFLAGS) $(DIRTARGET) $(DIRALLOBJS) $(LIBDIR)/*.o
+	$(VERBOSECHAR)rm $(LIBDIR)/*.o $(addprefix $(LIBDIR)/,$(notdir $(DIREXTERNLIBS)))
+else
+	$(VERBOSECHAR)$(AR) $(ARFLAGS) $(DIRTARGET) $(DIRALLOBJS)
+endif
+else
+	$(VERBOSECHAR)$(AR) $(ARFLAGS) $(DIRTARGET) $(DIRALLOBJS)
+endif
+ifneq "$(TARGET_SYSTEM)" "TRIMEDIA"
+	$(VERBOSECHAR) -$(RANLIB) $(DIRTARGET)
+endif
+
+else
+ifeq "$(suffix $(TARGET))" "$(SHAREDOBJ_SUFFIX)"
+$(DIRTARGET) : $(PLTDIRTAG)
+$(DIRTARGET) : $(DIRALLOBJS)
+	$(if $(findstring 2,$(PRINTLEVEL)),@echo "$(LEVEL_2)composing shared object library $@ ...")
+	@-rm -f $(DIRTARGET)
+	$(VERBOSECHAR)gcc -shared -o $(DIRTARGET) $(DIRALLOBJS)
+else
+ifndef BINARY
+# link
+$(DIRTARGET)$(EXE_SUFFIX) : $(PLTDIRTAG)
+$(DIRTARGET)$(EXE_SUFFIX) : $(CURMODDIRLIBS) $(DIRLIBS) $(DIRALLOBJS) $(FORCE_LINKING)
+	$(if $(findstring 2,$(PRINTLEVEL)),@echo "$(LEVEL_2)linking  $@ ...")
+	$(VERBOSECHAR)$(LINK) $(LDFLAGS) $(DIRALLOBJS) $(CURMODDIRLIBS) $(LIBPATH) $(LIBS)\
+        $(SYSLIBS) $(COMLIBS) $(SYSLIBS) -o $@
+	@echo "OLDLNK = " $(LNK) > $(DIRTARGET)$(LNK_SUFFIX)
+	$(VERBOSECHAR)if [ $(OPTIM_LEV) -gt 0 -a x$(DEBUG) = x0 -a x$(GPROF) = x0 ]; then $(STRIP) $@; fi
+else
+# symbolic link
+$(DIRTARGET)$(EXE_SUFFIX): $(BINDIR)/$(BINARY)$(EXE_SUFFIX)
+	$(VERBOSECHAR)rm -f $@
+	$(if $(findstring 2,$(PRINTLEVEL)),@echo "$(LEVEL_2)creating symbolic link $@ ...")
+	$(VERBOSECHAR)ln -s $(notdir $^) $@
+# might be usefull in Win32 environment
+#	$(if $(findstring 2,$(PRINTLEVEL)),@echo "$(LEVEL_2)creating $@ ...")
+#	$(VERBOSECHAR)cp $^ $@
+endif
+endif
+endif
+
+# The following rule has not been tested in the real world user environment.
+# If in doubt disable the following rule.
+ifeq "$(SHAREDLIB)" "2"
+$(LIBDIR)/lib%.so: $(LIBDIR)/lib%.a
+	$(if $(findstring 2,$(PRINTLEVEL)),@echo "$(LEVEL_2)composing shared object library $@ from static archive library ...")
+	CURDIR=`pwd`; TMP=/tmp/ar.$$$$; mkdir $$TMP; cd $$TMP; ar -x $$CURDIR/$<; gcc -shared -o $$CURDIR/$@ *.o; cd /tmp; rm -rf $$TMP
+endif
+
+ifndef FHG_MAKEDUMMYFILE
+FHG_MAKEDUMMYFILE = 0
+endif
+ifeq "$(FHG_MAKEDUMMYFILE)" "1"
+%_dummy.c : %.c
+	$(if $(findstring 2,$(PRINTLEVEL)),@echo "$(LEVEL_2)making dummy file for $< ...")
+	gawk -f $(MAKEROOT)/general/makedummyfile $< > $@
+endif
+
+# generate meta object code
+# %_moc.cpp:
+#%_moc.cpp: %.h  $(PLTDIRTAG)
+$(DIRMOCSRCS): $(MOCSRCDIR)/%_moc.cpp: %.h
+	$(if $(findstring 2,$(PRINTLEVEL)),@echo "$(LEVEL_2)moc $< ...")
+	$(VERBOSECHAR)$(MOC) $(INCL) -o $@ $<
+
+# compile
+$(DIROBJS) : $(PLTDIRTAG)
+$(filter-out %.cpp.o  %.C.o %.c++.o,$(DIROBJS)) : $(OBJDIR)/%.o : %   # matejkml: compile everything but CPP files
+	$(if $(findstring 2,$(PRINTLEVEL)),@echo "$(LEVEL_2)compiling $< ...")
+	$(VERBOSECHAR)$(CC) -c $(DEFFLAGS) $(CFLAGS) $(CONLYFLAGS) $(INCL) $< -o $@
+$(filter     %.cpp.o  %.C.o %.c++.o,$(DIROBJS)) : $(OBJDIR)/%.o : %   # matejkml: compile only CPP files
+	$(if $(findstring 2,$(PRINTLEVEL)),@echo "$(LEVEL_2)compiling $< ...")
+	$(VERBOSECHAR)$(CXX) -c $(DEFFLAGS) $(CFLAGS) $(CPPFLAGS) $(INCL) $< -o $@
+
+# compile moc
+$(DIRMOCOBJS) : $(PLTDIRTAG)
+$(DIRMOCOBJS) : $(OBJDIR)/%.o : $(MOCSRCDIR)/%
+	$(if $(findstring 2,$(PRINTLEVEL)),@echo "$(LEVEL_2)compiling moc-file $< ...")
+	$(VERBOSECHAR)$(CC) -c $(DEFFLAGS) $(CFLAGS) $(INCL) $< -o $@
+
+# generate dependencies
+$(DIRDEPS) : $(LOCALLIBDIRS) $(PLTDIRTAG)
+$(DIRDEPS) : $(OBJDIR)/%.d : %
+	$(if $(findstring 2,$(PRINTLEVEL)),@echo "$(LEVEL_2)making dependencies for $< ...")
+#	lint -c $(DEFFLAGS) $(CFLAGS) $(INCL) $<
+	$(VERBOSECHAR)$(DCC) $(DEFFLAGS) $(DEPFLAGS) $(INCL) $< | $(SED) > $@
+
+# generate dependencies moc
+$(DIRMOCDEPS) : $(LOCALLIBDIRS) $(PLTDIRTAG)
+$(DIRMOCDEPS) : $(OBJDIR)/%.d : $(MOCSRCDIR)/%
+	$(if $(findstring 2,$(PRINTLEVEL)),@echo "$(LEVEL_2)making dependencies for moc-file $< ...")
+#	lint -c $(DEFFLAGS) $(CFLAGS) $(INCL) $<
+	$(VERBOSECHAR)$(DCC) $(DEFFLAGS) $(DEPFLAGS) $(INCL) $< | $(SED) > $@
+
+# include dependency files *.d
+# NOTE: If an included *.d file does not exist, this file becomes a target
+#       that is to be made if a corresponding rule exists!
+#       (here: "generate dependencies" rule)
+ifeq "$(INCLDEP)" "1"
+ifneq "$(DIRALLDEPS)" "" #avoids error messages, if no dependencies are present (2001-12-11, sps)
+-include $(DIRALLDEPS)
+endif
+endif
+
+$(PLTDIRTAG) :
+	$(if $(findstring 2,$(PRINTLEVEL)),@echo "$(LEVEL_2)making directories")
+	$(VERBOSECHAR)-mkdir -p $(OBJDIR) $(MOCSRCDIR) $(BINDIR) $(LIBDIR) $(EXTRADIR)
+	$(VERBOSECHAR)touch $@
+
+override INSTALLHDRS := dummy $(INSTALLHDRS) # do avoid a syntax error at the for construct
+                                             # if the list is empty
+
+install: $(INSTALLLIBDEPS)
+	$(if $(findstring 2,$(PRINTLEVEL)),@echo "$(LEVEL_2)installing binaries "  " $(INSTALLBINS:%=$(BINDIR)/%) ...")
+	$(VERBOSECHAR)-if [ x"$(INSTALLBINS:%=$(BINDIR)/%)" != x ]; then install -m 775 $(INSTALLBINS:%=$(BINDIR)/%)         $(INSTALL_ROOT_SOFT_SYSTEM_PATH)/bin     ; exit 0; fi
+	$(if $(findstring 2,$(PRINTLEVEL)),@echo "$(LEVEL_2)installing libraries "  " $(INSTALLLIBS:%=$(LIBDIR)/%) ...")
+	$(VERBOSECHAR)-if [ x"$(INSTALLLIBS:%=$(LIBDIR)/%)" != x ]; then install -m 664 $(INSTALLLIBS:%=$(LIBDIR)/%)         $(INSTALL_ROOT_SOFT_SYSTEM_PATH)/lib     ; exit 0; fi
+	$(if $(findstring 2,$(PRINTLEVEL)),@echo "$(LEVEL_2)installing header files ...")
+	@for toinstall in $(INSTALLHDRS) ; do \
+	  if [ $$toinstall != "dummy" ]; then \
+            file=`cd $(INCDIR);find . -name $$toinstall|sed 's/\.\///'` ; \
+            dir=$(INSTALL_ROOT_SOFT_PATH)/include/`dirname $$file` ; \
+            echo "        $(INCDIR)/$$file to $$dir" ; \
+            [ -d "$$dir" ] || install -d -m 755 $$dir ; \
+            install -m 644 $(INCDIR)/$$file $$dir ; \
+            fi; \
+        done
+
+#	$(VERBOSECHAR)-if [ x"$(INSTALLHDRS:%=$(INCDIR)/%)" != x ]; then install -m 664 $(INSTALLHDRS:%=$(INCDIR)/%)         $(INSTALL_ROOT_SOFT_PATH)/include/        ; exit 0; fi
+
+.PHONY: clean clobber lcov-reset lcov-run
+
+clean: $(CLEANLIBDEPS)
+	$(if $(findstring 3,$(PRINTLEVEL)),@echo "$(LEVEL_3)cleaning $(TARGET)")
+	$(VERBOSECHAR)-rm -f $(DIRALLDEPS) $(DIRALLOBJS)
+	$(VERBOSECHAR)-rm -f                           $(filter     %$(LIB_SUFFIX),$(DIRTARGET))
+	$(VERBOSECHAR)-rm -f $(addsuffix $(EXE_SUFFIX),$(filter-out %$(LIB_SUFFIX),$(DIRTARGET)))
+	$(VERBOSECHAR)-rm -f $(addsuffix $(LNK_SUFFIX),$(filter-out %$(LIB_SUFFIX),$(DIRTARGET)))
+
+clobber: $(CLOBBERLIBDEPS)
+	$(if $(findstring 3,$(PRINTLEVEL)),@echo "$(LEVEL_3)clobbering from `pwd`  $(TARGETDIR) in obj bin lib")
+	$(VERBOSECHAR)-rm -rf $(TARGETTMPDIR) $(BINDIR) $(LIBDIR)
+
+distclean: clobber
+
+lcov-reset: $(LCOVRESETLIBDEPS)
+  ifeq "$(GCOV)" "1"
+	$(if $(findstring 3,$(PRINTLEVEL)),@echo "$(LEVEL_3)resetting code coverage analysis data for " `pwd` " in "$(OBJDIR))
+#	$(VERBOSECHAR)-find $(OBJDIR) "*.gcda" -print() -exec rm {} \;
+	$(VERBOSECHAR)-lcov -d $(OBJDIR) --zerocounters
+  else
+	$(if $(findstring 3,$(PRINTLEVEL)),@echo "$(LEVEL_3)code coverage needs GCOV=1")
+  endif
+
+
+lcov-run: $(LCOVRUNLIBDEPS)
+  ifeq "$(GCOV)" "1"
+	$(if $(findstring 3,$(PRINTLEVEL)),@echo "$(LEVEL_3)running code coverage analysis for " `pwd` " on "$(OBJDIR))
+	$(VERBOSECHAR)-mkdir -p ../coverage
+	$(VERBOSECHAR)-lcov -d $(OBJDIR) -b . -o ../coverage/cov.info -c
+  else
+	$(if $(findstring 3,$(PRINTLEVEL)),@echo "$(LEVEL_3)code coverage needs GCOV=1")
+  endif
+
+ifndef ZIPSRCS_CONSIDER_DEFFLAGS
+define ZIPRULE
+DIRSOURCEFILES=`find $(SRCDIRS) -type f \( -name "" $(SRCS:%= -o -name "%") \) -print`; \
+HEADERFILES=`gawk '/^[ \t]*#include[ \t]+".*"/{sub("^\\"","",$$2);sub("\\"$$","",$$2);print " -o -name "$$2}' $$DIRSOURCEFILES`; \
+DIRHEADERFILES=`find $(SRCDIRS) -type f \( -name "" $$HEADERFILES \) -print`; \
+CVSDIRS=`find $(SRCDIRS) -type d -name CVS`; \
+zip -r $(ZIPFILE) $$DIRSOURCEFILES $$DIRHEADERFILES $$CVSDIRS $(ROOTDIR)/make/*
+endef
+else
+define ZIPRULE
+DIRSOURCEFILES=`find $(SRCDIRS) -type f \( -name "" $(SRCS:%= -o -name "%") \) -print`; \
+ALLFILES=`$(DCC) -MM $(INCL) $(DEFFLAGS) $$DIRSOURCEFILES | sed 's$(SEDOP)[^ ]*.o:$(SEDOP) $(SEDOP)1' | gawk '{gsub("\\\\"," ");gsub("[ ]+"," ");printf($$0);}' | gawk '{for (i = 1; i < NF+1; i++) printf(" -o -name %s", $$i)}' `; \
+DIRALLFILES=`find $(SRCDIRS) -type f \( -name "" $$ALLFILES \) -print`; \
+CVSDIRS=`find $(SRCDIRS) -type d -name CVS`; \
+zip -r $(ZIPFILE) $$DIRALLFILES $$CVSDIRS $(ROOTDIR)/make/*
+endef
+endif
+
+zipsrcs:
+	$(VERBOSECHAR)$(ZIPRULE)
+
+cvsupdate: $(CVSUPDATELIBDEPS) $(MODULEDIRECTORY)
+
+cvscheckout: $(LOCALLIBDIRS)
+
+else # ifneq "$(MAKELEVEL)" "0"
+
+default : all
+
+install: all
+	@$(MAKE) INSTALLBINS="$(INSTALLBINS)" INSTALLLIBS="$(INSTALLLIBS)" INSTALLHDRS="$(INSTALLHDRS)" COMLIBS="$(COMLIBS)" GLOBOPTS="$(GLOBOPTS)" $@
+
+clobber:
+	@$(MAKE) ADDONDIR="$(ADDONDIR)" COMLIBS="$(COMLIBS)" GLOBOPTS="$(GLOBOPTS)" $@
+
+lcov-reset:
+	@$(MAKE) ADDONDIR="$(ADDONDIR)" COMLIBS="$(COMLIBS)" GLOBOPTS="$(GLOBOPTS)" $@
+
+lcov-run:
+	@$(MAKE) ADDONDIR="$(ADDONDIR)" COMLIBS="$(COMLIBS)" GLOBOPTS="$(GLOBOPTS)" $@
+
+distclean:
+	@$(MAKE) $@
+
+zipsrcs:
+	@$(MAKE) SRCDIRS="$(SRCDIRS)" SRCS="$(SRCS)" ZIPFILE=$(ZIPFILE) $@
+
+cvsupdate cvscheckout:
+	@$(MAKE) COMLIBS="$(COMLIBS)" GLOBOPTS="$(GLOBOPTS)" $@
+
+FORCE:
+
+updategeneral: FORCE
+	$(if $(findstring 2,$(PRINTLEVEL)),@echo "$(LEVEL_2)checking out / updating module general ...")
+	$(VERBOSECHAR)@cd $(MAKEROOT); cvs -d :ext:${USER}@cvsserver.iis.fhg.de:/home/cvs/amm/tools checkout general 2>&1 | grep -v 'cvs server: Updating'; exit 0
+
+cvsup:
+	@unset MAKELEVEL; $(MAKE) updategeneral cvsupdate
+
+cvsupandbuild:
+	@unset MAKELEVEL; $(MAKE) updategeneral cvsupdate all
+
+$(MAKEROOT)/general/makefile.unsetenv: FORCE
+	@($(shell set | gawk '!/^PATH=/ && !/^SHELL=/ && !/^USER=/ && !/^HOME=/ && /^[a-zA-Z_][a-zA-Z_0-9]*=/{gsub("[=]"," "); print "echo "$$1"=;"};')) > $@
+
+endif # ifneq "$(MAKELEVEL)" "0"

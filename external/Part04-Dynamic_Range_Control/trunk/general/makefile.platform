@@ -1,0 +1,848 @@
+#----------------------------------------------------------------------
+# $Id: makefile.platform,v 1.111 2012-02-03 14:57:12 rtb Exp $
+#
+# Notes:
+#
+# This makefile provides automatic handling of different system
+# platforms. Therefore it is required to set the environment
+# variable SYSTEM_NAME according to the actual platform.
+# Currently, these platforms are supported:
+#   IRIX
+#   Linux
+#   Solaris
+#   ... and most other UNIX platforms ...
+#
+# If CFLAGS or LDFLAGS are changed for a subsequent invocation of make,
+# object files and binaries are NOT remade automatically with the new
+# options! Use "make clean" first ...
+#
+# To make mp4auenc and mp4audec, type:
+#   make all
+#
+# To allow make running e.g. 4 jobs at once, type:
+#   make MFLAGS=-j4
+#
+# On most platforms, the default compiler is g++. To use the platform's
+# native compiler (e.g. cc) instead, type:
+#   make MAKE_CC=native
+# and to use gcc, type:
+#   make MAKE_CC=gnu
+#
+#----------------------------------------------------------------------
+#SYSTEM_NAME=TRIMEDIA
+# necessary for top level makefiles
+ARCHIV_SUFFIX := .a
+SHAREDOBJ_SUFFIX := .so
+ifeq "$(SHAREDLIB)" "2"
+  LIB_SUFFIX := $(SHAREDOBJ_SUFFIX)
+else
+  LIB_SUFFIX := $(ARCHIV_SUFFIX)
+endif
+
+# suppress overall environment except PATH and SHELL
+ifeq "$(MAKELEVEL)" "0"
+  # ifeq "$(origin LIBPATH)" "environment"
+  # LIBPATH = # otherwise conflicts with linux environment
+  # endif
+  ifdef GMAKE_UNSET_SHELL_ENVIRONMENT
+    -include $(MAKEROOT)/general/makefile.unsetenv
+  endif
+endif
+
+#set TARGET_SYSTEM if not set
+ifeq "$(TARGET_SYSTEM)" ""
+  TARGET_SYSTEM:=$(shell uname -s)
+endif
+
+#set TARGET_PLATFORM if not set
+ifeq "$(TARGET_PLATFORM)" ""
+  TARGET_PLATFORM:=$(shell uname -m | sed -e s/\ //)
+endif
+
+# AR variable to define the archiver in case of CrossCompiling
+AR:=ar
+ARFLAGS:=rc
+
+# STRIP variable to define the stripper in case of CrossCompiling
+STRIP:=strip
+
+# RANLIB variable to define the ranlib tool in case of CrossCompiling
+RANLIB:=ranlib
+
+ifneq "$(MAKELEVEL)" "0"
+
+  BUSWIDTH= # default 32 not explicitly
+  UNAME_S:=$(shell uname -s)
+  ifeq "$(SYSTEM_NAME)" ""
+    SYSTEM_NAME=$(UNAME_S)
+    ifeq "$(SYSTEM_NAME)" ""
+      include error:\ SYSTEM_NAME\ environment\ variable\ not\ defined\ !!!
+      include Options:\ Linux\ Linux_x64\ Solaris\ IRIX\ SunOS\ HPUX\ cdk\ OSF1\ OS2\ !!!
+    endif
+  endif
+
+  override PLATFORM:=$(shell uname -m | sed -e s/\ //)
+
+
+  ifeq "$(SYSTEM_NAME)" "SunOS"
+    SYSTEM_NAME:=Solaris
+  endif
+  ifeq "$(SYSTEM_NAME)" "Linux6"
+    # BUSWIDTH:=64
+    SYSTEM_NAME:=Linux
+  endif
+  ifeq "$(SYSTEM_NAME)" "IRIX64"
+    BUSWIDTH:=64
+    SYSTEM_NAME:=IRIX
+  endif
+  ifeq "$(SYSTEM_NAME)" "OS2"
+    SHELL:=/bin/sh    # os bugfix
+    export SHELL
+  endif
+
+# Check if the MacOSX compiler creates 64bit code by default
+# ifeq "$(SYSTEM_NAME)" "Darwin"
+#   64_BIT_GCC:= $(shell gcc -dM -E - < /dev/null | grep -c "__x86_64__")
+#   ifeq "$(64_BIT_GCC)" "1"
+#     TARGET_PLATFORM = x86_64
+#   endif
+# endif
+
+
+  # sps: was required for an outdated insure version only
+  #ifeq "$(SYSTEM_NAME)" "Linux"
+  #GLIBC_NEW=$(findstring 2.2.2,$(shell strings /lib/libc.so.6 | grep 'release version 2'))
+  #endif
+
+  INSTALL_SYSTEM_NAME:=$(SYSTEM_NAME)
+  CYGNUSNAMES:=Win32 cygwin CYGWIN_NT-4.0 CYGWIN_NT-5.0 CYGWIN_NT-5.1 CYGWIN_NT-5.2
+  ifneq "$(findstring $(SYSTEM_NAME),$(CYGNUSNAMES))" ""
+    SYSTEM_NAME:=cdk
+    INSTALL_SYSTEM_NAME:=$(UNAME_S)
+    USR_LOCAL_INSTALLATION:=1
+  endif
+
+  #ifeq "$(MAKELEVEL)" "1" # commented out due to other makefiles which do not use level 1
+
+  ifndef MAKE_CC
+    MAKE_CC:=g++
+  endif
+  ifeq "$(MAKE_CC)" "gcc"
+    override MAKE_CC:=gnu
+  endif
+
+  ifndef OPTIM_LEV
+    ifdef OPTIM
+      OPTIM_LEV:=$(OPTIM)
+    else
+      OPTIM_LEV:=0
+    endif
+  endif
+
+  ifndef STATIC
+    STATIC:=0
+  endif
+  ifndef DEBUG
+    DEBUG:=0
+  endif
+  ifdef PROF
+    GPROF:=PROF
+  endif
+  ifndef GPROF
+    GPROF:=0
+  endif
+  ifndef GCOV
+    GCOV:=0
+  endif
+
+  ifndef ROOTDIR
+    ROOTDIR := .
+    ifdef MAKEROOT
+      ROOTDIR:=$(dir $(MAKEROOT))
+    endif
+  endif
+
+  ifndef DIRSYNTAX
+    DIRSYNTAX := 1
+  endif
+  ifeq "$(DIRSYNTAX)" "2"
+    ifndef TARGETROOTDIR
+      TARGETROOTDIR := $(ROOTDIR)
+    endif
+    #MODULEDIR := $(shell basename `cat $(ROOTDIR)/CVS/Repository`)
+    MODULEDIR := $(shell cd $(ROOTDIR);basename `pwd`)
+    MODULETAG := $(shell cat $(ROOTDIR)/CVS/Tag 2> /dev/null)
+    ifneq "$(MODULETAG)" ""
+      MODULEDIR += $(MODULETAG)
+    endif
+
+    TARGETDIR := $(TARGET_SYSTEM)_$(TARGET_PLATFORM)
+    ifeq "$(GPROF)" "1"
+      override TARGETDIR := $(TARGETDIR)_p
+    endif
+    ifeq "$(GCOV)" "1"
+      override TARGETDIR := $(TARGETDIR)_c
+    endif
+    ifeq "$(DEBUG)" "1"
+      override TARGETDIR := $(TARGETDIR)_d
+    endif
+    ifneq "$(OPTIM_LEV)" ""
+      override TARGETDIR := $(TARGETDIR)_o$(OPTIM_LEV)
+    endif
+    override TARGETDIR := $(TARGETDIR)$(ADDONDIR)
+    ifndef OBJROOTDIR
+      TARGETTMPDIR := $(ROOTDIR)/obj/$(TARGETDIR)
+    else
+      ifdef OBJROOTWITHOUTPWD
+        TARGETTMPDIR := $(OBJROOTDIR)/obj/$(MODULEDIR)/$(TARGETDIR)
+      else
+        TARGETTMPDIR := $(OBJROOTDIR)/obj$(shell cd $(ROOTDIR); pwd)/../$(MODULEDIR)/$(TARGETDIR)
+      endif
+    endif
+  endif
+
+  ifeq "$(DIRSYNTAX)" "1"
+    TARGETROOTDIR := $(ROOTDIR)
+
+    ### the following code is not required
+    #MODULEDIR := $(shell basename `cat $(ROOTDIR)/CVS/Repository`)
+    #MODULETAG := $(shell cat CVS/Tag 2> /dev/null)
+    #ifneq "$(MODULETAG)" ""
+    #MODULEDIR += $(MODULETAG)
+    #endif
+
+    TARGETDIR := $(TARGET_SYSTEM)_$(TARGET_PLATFORM)
+    ifeq "$(DEBUG)" "1"
+      override TARGETDIR := $(TARGETDIR)_D
+    endif
+    ifneq "$(OPTIM_LEV)" ""
+      override TARGETDIR := $(TARGETDIR)_O$(OPTIM_LEV)
+    endif
+    ifeq "$(GPROF)" "1"
+      override TARGETDIR := $(TARGETDIR)_P
+    endif
+    ifeq "$(GCOV)" "1"
+      override TARGETDIR := $(TARGETDIR)_C
+    endif
+    override TARGETDIR := $(TARGETDIR)$(ADDONDIR)
+    TARGETTMPDIR := $(ROOTDIR)/obj/$(TARGETDIR)
+  endif
+
+  # Test whether we have a gnu compiler, because they are platform independent
+  GNUCOMPILER:=0
+  ifeq "$(MAKE_CC)" "gnu"
+    GNUCOMPILER:=gcc
+    ifeq "$(SYSTEM_NAME)" "Darwin"
+      GNUCOMPILER:=gcc
+      LINK:=g++
+    endif
+  endif
+  ifeq "$(MAKE_CC)" "g++"
+    GNUCOMPILER:=g++
+  endif
+  ifeq "$(MAKE_CC)" "bounds"
+    GNUCOMPILER:=gcc
+  endif
+  ifeq "$(MAKE_CC)" "intel"
+    GNUCOMPILER:=icc
+  endif
+  ifeq "$(MAKE_CC)" "llvm"
+    GNUCOMPILER:=clang
+  endif
+  ifeq "$(MAKE_CC)" "native"
+    DCC  := $(CC)
+    LINK := $(CXX) # CXX instead of CC enforces -lstdc during linking
+  endif
+  # override DEFFLAGS += __USE_FIXED_PROTOTYPES__
+  override CFLAGS += $(CFLAGS_EXTRA)
+  override LDFLAGS +=
+
+  ifneq "$(GNUCOMPILER)" "0"
+    DCC  := $(GNUCOMPILER)
+    CC   := $(GNUCOMPILER)
+    CXX  := $(GNUCOMPILER)
+    LINK := g++     # $(GNUCOMPILER) # force -lstdc++
+
+    override CFLAGS += -ansi -Wall -Wno-long-long -O$(OPTIM_LEV)
+
+    ifeq "$(CXX11)" "1"
+    override CFLAGS := $(filter-out -ansi, $(CFLAGS))
+    override CFLAGS += -std=c++0x
+    endif
+
+    # be extra pedantic for warning-free code
+    #override CFLAGS += -pedantic-errors -Werror -Wextra
+    override CPPFLAGS += -Woverloaded-virtual
+
+    # -Wmissing-prototypes is valid for C/ObjC but not for C++
+    # CFLAGs marked as (C only)
+    override CONLYFLAGS += -Wmissing-prototypes
+
+    # _pre_pend warnings to CFLAGS allows to deactivate warnings from lower makelevels,
+    # because only the latest warning directive counts (ndf 040115)
+
+    #override CFLAGS += -Wcast-align -Wcast-qual
+    override CFLAGS := -Wcast-align -Wcast-qual $(CFLAGS) # prepend warnings
+
+    ifeq "$(WARN_CONVERSION)" "1"
+      override CFLAGS += -Wconversion # causes delusive warnings when passing float values to functions expecting float arguments
+    endif
+    ifneq "$(OPTIM_LEV)" "0"
+      #override CFLAGS += -funroll-loops # gcc compiler bug
+    endif
+    ifeq "$(shell $(GNUCOMPILER) --version)" "2.95.2"
+      #ifeq "$(shell expr $(OPTIM_LEV) '>' 1)" "1" # decide to be careful
+      override CFLAGS += -fno-strength-reduce # workaround of a optimization compiler bug
+      #endif
+    endif
+    ifeq "$(STATIC)" "1"
+      #override CFLAGS +=  -static
+      override LDFLAGS += -static
+    endif
+    ifeq "$(DEBUG)" "1"
+      override CFLAGS  += -g
+      override LDFLAGS += -g
+    endif
+    ifeq "$(GPROF)" "1"
+      override CFLAGS  += -pg -fno-inline
+      override LDFLAGS += -pg
+    endif
+    ifeq "$(GCOV)" "1"
+      override CFLAGS  += -fprofile-arcs -ftest-coverage
+      override LDFLAGS += -fprofile-arcs -ftest-coverage
+    endif
+    ifeq "$(MAKE_CC)" "bounds"
+      override CFLAGS  += -fbounds-checking
+      override LDFLAGS += -fbounds-checking
+    endif
+  endif
+
+  # additionally the following platform dependent decisions
+  # respectively the relative/difference changes
+  ifeq "$(SYSTEM_NAME)" "Linux"
+    ifeq "$(TARGET_SYSTEM)" "Linux"
+      ifneq "$(GNUCOMPILER)" "0"
+        ifeq "$(TARGET_PLATFORM)" "i686"
+          override CFLAGS  += -m32
+          override LDFLAGS  += -m32
+        else
+          ifeq "$(TARGET_PLATFORM)" "x86_64"
+            override CFLAGS  += -m64
+            override LDFLAGS  += -m64
+          else
+            ifeq "$(TARGET_PLATFORM)" "xscale"
+              # do nothing
+            else
+              ifeq "$(TARGET_PLATFORM)" "cortex"
+                # do nothing
+              else
+                ifeq "$(TARGET_PLATFORM)" "ppc"
+                  # do nothing
+                else
+                  $(error TARGET_PLATFORM $(TARGET_PLATFORM) not supported)
+                endif
+              endif
+            endif
+          endif
+        endif
+      endif
+      ifeq "$(MAKE_CC)" "native"
+        ifeq "$(TARGET_PLATFORM)" "i686"
+          override DEFFLAGS += -DHAS_ULONG
+        else
+          $(error TARGET_PLATFORM $(TARGET_PLATFORM) not supported)
+        endif
+      endif
+      ifeq "$(MAKE_CC)" "insure"
+        ifeq "$(TARGET_PLATFORM)" "i686"
+          DCC  := insure
+          CC   := insure
+          CXX  := insure
+          LINK := insure
+          override LDFLAGS += -Zsl -lstdc++
+          # sps: was required for an outdated insure version only
+          #    ifneq "$(GLIBC_NEW)" ""
+          #      override LDFLAGS += -ldl-2.2
+          #    endif
+          override CFLAGS += -g
+        else
+          $(error TARGET_PLATFORM $(TARGET_PLATFORM) not supported)
+        endif
+      endif
+      ifeq "$(MAKE_CC)" "intel"
+        ifeq "$(TARGET_PLATFORM)" "i686"
+          DCC  := icc
+          CC   := icc
+          CXX  := icc
+          LINK := icpc
+        else
+          ifeq "$(TARGET_PLATFORM)" "x86_64"
+            DCC  := icc
+            CC   := icc
+            CXX  := icc
+            LINK := icpc
+          else
+            $(error TARGET_PLATFORM $(TARGET_PLATFORM) not supported)
+          endif
+        endif
+        override CFLAGS := $(filter-out -W -Wno-long-long -Wcast-align -Wcast-qual -Wconversion -pedantic, $(CFLAGS))
+      endif
+      ifeq "$(MAKE_CC)" "arm-linux-gcc"
+        ifeq "$(TARGET_PLATFORM)" "xscale"
+          AR := arm-linux-ar
+          STRIP := arm-linux-strip
+          RANLIB := arm-linux-ranlib
+          DCC  := arm-linux-gcc
+          CC   := arm-linux-gcc
+          CXX  := arm-linux-g++
+          LINK := arm-linux-g++
+          override CFLAGS += -mtune=xscale -O$(OPTIM_LEV)
+        endif
+        ifeq "$(TARGET_PLATFORM)" "cortex"
+          AR := arm-none-linux-gnueabi-ar
+          STRIP := arm-none-linux-gnueabi-strip
+          RANLIB := arm-none-linux-gnueabi-ranlib
+          DCC  := arm-none-linux-gnueabi-gcc
+          CC   := arm-none-linux-gnueabi-gcc
+          CXX  := arm-none-linux-gnueabi-g++
+          LINK := arm-none-linux-gnueabi-g++
+          override CFLAGS += -mtune=cortex-a8 -O$(OPTIM_LEV)
+        endif
+        ifeq "$(DEBUG)" "1"
+          override CFLAGS += -g
+        endif
+      endif
+    else
+      $(error TARGET_SYSTEM $(TARGET_SYSTEM) not supported)
+    endif
+  else
+    ifeq "$(SYSTEM_NAME)" "Linux_x64"
+      ifeq "$(TARGET_SYSTEM)" "Linux"
+        ifneq "$(GNUCOMPILER)" "0"
+          ifeq "$(TARGET_PLATFORM)" "x86_64"
+            # do nothing
+          else
+            $(error TARGET_PLATFORM $(TARGET_PLATFORM) not supported)
+          endif
+        endif
+        ifeq "$(MAKE_CC)" "intel"
+          ifeq "$(TARGET_PLATFORM)" "x86_64"
+            DCC  := icc
+            CC   := icc
+            CXX  := icc
+            LINK := icpc
+          else
+            $(error TARGET_PLATFORM $(TARGET_PLATFORM) not supported)
+          endif
+          override CFLAGS := $(filter-out -W -Wno-long-long -Wcast-align -Wcast-qual -Wconversion -pedantic, $(CFLAGS))
+        endif
+      else
+        $(error TARGET_SYSTEM $(TARGET_SYSTEM) not supported)
+      endif
+    else
+      ifeq "$(SYSTEM_NAME)" "Solaris"
+        ifeq "$(TARGET_SYSTEM)" "Solaris"
+          override DEFFLAGS += -DHAS_ULONG
+          override LIBPATH += -L/sw/opt.sunos5/SUNWspro/WS6U2/lib
+          override SYSLIBS += -L/sw/opt.sunos5/SUNWspro/WS6U2/lib -lsunmath # -L here is not fine but necessary because -L in LIBPATH is expanded
+          override INCL    += -I/sw/opt.sunos5/SUNWspro/WS6U2/include/cc
+
+          ifeq "$(MAKE_CC)" "native"
+            ifeq "$(TARGET_PLATFORM)" "sun4u"
+              override LDFLAGS  := -g -xs -Xc -z i_full
+              override CFLAGS   := -g -xs -Xc -v -xO$(OPTIM_LEV)
+              override DEPFLAGS := -xM1 $(CFLAGS)
+            else
+              $(error TARGET_PLATFORM $(TARGET_PLATFORM) not supported)
+            endif
+          endif
+        else
+          $(error TARGET_SYSTEM $(TARGET_SYSTEM) not supported)
+        endif
+      else
+        ifeq "$(SYSTEM_NAME)" "IRIX"
+          ifeq "$(TARGET_SYSTEM)" "IRIX64"
+            ifeq "$(GNUCOMPILER)" "0"
+              override CFLAGS += -ansi  -O$(OPTIM_LEV)
+              ifeq "$(DEBUG)" "1"
+                override CFLAGS  += -g
+                override LDFLAGS += -g
+              endif
+              ifeq "$(BUSWIDTH)" ""
+                override CFLAGS  += -n32
+                override LDFLAGS += -n32
+              endif
+            endif
+            ifeq "$(MAKE_CC)" "native"
+              override CFLAGS += -fullwarn -woff 1174,1209,1552,1521
+            else
+              ifeq "$(MAKE_CC)" "CC"
+                DCC  := CC
+                CC   := CC
+                LINK := CC
+                SED = sed 's@a.out@$(OBJDIR)/$*.o $(OBJDIR)/$*.d@g'
+              endif
+            endif
+          else
+            $(error TARGET_SYSTEM $(TARGET_SYSTEM) not supported)
+          endif
+        else
+          ifeq "$(SYSTEM_NAME)" "SunOS"
+            DCC  := g++
+            CC   := g++
+            LINK := g++
+          else
+            ifeq "$(SYSTEM_NAME)" "HPUX"
+              DCC  := gcc
+              CC   := cc
+              LANG := C
+              LINK := cc
+              override CFLAGS += -Aa +O$(OPTIM_LEV)
+              ifeq "$(DEBUG)" "1"
+                override CFLAGS += -g
+                LINK = purify cc
+              endif
+            else
+              ifeq "$(SYSTEM_NAME)" "cdk"
+                ifneq "$(findstring $(TARGET_SYSTEM),$(CYGNUSNAMES))" ""
+                  EXE_SUFFIX := .exe
+                  override SYSLIBS += -lwinmm # Win32 MultiMedia lib
+                  ifeq "$(TARGET_PLATFORM)" "i686"
+                    override DEFFLAGS += -DHAS_ULONG
+                  else
+                    $(error TARGET_PLATFORM $(TARGET_PLATFORM) not supported)
+                  endif
+                else
+                  ifeq "$(TARGET_SYSTEM)" "TRIMEDIA"
+                    DCC  := tmcc.exe
+                    CC   := tmcc.exe
+                    LINK := tmcc.exe
+                    AR := tmar.exe
+                    ARFLAGS := cru
+                    ifeq "$(TARGET_PLATFORM)" "PNX1500"
+                      override DEFFLAGS += -DTRIMEDIA
+                      override CFLAGS += -O$(OPTIM_LEV) -host ttisim -target pnx1500
+                      override LDFLAGS += -O$(OPTIM_LEV) -host ttisim -target pnx1500
+                    else
+                      override DEFFLAGS += -DTRIMEDIA
+                      override CFLAGS += -O$(OPTIM_LEV)
+                      override LDFLAGS += -O$(OPTIM_LEV)
+                    endif
+                  else
+                    $(error TARGET_SYSTEM $(TARGET_SYSTEM) not supported)
+                  endif
+                endif
+              else
+                ifeq "$(SYSTEM_NAME)" "OSF1"
+                  DCC  := gcc
+                  CC   := gcc
+                  LINK := gcc
+                else
+                  ifeq "$(SYSTEM_NAME)" "OS2"
+                    DCC  := gcc
+                    CC   := gcc
+                    LINK := gcc -g
+                    EXE_SUFFIX := .exe
+                    override CFLAGS += -ansi  -Wall
+                  else
+                    ifeq "$(SYSTEM_NAME)" "Darwin"
+                      ifeq "$(MACOSX_VERSION_MIN)" ""
+                        ifeq "$(shell test -d  /Developer/SDKs/MacOSX10.4u.sdk && echo YES )" "YES"
+                          MACOSX_VERSION_MIN := 10.4
+                        else
+                          ifeq "$(shell test -d  /Developer/SDKs/MacOSX10.5.sdk && echo YES )" "YES"
+                            MACOSX_VERSION_MIN := 10.5
+                          else
+                            ifeq "$(shell test -d  /Developer/SDKs/MacOSX10.6.sdk && echo YES )" "YES"
+                              MACOSX_VERSION_MIN := 10.6
+			    else
+                              ifeq "$(shell test -d  /Applications/Xcode.app && echo YES )" "YES"
+                            	MACOSX_VERSION_MIN := custom
+                              endif
+                            endif
+                          endif
+                        endif
+                      endif 
+                      ifeq "$(MACOSX_VERSION_MIN)" ""
+                        $(error unable to detect MacOSX SDK, please set MACOSX_VERSION_MIN)
+                      endif
+
+                      ifeq "$(MACOSX_VERSION_MIN)" "10.4"
+                        MACOSX_ISYSROOT := /Developer/SDKs/MacOSX10.4u.sdk
+                        override CFLAGS +=  -isysroot $(MACOSX_ISYSROOT) -mmacosx-version-min=$(MACOSX_VERSION_MIN)
+                        override LDFLAGS += -isysroot $(MACOSX_ISYSROOT) -mmacosx-version-min=$(MACOSX_VERSION_MIN)
+                      else
+                        ifeq "$(MACOSX_VERSION_MIN)" "10.5"
+                          MACOSX_ISYSROOT := /Developer/SDKs/MacOSX10.5.sdk
+                          override CFLAGS +=  -isysroot $(MACOSX_ISYSROOT) -mmacosx-version-min=$(MACOSX_VERSION_MIN)
+                          override LDFLAGS += -isysroot $(MACOSX_ISYSROOT) -mmacosx-version-min=$(MACOSX_VERSION_MIN)
+                        else  
+                          ifeq "$(MACOSX_VERSION_MIN)" "10.6"
+                            MACOSX_ISYSROOT := /Developer/SDKs/MacOSX10.6.sdk
+                            override CFLAGS +=  -isysroot $(MACOSX_ISYSROOT) -mmacosx-version-min=$(MACOSX_VERSION_MIN)
+                            override LDFLAGS += -isysroot $(MACOSX_ISYSROOT) -mmacosx-version-min=$(MACOSX_VERSION_MIN)
+                          else
+                            ifeq "$(MACOSX_VERSION_MIN)" "custom" 
+                              # Don't set isysroot and min version
+                            else
+                              $(error MacOSX version: $(MACOSX_VERSION_MIN) not supported)
+                            endif
+                          endif
+                        endif
+                      endif
+
+                      ifeq "$(TARGET_SYSTEM)" "Darwin"
+                        TARGET_PLATFORM_SUPPORTED := 0
+                        ifeq "$(TARGET_PLATFORM)" "PowerMacintosh"
+                          DCC  := gcc
+                          CC   := gcc
+                          LINK := g++
+                          # mul 2005-01-11:
+                          # stripping out -ansi, -pedantic from Darwin CFLAGS, due to gcc problems with inline, which is not ANSI 89 C
+                          # used e.g. in OS_INLINE macro from darwin system libs
+                          override CFLAGS := $(filter-out -ansi -pedantic, $(CFLAGS))
+                          ifneq "$(PLATFORM)" "PowerMacintosh"
+                            # we build universal binaries
+                            override CFLAGS += -arch ppc
+                            override LDFLAGS += -arch ppc
+                          endif
+                          TARGET_PLATFORM_SUPPORTED := 1
+                        endif
+                        ifeq "$(TARGET_PLATFORM)" "PowerMacintosh_64"
+                          DCC  := gcc
+                          CC   := gcc
+                          LINK := g++
+                          # mul 2005-01-11:
+                          # stripping out -ansi, -pedantic from Darwin CFLAGS, due to gcc problems with inline, which is not ANSI 89 C
+                          # used e.g. in OS_INLINE macro from darwin system libs
+                          override CFLAGS := $(filter-out -ansi -pedantic, $(CFLAGS))
+                          ifneq "$(PLATFORM)" "PowerMacintosh_64"
+                            # we build universal binaries
+                            override CFLAGS += -arch ppc64 
+                            override LDFLAGS += -arch ppc64
+                          endif
+                          TARGET_PLATFORM_SUPPORTED := 1
+                        endif
+                        ifeq "$(TARGET_PLATFORM)" "i386"
+                          ifeq "$(MAKE_CC)" "intel"
+                            DCC  := icc
+                            CC   := icc
+                            CXX  := icc
+                            LINK := icpc
+                            override CFLAGS := $(filter-out -W -Wno-long-long -Wcast-align -Wcast-qual -Wconversion -pedantic, $(CFLAGS))
+                          endif
+                          # mul 2005-01-11:
+                          # stripping out -ansi, -pedantic from Darwin CFLAGS, due to gcc problems with inline, which is not ANSI 89 C
+                          # used e.g. in OS_INLINE macro from darwin system libs
+                          override CFLAGS := $(filter-out -ansi -pedantic, $(CFLAGS))
+                          override CFLAGS += -arch i386 
+                          override LDFLAGS += -arch i386
+                          TARGET_PLATFORM_SUPPORTED := 1
+                        endif
+                        ifeq "$(TARGET_PLATFORM)" "x86_64"
+                          ifeq "$(MAKE_CC)" "intel"
+                            DCC  := icc
+                            CC   := icc
+                            CXX  := icc
+                            LINK := icpc
+                            override CFLAGS := $(filter-out -W -Wno-long-long -Wcast-align -Wcast-qual -Wconversion -pedantic, $(CFLAGS))
+                          endif
+                          # mul 2005-01-11:
+                          # stripping out -ansi, -pedantic from Darwin CFLAGS, due to gcc problems with inline, which is not ANSI 89 C
+                          # used e.g. in OS_INLINE macro from darwin system libs
+                          override CFLAGS := $(filter-out -ansi -pedantic, $(CFLAGS))
+                          ifneq "$(PLATFORM)" "x86_64"
+                            # we build universal binaries
+                            override CFLAGS += -arch x86_64 
+                            override LDFLAGS += -arch x86_64
+                          endif 
+                          TARGET_PLATFORM_SUPPORTED := 1
+                        endif
+                        ifeq "$(TARGET_PLATFORM_SUPPORTED)" "0"
+                          $(error TARGET_PLATFORM $(TARGET_PLATFORM) not supported)
+                        endif
+                      else
+                        $(error TARGET_SYSTEM $(TARGET_SYSTEM) not supported)
+                      endif
+                    else
+                      SYSTEM_NAME   := unknown
+                      TARGETTMPDIR := $(ROOTDIR)/tmp/ $(SYSTEM_NAME) $(ADDONDIR)
+                      DCC := $(CC)
+                    endif
+                  endif
+                endif
+              endif
+            endif
+          endif
+        endif
+      endif
+    endif
+  endif
+  EMPTY:=
+  CHARSPACE:=$(EMPTY) $(EMPTY)
+
+  TARGETTMPDIR := $(subst $(CHARSPACE),_,$(strip $(TARGETTMPDIR)))
+  TARGETDIR    := $(subst $(CHARSPACE),_,$(strip $(TARGETDIR)))
+  BINDIR       := $(TARGETROOTDIR)/bin/$(TARGETDIR)
+  LIBDIR       := $(TARGETROOTDIR)/lib/$(TARGETDIR)
+  INCDIR       := $(ROOTDIR)/include
+  OBJDIR       := $(TARGETTMPDIR)/obj$(ADDONOBJDIR)
+  PLTDIRTAG    := $(OBJDIR)/_$(SYSTEM_NAME)_ $(BINDIR)/_$(SYSTEM_NAME)_ $(LIBDIR)/_$(SYSTEM_NAME)_
+
+  # add "static" to directory name of statically linked executable
+  # and also add "static" to directory name of statically linked
+  # shared object library (.so)
+  ifeq "$(STATIC)" "1"
+    override BINDIR := $(BINDIR)_static
+    ifeq "$(SHAREDLIB)" "2"
+      override LIBDIR := $(LIBDIR)_static
+    endif
+  endif
+
+
+  # defaults
+  SEDOP := @
+  #SEDOP = §
+  # mul: bypass any other pre-processor output, depend on make-directories
+  SED =  sed -n '/\.o:/,$$p' | sed 's$(SEDOP)[^ ]*.o:$(SEDOP)$(OBJDIR)/$*.o $(OBJDIR)/$*.d:$(SEDOP)1'
+
+  ifdef QTDIR
+    MOC := $(QTDIR)/bin/moc
+  else
+    MOC := moc
+  endif
+
+  ifeq "$(SHAREDLIB)" "1"
+    ifneq "$(SYSTEM_NAME)" "cdk"
+      ifneq "$(GNUCOMPILER)" "0"
+        override CFLAGS += -fPIC # So, static libraries can be converted into dynamic libraries later.
+      endif
+
+      override SYSLIBS += -lpthread
+    endif
+  endif
+  LNK_SUFFIX := .lnk
+  DEPFLAGS := -M $(CFLAGS)
+  # HP20010508 changed = to +=
+  override SYSLIBS += -lm
+  override LIBPATH += -L$(LIBDIR)
+
+  # AFSP paths. This variables should become obsolete in the future.
+  # Use instead the more general variables REFSOFT_INCLUDE_PATH and REFSOFT_LIBRARY_PATH
+  # and unset the variables AFSP_INCLUDE_PATH and AFSP_LIBRARY_PATH.
+#  ifdef AFSP_INCLUDE_PATH
+#    # include error:\ Use\ REFSOFT_INCLUDE_PATH\ instead\ of\ AFSP_INCLUDE_PATH!!!
+#    override INCL += -I$(AFSP_INCLUDE_PATH)
+#    vpath %.h $(AFSP_INCLUDE_PATH)
+#  endif
+#  ifdef AFSP_LIBRARY_PATH
+#    # include error:\ Use\ REFSOFT_LIBRARY_PATH\ instead\ of\ AFSP_LIBRARY_PATH!!!
+#    ifndef EXPLICITLIBLINK
+#      override LIBPATH += -L$(AFSP_LIBRARY_PATH)
+#    endif
+#    vpath %.a $(AFSP_LIBRARY_PATH)
+#  endif
+
+  # REFSOFT*PATH the generic search path for all library stuff
+  # e.g. REFSOFT_INCLUDE_PATH=path1:path2:path3
+#  ifdef REFSOFT_INCLUDE_PATH
+#    override INCL += $(addprefix -I,$(subst :, ,$(REFSOFT_INCLUDE_PATH)))
+#    vpath %.h $(REFSOFT_INCLUDE_PATH)
+#  else
+#    # include error:\ REFSOFT_INCLUDE_PATH\ environment\ variable\ not\ defined\ !!!
+#  endif
+
+#  ifdef REFSOFT_LIBRARY_PATH
+#    ifndef EXPLICITLIBLINK
+#      override LIBPATH += $(addprefix -L,$(subst :, ,$(REFSOFT_LIBRARY_PATH)))
+#    endif
+#    vpath %.a $(REFSOFT_LIBRARY_PATH)
+#  else
+#    # include error:\ REFSOFT_LIBRARY_PATH\ environment\ variable\ not\ defined\ !!!
+#  endif
+
+  # .SILENT: # does conflict with VERBOSE
+  ifdef VERBOSE
+    override MFLAGS += VERBOSE=$(VERBOSE)
+  endif
+
+  # MS VC compatibility settings
+  ifeq "$(DEBUG)" "0"
+    # set NDEBUG for DEBUG=0
+    # which disables e.g. asserts
+    override DEFFLAGS += -DNDEBUG
+  else
+    # set _DEBUG for DEBUG=1
+    # to be fully compatible to MS VC default settings
+    override DEFFLAGS += -D_DEBUG
+  endif
+
+  # gcc does not set optimlevel in defines
+  ifeq "$(OPTIM_LEV)" "0"
+    override DEFFLAGS += -D__GCC_OPTIM_0
+  endif
+  ifeq "$(OPTIM_LEV)" "1"
+    override DEFFLAGS += -D__GCC_OPTIM_1
+  endif
+  ifeq "$(OPTIM_LEV)" "2"
+    override DEFFLAGS += -D__GCC_OPTIM_2
+  endif
+  ifeq "$(OPTIM_LEV)" "3"
+    override DEFFLAGS += -D__GCC_OPTIM_3
+  endif
+
+  # ISO MP4 file format library
+#  ifeq "$(ISOMP4)" "1"
+#    ifndef "$(DEBUG_MP4LIB)"
+#      DEBUG_MP4LIB := 0
+#    endif
+#    ifndef ISOMP4_PATH
+#      ISOMP4_PATH := $(ROOTDIR)/mp4lib
+#    endif
+#    ISOMP4_INCLUDE_PATH  := $(ISOMP4_PATH)/src
+#    ISOMP4_PLATFORM_PATH := $(ISOMP4_PATH)/$(PLTDIR)
+#    ifeq "$(DEBUG_MP4LIB)" "0"
+#      ISOMP4_LIBRARY_PATH := $(ISOMP4_PLATFORM_PATH)/libisomp4
+#    else
+#      ISOMP4_LIBRARY_PATH := $(ISOMP4_PLATFORM_PATH)/libisomp4_debug
+#    endif
+#    override INCL     += -I$(ISOMP4_PLATFORM_PATH) -I$(ISOMP4_INCLUDE_PATH)
+
+#    ifndef EXPLICITLIBLINK
+#      override LIBPATH += -L$(ISOMP4_LIBRARY_PATH)
+#      override COMLIBS += -lisomp4
+#    else
+#      override LIBPATH += $(ISOMP4_LIBRARY_PATH)/libisomp4.a
+#    endif
+
+#    override DEFFLAGS += -DMP4FF -DUSELIB_ISOMP4 # Double definition; please use the longer USELIB_ISOMP4 in the future
+#    vpath libisomp4.a $(ISOMP4_LIBRARY_PATH)
+#  endif
+
+  ifeq "$(USE_AFSP)" "1"
+    override DEFFLAGS += -DUSE_AFSP -DUSELIB_AFsp # Double definition; please use the longer USELIB_AFsp in the future
+
+    ifndef EXPLICITLIBLINK
+      override LIBPATH += -L$(REFSOFT_LIBRARY_PATH)
+      override COMLIBS += -ltsp
+    else
+      override LIBPATH += $(REFSOFT_LIBRARY_PATH)/libtsp.a
+    endif
+  endif
+
+  # the following lines should be obsolete in the future
+  PLTDIR:=$(SYSTEM_NAME)
+  ifeq "$(SYSTEM_NAME)" "Solaris"
+    # PLTDIR := sol
+    PLTDIR := solaris
+    RMDIR := rmdir -ps
+  endif
+  ifeq "$(SYSTEM_NAME)" "IRIX"
+    PLTDIR:=sgi
+  endif
+  ifeq "$(SYSTEM_NAME)" "Linux"
+    PLTDIR := linux
+    RMDIR := rmdir -p
+  endif
+
+endif # ifneq "$(MAKELEVEL)" "0"
