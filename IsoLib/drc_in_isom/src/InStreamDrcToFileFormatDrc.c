@@ -199,7 +199,6 @@ MP4Err addChannelLayout             (UniDrcConfig *uniDrcConfig, MP4AudioSampleE
             MP4ChannelLayoutDefinedLayout *definedLayoutStruct;
             definedLayoutStruct = calloc(1, sizeof(MP4ChannelLayoutDefinedLayout));
             
-            definedLayoutStruct->explicit_position  = 1;
             definedLayoutStruct->speaker_position   = uniDrcConfig->channelLayout.speakerPosition[i];
             MP4AddListEntry(definedLayoutStruct, channelLayoutAtom->definedLayouts);
         }

@@ -271,9 +271,13 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
 			break;
             
         case MP4ChannelLayoutAtomType:
-			err = MP4CreateChannelLayoutAtom( (MP4ChannelLayoutAtomPtr*) &newAtom );
-			break;
-            
+            err = MP4CreateChannelLayoutAtom( (MP4ChannelLayoutAtomPtr*) &newAtom );
+            break;
+
+        case MP4PCMConfigAtomType:
+            err = MP4CreatePCMConfigAtom( (MP4PCMConfigAtomPtr*) &newAtom );
+            break;
+
         case MP4DownMixInstructionsAtomType:
 			err = MP4CreateDownMixInstructionsAtom( (MP4DownMixInstructionsAtomPtr*) &newAtom );
 			break;
@@ -510,6 +514,7 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
 		case MP4StereoVideoGroupAtomType:
 			err = MP4CreateStereoVideoGroupAtom((MP4StereoVideoGroupAtomPtr *)&newAtom);
 			break;
+/*
         case MP4SegmentTypeAtomType:
             err = MP4CreateSegmentTypeAtom((MP4SegmentTypeAtomPtr *)&newAtom);
             break;
@@ -522,7 +527,7 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
         case MP4ProducerReferenceTimeAtomType:
             err = MP4CreateProducerReferenceTimeAtom((MP4ProducerReferenceTimeAtomPtr *)&newAtom);
             break;
-
+*/
 #ifdef ISMACrypt
 		case MP4SecurityInfoAtomType:
 			err = MP4CreateSecurityInfoAtom( (MP4SecurityInfoAtomPtr *) &newAtom );
