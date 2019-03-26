@@ -1116,39 +1116,25 @@ bail:
 }
 
 MP4_EXTERN(MP4Err) ISOGetRESVOriginalFormat(MP4Handle sampleEntryH,
-                                            char* pOrigFmt)
+                                            u32* outOrigFmt)
 {
     MP4Err err = MP4NoErr;
-    MP4VisualSampleEntryAtomPtr entry = NULL;
-    MP4RestrictedSchemeInfoAtomPtr    config;
-    MP4Handle rinfHandle;
-
-    ISONewHandle(1, &rinfHandle);
+    MP4RestrictedVideoSampleEntryAtomPtr entry = NULL; /* MP4RestrictedVideoSampleEntryAtomPtr | MP4VisualSampleEntryAtomPtr */
+    MP4RestrictedSchemeInfoAtomPtr rinf;
+    MP4OriginalFormatAtomPtr fmt;
 
     err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType); if (err) goto bail;
 
     if (entry->type != MP4RestrictedVideoSampleEntryAtomType) BAILWITHERROR(MP4BadParamErr);
 
-    err = MP4GetListEntryAtom(entry->ExtensionAtomList, MP4RestrictedSchemeInfoAtomType, (MP4AtomPtr*)&config);
-    if (err == MP4NotFoundErr) {
-        BAILWITHERROR(MP4BadDataErr);
-    }
+    rinf = (MP4RestrictedSchemeInfoAtomPtr)entry->MP4RestrictedSchemeInfo;
+    if (!rinf) { BAILWITHERROR(MP4BadParamErr); }
 
-    /* todo: this should be done in another way. reimplement it.*/
+    fmt = (MP4OriginalFormatAtomPtr)rinf->MP4OriginalFormat;
+    if (!fmt)  { BAILWITHERROR(MP4BadParamErr); }
 
-    err = config->calculateSize( (MP4AtomPtr) config ); if (err) goto bail;
-    err = MP4SetHandleSize( rinfHandle, config->size ); if (err) goto bail;
-    err = config->serialize( (MP4AtomPtr) config, *rinfHandle ); if (err) goto bail;
-
-    if(pOrigFmt)
-    {
-        /* OriginalFormatBox is the first box in 'rinf'. Skip 16 bytes to get data_format */
-        memcpy(pOrigFmt, *rinfHandle+16, 4);
-        pOrigFmt[4] = '\0';
-    }
-
+    *outOrigFmt = fmt->original_format;
 bail:
-    ISODisposeHandle(rinfHandle);
     if (entry)
         entry->destroy((MP4AtomPtr)entry);
     return err;

@@ -79,6 +79,11 @@ public:
   ///
   uint32_t          getNextSampleNr(uint32_t uiTrackID)               const;
   ///
+  /// \brief getNextSample return next AU (automatically select if extractors needs to be resolved or not)
+  /// \return
+  ///
+  std::vector<char> getNextSample();
+  ///
   /// \brief getNextAUwithoutExtractors return next AU without resolving extractors
   /// \return data
   ///
@@ -130,6 +135,12 @@ public:
   ///
   void              replaceLFwithSC(std::vector<char>& rvSample) const;
 
+  ///
+  /// \brief setDefaultLenSizeMinOne this function is a temporary bugfix, this information should be parsed from the file
+  /// \param uiDefaultVal default value for all tracks in the file. if set to 0 parsing from the config record is forced
+  ///
+  void setDefaultLenSizeMinOne(uint32_t uiDefaultVal) { m_uiDefLenSizeMinOne = uiDefaultVal; }
+
 private:
   int32_t           getPSfromSampleEntry(ISOHandle sampleEntryH,
                                          ISOHandle vpsH,
@@ -143,6 +154,10 @@ private:
   uint32_t          getLengthField(std::vector<char>& rvSample, uint32_t uiPointer) const;
   void              setLengthField(std::vector<char>& rvSample, uint32_t uiPointer, uint32_t uiSize) const;
 
+  // this is a hack function since we don't have seeking implemented now
+  // TODO: implement seeking and remove this method
+  void              skipNotUsedAUs(TrackIDSet& rUsedTrackIds);
+
 ////////////////////////////////// MEMBERS //////////////////////////////////
 private:
   bool              m_bInitialized;     // initialized flag
@@ -153,4 +168,5 @@ private:
   uint32_t          m_uiSelectedTrackID;// trackID of selected track
   TrackReaderPtrMap m_mTrackReaders;    // one track reader per track
   LenSizeMinOneMap  m_mLenSizeMinOne;   // lenght_size_minus_one for each track
+  uint32_t          m_uiDefLenSizeMinOne; // default lenght_size_minus_one value todo: remove it after bugfix in libisomendiafile
 };

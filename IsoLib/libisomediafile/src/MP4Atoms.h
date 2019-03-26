@@ -135,6 +135,7 @@ enum
     ISOHEVCConfigAtomType                               = MP4_FOUR_CHAR_CODE( 'h', 'v', 'c', 'C' ),
     ISOAVCSampleEntryAtomType                           = MP4_FOUR_CHAR_CODE( 'a', 'v', 'c', '1' ),
     ISOHEVCSampleEntryAtomType                          = MP4_FOUR_CHAR_CODE( 'h', 'v', 'c', '1' ),
+    ISOLHEVCSampleEntryAtomType                         = MP4_FOUR_CHAR_CODE( 'h', 'v', 'c', '2' ),
     MP4XMLMetaSampleEntryAtomType                       = MP4_FOUR_CHAR_CODE( 'm', 'e', 't', 'x' ),
     MP4TextMetaSampleEntryAtomType                      = MP4_FOUR_CHAR_CODE( 'm', 'e', 't', 't' ),
     MP4AMRSampleEntryAtomType                           = MP4_FOUR_CHAR_CODE( 's', 'a', 'm', 'r' ),

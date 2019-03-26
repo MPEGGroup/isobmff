@@ -71,20 +71,24 @@ int main(int argc, char** argv)
   uint32_t    uiSelectedTrackID = 0;
   std::string strInputFile;
   std::string strOutputFile     = "out.265";
+  uint32_t    uiDefaultLenSizeMin1 = 3;
+  int32_t     iMaxSamples = -1;
 
   if(cOptions.isSet("-h"))
   {
-    std::cout << "Extractors reference software version 0.1, Input contribution m41627 for 120th MPEG meeting\n"
+    std::cout << "Extractors reference software version 0.1, Input contribution m44614 for 124th MPEG meeting\n"
                  "  -h              this help text\n"
                  "  -i inputFile    input ISOBMFF file (OMAF compliant)\n"
                  "  -o outputFile   output HEVC bitstream file (default: out.265)\n"
                  "  -l              list all tarckIDs\n"
-                 "  -t trackID      select a trackID from which the bitstream is extracted\n" << std::endl;
+                 "  -t trackID      select a trackID from which the bitstream is extracted\n"
+                 "  -n maxSamples   Number of samples to extract, -1 = all samples\n"
+                 "  -s lenSizeMin1  force the default value of length_size_minus_one in all tracks\n" << std::endl;
     return 0;
   }
   strInputFile  = cOptions.getOption("-i");
   strOutputFile = cOptions.getOption("-o", strOutputFile);
-  bListTrackIDs = cOptions.isSet("-l");
+  bListTrackIDs = cOptions.isSet("-l") || !cOptions.isSet("-t");
 
   std::string strTrackID = cOptions.getOption("-t");
   uiSelectedTrackID = atoi(strTrackID.c_str());
@@ -103,6 +107,22 @@ int main(int argc, char** argv)
 
   HEVCExtractorReader cExtractor;
   ISOErr err;
+
+  if(cOptions.isSet("-n"))
+  {
+    std::string strValue = cOptions.getOption("-n");
+    iMaxSamples = atoi(strValue.c_str());
+  }
+
+  // -s is due to the possible bug in parsing of resv sample entry.
+  // todo: remove this after fixing this bug
+  if(cOptions.isSet("-s"))
+  {
+    std::string strValue = cOptions.getOption("-s");
+    uiDefaultLenSizeMin1 = atoi(strValue.c_str());
+  }
+  cExtractor.setDefaultLenSizeMinOne(uiDefaultLenSizeMin1);
+
   err = cExtractor.init(strInputFile, true);
   if(err)
   {
@@ -150,19 +170,20 @@ int main(int argc, char** argv)
   cBitstream.write(vParamSets.data(), vParamSets.size());
 
   std::vector<char> vSample;
+  uint32_t uiSampleCnt = 0;
   do
   {
-    vSample = cExtractor.getNextAUResolveExtractors();
-    if(vSample.size()==0)
-    { // try to get an AU from hvc1 track
-      vSample = cExtractor.getNextAUwithoutExtractors();
-    }
+    if(iMaxSamples>0 && uiSampleCnt >= static_cast<uint32_t>(iMaxSamples)) { std::cout << "break\n"; break; }
+
+    vSample = cExtractor.getNextSample();
     if(vSample.size()>0)
     {
       cExtractor.replaceLFwithSC(vSample);
       cBitstream.write(vSample.data(), vSample.size());
+      uiSampleCnt++;
     }
-  }while(vSample.size()>0 );
+  }while(vSample.size()>0);
+  std::cout << uiSampleCnt << " samples extracted from track " << uiSelectedTrackID << std::endl;
 
   cBitstream.close();
   return 0;

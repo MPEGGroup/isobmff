@@ -31,13 +31,14 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <set>
 
 #include <MP4TrackReader.h>
 
 extern "C"
 {
 MP4_EXTERN(MP4Err) ISOGetRESVOriginalFormat(MP4Handle sampleEntryH,
-                                            char* pOrigFmt);
+                                            u32* outOrigFmt);
 MP4_EXTERN(MP4Err) ISOGetRESVSampleDescriptionPS(MP4Handle sampleEntryH,
                                                  MP4Handle ps,
                                                  u32 where,
@@ -143,11 +144,16 @@ std::string HEVCExtractorReader::getOriginalFormat(uint32_t uiTrackID) const
   ISOHandle sampleEntryH;
   ISONewHandle(1, &sampleEntryH);
   err = MP4TrackReaderGetCurrentSampleDescription(*pTrackReader, sampleEntryH);
+
   if(MP4NoErr==err)
   {
-    char origFmt[5];
-    err = ISOGetRESVOriginalFormat(sampleEntryH, origFmt);
-    if(MP4NoErr==err) { strRet = origFmt; }
+    uint32_t uiOrigFormat = 0;
+    err = ISOGetRESVOriginalFormat(sampleEntryH, &uiOrigFormat);
+    if(MP4NoErr==err)
+    {
+      if(uiOrigFormat==ISOHEVCSampleEntryAtomType) { strRet = "hvc1"; }
+      else if(uiOrigFormat==ISOLHEVCSampleEntryAtomType) { strRet = "hvc2"; }
+    }
   }
   ISODisposeHandle(sampleEntryH);
   return strRet;
@@ -211,6 +217,15 @@ uint32_t HEVCExtractorReader::getNextSampleNr(uint32_t uiTrackID) const
   return reader->nextSampleNumber;
 }
 
+std::vector<char> HEVCExtractorReader::getNextSample()
+{
+  if(isHvc2Track(m_uiSelectedTrackID))
+  {
+    return getNextAUResolveExtractors();
+  }
+  return getNextAUwithoutExtractors();
+}
+
 int32_t HEVCExtractorReader::getNextAU(uint32_t uiTrackID,
                                  ISOHandle sampleH,
                                  uint32_t* pUiSize)
@@ -249,6 +264,10 @@ std::vector<char> HEVCExtractorReader::getNextAUResolveExtractors()
   ISOHandle sampleH;
   ISONewHandle(0, &sampleH);
 
+  // TODO: remove it when seeking is implemented
+  TrackIDSet rUsedTrackIds;
+  rUsedTrackIds.push_back(m_uiSelectedTrackID);
+
   err = getNextAU(m_uiSelectedTrackID, sampleH, &uiSize);
   if(err || uiSize==0) { return vRet; }
 
@@ -286,6 +305,7 @@ std::vector<char> HEVCExtractorReader::getNextAUResolveExtractors()
 
           // set data_offset and data_length fields dependent on length_size_minus_one flag
           uint32_t uiLengthSizeMinusOne = m_mLenSizeMinOne.at(m_uiSelectedTrackID);
+
           switch(uiLengthSizeMinusOne)
           {
           case 0:
@@ -300,6 +320,16 @@ std::vector<char> HEVCExtractorReader::getNextAUResolveExtractors()
                            ( (*(*sampleH+uiCurNalPtr+uiConstrStart+1))&0xff);
             uiConstrStart += 2;
             break;
+          case 2:
+              uiDataOffset = (((*(*sampleH+uiCurNalPtr+uiConstrStart))&0xff) << 16)   |
+                             (((*(*sampleH+uiCurNalPtr+uiConstrStart+1))&0xff) << 8)  |
+                             ( (*(*sampleH+uiCurNalPtr+uiConstrStart+2))&0xff);
+              uiConstrStart += 3;
+              uiDataLength = (((*(*sampleH+uiCurNalPtr+uiConstrStart))&0xff) << 16) |
+                             (((*(*sampleH+uiCurNalPtr+uiConstrStart+1))&0xff) << 8)  |
+                             ( (*(*sampleH+uiCurNalPtr+uiConstrStart+2))&0xff);
+              uiConstrStart += 3;
+              break;
           case 3:
             uiDataOffset = (((*(*sampleH+uiCurNalPtr+uiConstrStart))&0xff) << 24)   |
                            (((*(*sampleH+uiCurNalPtr+uiConstrStart+1))&0xff) << 16) |
@@ -318,6 +348,8 @@ std::vector<char> HEVCExtractorReader::getNextAUResolveExtractors()
 
           // get trackID of the track we depend on in this sample constructor
           uint32_t uiRefTrackID = m_mHvc2Dependencies[m_uiSelectedTrackID].at(uiTrackRefIdx-1);
+
+          rUsedTrackIds.push_back(uiRefTrackID);
 
           // get the correct sample number
           if(0!=iSampleOffset)
@@ -345,7 +377,7 @@ std::vector<char> HEVCExtractorReader::getNextAUResolveExtractors()
           }
           if(uiDataOffset+uiDataLength != uiRefSampleSize)
           {
-            if(uiDataOffset+uiDataLength > uiRefSampleSize)
+            if(static_cast<uint64_t>(uiDataOffset)+uiDataLength > uiRefSampleSize)
             {
               //When data_offset + data_length is greater than the size of the sample, the bytes from the byte
               // pointed to by data_offset until the end of the sample, inclusive, are copied
@@ -365,7 +397,7 @@ std::vector<char> HEVCExtractorReader::getNextAUResolveExtractors()
           if(0 > iNaluLengthIdx) { iNaluLengthIdx = vRet.size(); }
           uint32_t uiLengthInline = *(*sampleH+uiCurNalPtr+uiConstrStart++);
 
-          // write data from inline constructor to the ouput vector          
+          // write data from inline constructor to the output vector
           vRet.insert(vRet.end(),
                       *sampleH+uiCurNalPtr+uiConstrStart,
                       *sampleH+uiCurNalPtr+uiConstrStart+uiLengthInline);
@@ -380,20 +412,35 @@ std::vector<char> HEVCExtractorReader::getNextAUResolveExtractors()
           continue;
         }
       }while(!bEndOfNalU);
+
       if(bNaluLengthRewrite)
       {
+        uiNaluLengthCorrect -= 4;
+        setLengthField(vRet, iNaluLengthIdx, uiNaluLengthCorrect);
+      }
+
+      uint32_t uiNaluLengthParsed = getLengthField(vRet, iNaluLengthIdx);
+
+      if(uiNaluLengthCorrect<uiNaluLengthParsed)
+      {
+        // Resolution of an extractor may result in a reconstructed payload for which there are fewer
+        // bytes than what is indicated in the NALUnitLength of the first NAL in that reconstructed payload.
+        // In such cases, readers shall assume that only a single NAL unit was reconstructed by the
+        // extractors, and shall rewrite the NALUnitLength of that NAL to the appropriate value
         uiNaluLengthCorrect -= 4;
         setLengthField(vRet, iNaluLengthIdx, uiNaluLengthCorrect);
       }
     }
     else
     {
-      // NALU is not of type 49 (Extractors) write the entire NALU to ret
+      std::cout << " NALU is not of type 49 (Extractors) copy the entire NALU\n";
       vRet.insert(vRet.end(),
-                  *sampleH+uiCurNalPtr,
-                  *sampleH+uiCurNalPtr+uiNalSize);
+                  *sampleH+uiCurNalPtr-4,
+                  *sampleH+uiCurNalPtr-4+uiNalSize);
+      setLengthField(vRet, vRet.size()-uiNalSize, uiNalSize-4); // replace the length field with payload length only
     }
   }
+  skipNotUsedAUs(rUsedTrackIds);
   ISODisposeHandle(sampleH);
   return vRet;
 }
@@ -456,13 +503,16 @@ int32_t HEVCExtractorReader::init(std::string strFileName, bool bForce)
     m_mTrackReaders[uiTrackID] = pReader;
 
     // get LengthSizeMinusOne flags
-    uint32_t uiLenSizeMinOne = 0;
-    err = getLengthSizeMinusOneFlag(uiTrackID, uiLenSizeMinOne);
-    if(err)
+    uint32_t uiLenSizeMinOne = m_uiDefLenSizeMinOne;
+    if(m_uiDefLenSizeMinOne==0)
     {
-      std::cerr << "could not get lensizeminusone flag: "<< err << std::endl;
-      if(!bForce) continue;
-      uiLenSizeMinOne = 3;
+      err = getLengthSizeMinusOneFlag(uiTrackID, uiLenSizeMinOne);
+      if(err)
+      {
+        std::cerr << "could not get lensizeminusone flag: "<< err << std::endl;
+        if(!bForce) continue;
+        uiLenSizeMinOne = 3;
+      }
     }
     m_mLenSizeMinOne[uiTrackID] = uiLenSizeMinOne;
 
@@ -562,4 +612,36 @@ void HEVCExtractorReader::setLengthField(std::vector<char>& rvSample, uint32_t u
   rvSample[uiPointer+1] = (uiSize>>16)&0xff;
   rvSample[uiPointer+2] = (uiSize>>8)&0xff;
   rvSample[uiPointer+3] = (uiSize)&0xff;
+}
+
+void HEVCExtractorReader::skipNotUsedAUs(TrackIDSet& rUsedTrackIds)
+{
+  // just to be sure that we dont skip multiple samples from the same track
+  std::set<uint32_t> uniqueUsedIDs, uniqueNotUsedIDs;
+  for(TrackIDSet::iterator it=rUsedTrackIds.begin(); it!=rUsedTrackIds.end(); it++)
+  {
+    uniqueUsedIDs.insert(*it);
+  }
+
+  // get all unique not used trackIDs
+  for(TrackIDSet::iterator it=m_vHvc1TrackIDs.begin(); it!=m_vHvc1TrackIDs.end(); it++)
+  { // hvc1 tracks
+    if(uniqueUsedIDs.find(*it) == uniqueUsedIDs.end()) { uniqueNotUsedIDs.insert(*it); }
+  }
+  for(TrackIDSet::iterator it=m_vHvc2TrackIDs.begin(); it!=m_vHvc2TrackIDs.end(); it++)
+  { // hvc2 tracks
+    if(uniqueUsedIDs.find(*it) == uniqueUsedIDs.end()) { uniqueNotUsedIDs.insert(*it); }
+  }
+
+  // skip AUs
+  ISOErr err;
+  ISOHandle sampleSkip;
+  ISONewHandle(0, &sampleSkip);
+  uint32_t uiSize = 0;
+  for(std::set<uint32_t>::iterator it=uniqueNotUsedIDs.begin(); it!=uniqueNotUsedIDs.end(); it++)
+  {
+    err = getNextAU(*it, sampleSkip, &uiSize);
+    if(err) {assert(0); continue; }
+  }
+  ISODisposeHandle(sampleSkip);
 }
