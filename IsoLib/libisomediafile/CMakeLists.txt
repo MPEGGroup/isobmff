@@ -1,9 +1,9 @@
 #---------------------------------------------------------------------------------------------------
 # libisomediafile top-level list
 #---------------------------------------------------------------------------------------------------
-cmake_minimum_required (VERSION 3.5.2)
+cmake_minimum_required (VERSION 3.10.2)
 #---------------------------------------------------------------------------------------------------
-project(isomediafile)
+project(libisomediafile)
 #---------------------------------------------------------------------------------------------------
 
 add_library(
@@ -143,6 +143,7 @@ add_library(
     src/ODUpdateCommand.c
     src/OriginalFormatAtom.c
     src/PaddingBitsAtom.c
+    src/PCMConfigAtom.c
     src/PrimaryItemAtom.c
     src/ProducerReferenceTimeAtom.c
     src/QTMovies.c
