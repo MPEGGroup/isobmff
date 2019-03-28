@@ -1,5 +1,3 @@
-project(audio_example)
-
 include_directories(../../libisomediafile/src)
 
 include_directories(../../libisomediafile/linux)
