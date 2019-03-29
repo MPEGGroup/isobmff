@@ -1,4 +1,3 @@
-
 cmake_minimum_required(VERSION 3.10.2)
 
 project(IsoLib)
@@ -31,3 +30,5 @@ add_subdirectory(IsoLib/audio_example)
 add_subdirectory(IsoLib/drc_in_isom)
 
 add_subdirectory(IsoLib/favs_example)
+
+add_subdirectory(IsoLib/hevc_extractors)
