@@ -23,8 +23,11 @@ if(NOT EXISTS "${PROJECT_SOURCE_DIR}/IsoLib/HM/README")
 endif()
 
 add_subdirectory(external)
+
 add_subdirectory(IsoLib/libisomediafile)
 
 add_subdirectory(IsoLib/audio_example)
 
 add_subdirectory(IsoLib/drc_in_isom)
+
+add_subdirectory(IsoLib/favs_example)
