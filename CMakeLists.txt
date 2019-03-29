@@ -32,3 +32,5 @@ add_subdirectory(IsoLib/drc_in_isom)
 add_subdirectory(IsoLib/favs_example)
 
 add_subdirectory(IsoLib/hevc_extractors)
+
+add_subdirectory(IsoLib/ipmp_example)
