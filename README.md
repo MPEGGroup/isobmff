@@ -63,12 +63,12 @@ documentation on how to best handle CMake-based projects.
 
 #### Individual compilation
 
-If you are only interested in certain tool, you can build them individually.
+If you are only interested in certain tools, you can build them individually.
 
 For instance, the libisomediafile can be built using `make libisomediafile`
 when using Unix Makefile.
 
-For a complete list, please refer to the generate build scripts, for instance
+For a complete list, please refer to the generated build scripts, for instance
 with Unix Makefile:
 
 ```
@@ -98,6 +98,5 @@ The following are some of the valid targets for this Makefile:
 ... isoiff_tool
 ... WAV_to_MP4
 ... MP4_to_WAV
-
 ```
 
