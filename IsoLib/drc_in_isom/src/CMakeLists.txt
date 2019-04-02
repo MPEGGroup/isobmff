@@ -37,8 +37,10 @@ set(DRC_SOURCE
 )
 
 add_executable(DRC_to_MP4 ${DRC_SOURCE} DRC_to_MP4.c)
+set_property(TARGET DRC_to_MP4 PROPERTY C_STANDARD 99)
 
 add_executable(MP4_to_DRC ${DRC_SOURCE} MP4_to_DRC.c)
+set_property(TARGET MP4_to_DRC PROPERTY C_STANDARD 99)
 
 target_link_libraries(
   DRC_to_MP4
