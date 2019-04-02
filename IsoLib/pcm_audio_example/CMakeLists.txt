@@ -47,6 +47,7 @@ add_executable(
   ${SRC_DIR}/WAVToMP4Options.h
   ${SRC_DIR}/WAV_to_MP4.c
 )
+set_property(TARGET WAV_to_MP4 PROPERTY C_STANDARD 99)
 
 target_link_libraries(
   WAV_to_MP4
@@ -64,6 +65,7 @@ add_executable(
   ${SRC_DIR}/MP4ToWAVOptions.h
   ${SRC_DIR}/MP4_to_WAV.c
 )
+set_property(TARGET MP4_to_WAV PROPERTY C_STANDARD 99)
 
 target_link_libraries(
   MP4_to_WAV
