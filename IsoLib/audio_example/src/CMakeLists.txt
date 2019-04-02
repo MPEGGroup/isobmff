@@ -1,11 +1,29 @@
 include_directories(../../libisomediafile/src)
 
-include_directories(../../libisomediafile/linux)
+add_executable(
+  playAudioMovieSample
+  
+  playAudioMovieSample.c
+)
 
-add_executable(makeAudioMovieSample makeAudioMovieSample.c)
+target_link_libraries(
+  playAudioMovieSample
+  
+  LINK_PUBLIC
+  
+  libisomediafile
+)
 
-add_executable(playAudioMovieSample playAudioMovieSample.c)
+add_executable(
+  makeAudioMovieSample
 
-target_link_libraries(makeAudioMovieSample LINK_PUBLIC libisomediafile)
-target_link_libraries(playAudioMovieSample LINK_PUBLIC libisomediafile)
+  makeAudioMovieSample.c
+)
+target_link_libraries(
+  makeAudioMovieSample
+  
+  LINK_PUBLIC
+  
+  libisomediafile
+)
 

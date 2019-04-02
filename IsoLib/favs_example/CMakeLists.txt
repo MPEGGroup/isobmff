@@ -21,7 +21,7 @@ target_link_libraries(
   
   LINK_PUBLIC
   
-  m
+  $<$<PLATFORM_ID:Linux>:m>
   libisomediafile
 )
 
@@ -32,6 +32,6 @@ target_link_libraries(
   
   LINK_PUBLIC
   
-  m
+  $<$<PLATFORM_ID:Linux>:m>
   libisomediafile
 )

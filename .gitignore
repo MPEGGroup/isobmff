@@ -71,3 +71,5 @@ bld/
 *.deb
 
 *build*
+/.vs
+/CMakeSettings.json

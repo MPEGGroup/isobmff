@@ -47,7 +47,7 @@ target_link_libraries(
   
   LINK_PUBLIC
   
-  m
+  $<$<PLATFORM_ID:Linux>:m>
   libisomediafile
   libreadonlybitbuf
   libwriteonlybitbuf
@@ -60,7 +60,7 @@ target_link_libraries(
   
   LINK_PUBLIC
  
-  m 
+  $<$<PLATFORM_ID:Linux>:m>
   libisomediafile
   libreadonlybitbuf
   libwriteonlybitbuf
