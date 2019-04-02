@@ -21,7 +21,13 @@ if(NOT EXISTS "${PROJECT_SOURCE_DIR}/IsoLib/HM/README")
   message(FATAL_ERROR "The submodules were not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
 endif()
 
+# Build dependencies
+
 add_subdirectory(external)
+
+add_subdirectory(IsoLib/HM)
+
+# Build isobmff tools
 
 add_subdirectory(IsoLib/libisomediafile)
 
@@ -34,3 +40,5 @@ add_subdirectory(IsoLib/favs_example)
 add_subdirectory(IsoLib/hevc_extractors)
 
 add_subdirectory(IsoLib/ipmp_example)
+
+add_subdirectory(IsoLib/isoiff_tool)
