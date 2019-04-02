@@ -7,19 +7,11 @@ language: c
 compiler:
   - gcc
 
-# Build dependencies
-before_script:
-  - cd IsoLib/HM/build/linux && make && cd -
-  - cd external/Part04-Dynamic_Range_Control/trunk/tools/writeonlybitbuf/make/ && make && cd -
-  - cd external/Part04-Dynamic_Range_Control/trunk/tools/readonlybitbuf/make/ && make && cd -
-  - cd external/Part04-Dynamic_Range_Control/trunk/tools/wavIO/make/ && make && cd -
-  - cd external/Part04-Dynamic_Range_Control/trunk/modules/uniDrcModules/uniDrcBitstreamDecoderLib/make/ && make && cd -
-
 jobs:
   include:
     - stage: compile
       name: "All"
-      script: cd IsoLib/linux && make
+      script: cmake && make
 
 cache:
   directories:
