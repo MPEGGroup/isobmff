@@ -11,7 +11,7 @@ jobs:
   include:
     - stage: compile
       name: "All"
-      script: cmake && make
+      script: cmake . && make
 
 cache:
   directories:
