@@ -25,8 +25,6 @@ endif()
 
 add_subdirectory(external)
 
-add_subdirectory(IsoLib/HM)
-
 # Build isobmff tools
 
 add_subdirectory(IsoLib/libisomediafile)

@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.9.2)
 
 project(external)
 
+# HM
+
+add_subdirectory(HM)
+
 # Part 4
 
 set(SRC Part04-Dynamic_Range_Control/trunk)
