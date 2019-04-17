@@ -69,3 +69,7 @@ bld/
 *.dmg
 *.gz
 *.deb
+
+*build*
+/.vs
+/CMakeSettings.json
