@@ -115,6 +115,7 @@ enum
     MP4TrackFragmentHeaderAtomType                      = MP4_FOUR_CHAR_CODE( 't', 'f', 'h', 'd' ),
     MP4TrackFragmentDecodeTimeAtomType                  = MP4_FOUR_CHAR_CODE( 't', 'f', 'd', 't' ),
     MP4TrackRunAtomType                                 = MP4_FOUR_CHAR_CODE( 't', 'r', 'u', 'n' ),
+    MP4CompactTrackRunAtomType                          = MP4_FOUR_CHAR_CODE( 'c', 't', 'r', 'n' ),
     MP4ItemPropertiesAtomType                           = MP4_FOUR_CHAR_CODE( 'i', 'p', 'r', 'p' ),
     MP4ItemPropertyContainerAtomType                    = MP4_FOUR_CHAR_CODE( 'i', 'p', 'c', 'o' ),
     MP4ItemPropertyAssociationAtomType                  = MP4_FOUR_CHAR_CODE( 'i', 'p', 'm', 'a' ),
@@ -1281,7 +1282,8 @@ typedef struct MP4TrackFragmentAtom
 	
     MP4Err (*getSampleAuxiliaryInfoFromTrackFragment)(struct MP4TrackFragmentAtom *self, u8 isUsingAuxInfoPropertiesFlag, u32 aux_info_type, u32 aux_info_type_parameter,
                                                       MP4SampleAuxiliaryInformationSizesAtomPtr *saizOut, MP4SampleAuxiliaryInformationOffsetsAtomPtr *saioOut);
-	
+	MP4Err (*addCompactSamples)( struct MP4MediaInformationAtom *s, MP4Handle sampleH, u32 sampleCount, MP4Handle durationsH, MP4Handle sizesH, MP4Handle sampleEntryH, MP4Handle decodingOffsetsH, MP4Handle syncSamplesH, MP4Handle padsH );
+
 	u32 default_sample_description_index;	/* all copied from the matching trex */
 	u32 default_sample_duration;
 	u32 default_sample_size;
@@ -1290,7 +1292,7 @@ typedef struct MP4TrackFragmentAtom
 	MP4MediaDataAtomPtr mdat;
 	u32 samples_use_mdat;		/* 0 -- not yet decided, 1=yes, 2=no */
 
-	MP4LinkedList atomList;		/* track runs */
+	MP4LinkedList atomList;		/* track runs or compact track runs*/
 	MP4LinkedList groupList;	/* sample to group maps */
     
     u8          useSignedCompositionTimeOffsets;
@@ -1325,6 +1327,27 @@ enum {
 	trun_sample_flags_present 				= 0x400,
 	trun_sample_composition_times_present	= 0x800
 };
+
+typedef struct ctrn_flags {
+	u8 data_offset_present : 1;
+	u8 first_sample_info_present : 1;
+	u8 data_offset_16 : 1;
+	u8 composition_multiplier_present : 1;
+
+	u8 reserved : 4;
+
+	u8 duration_size_index : 2;
+	u8 sample_size_index : 2;
+	u8 flags_size_index : 2;
+	u8 composition_size_index : 2;
+
+	u8 first_duration_size_index : 2;
+	u8 first_sample_size_index : 2;
+	u8 first_flags_size_index : 2;
+	u8 first_composition_size_index : 2;
+
+	u8 reserved2;
+} ctrn_flags, *ctrn_flags_ptr;
 
 #define trun_all_sample_flags (trun_sample_duration_present + trun_sample_size_present +trun_sample_flags_present + trun_sample_composition_times_present)
 
@@ -1386,6 +1409,30 @@ typedef struct MP4TrackRunAtom
 	void (*calculateDefaults) (struct MP4TrackRunAtom *self, MP4TrackFragmentHeaderAtomPtr tfhd, u32 flags_index );
 	void (*setFlags) (struct MP4TrackRunAtom *self, MP4TrackFragmentHeaderAtomPtr tfhd );
 } MP4TrackRunAtom, *MP4TrackRunAtomPtr;
+
+typedef struct MP4CompactTrackRunAtom
+{
+	MP4_FULL_ATOM
+	u16 sample_count;
+	
+	void (*setFlags) (struct MP4CompactTrackRunAtom* self);
+	/* optional fields */
+	/* data_offset may be only u16 */
+	s32 data_offset;
+	u16 composition_multiplier;
+	u32 first_sample_duration;
+	u32 first_sample_size;
+	u32 first_sample_flags;
+	/* unsigned if version 0, signed otherwise */
+	s32 first_sample_composition_time_offset;
+
+	/* array have size sample_count - (first_sample_info_present ? 1 : 0); or may be empty. Element sizes are either 8, 16 or 32 bits  */
+	u32* sample_duration;
+	u32* sample_size;
+	u32* sample_flags;
+	/* is unsigned if version 0  */
+	s32* sample_composition_time_offset;
+} MP4CompactTrackRunAtom, *MP4CompactTrackRunAtomPtr;
 
 typedef struct ISOFileTypeAtom
 {
@@ -1970,6 +2017,7 @@ MP4Err MP4CreateTrackFragmentAtom( MP4TrackFragmentAtomPtr *outAtom );
 MP4Err MP4CreateTrackFragmentHeaderAtom( MP4TrackFragmentHeaderAtomPtr *outAtom );
 MP4Err MP4CreateTrackFragmentDecodeTimeAtom( MP4TrackFragmentDecodeTimeAtomPtr *outAtom );
 MP4Err MP4CreateTrackRunAtom( MP4TrackRunAtomPtr *outAtom );
+MP4Err MP4CreateCompactTrackRunAtom( MP4CompactTrackRunAtomPtr *outAtom );
 MP4Err MP4CreatePaddingBitsAtom( MP4PaddingBitsAtomPtr *outAtom );
 
 MP4Err MP4CreateItemPropertiesAtom(MP4ItemPropertiesAtomPtr *outAtom);

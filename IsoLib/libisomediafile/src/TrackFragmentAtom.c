@@ -62,6 +62,7 @@ static MP4Err addAtom( MP4TrackFragmentAtomPtr self, MP4AtomPtr atom )
         case MP4SampleAuxiliaryInformationSizesAtomType:        err = MP4AddListEntry( atom, self->saizList ); break;
         case MP4SampleAuxiliaryInformationOffsetsAtomType:      err = MP4AddListEntry( atom, self->saioList ); break;
 		case MP4TrackRunAtomType:                               err = MP4AddListEntry( atom, self->atomList ); break;
+		case MP4CompactTrackRunAtomType:                        err = MP4AddListEntry( atom, self->atomList ); break;
 		case MP4SampletoGroupAtomType:                          err = MP4AddListEntry( atom, self->groupList ); break;
 		/* default:                                 BAILWITHERROR( MP4BadDataErr ) */
 	}
@@ -193,6 +194,105 @@ static MP4Err addSamples( struct MP4MediaInformationAtom *s, MP4Handle sampleH,
         trun->version = 1;
 
 	err = MP4AddListEntry( trun, self->atomList ); if (err) goto bail;
+	
+	err = addSampleGroups( self, sampleCount ); if (err) goto bail;
+
+bail:
+	TEST_RETURN( err );
+
+	return err;
+}
+
+static MP4Err addCompactSamples( struct MP4MediaInformationAtom *s, MP4Handle sampleH, 
+					u32 sampleCount, MP4Handle durationsH, MP4Handle sizesH,
+					MP4Handle sampleEntryH,
+				    MP4Handle decodingOffsetsH, MP4Handle syncSamplesH, MP4Handle padsH )
+{
+	MP4Err MP4CreateCompactTrackRunAtom( MP4CompactTrackRunAtomPtr *outAtom );
+        MP4Err err;
+	MP4MediaDataAtomPtr mdat;
+	MP4CompactTrackRunAtomPtr ctrn;
+	u32 duration_count;
+	u32* durations;
+	u32 size_count;
+	u32* sizes;
+	u32 sync_count;
+	u32* syncs;
+	u32 i;
+	u32* decodes;
+	MP4TrackFragmentAtomPtr self;
+    
+	self = (MP4TrackFragmentAtomPtr) s;
+	    
+	if (sampleEntryH != NULL) BAILWITHERROR( MP4BadDataErr )
+	
+	if ((self->samples_use_mdat == 0) || (self->samples_use_mdat == 1)) self->samples_use_mdat = 1;
+	else BAILWITHERROR( MP4BadDataErr )
+	
+	mdat = self->mdat;
+	
+	err = MP4CreateCompactTrackRunAtom( &ctrn ); if (err) goto bail;
+	ctrn->data_offset = (u32) mdat->dataSize;
+	ctrn->sample_count = sampleCount;
+	
+	mdat->addData( mdat, sampleH );
+	
+	int nb_array_samples = sampleCount - 1;
+	if (nb_array_samples > 0) {
+		ctrn->sample_duration = (u32*) calloc( nb_array_samples, sizeof(u32));
+		TESTMALLOC( ctrn->sample_duration );
+		ctrn->sample_size = (u32*) calloc( nb_array_samples, sizeof(u32));
+		TESTMALLOC( ctrn->sample_size );
+		ctrn->sample_flags = (u32*) calloc( nb_array_samples, sizeof(u32));
+		TESTMALLOC( ctrn->sample_flags );
+		ctrn->sample_composition_time_offset = (s32*) calloc( nb_array_samples, sizeof(s32));
+		TESTMALLOC( ctrn->sample_composition_time_offset );
+	}
+	
+	MP4GetHandleSize( durationsH, &duration_count ); duration_count /= 4;
+	
+	MP4GetHandleSize( sizesH, &size_count); size_count /= 4;
+	
+	durations = (u32 *) *durationsH;
+	sizes     = (u32 *) *sizesH;
+	decodes = NULL;
+	if (decodingOffsetsH != NULL) decodes   = (u32 *) *decodingOffsetsH;
+	
+	if (sampleCount > 0) {
+		ctrn->first_sample_duration = durations[0];
+		ctrn->first_sample_size = sizes[0];
+		ctrn->first_sample_flags = 
+			( (padsH == NULL) ? 0 : (((u8*) padsH)[0])<<17 ) +
+			( (syncSamplesH == NULL) ? 0 : fragment_difference_sample_flag );
+		ctrn->first_sample_composition_time_offset = ( (decodingOffsetsH == NULL) ? 0 : decodes[0] );
+	}
+	for (i=1; i<sampleCount; ++i) 
+	{
+
+		ctrn->sample_duration[i-1] = ( (i>=duration_count) ? durations[0] : durations[i] );
+        
+		ctrn->sample_size[i-1]     = ( (i>=size_count)     ?     sizes[0] :     sizes[i] );
+		ctrn->sample_flags[i-1] =
+			( (padsH == NULL) ? 0 : (((u8*) padsH)[i])<<17 ) +
+			( (syncSamplesH == NULL) ? 0 : fragment_difference_sample_flag );
+		ctrn->sample_composition_time_offset[i-1] =
+			( (decodingOffsetsH == NULL) ? 0 : decodes[i] );
+	}
+	
+	
+	if (syncSamplesH != NULL) {
+		MP4GetHandleSize( syncSamplesH, &sync_count); sync_count /= 4;
+		syncs = (u32*) *syncSamplesH;
+		for (i=0; i<sync_count; i++)
+		{
+			ctrn->sample_flags[ syncs[i]-1 ] ^= fragment_difference_sample_flag;
+		}
+	}
+	
+    if (self->useSignedCompositionTimeOffsets == 1)
+        ctrn->version = 1;
+
+	err = MP4AddListEntry( ctrn, self->atomList ); if (err) goto bail;
 	
 	err = addSampleGroups( self, sampleCount ); if (err) goto bail;
 
@@ -338,15 +438,21 @@ static MP4Err calculateSize( struct MP4Atom* s )
 	
 	if (atomListSize > 0)
 	{
-		MP4TrackRunAtomPtr a;
+		MP4FullAtomPtr a;
+		MP4TrackRunAtomPtr trun;
+		MP4CompactTrackRunAtomPtr ctrn;
 		
 		/* first, calculate what defaults are suitable in this track fragment header */
 		
 		for ( i = 0; i < atomListSize; i++ )
 		{
 			err = MP4GetListEntry( self->atomList, i, (char **) &a ); if (err) goto bail;
-			if ( a )
-				a->calculateDefaults( a, tfhd, 2 );
+			if ( a ) {
+				if (a->type == MP4TrackRunAtomType) {
+					trun = (MP4TrackRunAtomPtr) a;
+					trun->calculateDefaults( trun, tfhd, 2 );
+				}
+			}
 				/* first iteration gets the second flag value as the first can be special-cased */
 		}
 	
@@ -356,8 +462,12 @@ static MP4Err calculateSize( struct MP4Atom* s )
 			for ( i = 0; i < atomListSize; i++ )
 			{
 				err = MP4GetListEntry( self->atomList, i, (char **) &a ); if (err) goto bail;
-				if ( a )
-					a->calculateDefaults( a, tfhd, 1 );
+				if ( a ) {
+					if (a->type == MP4TrackRunAtomType) {
+						trun = (MP4TrackRunAtomPtr) a;
+						trun->calculateDefaults( trun, tfhd, 1 );
+					}
+				}
 					/* pick up flags from the first position */
 			}
 		}
@@ -377,8 +487,16 @@ static MP4Err calculateSize( struct MP4Atom* s )
 		for ( i = 0; i < atomListSize; i++ )
 		{
 			err = MP4GetListEntry( self->atomList, i, (char **) &a ); if (err) goto bail;
-			if ( a )
-				a->setFlags( a, tfhd );
+			if ( a ) {
+				if (a->type == MP4TrackRunAtomType) {
+					trun = (MP4TrackRunAtomPtr) a;
+					trun->setFlags( trun, tfhd);
+				}
+				if (a->type == MP4CompactTrackRunAtomType) {
+					ctrn = (MP4CompactTrackRunAtomPtr) a;
+					ctrn->setFlags( trun);
+				}
+			}
 		}
 		tfhd->flags = tfhd_flags;
 
@@ -779,6 +897,7 @@ MP4Err MP4CreateTrackFragmentAtom( MP4TrackFragmentAtomPtr *outAtom )
 	self->serialize             = serialize;
 	self->mdatMoved				= mdatMoved;
 	self->addSamples			= addSamples;
+	self->addCompactSamples     = addCompactSamples;
 	self->addSampleReference	= addSampleReference;
 	self->mergeRuns				= mergeRuns;
 	self->calculateDataEnd		= calculateDataEnd;

@@ -40,6 +40,7 @@ add_library(
     src/ChannelLayoutAtom.c
     src/ChunkOffsetAtom.c
     src/ClockReferenceMediaHeader.c
+    src/CompactTrackFragmentRunAtom.c
     src/CompatibleSchemeTypeAtom.c
     src/CompositionToDecodeAtom.c
     src/CopyrightAtom.c
