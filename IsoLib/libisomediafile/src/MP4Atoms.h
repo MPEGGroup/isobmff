@@ -120,6 +120,7 @@ enum
     MP4ItemPropertyAssociationAtomType                  = MP4_FOUR_CHAR_CODE( 'i', 'p', 'm', 'a' ),
     MP4SampleGroupDescriptionAtomType                   = MP4_FOUR_CHAR_CODE( 's', 'g', 'p', 'd' ),
     MP4SampletoGroupAtomType                            = MP4_FOUR_CHAR_CODE( 's', 'b', 'g', 'p' ),
+	MP4CompactSampletoGroupAtomType                     = MP4_FOUR_CHAR_CODE( 'c', 's', 'g', 'p' ),
     MP4SampleDependencyAtomType                         = MP4_FOUR_CHAR_CODE( 's', 'd', 't', 'p' ),
     ISOMetaAtomType                                     = MP4_FOUR_CHAR_CODE( 'm', 'e', 't', 'a' ),
     ISOPrimaryItemAtomType                              = MP4_FOUR_CHAR_CODE( 'p', 'i', 't', 'm' ),
@@ -457,6 +458,7 @@ typedef struct MP4MediaAtom
     MP4AtomPtr extendedLanguageTag;
 	MP4LinkedList atomList;
 	MP4AtomPtr	true_minf;
+    u32         enableCompactSamples;
 } MP4MediaAtom, *MP4MediaAtomPtr;
 
 typedef struct MP4MediaHeaderAtom
@@ -500,7 +502,7 @@ typedef struct MP4ExtendedLanguageTag
 					MP4Handle sampleEntryH, \
 				    MP4Handle decodingOffsetsH, MP4Handle syncSamplesH, MP4Handle padsH ); \
 	MP4Err (*mdatMoved)( struct MP4MediaInformationAtom *self, u64 mdatBase, u64 mdatEnd, s32 mdatOffset ); \
-	MP4Err (*mapSamplestoGroup)(struct MP4MediaInformationAtom *self, u32 groupType, u32 group_index, s32 sample_index, u32 count ); \
+	MP4Err (*mapSamplestoGroup)(struct MP4MediaInformationAtom *self, u32 groupType, u32 group_index, s32 sample_index, u32 count, u32 enableCompactSamples ); \
 	MP4Err (*setSampleDependency)( struct MP4MediaInformationAtom *self, s32 sample_index, MP4Handle dependencies  );
 
 typedef struct MP4MediaInformationAtom
@@ -679,7 +681,7 @@ typedef struct MP4SampleTableAtom
     u32    (*getCurrentSampleEntryIndex)( struct MP4SampleTableAtom *self );
 	MP4Err (*setDefaultSampleEntry)( struct MP4SampleTableAtom *self, u32 index );
 	MP4Err (*addGroupDescription)( struct MP4SampleTableAtom *self, u32 theType, MP4Handle theDescription, u32* index );
-	MP4Err (*mapSamplestoGroup)( struct MP4SampleTableAtom *self, u32 groupType, u32 group_index, s32 sample_index, u32 count );
+	MP4Err (*mapSamplestoGroup)( struct MP4SampleTableAtom *self, u32 groupType, u32 group_index, s32 sample_index, u32 count, u32 enableCompactSamples );
 	MP4Err (*getSampleGroupMap)( struct MP4SampleTableAtom *self, u32 groupType, u32 sample_number, u32* group_index );
 	MP4Err (*getGroupDescription)( struct MP4SampleTableAtom *self, u32 theType, u32 index, MP4Handle theDescription );
 
@@ -708,7 +710,8 @@ typedef struct MP4SampleTableAtom
     
 	MP4LinkedList groupDescriptionList;
 	MP4LinkedList sampletoGroupList;
-
+	MP4LinkedList compactSampletoGroupList;
+	
 	MP4LinkedList atomList;
 	
 	MP4AtomPtr currentSampleEntry;
@@ -1292,6 +1295,7 @@ typedef struct MP4TrackFragmentAtom
 
 	MP4LinkedList atomList;		/* track runs */
 	MP4LinkedList groupList;	/* sample to group maps */
+	MP4LinkedList compactSampleGroupList;	/* compact sample to group maps */
     
     u8          useSignedCompositionTimeOffsets;
     
@@ -1649,6 +1653,45 @@ typedef struct MP4SampletoGroupAtom
 	MP4Err (*getSampleGroupMap)( struct MP4SampletoGroupAtom *self, u32 sampleNumber, u32* groupIndex  );
 } MP4SampletoGroupAtom, *MP4SampletoGroupAtomPtr;
 
+typedef struct MP4CompactSampleToGroupPatternEntry
+{
+	u32 patternLength;
+	u32 sampleCount;
+} MP4CompactSampleToGroupPatternEntry, *MP4CompactSampleToGroupPatternEntryPtr;
+
+typedef struct {
+	u32 patternCount;
+	u32 totalSampleCount;
+	u32 totalIndexDescriptionCount;
+	u32 efficientStartIndex;
+	u8 patternLengthFieldSize;
+	u8 sampleCountFieldSize;
+	u8 indexFieldSize;
+	u8 isSampleGroupCompressed;
+	
+	MP4CompactSampleToGroupPatternEntryPtr patternEntries;
+	u32* indexDescriptionArray;
+	
+} CompressedGroupInfo;
+
+typedef struct MP4CompactSampletoGroupAtom
+{
+	COMMON_GROUP_ATOM_FIELDS
+	
+	u32 groupingTypeParameter;
+	u32 entryCount;
+	u32* group_index;	/* indexed by sample number;  we compact on write and expand on read */
+	u32 sampleCount;
+	u32 allocatedSize;
+	u8 fragmentLocalIndexPresent;
+	u32 mapSampleToGroupIndex;
+	CompressedGroupInfo compressedGroup;
+	
+	MP4Err (*addSamples)( struct MP4CompactSampletoGroupAtom *self, u32 count );
+	MP4Err (*mapSamplestoGroup)( struct MP4CompactSampletoGroupAtom *self, u32 group_index, s32 sample_index, u32 count );
+	MP4Err (*getSampleGroupMap)( struct MP4CompactSampletoGroupAtom *self, u32 sampleNumber, u32* groupIndex  );
+} MP4CompactSampletoGroupAtom, *MP4CompactSampletoGroupAtomPtr;
+
 typedef struct ISOMetaAtom
 {
 	MP4_FULL_ATOM
@@ -2003,6 +2046,7 @@ MP4Err MP4CreateEncBaseAtom( MP4EncBaseSampleEntryAtomPtr outAtom );
 #endif
 
 MP4Err MP4CreateSampletoGroupAtom( MP4SampletoGroupAtomPtr *outAtom );
+MP4Err MP4CreateCompactSampletoGroupAtom( MP4CompactSampletoGroupAtomPtr *outAtom );
 MP4Err MP4CreateSampleGroupDescriptionAtom( MP4SampleGroupDescriptionAtomPtr *outAtom );
 
 MP4Err MP4CreateSampleDependencyAtom( MP4SampleDependencyAtomPtr *outAtom );

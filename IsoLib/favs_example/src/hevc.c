@@ -654,7 +654,7 @@ struct hevc_sps* sps, struct hevc_pps* pps) {
 			if ((pps->weighted_pred_flag  &&  header->slice_type == SLICE_P) ||
 				(pps->weighted_bipred_flag  &&  header->slice_type == SLICE_B)) {
 				printf("pred_weight_table() not implemented!\r\n");
-				assert(0);
+				//assert(0);
 				exit(1);
 				/* pred_weight_table()*/
 			}

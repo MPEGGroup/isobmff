@@ -30,7 +30,7 @@ derivative works. Copyright (c) 1999.
 #include "tools.h"
 
 MP4_EXTERN(MP4Err) ISOAddGroupDescription(MP4Media media, u32 groupType, MP4Handle description, u32* index);
-MP4_EXTERN(MP4Err) ISOMapSamplestoGroup(MP4Media media, u32 groupType, u32 group_index, s32 sample_index, u32 count);
+MP4_EXTERN(MP4Err) ISOMapSamplestoGroup(MP4Media media, u32 groupType, u32 group_index, s32 sample_index, u32 count, u32 enableCompactSamples);
 MP4_EXTERN(MP4Err) ISONewHEVCSampleDescription(MP4Track theTrack,
 	MP4Handle sampleDescriptionH,
 	u32 dataReferenceIndex,
@@ -155,7 +155,7 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
 			}
 			else {
 				printf("Unknown NAL: %d\r\n", naltype);
-				assert(0);
+				//assert(0);
 				free(data); data = NULL;
 			}
 		}
@@ -410,7 +410,7 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 			/* Mark RAP frames (CRA/BLA/IDR/IRAP) to the group */
 			if (stream.header[frameCounter]->first_slice_segment_in_pic_flag &&
 				  stream.header[frameCounter]->nal_type >= 16 && stream.header[frameCounter]->nal_type <= 23) {
-					ISOMapSamplestoGroup(media, MP4_FOUR_CHAR_CODE('r', 'a', 'p', ' '), rap_desc_index, stream.header[frameCounter]->sample_number, 1);
+					ISOMapSamplestoGroup(media, MP4_FOUR_CHAR_CODE('r', 'a', 'p', ' '), rap_desc_index, stream.header[frameCounter]->sample_number, 1, 1);
 			}
 		}
 
@@ -466,7 +466,7 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 							((stream.header[frameCounter - 1]->nal_type >= 6 && stream.header[frameCounter - 1]->nal_type <= 9) &&
 							(stream.header[frameCounter]->nal_type < 6 || stream.header[frameCounter]->nal_type > 9))
 							) {
-						ISOMapSamplestoGroup(media, MP4_FOUR_CHAR_CODE('a', 'l', 's', 't'), alst_desc_index, stream.header[frameCounter]->sample_number, 1);
+						ISOMapSamplestoGroup(media, MP4_FOUR_CHAR_CODE('a', 'l', 's', 't'), alst_desc_index, stream.header[frameCounter]->sample_number, 1, 1);
 					}
 				}
 				MP4DisposeHandle(alst_temp);
