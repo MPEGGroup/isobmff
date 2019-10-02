@@ -218,7 +218,7 @@ ISOSetSamplestoGroupType( MP4Media media, u32 enableCompactSamples )
 
 
 MP4_EXTERN( MP4Err )
-ISOMapSamplestoGroup( MP4Media media, u32 groupType, u32 group_index, s32 sample_index, u32 count, u32 enableCompactSamples )
+ISOMapSamplestoGroup( MP4Media media, u32 groupType, u32 group_index, s32 sample_index, u32 count )
 {
    MP4Err err;
    MP4MediaAtomPtr mdia;
