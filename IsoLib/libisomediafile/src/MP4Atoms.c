@@ -39,6 +39,8 @@
 #include "MJ2Atoms.h"
 #endif
 
+MP4Err MP4CreateHEVCConfigAtom(ISOHEVCConfigAtomPtr *outAtom);
+
 static MP4AtomPtr MP4BaseAtomClassPtr = 0;
 
 static char* baseAtomGetName( MP4AtomPtr self )
@@ -551,6 +553,10 @@ MP4Err MP4CreateAtom( u32 atomType, MP4AtomPtr *outAtom )
 
 		case MP4SampletoGroupAtomType:
 			err = MP4CreateSampletoGroupAtom( (MP4SampletoGroupAtomPtr*) &newAtom );
+			break;
+			
+		case MP4CompactSampletoGroupAtomType:
+			err = MP4CreateCompactSampletoGroupAtom( (MP4CompactSampletoGroupAtomPtr*) &newAtom );
 			break;
 
 		case ISOMetaAtomType:
