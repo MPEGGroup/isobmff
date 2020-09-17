@@ -1,7 +1,7 @@
 # ISOBMFF
 
 This repository is the official repository for the ISO Base Media File Format
-Reference Software. 
+Reference Software.
 
 The ISO base media file format is published by ISO as part 12 of the MPEG-4
 specifications, ISO/IEC 14496-12. As such, it implements and conforms to
@@ -20,7 +20,7 @@ software features.
 
 ## Development
 
-The repository contains the libisomediafile which is a library implementing
+The repository contains the `libisomediafile` which is a library implementing
 the ISO base media file format. In addition, several tools to read and
 write files based on this specification are provided.
 
@@ -33,45 +33,38 @@ write files based on this specification are provided.
 
 Example of commands to build the entire toolset on a Linux platform.
 
-```
-git clone https://github.com/MPEGGroup/isobmff.git
-
-cd isobmff
-
-mkdir build
-
-cd build
-
-cmake ..
-
-make
+``` sh
+$ git clone https://github.com/MPEGGroup/isobmff.git
+$ cd isobmff
+$ mkdir build && cd build
+$ cmake ..
+$ make
 ```
 
 #### Cross platform
 
 CMake allows to generate build scripts for different platforms. For instance:
 
-```
+``` sh
 cmake -G "Visual Studio 16 2019" -A ARM64
 ```
 
-For more generator, please see [CMake documentation](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html).
+For more generators, please see [CMake documentation](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html).
 
 Note also that certain IDE may be able to natively parse a `CMakeLists.txt`
-in which case there is no need to generate specific build scripts. Please refer to your IDE's
-documentation on how to best handle CMake-based projects.
+in which case there is no need to generate specific build scripts. Please refer to your IDE's documentation on how to best handle CMake-based projects.
 
 #### Individual compilation
 
 If you are only interested in certain tools, you can build them individually.
 
-For instance, the libisomediafile can be built using `make libisomediafile`
+For instance, the `libisomediafile` can be built using `make libisomediafile`
 when using Unix Makefile.
 
 For a complete list, please refer to the generated build scripts, for instance
 with Unix Makefile:
 
-```
+``` sh
 $ make help
 The following are some of the valid targets for this Makefile:
 ... all (the default if no target is provided)
@@ -99,4 +92,3 @@ The following are some of the valid targets for this Makefile:
 ... WAV_to_MP4
 ... MP4_to_WAV
 ```
-
