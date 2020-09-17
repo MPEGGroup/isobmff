@@ -1985,12 +1985,12 @@ MP4Err MP4CreateRestrictedVideoSampleEntryAtom(MP4RestrictedVideoSampleEntryAtom
 MP4Err MP4CreateTrackTypeAtom(MP4TrackTypeAtomPtr *outAtom);
 MP4Err MP4CreateStereoVideoAtom(MP4StereoVideoAtomPtr *outAtom);
 MP4Err MP4CreateStereoVideoGroupAtom(MP4StereoVideoGroupAtomPtr *outAtom);
-/*
+
 MP4Err MP4CreateSegmentTypeAtom(MP4SegmentTypeAtomPtr *outAtom);
 MP4Err MP4CreateSegmentIndexAtom(MP4SegmentIndexAtomPtr *outAtom);
 MP4Err MP4CreateSubsegmentIndexAtom(MP4SubsegmentIndexAtomPtr *outAtom);
 MP4Err MP4CreateProducerReferenceTimeAtom(MP4ProducerReferenceTimeAtomPtr *outAtom);
-*/
+
 #ifdef ISMACrypt
 MP4Err MP4CreateSecurityInfoAtom( MP4SecurityInfoAtomPtr *outAtom );
 MP4Err CreateISMAKMSAtom( ISMAKMSAtomPtr *outAtom );
