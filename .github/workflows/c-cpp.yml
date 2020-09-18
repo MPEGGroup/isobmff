@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build-ubuntu:
+  linux:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -15,8 +15,10 @@ jobs:
       run: mkdir build && cd build && cmake ..
     - name: build
       run: cmake --build build
+    - name: test
+      run: ./bin/unit_tests
   
-  build-macos:
+  macos:
     runs-on: macOS-latest
     steps:
     - uses: actions/checkout@v2
@@ -24,8 +26,10 @@ jobs:
       run: mkdir build && cd build && cmake ..
     - name: build
       run: cmake --build build
+    - name: test
+      run: ./bin/unit_tests
 
-  build-windows:
+  windows:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
@@ -33,3 +37,5 @@ jobs:
       run: mkdir build && cd build && cmake ..
     - name: build
       run: cmake --build build --config Debug
+    - name: test
+      run: ./bin/Debug/unit_tests

@@ -1,0 +1,1 @@
+#cmakedefine TESTDATA_PATH "@TESTDATA_PATH@"
