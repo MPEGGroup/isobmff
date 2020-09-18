@@ -31,6 +31,8 @@ write files based on this specification are provided.
 
 ### Compiling
 
+It is recommended to use `cmake` to build the software in this repository. However, this repository also contains old project files for some IDE's which are no longer maintained and are kept in the repository just to maintain compatibility with other software from MPEG.
+
 Example of commands to build the entire toolset on a Linux platform.
 
 ``` sh
