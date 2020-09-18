@@ -1976,6 +1976,8 @@ MP4Err MP4CreateItemPropertiesAtom(MP4ItemPropertiesAtomPtr *outAtom);
 MP4Err MP4CreateItemPropertyContainerAtom(MP4ItemPropertyContainerAtomPtr *outAtom);
 MP4Err MP4CreateItemPropertyAssociationAtom(MP4ItemPropertyAssociationAtomPtr *outAtom);
 
+MP4Err MP4CreateHEVCConfigAtom(ISOHEVCConfigAtomPtr *outAtom);
+
 MP4Err MP4CreateOriginalFormatAtom(MP4OriginalFormatAtomPtr *outAtom);
 MP4Err MP4CreateSchemeInfoAtom(MP4SchemeInfoAtomPtr *outAtom);
 MP4Err MP4CreateRestrictedSchemeInfoAtom(MP4RestrictedSchemeInfoAtomPtr *outAtom);
