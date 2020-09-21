@@ -1,4 +1,5 @@
 #include <math.h>
+#include <string.h>
 #include "ISOMovies.h"
 #include "structures.h"
 #include "tools.h"

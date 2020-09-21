@@ -1,4 +1,6 @@
 #include <math.h>
+#include <assert.h>
+#include <string.h>
 #include "ISOMovies.h"
 #include "structures.h"
 #include "hevc.h"

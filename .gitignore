@@ -73,3 +73,9 @@ bld/
 *build*
 /.vs
 /CMakeSettings.json
+
+# Visual studio code
+.vscode/*
+*.code-workspace
+# Local History for Visual Studio Code
+.history/

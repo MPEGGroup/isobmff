@@ -24,6 +24,8 @@ derivative works. Copyright (c) 1999.
 /* Created for Nokia FAVS project by Tampere University of Technology */
 
 #include <math.h>
+#include <assert.h>
+#include <string.h>
 #include "ISOMovies.h"
 #include "structures.h"
 #include "hevc.h"
