@@ -120,7 +120,7 @@ enum
     MP4ItemPropertyAssociationAtomType                  = MP4_FOUR_CHAR_CODE( 'i', 'p', 'm', 'a' ),
     MP4SampleGroupDescriptionAtomType                   = MP4_FOUR_CHAR_CODE( 's', 'g', 'p', 'd' ),
     MP4SampletoGroupAtomType                            = MP4_FOUR_CHAR_CODE( 's', 'b', 'g', 'p' ),
-	MP4CompactSampletoGroupAtomType                     = MP4_FOUR_CHAR_CODE( 'c', 's', 'g', 'p' ),
+		MP4CompactSampletoGroupAtomType                     = MP4_FOUR_CHAR_CODE( 'c', 's', 'g', 'p' ),
     MP4SampleDependencyAtomType                         = MP4_FOUR_CHAR_CODE( 's', 'd', 't', 'p' ),
     ISOMetaAtomType                                     = MP4_FOUR_CHAR_CODE( 'm', 'e', 't', 'a' ),
     ISOPrimaryItemAtomType                              = MP4_FOUR_CHAR_CODE( 'p', 'i', 't', 'm' ),
@@ -1272,35 +1272,36 @@ typedef struct MP4TrackFragmentHeaderAtom
 
 typedef struct MP4TrackFragmentAtom
 {
-	MP4_FULL_ATOM
-	COMMON_MINF_ATOM_FIELDS
-	MP4AtomPtr	  tfhd;
-    MP4AtomPtr	  tfdt;
-    MP4AtomPtr    trex;
-	
-	MP4Err (*mergeRuns)( struct MP4TrackFragmentAtom *self, MP4MediaAtomPtr mdia );
-	MP4Err (*calculateDataEnd)( struct MP4TrackFragmentAtom *self, u32* outSize);
-    MP4Err (*mergeSampleAuxiliaryInformation)( struct MP4TrackFragmentAtom *self, MP4MediaAtomPtr mdia );
-	
-    MP4Err (*getSampleAuxiliaryInfoFromTrackFragment)(struct MP4TrackFragmentAtom *self, u8 isUsingAuxInfoPropertiesFlag, u32 aux_info_type, u32 aux_info_type_parameter,
-                                                      MP4SampleAuxiliaryInformationSizesAtomPtr *saizOut, MP4SampleAuxiliaryInformationOffsetsAtomPtr *saioOut);
-	
-	u32 default_sample_description_index;	/* all copied from the matching trex */
-	u32 default_sample_duration;
-	u32 default_sample_size;
-	u32 default_sample_flags;
-	
-	MP4MediaDataAtomPtr mdat;
-	u32 samples_use_mdat;		/* 0 -- not yet decided, 1=yes, 2=no */
+  MP4_FULL_ATOM
+  COMMON_MINF_ATOM_FIELDS
+  MP4AtomPtr	  tfhd;
+  MP4AtomPtr	  tfdt;
+  MP4AtomPtr    trex;
 
-	MP4LinkedList atomList;		/* track runs */
-	MP4LinkedList groupList;	/* sample to group maps */
-	MP4LinkedList compactSampleGroupList;	/* compact sample to group maps */
-    
-    u8          useSignedCompositionTimeOffsets;
-    
-    MP4LinkedList saizList;
-    MP4LinkedList saioList;
+  MP4Err (*mergeRuns)( struct MP4TrackFragmentAtom *self, MP4MediaAtomPtr mdia );
+  MP4Err (*calculateDataEnd)( struct MP4TrackFragmentAtom *self, u32* outSize);
+  MP4Err (*mergeSampleAuxiliaryInformation)( struct MP4TrackFragmentAtom *self, MP4MediaAtomPtr mdia );
+  MP4Err (*getSampleAuxiliaryInfoFromTrackFragment)(struct MP4TrackFragmentAtom *self, u8 isUsingAuxInfoPropertiesFlag, u32 aux_info_type, u32 aux_info_type_parameter,
+                                                      MP4SampleAuxiliaryInformationSizesAtomPtr *saizOut, MP4SampleAuxiliaryInformationOffsetsAtomPtr *saioOut);
+
+  MP4Err (*addGroupDescription)(struct MP4TrackFragmentAtom *self, u32 groupType, MP4Handle description, u32 *index );
+  MP4Err (*getSampleGroupMap)( struct MP4TrackFragmentAtom *self, u32 groupType, u32 sample_number, u32* group_index );
+  MP4Err (*getGroupDescription)( struct MP4TrackFragmentAtom *self, u32 theType, u32 index, MP4Handle theDescription );
+  u32 default_sample_description_index; /* all copied from the matching trex */
+  u32 default_sample_duration;
+  u32 default_sample_size;
+  u32 default_sample_flags;
+
+  MP4MediaDataAtomPtr mdat;
+  u32 samples_use_mdat;  /* 0 -- not yet decided, 1=yes, 2=no */
+  u8 useSignedCompositionTimeOffsets;
+
+  MP4LinkedList atomList;                 /* track runs */
+  MP4LinkedList groupDescriptionList;     /* sample group description list */
+  MP4LinkedList groupList;                /* sample to group maps */
+  MP4LinkedList compactSampleGroupList;   /* compact sample to group maps */
+  MP4LinkedList saizList;
+  MP4LinkedList saioList;
 } MP4TrackFragmentAtom, *MP4TrackFragmentAtomPtr;
 
 enum {

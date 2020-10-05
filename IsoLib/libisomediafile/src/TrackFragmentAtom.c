@@ -37,6 +37,7 @@ static void destroy( MP4AtomPtr s )
 	if ( self == NULL ) BAILWITHERROR( MP4BadParamErr )
 	DESTROY_ATOM_LIST_F( atomList );
 	DESTROY_ATOM_LIST_F( groupList );
+	DESTROY_ATOM_LIST_F( groupDescriptionList );
 	DESTROY_ATOM_LIST_F( compactSampleGroupList );
 	(self->tfhd)->destroy( (MP4AtomPtr) (self->tfhd) );
     (self->tfdt)->destroy( (MP4AtomPtr) (self->tfdt) );
@@ -52,25 +53,26 @@ bail:
 
 static MP4Err addAtom( MP4TrackFragmentAtomPtr self, MP4AtomPtr atom )
 {
-	MP4Err err;
-	err = MP4NoErr;
-	
-	if ( self == 0 )
-		BAILWITHERROR( MP4BadParamErr );
-	switch (atom->type) {
-		case MP4TrackFragmentHeaderAtomType:                    self->tfhd = atom; break;
-        case MP4TrackFragmentDecodeTimeAtomType:                self->tfdt = atom; break;
-        case MP4SampleAuxiliaryInformationSizesAtomType:        err = MP4AddListEntry( atom, self->saizList ); break;
-        case MP4SampleAuxiliaryInformationOffsetsAtomType:      err = MP4AddListEntry( atom, self->saioList ); break;
-		case MP4TrackRunAtomType:                               err = MP4AddListEntry( atom, self->atomList ); break;
-		case MP4SampletoGroupAtomType:                          err = MP4AddListEntry( atom, self->groupList ); break;
-		case MP4CompactSampletoGroupAtomType:                   err = MP4AddListEntry( atom, self->compactSampleGroupList ); break;
-		/* default:                                 BAILWITHERROR( MP4BadDataErr ) */
-	}
-bail:
-	TEST_RETURN( err );
+  MP4Err err;
+  err = MP4NoErr;
 
-	return err;
+  if ( self == 0 )
+    BAILWITHERROR( MP4BadParamErr );
+  switch (atom->type) 
+  {
+    case MP4TrackFragmentHeaderAtomType:                self->tfhd = atom; break;
+    case MP4TrackFragmentDecodeTimeAtomType:            self->tfdt = atom; break;
+    case MP4SampleAuxiliaryInformationSizesAtomType:    err = MP4AddListEntry( atom, self->saizList ); break;
+    case MP4SampleAuxiliaryInformationOffsetsAtomType:  err = MP4AddListEntry( atom, self->saioList ); break;
+    case MP4TrackRunAtomType:                           err = MP4AddListEntry( atom, self->atomList ); break;
+    case MP4SampletoGroupAtomType:                      err = MP4AddListEntry( atom, self->groupList ); break; /* sbgp */
+    case MP4SampleGroupDescriptionAtomType:             err = MP4AddListEntry( atom, self->groupDescriptionList ); break; /* sgpd */
+    case MP4CompactSampletoGroupAtomType:               err = MP4AddListEntry( atom, self->compactSampleGroupList ); break;
+    /* default:                                 BAILWITHERROR( MP4BadDataErr ) */
+  }
+bail:
+  TEST_RETURN( err );
+  return err;
 }
 
 static MP4Err mdatMoved( struct MP4MediaInformationAtom* s, u64 mdatBase, u64 mdatEnd, s32 mdatOffset )
@@ -299,117 +301,150 @@ bail:
 	return err;
 }
 
-static MP4Err serialize( struct MP4Atom* s, char* buffer )
+static MP4Err addGroupDescription( struct MP4Atom* s, u32 theType, MP4Handle theDescription, u32* index )
 {
-	MP4Err err;
-	MP4TrackFragmentAtomPtr self = (MP4TrackFragmentAtomPtr) s;
-	err = MP4NoErr;
-	
-	if ( self->size > 0 ) {
-		err = MP4SerializeCommonBaseAtomFields( s, buffer ); if (err) goto bail;
-    	buffer += self->bytesWritten;	
-    	SERIALIZE_ATOM( tfhd );
-        SERIALIZE_ATOM( tfdt );
-        SERIALIZE_ATOM_LIST( saizList );
-        SERIALIZE_ATOM_LIST( saioList );
-		
-    	SERIALIZE_ATOM_LIST( atomList );
-		SERIALIZE_ATOM_LIST( groupList );
-		assert( self->bytesWritten == self->size );
-	}
+  MP4Err err;
+  MP4SampleGroupDescriptionAtomPtr theGroup;
+  MP4TrackFragmentAtomPtr self = (MP4TrackFragmentAtomPtr) s;
+
+  err = MP4FindGroupAtom( self->groupDescriptionList, theType, (MP4AtomPtr*) &theGroup );
+  if (!theGroup)
+  {
+    err = MP4CreateSampleGroupDescriptionAtom( &theGroup ); if (err) goto bail;
+    theGroup->grouping_type = theType;
+    err = addAtom( self, (MP4AtomPtr) theGroup ); if (err) goto bail;
+  }
+  err = theGroup->addGroupDescription( theGroup, theDescription, index ); if (err) goto bail;
 
 bail:
-	TEST_RETURN( err );
+  TEST_RETURN( err );
+  return err;
+}
 
-	return err;
+static MP4Err getGroupDescription( struct MP4SampleTableAtom *self, u32 theType, u32 index, MP4Handle theDescription )
+{
+  MP4Err err;
+  MP4SampleGroupDescriptionAtomPtr theGroup;
+
+  err = MP4FindGroupAtom( self->groupDescriptionList, theType, (MP4AtomPtr*) &theGroup );
+  if (!theGroup) BAILWITHERROR(MP4BadParamErr );
+  err = theGroup->getGroupDescription( theGroup, index, theDescription ); if (err) goto bail;
+
+bail:
+  TEST_RETURN( err );
+  return err;
+}
+
+static MP4Err serialize( struct MP4Atom* s, char* buffer )
+{
+  MP4Err err;
+  MP4TrackFragmentAtomPtr self = (MP4TrackFragmentAtomPtr) s;
+  err = MP4NoErr;
+
+  if ( self->size > 0 ) 
+  {
+    err = MP4SerializeCommonBaseAtomFields( s, buffer ); if (err) goto bail;
+    buffer += self->bytesWritten;	
+    SERIALIZE_ATOM( tfhd );
+    SERIALIZE_ATOM( tfdt );
+    SERIALIZE_ATOM_LIST( saizList );
+    SERIALIZE_ATOM_LIST( saioList );
+
+    SERIALIZE_ATOM_LIST( atomList );
+    SERIALIZE_ATOM_LIST( groupDescriptionList );
+    SERIALIZE_ATOM_LIST( groupList );
+    SERIALIZE_ATOM_LIST( compactSampleGroupList );
+    assert( self->bytesWritten == self->size );
+  }
+
+bail:
+  TEST_RETURN( err );
+  return err;
 }
 
 static MP4Err calculateSize( struct MP4Atom* s )
 {
-	MP4Err err;
-	MP4TrackFragmentAtomPtr self = (MP4TrackFragmentAtomPtr) s;
-	MP4TrackFragmentHeaderAtomPtr tfhd;
-    MP4TrackFragmentDecodeTimeAtomPtr tfdt;
+  MP4Err err;
+  MP4TrackFragmentAtomPtr self = (MP4TrackFragmentAtomPtr) s;
+  MP4TrackFragmentHeaderAtomPtr tfhd;
+  MP4TrackFragmentDecodeTimeAtomPtr tfdt;
+
+  u32 tfhd_flags;
+  u32 i;
+  u32 atomListSize;
+
+  err = MP4NoErr;
+
+  tfhd = (MP4TrackFragmentHeaderAtomPtr) self->tfhd;
+  tfdt = (MP4TrackFragmentDecodeTimeAtomPtr) self->tfdt;
+
+  tfhd->default_sample_duration = 0;
+  tfhd->default_sample_flags    = 0;
+  tfhd->default_sample_size     = 0;
+  tfhd_flags = tfhd_base_data_offset_present;
+
+  if ( self->atomList )
+  {
+    err = MP4GetListEntryCount( self->atomList, &atomListSize ); if (err) goto bail;
+  }
+  else atomListSize = 0;
+
+  if (atomListSize > 0)
+  {
+    MP4TrackRunAtomPtr a;
     
-	u32 tfhd_flags;
-	u32 i;
-	u32 atomListSize;
+    /* first, calculate what defaults are suitable in this track fragment header */
+    for ( i = 0; i < atomListSize; i++ )
+    {
+      err = MP4GetListEntry( self->atomList, i, (char **) &a ); if (err) goto bail;
+      if ( a )  a->calculateDefaults( a, tfhd, 2 );
+      /* first iteration gets the second flag value as the first can be special-cased */
+    }
+  
+    /* then come back round and pick up the flags if not already set from second position */
+    if (tfhd->default_sample_flags == 0)
+    {
+      for ( i = 0; i < atomListSize; i++ )
+      {
+        err = MP4GetListEntry( self->atomList, i, (char **) &a ); if (err) goto bail;
+        if ( a ) a->calculateDefaults( a, tfhd, 1 );
+        /* pick up flags from the first position */
+      }
+    }
+    
+    /* then see how they compare with the trex defaults */
+    if (self->default_sample_description_index != tfhd->sample_description_index)
+      tfhd_flags |= tfhd_sample_description_index_present;
+    if (self->default_sample_duration != tfhd->default_sample_duration)
+      tfhd_flags |= tfhd_default_sample_duration_present;
+    if (self->default_sample_size != tfhd->default_sample_size)
+      tfhd_flags |= tfhd_default_sample_size_present;
+    if (self->default_sample_flags != tfhd->default_sample_flags)
+      tfhd_flags |= tfhd_default_sample_flags_present;
 
-	err = MP4NoErr;
-	
-	tfhd = (MP4TrackFragmentHeaderAtomPtr) self->tfhd;
-    tfdt = (MP4TrackFragmentDecodeTimeAtomPtr) self->tfdt;
+    /* finally, tell each run to set its flags based on what we calculated */
+    for ( i = 0; i < atomListSize; i++ )
+    {
+      err = MP4GetListEntry( self->atomList, i, (char **) &a ); if (err) goto bail;
+      if ( a )  a->setFlags( a, tfhd );
+    }
+    tfhd->flags = tfhd_flags;
 
-	tfhd->default_sample_duration = 0;
-	tfhd->default_sample_flags    = 0;
-	tfhd->default_sample_size     = 0;
-	tfhd_flags = tfhd_base_data_offset_present;
-	
-	if ( self->atomList ) {
-		err = MP4GetListEntryCount( self->atomList, &atomListSize ); if (err) goto bail;
-	}
-	else atomListSize = 0;
-	
-	if (atomListSize > 0)
-	{
-		MP4TrackRunAtomPtr a;
-		
-		/* first, calculate what defaults are suitable in this track fragment header */
-		
-		for ( i = 0; i < atomListSize; i++ )
-		{
-			err = MP4GetListEntry( self->atomList, i, (char **) &a ); if (err) goto bail;
-			if ( a )
-				a->calculateDefaults( a, tfhd, 2 );
-				/* first iteration gets the second flag value as the first can be special-cased */
-		}
-	
-		/* then come back round and pick up the flags if not already set from second position */
-		if (tfhd->default_sample_flags == 0)
-		{
-			for ( i = 0; i < atomListSize; i++ )
-			{
-				err = MP4GetListEntry( self->atomList, i, (char **) &a ); if (err) goto bail;
-				if ( a )
-					a->calculateDefaults( a, tfhd, 1 );
-					/* pick up flags from the first position */
-			}
-		}
-		
-		/* then see how they compare with the trex defaults */
-		
-		if (self->default_sample_description_index != tfhd->sample_description_index)
-			tfhd_flags |= tfhd_sample_description_index_present;
-		if (self->default_sample_duration != tfhd->default_sample_duration)
-			tfhd_flags |= tfhd_default_sample_duration_present;
-		if (self->default_sample_size != tfhd->default_sample_size)
-			tfhd_flags |= tfhd_default_sample_size_present;
-		if (self->default_sample_flags != tfhd->default_sample_flags)
-			tfhd_flags |= tfhd_default_sample_flags_present;
+    err = MP4CalculateBaseAtomFieldSize( s ); if (err) goto bail;
+    ADD_ATOM_SIZE( tfhd );
+    ADD_ATOM_SIZE( tfdt );
+    ADD_ATOM_LIST_SIZE( saizList );
+    ADD_ATOM_LIST_SIZE( saioList );
+    ADD_ATOM_LIST_SIZE( atomList );
+    ADD_ATOM_LIST_SIZE( groupDescriptionList );
+    ADD_ATOM_LIST_SIZE( groupList );
+    ADD_ATOM_LIST_SIZE( compactSampleGroupList );
+  }
+  else self->size = 0;
 
-		/* finally, tell each run to set its flags based on what we calculated */
-		for ( i = 0; i < atomListSize; i++ )
-		{
-			err = MP4GetListEntry( self->atomList, i, (char **) &a ); if (err) goto bail;
-			if ( a )
-				a->setFlags( a, tfhd );
-		}
-		tfhd->flags = tfhd_flags;
-
-		err = MP4CalculateBaseAtomFieldSize( s ); if (err) goto bail;
-		ADD_ATOM_SIZE( tfhd );
-        ADD_ATOM_SIZE( tfdt );
-        ADD_ATOM_LIST_SIZE( saizList );
-        ADD_ATOM_LIST_SIZE( saioList );
-		ADD_ATOM_LIST_SIZE( atomList );
-		ADD_ATOM_LIST_SIZE( groupList );
-	}
-	else self->size = 0;
-	
 bail:
-	TEST_RETURN( err );
-
-	return err;
+  TEST_RETURN( err );
+  return err;
 }
 
 static MP4Err mergeRuns( MP4TrackFragmentAtomPtr self, MP4MediaAtomPtr mdia )
@@ -755,9 +790,37 @@ static MP4Err mapSamplestoGroup(struct MP4MediaInformationAtom *s, u32 groupType
 	
 bail:
 	TEST_RETURN( err );
-
 	return err;
+}
 
+static MP4Err getSampleGroupMap( struct MP4Atom* s, u32 groupType, u32 sample_number, u32* group_index )
+{
+  MP4Err err;
+  MP4SampletoGroupAtomPtr theGroup;
+  MP4CompactSampletoGroupAtomPtr compactSampleGroup;
+  MP4TrackFragmentAtomPtr self = (MP4TrackFragmentAtomPtr) s;
+
+  err = MP4FindGroupAtom( self->groupList, groupType, (MP4AtomPtr*) &theGroup );
+  if (theGroup) 
+  {
+    err = theGroup->getSampleGroupMap( theGroup, sample_number, group_index ); if (err) goto bail;
+    return err;
+  }
+
+  err = MP4FindGroupAtom( self->compactSampleGroupList, groupType, (MP4AtomPtr*) &compactSampleGroup );
+  if (compactSampleGroup)
+  {
+    err = compactSampleGroup->getSampleGroupMap( compactSampleGroup, sample_number, group_index ); if (err) goto bail;
+  }
+  else 
+  {
+    err = MP4BadParamErr;
+    goto bail;
+  }
+
+bail:
+  TEST_RETURN( err );
+  return err;
 }
 
 static MP4Err setSampleDependency( struct MP4MediaInformationAtom *s, s32 sample_index, MP4Handle dependencies  )
@@ -822,41 +885,46 @@ bail:
 
 MP4Err MP4CreateTrackFragmentAtom( MP4TrackFragmentAtomPtr *outAtom )
 {
-	MP4Err err;
-	MP4TrackFragmentAtomPtr self;
-	
-	self = (MP4TrackFragmentAtomPtr) calloc( 1, sizeof(MP4TrackFragmentAtom) );
-	TESTMALLOC( self )
+  MP4Err err;
+  MP4TrackFragmentAtomPtr self;
 
-	err = MP4CreateBaseAtom( (MP4AtomPtr) self );
-	if ( err ) goto bail;
-	self->type = MP4TrackFragmentAtomType;
-	self->name                = "track fragment";
-	self->createFromInputStream = (cisfunc) createFromInputStream;
-	self->destroy             = destroy;
-	err = MP4MakeLinkedList( &self->atomList ); if (err) goto bail;
-	err = MP4MakeLinkedList( &self->groupList ); if (err) goto bail;
-	self->calculateSize         = calculateSize;
-	self->serialize             = serialize;
-	self->mdatMoved				= mdatMoved;
-	self->addSamples			= addSamples;
-	self->addSampleReference	= addSampleReference;
-	self->mergeRuns				= mergeRuns;
-	self->calculateDataEnd		= calculateDataEnd;
-	self->mapSamplestoGroup		= mapSamplestoGroup;
-	
-	self->setSampleDependency	= setSampleDependency;
-	
-    self->useSignedCompositionTimeOffsets = 0;
-    self->mergeSampleAuxiliaryInformation = mergeSampleAuxiliaryInformation;
-    self->getSampleAuxiliaryInfoFromTrackFragment = getSampleAuxiliaryInfoFromTrackFragment;
-    
-    err = MP4MakeLinkedList( &self->saizList ); if (err) goto bail;
-    err = MP4MakeLinkedList( &self->saioList ); if (err) goto bail;
-    
-	*outAtom = self;
+  self = (MP4TrackFragmentAtomPtr) calloc( 1, sizeof(MP4TrackFragmentAtom) );
+  TESTMALLOC( self )
+
+  err = MP4CreateBaseAtom( (MP4AtomPtr) self );
+  if ( err ) goto bail;
+  self->type = MP4TrackFragmentAtomType;
+  self->name                = "track fragment";
+  self->createFromInputStream = (cisfunc) createFromInputStream;
+  self->destroy             = destroy;
+  err = MP4MakeLinkedList( &self->atomList ); if (err) goto bail;
+  err = MP4MakeLinkedList( &self->groupList ); if (err) goto bail;
+  err = MP4MakeLinkedList( &self->groupDescriptionList ); if (err) goto bail;
+  err = MP4MakeLinkedList( &self->compactSampleGroupList ); if (err) goto bail;
+  self->calculateSize       = calculateSize;
+  self->serialize           = serialize;
+  self->mdatMoved           = mdatMoved;
+  self->addSamples          = addSamples;
+  self->addSampleReference  = addSampleReference;
+  self->mergeRuns           = mergeRuns;
+  self->calculateDataEnd    = calculateDataEnd;
+
+  self->addGroupDescription = addGroupDescription;
+  self->mapSamplestoGroup   = mapSamplestoGroup;
+  self->getSampleGroupMap   = getSampleGroupMap;
+  self->getGroupDescription = getGroupDescription;
+
+  self->setSampleDependency	= setSampleDependency;
+
+  self->useSignedCompositionTimeOffsets = 0;
+  self->mergeSampleAuxiliaryInformation = mergeSampleAuxiliaryInformation;
+  self->getSampleAuxiliaryInfoFromTrackFragment = getSampleAuxiliaryInfoFromTrackFragment;
+
+  err = MP4MakeLinkedList( &self->saizList ); if (err) goto bail;
+  err = MP4MakeLinkedList( &self->saioList ); if (err) goto bail;
+
+  *outAtom = self;
 bail:
-	TEST_RETURN( err );
-
-	return err;
+  TEST_RETURN( err );
+  return err;
 }

@@ -310,7 +310,7 @@ static MP4Err addGroupDescription(struct MP4MediaAtom *self, u32 groupType, MP4H
    MP4MediaInformationAtomPtr minf;
 	
    err = MP4NoErr;
-   minf = (MP4MediaInformationAtomPtr) self->information;
+   minf = (MP4MediaInformationAtomPtr) self->information; /* this can be 'traf' if fragmented */
    assert( minf );
    assert( minf->addGroupDescription );
    err = minf->addGroupDescription( minf, groupType, description, index ); if (err) goto bail;
@@ -342,7 +342,7 @@ static MP4Err mapSamplestoGroup(struct MP4MediaAtom *self, u32 groupType, u32 gr
    MP4MediaInformationAtomPtr minf;
 	
    err = MP4NoErr;
-   minf = (MP4MediaInformationAtomPtr) self->information;
+   minf = (MP4MediaInformationAtomPtr) self->information; /* this can be 'traf' if fragmented */
    assert( minf );
    assert( minf->mapSamplestoGroup );
    err = minf->mapSamplestoGroup( minf, groupType, group_index, sample_index, count, self->enableCompactSamples ); if (err) goto bail;
