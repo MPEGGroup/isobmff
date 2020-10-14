@@ -192,10 +192,10 @@ static MP4Err calculateSize(struct MP4Atom* s)
     self->size += 4;
 
     for (i = 0; i < self->subsegmentCount; i++) {
-        
+        SubsegmentPtr ss;
+
         self->size += 4;
 
-        SubsegmentPtr ss;
         err = MP4GetListEntry(self->subsegmentsList, i, (char**)&ss);
         if (err) goto bail;
 
