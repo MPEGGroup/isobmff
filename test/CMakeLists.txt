@@ -26,6 +26,7 @@ add_executable(
 
   test_main.cpp
   test_01_simple.cpp
+  test_fragment_creation.cpp
 )
 
 target_link_libraries(unit_tests LINK_PUBLIC libisomediafile)
