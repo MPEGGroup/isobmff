@@ -18,6 +18,10 @@ When possible, it is preferred that separate Pull Requests for
 fixes/enhancements to the build system and for fixes/enhancements to the
 software features.
 
+## Documentation
+
+The general documentation of the public exported API as well as several **How to use** examples are provided on the [Wiki](https://github.com/MPEGGroup/isobmff/wiki).
+
 ## Development
 
 The repository contains the `libisomediafile` which is a library implementing
