@@ -28,103 +28,102 @@
 #include <stdlib.h>
 #include <string.h>
 
-static void destroy( MP4AtomPtr s )
+static void destroy(MP4AtomPtr s)
 {
-	MP4Err err;
-	MP4ItemPropertyContainerAtomPtr self = (MP4ItemPropertyContainerAtomPtr) s;
-    err = MP4NoErr;
-    
-	if ( self == NULL )
-		BAILWITHERROR( MP4BadParamErr )
-        
-        if ( self->super )
-            self->super->destroy( s );
+  MP4Err err;
+  MP4ItemPropertyContainerAtomPtr self = (MP4ItemPropertyContainerAtomPtr)s;
+  err                                  = MP4NoErr;
+
+  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+
+  if(self->super) self->super->destroy(s);
 bail:
-	TEST_RETURN( err );
-    
-	return;
+  TEST_RETURN(err);
+
+  return;
 }
 
 static MP4Err addAtom(MP4ItemPropertyContainerAtomPtr self, MP4AtomPtr atom)
 {
-	MP4Err err;
-	err = MP4NoErr;
+  MP4Err err;
+  err = MP4NoErr;
 
-	if (self == 0)
-		BAILWITHERROR(MP4BadParamErr);
+  if(self == 0) BAILWITHERROR(MP4BadParamErr);
 
-	err = MP4AddListEntry(atom, self->atomList);
+  err = MP4AddListEntry(atom, self->atomList);
 
 bail:
-	TEST_RETURN(err);
+  TEST_RETURN(err);
 
-	return err;
+  return err;
 }
 
-static MP4Err serialize( struct MP4Atom* s, char* buffer )
+static MP4Err serialize(struct MP4Atom *s, char *buffer)
 {
-	MP4Err err;
-	MP4ItemPropertyContainerAtomPtr self = (MP4ItemPropertyContainerAtomPtr) s;
-	err = MP4NoErr;
-	
-	err = MP4SerializeCommonBaseAtomFields( (MP4AtomPtr) s, buffer ); if (err) goto bail;
-	buffer += self->bytesWritten;
+  MP4Err err;
+  MP4ItemPropertyContainerAtomPtr self = (MP4ItemPropertyContainerAtomPtr)s;
+  err                                  = MP4NoErr;
 
-	SERIALIZE_ATOM_LIST(atomList);
-    
-	assert( self->bytesWritten == self->size );
+  err = MP4SerializeCommonBaseAtomFields((MP4AtomPtr)s, buffer);
+  if(err) goto bail;
+  buffer += self->bytesWritten;
+
+  SERIALIZE_ATOM_LIST(atomList);
+
+  assert(self->bytesWritten == self->size);
 bail:
-	TEST_RETURN( err );
-    
-	return err;
+  TEST_RETURN(err);
+
+  return err;
 }
 
-static MP4Err calculateSize( struct MP4Atom* s )
+static MP4Err calculateSize(struct MP4Atom *s)
 {
-	MP4Err err;
-	MP4ItemPropertyContainerAtomPtr self = (MP4ItemPropertyContainerAtomPtr) s;
-	err = MP4NoErr;
-	
-	err = MP4CalculateBaseAtomFieldSize( (MP4AtomPtr) s ); if (err) goto bail;
-	ADD_ATOM_LIST_SIZE(atomList);
+  MP4Err err;
+  MP4ItemPropertyContainerAtomPtr self = (MP4ItemPropertyContainerAtomPtr)s;
+  err                                  = MP4NoErr;
+
+  err = MP4CalculateBaseAtomFieldSize((MP4AtomPtr)s);
+  if(err) goto bail;
+  ADD_ATOM_LIST_SIZE(atomList);
 bail:
-	TEST_RETURN( err );
-    
-	return err;
+  TEST_RETURN(err);
+
+  return err;
 }
 
-static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream )
+static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream)
 {
-	PARSE_ATOM_LIST(MP4ItemPropertyContainerAtom)
+  PARSE_ATOM_LIST(MP4ItemPropertyContainerAtom)
 bail:
-	TEST_RETURN(err);
+  TEST_RETURN(err);
 
-	return err;
+  return err;
 }
 
-MP4Err MP4CreateItemPropertyContainerAtom( MP4ItemPropertyContainerAtomPtr *outAtom )
+MP4Err MP4CreateItemPropertyContainerAtom(MP4ItemPropertyContainerAtomPtr *outAtom)
 {
-	MP4Err err;
-	MP4ItemPropertyContainerAtomPtr self;
-	
-	self = (MP4ItemPropertyContainerAtomPtr) calloc( 1, sizeof(MP4ItemPropertyContainerAtom) );
-	TESTMALLOC( self );
-    
-	err = MP4CreateBaseAtom( (MP4AtomPtr) self );
-	if ( err ) goto bail;
-	self->type                  = MP4ItemPropertyContainerAtomType;
-	self->name                  = "Item Property Container";
-	self->createFromInputStream = (cisfunc) createFromInputStream;
-	self->destroy               = destroy;
-	self->calculateSize         = calculateSize;
-	self->serialize             = serialize;
-	self->addAtom				= addAtom;
-	err = MP4MakeLinkedList(&self->atomList); if (err) goto bail;
+  MP4Err err;
+  MP4ItemPropertyContainerAtomPtr self;
 
-    
-	*outAtom = self;
+  self = (MP4ItemPropertyContainerAtomPtr)calloc(1, sizeof(MP4ItemPropertyContainerAtom));
+  TESTMALLOC(self);
+
+  err = MP4CreateBaseAtom((MP4AtomPtr)self);
+  if(err) goto bail;
+  self->type                  = MP4ItemPropertyContainerAtomType;
+  self->name                  = "Item Property Container";
+  self->createFromInputStream = (cisfunc)createFromInputStream;
+  self->destroy               = destroy;
+  self->calculateSize         = calculateSize;
+  self->serialize             = serialize;
+  self->addAtom               = addAtom;
+  err                         = MP4MakeLinkedList(&self->atomList);
+  if(err) goto bail;
+
+  *outAtom = self;
 bail:
-	TEST_RETURN( err );
-    
-	return err;
+  TEST_RETURN(err);
+
+  return err;
 }

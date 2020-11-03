@@ -28,224 +28,244 @@
 #include <stdlib.h>
 #include <string.h>
 
-static void destroy( MP4AtomPtr s )
+static void destroy(MP4AtomPtr s)
 {
-	MP4Err err;
-	MP4ItemPropertiesAtomPtr self = (MP4ItemPropertiesAtomPtr) s;
-    err = MP4NoErr;
-    
-	if ( self == NULL )
-		BAILWITHERROR( MP4BadParamErr )
-        
-        if ( self->super )
-            self->super->destroy( s );
+  MP4Err err;
+  MP4ItemPropertiesAtomPtr self = (MP4ItemPropertiesAtomPtr)s;
+  err                           = MP4NoErr;
+
+  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+
+  if(self->super) self->super->destroy(s);
 bail:
-	TEST_RETURN( err );
-    
-	return;
+  TEST_RETURN(err);
+
+  return;
 }
 
 static MP4Err addAtom(MP4ItemPropertiesAtomPtr self, MP4AtomPtr atom)
 {
-	MP4Err err;
-	err = MP4NoErr;
+  MP4Err err;
+  err = MP4NoErr;
 
-	if (self == 0)
-		BAILWITHERROR(MP4BadParamErr);
+  if(self == 0) BAILWITHERROR(MP4BadParamErr);
 
-	switch (atom->type) 
-	{
-		case MP4ItemPropertyContainerAtomType:
-			self->ipco = atom;
-			break;
+  switch(atom->type)
+  {
+  case MP4ItemPropertyContainerAtomType:
+    self->ipco = atom;
+    break;
 
-		case MP4ItemPropertyAssociationAtomType:
-			self->ipma = atom;
-			break;
-	}
+  case MP4ItemPropertyAssociationAtomType:
+    self->ipma = atom;
+    break;
+  }
 
-	err = MP4AddListEntry(atom, self->atomList);
-
-bail:
-	TEST_RETURN(err);
-
-	return err;
-}
-
-static MP4Err addItemProperty(struct MP4ItemPropertiesAtom* self, MP4AtomPtr itemProperty, u32 itemID, u8 essential)
-{
-	MP4Err		err;
-	u32			i;
-	u32			property_index;
-	u32			entry_count;
-	MP4ItemPropertyAssociationEntryPtr entry;
-	MP4ItemPropertyAssociationEntryPtr targetEntry;
-	MP4ItemPropertyAssociationEntryPropertyIndexPtr propertyIndex;
-
-	err = MP4NoErr;
-
-	if (self == 0)
-		BAILWITHERROR(MP4BadParamErr);
-
-	if (self->ipma == NULL)
-	{
-		err = MP4CreateItemPropertyAssociationAtom(&self->ipma); if (err) goto bail;
-		err = MP4AddListEntry(self->ipma, self->atomList); if (err) goto bail;
-	}
-
-	err = MP4GetListEntryCount(self->ipco->atomList, &property_index); if (err) goto bail;
-	err = self->ipco->addAtom(self->ipco, itemProperty); if (err) goto bail;
-
-	err = MP4GetListEntryCount(self->ipma->entries, &entry_count); if (err) goto bail;
-
-	targetEntry = NULL;
-	for (i = 0; i < entry_count; i++)
-	{
-		err = MP4GetListEntry(self->ipma->entries, i, (char **)&entry); if (err) goto bail;
-		if (itemID == entry->item_ID)
-		{
-			targetEntry = entry;
-		}
-	}
-
-	if (targetEntry == NULL)
-	{
-		targetEntry = (MP4ItemPropertyAssociationEntryPtr)calloc(1, sizeof(MP4ItemPropertyAssociationEntry));
-		TESTMALLOC(targetEntry);
-		targetEntry->item_ID = itemID;
-		err = MP4AddListEntry(targetEntry, self->ipma->entries); if (err) goto bail;
-		err = MP4MakeLinkedList(&targetEntry->propertyIndexes); if (err) goto bail;
-	}
-
-	propertyIndex = (MP4ItemPropertyAssociationEntryPropertyIndexPtr)calloc(1, sizeof(MP4ItemPropertyAssociationEntryPropertyIndex));
-	TESTMALLOC(propertyIndex);
-	propertyIndex->essential = essential;
-	propertyIndex->property_index = property_index + 1;
-	err = MP4AddListEntry(propertyIndex, targetEntry->propertyIndexes); if (err) goto bail;
+  err = MP4AddListEntry(atom, self->atomList);
 
 bail:
-	TEST_RETURN(err);
+  TEST_RETURN(err);
 
-	return err;
+  return err;
 }
 
-static MP4Err getPropertiesOfItem(struct MP4ItemPropertiesAtom* self, u32 itemID, MP4LinkedList *properties)
+static MP4Err addItemProperty(struct MP4ItemPropertiesAtom *self, MP4AtomPtr itemProperty,
+                              u32 itemID, u8 essential)
 {
-	MP4Err												err;
-	u32													i;
-	u32													entry_count;
-	u32													association_count;
-	MP4LinkedList										outProperties;
-	MP4ItemPropertyAssociationEntryPtr					entry;
-	MP4ItemPropertyAssociationEntryPtr					targetEntry;
-	MP4ItemPropertyAssociationEntryPropertyIndexPtr		propertyIndex;
-	MP4AtomPtr											property;
-	
-	err = MP4NoErr;
+  MP4Err err;
+  u32 i;
+  u32 property_index;
+  u32 entry_count;
+  MP4ItemPropertyAssociationEntryPtr entry;
+  MP4ItemPropertyAssociationEntryPtr targetEntry;
+  MP4ItemPropertyAssociationEntryPropertyIndexPtr propertyIndex;
 
-	err = MP4MakeLinkedList(&outProperties); if (err) goto bail;
-	err = MP4GetListEntryCount(self->ipma->entries, &entry_count); if (err) goto bail;
+  err = MP4NoErr;
 
-	targetEntry = NULL;
-	for (i = 0; i < entry_count; i++)
-	{
-		err = MP4GetListEntry(self->ipma->entries, i, (char **)&entry); if (err) goto bail;
-		if (itemID == entry->item_ID)
-		{
-			targetEntry = entry;
-		}
-	}
+  if(self == 0) BAILWITHERROR(MP4BadParamErr);
 
-	if (targetEntry != NULL)
-	{
-		err = MP4GetListEntryCount(targetEntry->propertyIndexes, &association_count); if (err) goto bail;
-		for (i = 0; i < association_count; i++)
-		{
-			err = MP4GetListEntry(targetEntry->propertyIndexes, i, (char **)&propertyIndex); if (err) goto bail;
-			err = MP4GetListEntry(self->ipco->atomList, propertyIndex->property_index - 1, (char **)&property); if (err) goto bail;
-			err = MP4AddListEntry(property, outProperties);
-		}
-	}
+  if(self->ipma == NULL)
+  {
+    err = MP4CreateItemPropertyAssociationAtom(&self->ipma);
+    if(err) goto bail;
+    err = MP4AddListEntry(self->ipma, self->atomList);
+    if(err) goto bail;
+  }
 
-	*properties = outProperties;
-bail:
-	TEST_RETURN(err);
+  err = MP4GetListEntryCount(self->ipco->atomList, &property_index);
+  if(err) goto bail;
+  err = self->ipco->addAtom(self->ipco, itemProperty);
+  if(err) goto bail;
 
-	return err;
-}
+  err = MP4GetListEntryCount(self->ipma->entries, &entry_count);
+  if(err) goto bail;
 
-static MP4Err serialize( struct MP4Atom* s, char* buffer )
-{
-	MP4Err err;
-	MP4ItemPropertiesAtomPtr self = (MP4ItemPropertiesAtomPtr) s;
-	err = MP4NoErr;
-	
-	err = MP4SerializeCommonBaseAtomFields( (MP4AtomPtr) s, buffer ); if (err) goto bail;
-    buffer += self->bytesWritten;
+  targetEntry = NULL;
+  for(i = 0; i < entry_count; i++)
+  {
+    err = MP4GetListEntry(self->ipma->entries, i, (char **)&entry);
+    if(err) goto bail;
+    if(itemID == entry->item_ID)
+    {
+      targetEntry = entry;
+    }
+  }
 
-	SERIALIZE_ATOM_LIST(atomList);
-    
-	assert( self->bytesWritten == self->size );
-bail:
-	TEST_RETURN( err );
-    
-	return err;
-}
+  if(targetEntry == NULL)
+  {
+    targetEntry =
+        (MP4ItemPropertyAssociationEntryPtr)calloc(1, sizeof(MP4ItemPropertyAssociationEntry));
+    TESTMALLOC(targetEntry);
+    targetEntry->item_ID = itemID;
+    err                  = MP4AddListEntry(targetEntry, self->ipma->entries);
+    if(err) goto bail;
+    err = MP4MakeLinkedList(&targetEntry->propertyIndexes);
+    if(err) goto bail;
+  }
 
-static MP4Err calculateSize( struct MP4Atom* s )
-{
-	MP4Err err;
-	MP4ItemPropertiesAtomPtr self = (MP4ItemPropertiesAtomPtr) s;
-	err = MP4NoErr;
-	
-	err = MP4CalculateBaseAtomFieldSize( (MP4AtomPtr) s ); if (err) goto bail;
-	ADD_ATOM_LIST_SIZE(atomList);
+  propertyIndex = (MP4ItemPropertyAssociationEntryPropertyIndexPtr)calloc(
+      1, sizeof(MP4ItemPropertyAssociationEntryPropertyIndex));
+  TESTMALLOC(propertyIndex);
+  propertyIndex->essential      = essential;
+  propertyIndex->property_index = property_index + 1;
+  err                           = MP4AddListEntry(propertyIndex, targetEntry->propertyIndexes);
+  if(err) goto bail;
 
 bail:
-	TEST_RETURN( err );
-    
-	return err;
+  TEST_RETURN(err);
+
+  return err;
 }
 
-static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream )
+static MP4Err getPropertiesOfItem(struct MP4ItemPropertiesAtom *self, u32 itemID,
+                                  MP4LinkedList *properties)
 {
-	PARSE_ATOM_LIST(MP4ItemPropertiesAtom)
-		bail:
-	TEST_RETURN(err);
+  MP4Err err;
+  u32 i;
+  u32 entry_count;
+  u32 association_count;
+  MP4LinkedList outProperties;
+  MP4ItemPropertyAssociationEntryPtr entry;
+  MP4ItemPropertyAssociationEntryPtr targetEntry;
+  MP4ItemPropertyAssociationEntryPropertyIndexPtr propertyIndex;
+  MP4AtomPtr property;
 
-	return err;
-}
+  err = MP4NoErr;
 
-MP4Err MP4CreateItemPropertiesAtom( MP4ItemPropertiesAtomPtr *outAtom )
-{
-	MP4Err err;
-	MP4ItemPropertiesAtomPtr self;
-	
-	self = (MP4ItemPropertiesAtomPtr) calloc( 1, sizeof(MP4ItemPropertiesAtom) );
-	TESTMALLOC( self );
-    
-	err = MP4CreateBaseAtom( (MP4AtomPtr) self );
-	if ( err ) goto bail;
-	self->type                  = MP4ItemPropertiesAtomType;
-	self->name                  = "item properties";
-	self->createFromInputStream = (cisfunc) createFromInputStream;
-	self->destroy               = destroy;
-	self->calculateSize         = calculateSize;
-	self->serialize             = serialize;
-	self->addItemProperty		= addItemProperty;
-	self->getPropertiesOfItem	= getPropertiesOfItem;
-	self->addAtom				= addAtom;
-	self->ipma					= NULL;
+  err = MP4MakeLinkedList(&outProperties);
+  if(err) goto bail;
+  err = MP4GetListEntryCount(self->ipma->entries, &entry_count);
+  if(err) goto bail;
 
-	err = MP4MakeLinkedList(&self->atomList); if (err) goto bail;
-	
+  targetEntry = NULL;
+  for(i = 0; i < entry_count; i++)
+  {
+    err = MP4GetListEntry(self->ipma->entries, i, (char **)&entry);
+    if(err) goto bail;
+    if(itemID == entry->item_ID)
+    {
+      targetEntry = entry;
+    }
+  }
 
-	err = MP4CreateItemPropertyContainerAtom(&self->ipco); if (err) goto bail;
-	err = MP4AddListEntry(self->ipco, self->atomList); if (err) goto bail;
-    
-	*outAtom = self;
+  if(targetEntry != NULL)
+  {
+    err = MP4GetListEntryCount(targetEntry->propertyIndexes, &association_count);
+    if(err) goto bail;
+    for(i = 0; i < association_count; i++)
+    {
+      err = MP4GetListEntry(targetEntry->propertyIndexes, i, (char **)&propertyIndex);
+      if(err) goto bail;
+      err = MP4GetListEntry(self->ipco->atomList, propertyIndex->property_index - 1,
+                            (char **)&property);
+      if(err) goto bail;
+      err = MP4AddListEntry(property, outProperties);
+    }
+  }
+
+  *properties = outProperties;
 bail:
-	TEST_RETURN( err );
-    
-	return err;
+  TEST_RETURN(err);
+
+  return err;
+}
+
+static MP4Err serialize(struct MP4Atom *s, char *buffer)
+{
+  MP4Err err;
+  MP4ItemPropertiesAtomPtr self = (MP4ItemPropertiesAtomPtr)s;
+  err                           = MP4NoErr;
+
+  err = MP4SerializeCommonBaseAtomFields((MP4AtomPtr)s, buffer);
+  if(err) goto bail;
+  buffer += self->bytesWritten;
+
+  SERIALIZE_ATOM_LIST(atomList);
+
+  assert(self->bytesWritten == self->size);
+bail:
+  TEST_RETURN(err);
+
+  return err;
+}
+
+static MP4Err calculateSize(struct MP4Atom *s)
+{
+  MP4Err err;
+  MP4ItemPropertiesAtomPtr self = (MP4ItemPropertiesAtomPtr)s;
+  err                           = MP4NoErr;
+
+  err = MP4CalculateBaseAtomFieldSize((MP4AtomPtr)s);
+  if(err) goto bail;
+  ADD_ATOM_LIST_SIZE(atomList);
+
+bail:
+  TEST_RETURN(err);
+
+  return err;
+}
+
+static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream)
+{
+  PARSE_ATOM_LIST(MP4ItemPropertiesAtom)
+bail:
+  TEST_RETURN(err);
+
+  return err;
+}
+
+MP4Err MP4CreateItemPropertiesAtom(MP4ItemPropertiesAtomPtr *outAtom)
+{
+  MP4Err err;
+  MP4ItemPropertiesAtomPtr self;
+
+  self = (MP4ItemPropertiesAtomPtr)calloc(1, sizeof(MP4ItemPropertiesAtom));
+  TESTMALLOC(self);
+
+  err = MP4CreateBaseAtom((MP4AtomPtr)self);
+  if(err) goto bail;
+  self->type                  = MP4ItemPropertiesAtomType;
+  self->name                  = "item properties";
+  self->createFromInputStream = (cisfunc)createFromInputStream;
+  self->destroy               = destroy;
+  self->calculateSize         = calculateSize;
+  self->serialize             = serialize;
+  self->addItemProperty       = addItemProperty;
+  self->getPropertiesOfItem   = getPropertiesOfItem;
+  self->addAtom               = addAtom;
+  self->ipma                  = NULL;
+
+  err = MP4MakeLinkedList(&self->atomList);
+  if(err) goto bail;
+
+  err = MP4CreateItemPropertyContainerAtom(&self->ipco);
+  if(err) goto bail;
+  err = MP4AddListEntry(self->ipco, self->atomList);
+  if(err) goto bail;
+
+  *outAtom = self;
+bail:
+  TEST_RETURN(err);
+
+  return err;
 }

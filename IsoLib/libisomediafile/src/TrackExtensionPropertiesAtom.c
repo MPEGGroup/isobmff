@@ -28,136 +28,141 @@
 #include <stdlib.h>
 #include <string.h>
 
-static void destroy( MP4AtomPtr s )
+static void destroy(MP4AtomPtr s)
 {
-	MP4Err err;
-	MP4TrackExtensionPropertiesAtomPtr self = (MP4TrackExtensionPropertiesAtomPtr) s;
-    err = MP4NoErr;
-    
-	if ( self == NULL )
-		BAILWITHERROR( MP4BadParamErr )
-        
-        if ( self->super )
-            self->super->destroy( s );
+  MP4Err err;
+  MP4TrackExtensionPropertiesAtomPtr self = (MP4TrackExtensionPropertiesAtomPtr)s;
+  err                                     = MP4NoErr;
+
+  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+
+  if(self->super) self->super->destroy(s);
 bail:
-	TEST_RETURN( err );
-    
-	return;
+  TEST_RETURN(err);
+
+  return;
 }
 
-static MP4Err getAtom( MP4TrackExtensionPropertiesAtomPtr self, u32 atomType, MP4AtomPtr *outAtom )
+static MP4Err getAtom(MP4TrackExtensionPropertiesAtomPtr self, u32 atomType, MP4AtomPtr *outAtom)
 {
-    u32 i;
-    MP4Err err;
-    u32 count;
-    err = MP4NoErr;
-    
-    MP4GetListEntryCount( self->atomList, &count );
-    for( i = 0; i < count; i++ )
+  u32 i;
+  MP4Err err;
+  u32 count;
+  err = MP4NoErr;
+
+  MP4GetListEntryCount(self->atomList, &count);
+  for(i = 0; i < count; i++)
+  {
+    MP4AtomPtr atom;
+
+    err = MP4GetListEntry(self->atomList, i, (char **)&atom);
+    if(err) goto bail;
+
+    if(atom->type == atomType)
     {
-        MP4AtomPtr atom;
-        
-        err = MP4GetListEntry( self->atomList, i, (char **) &atom ); if (err) goto bail;
-        
-        if (atom->type == atomType) {
-            *outAtom = atom;
-            break;
-        }
+      *outAtom = atom;
+      break;
     }
+  }
 bail:
-    TEST_RETURN( err );
-    return err;
+  TEST_RETURN(err);
+  return err;
 }
 
-static MP4Err addAtom( MP4TrackExtensionPropertiesAtomPtr self, MP4AtomPtr atom )
+static MP4Err addAtom(MP4TrackExtensionPropertiesAtomPtr self, MP4AtomPtr atom)
 {
-    MP4Err err;
-    err = MP4NoErr;
-    err = MP4AddListEntry( atom, self->atomList ); if (err) goto bail;
+  MP4Err err;
+  err = MP4NoErr;
+  err = MP4AddListEntry(atom, self->atomList);
+  if(err) goto bail;
 bail:
-    TEST_RETURN( err );
-    
-    return err;
+  TEST_RETURN(err);
+
+  return err;
 }
 
-static MP4Err serialize( struct MP4Atom* s, char* buffer )
+static MP4Err serialize(struct MP4Atom *s, char *buffer)
 {
-	MP4Err err;
-	MP4TrackExtensionPropertiesAtomPtr self = (MP4TrackExtensionPropertiesAtomPtr) s;
-	err = MP4NoErr;
-	
-	err = MP4SerializeCommonFullAtomFields( (MP4FullAtomPtr) s, buffer ); if (err) goto bail;
-    buffer += self->bytesWritten;
-	PUT32( track_id );
-    SERIALIZE_ATOM_LIST( atomList );
-    
-	assert( self->bytesWritten == self->size );
+  MP4Err err;
+  MP4TrackExtensionPropertiesAtomPtr self = (MP4TrackExtensionPropertiesAtomPtr)s;
+  err                                     = MP4NoErr;
+
+  err = MP4SerializeCommonFullAtomFields((MP4FullAtomPtr)s, buffer);
+  if(err) goto bail;
+  buffer += self->bytesWritten;
+  PUT32(track_id);
+  SERIALIZE_ATOM_LIST(atomList);
+
+  assert(self->bytesWritten == self->size);
 bail:
-	TEST_RETURN( err );
-    
-	return err;
+  TEST_RETURN(err);
+
+  return err;
 }
 
-static MP4Err calculateSize( struct MP4Atom* s )
+static MP4Err calculateSize(struct MP4Atom *s)
 {
-	MP4Err err;
-	MP4TrackExtensionPropertiesAtomPtr self = (MP4TrackExtensionPropertiesAtomPtr) s;
-	err = MP4NoErr;
-	
-	err = MP4CalculateFullAtomFieldSize( (MP4FullAtomPtr) s ); if (err) goto bail;
-	self->size += 4;
-    
-    ADD_ATOM_LIST_SIZE( atomList );
+  MP4Err err;
+  MP4TrackExtensionPropertiesAtomPtr self = (MP4TrackExtensionPropertiesAtomPtr)s;
+  err                                     = MP4NoErr;
+
+  err = MP4CalculateFullAtomFieldSize((MP4FullAtomPtr)s);
+  if(err) goto bail;
+  self->size += 4;
+
+  ADD_ATOM_LIST_SIZE(atomList);
 bail:
-	TEST_RETURN( err );
-    
-	return err;
+  TEST_RETURN(err);
+
+  return err;
 }
 
-static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream )
+static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream)
 {
-	MP4Err err;
-	MP4TrackExtensionPropertiesAtomPtr self = (MP4TrackExtensionPropertiesAtomPtr) s;
-	
-	err = MP4NoErr;
-	if ( self == NULL )	BAILWITHERROR( MP4BadParamErr )
-        err = self->super->createFromInputStream( s, proto, (char*) inputStream ); if ( err ) goto bail;
-	GET32( track_id );
-    GETATOM_LIST( atomList );
-    
-	assert( self->bytesRead == self->size );
-    
+  MP4Err err;
+  MP4TrackExtensionPropertiesAtomPtr self = (MP4TrackExtensionPropertiesAtomPtr)s;
+
+  err = MP4NoErr;
+  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+  err = self->super->createFromInputStream(s, proto, (char *)inputStream);
+  if(err) goto bail;
+  GET32(track_id);
+  GETATOM_LIST(atomList);
+
+  assert(self->bytesRead == self->size);
+
 bail:
-	TEST_RETURN( err );
-    
-	return err;
+  TEST_RETURN(err);
+
+  return err;
 }
 
-MP4Err MP4CreateTrackExtensionPropertiesAtom( MP4TrackExtensionPropertiesAtomPtr *outAtom )
+MP4Err MP4CreateTrackExtensionPropertiesAtom(MP4TrackExtensionPropertiesAtomPtr *outAtom)
 {
-	MP4Err err;
-	MP4TrackExtensionPropertiesAtomPtr self;
-	
-	self = (MP4TrackExtensionPropertiesAtomPtr) calloc( 1, sizeof(MP4TrackExtensionPropertiesAtom) );
-	TESTMALLOC( self );
-    
-	err = MP4CreateFullAtom( (MP4AtomPtr) self );
-	if ( err ) goto bail;
-	self->type                  = MP4TrackExtensionPropertiesAtomType;
-	self->name                  = "track extension properties";
-	self->createFromInputStream = (cisfunc) createFromInputStream;
-	self->destroy               = destroy;
-	self->calculateSize         = calculateSize;
-	self->serialize             = serialize;
-    self->track_id              = 0;
-    self->addAtom               = addAtom;
-    self->getAtom               = getAtom;
-    
-    err = MP4MakeLinkedList( &self->atomList ); if (err) goto bail;
-    
-	*outAtom = self;
+  MP4Err err;
+  MP4TrackExtensionPropertiesAtomPtr self;
+
+  self = (MP4TrackExtensionPropertiesAtomPtr)calloc(1, sizeof(MP4TrackExtensionPropertiesAtom));
+  TESTMALLOC(self);
+
+  err = MP4CreateFullAtom((MP4AtomPtr)self);
+  if(err) goto bail;
+  self->type                  = MP4TrackExtensionPropertiesAtomType;
+  self->name                  = "track extension properties";
+  self->createFromInputStream = (cisfunc)createFromInputStream;
+  self->destroy               = destroy;
+  self->calculateSize         = calculateSize;
+  self->serialize             = serialize;
+  self->track_id              = 0;
+  self->addAtom               = addAtom;
+  self->getAtom               = getAtom;
+
+  err = MP4MakeLinkedList(&self->atomList);
+  if(err) goto bail;
+
+  *outAtom = self;
 bail:
-	TEST_RETURN( err );
-    
-	return err;
+  TEST_RETURN(err);
+
+  return err;
 }

@@ -28,98 +28,99 @@
 #include <stdlib.h>
 #include <string.h>
 
-static void destroy( MP4AtomPtr s )
+static void destroy(MP4AtomPtr s)
 {
-	MP4Err err;
-	ISOMetaboxRelationAtomPtr self = (ISOMetaboxRelationAtomPtr) s;
-    err = MP4NoErr;
-    
-	if ( self == NULL )
-		BAILWITHERROR( MP4BadParamErr )
-        
-        if ( self->super )
-            self->super->destroy( s );
+  MP4Err err;
+  ISOMetaboxRelationAtomPtr self = (ISOMetaboxRelationAtomPtr)s;
+  err                            = MP4NoErr;
+
+  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+
+  if(self->super) self->super->destroy(s);
 bail:
-	TEST_RETURN( err );
-    
-	return;
+  TEST_RETURN(err);
+
+  return;
 }
 
-static MP4Err serialize( struct MP4Atom* s, char* buffer )
+static MP4Err serialize(struct MP4Atom *s, char *buffer)
 {
-	MP4Err err;
-	ISOMetaboxRelationAtomPtr self = (ISOMetaboxRelationAtomPtr) s;
-	err = MP4NoErr;
-	
-	err = MP4SerializeCommonFullAtomFields( (MP4FullAtomPtr) s, buffer ); if (err) goto bail;
-    buffer += self->bytesWritten;
-	
-    PUT32( first_metabox_handler_type );
-    PUT32( second_metabox_handler_type );
-    PUT8( metabox_relation );
-    
-	assert( self->bytesWritten == self->size );
+  MP4Err err;
+  ISOMetaboxRelationAtomPtr self = (ISOMetaboxRelationAtomPtr)s;
+  err                            = MP4NoErr;
+
+  err = MP4SerializeCommonFullAtomFields((MP4FullAtomPtr)s, buffer);
+  if(err) goto bail;
+  buffer += self->bytesWritten;
+
+  PUT32(first_metabox_handler_type);
+  PUT32(second_metabox_handler_type);
+  PUT8(metabox_relation);
+
+  assert(self->bytesWritten == self->size);
 bail:
-	TEST_RETURN( err );
-    
-	return err;
+  TEST_RETURN(err);
+
+  return err;
 }
 
-static MP4Err calculateSize( struct MP4Atom* s )
+static MP4Err calculateSize(struct MP4Atom *s)
 {
-	MP4Err err;
-	ISOMetaboxRelationAtomPtr self = (ISOMetaboxRelationAtomPtr) s;
-	err = MP4NoErr;
-	
-	err = MP4CalculateFullAtomFieldSize( (MP4FullAtomPtr) s ); if (err) goto bail;
-	self->size += 9;
+  MP4Err err;
+  ISOMetaboxRelationAtomPtr self = (ISOMetaboxRelationAtomPtr)s;
+  err                            = MP4NoErr;
+
+  err = MP4CalculateFullAtomFieldSize((MP4FullAtomPtr)s);
+  if(err) goto bail;
+  self->size += 9;
 bail:
-	TEST_RETURN( err );
-    
-	return err;
+  TEST_RETURN(err);
+
+  return err;
 }
 
-static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream )
+static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream)
 {
-	MP4Err err;
-	ISOMetaboxRelationAtomPtr self = (ISOMetaboxRelationAtomPtr) s;
-	
-	err = MP4NoErr;
-	if ( self == NULL )	BAILWITHERROR( MP4BadParamErr )
-        err = self->super->createFromInputStream( s, proto, (char*) inputStream ); if ( err ) goto bail;
-    
-	GET32( first_metabox_handler_type );
-    GET32( second_metabox_handler_type );
-    GET8( metabox_relation );
-    
-	assert( self->bytesRead == self->size );
-    
+  MP4Err err;
+  ISOMetaboxRelationAtomPtr self = (ISOMetaboxRelationAtomPtr)s;
+
+  err = MP4NoErr;
+  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+  err = self->super->createFromInputStream(s, proto, (char *)inputStream);
+  if(err) goto bail;
+
+  GET32(first_metabox_handler_type);
+  GET32(second_metabox_handler_type);
+  GET8(metabox_relation);
+
+  assert(self->bytesRead == self->size);
+
 bail:
-	TEST_RETURN( err );
-    
-	return err;
+  TEST_RETURN(err);
+
+  return err;
 }
 
-MP4Err ISOCreateMetaboxRelationAtom( ISOMetaboxRelationAtomPtr *outAtom )
+MP4Err ISOCreateMetaboxRelationAtom(ISOMetaboxRelationAtomPtr *outAtom)
 {
-	MP4Err err;
-	ISOMetaboxRelationAtomPtr self;
-	
-	self = (ISOMetaboxRelationAtomPtr) calloc( 1, sizeof(ISOMetaboxRelationAtom) );
-	TESTMALLOC( self );
-    
-	err = MP4CreateFullAtom( (MP4AtomPtr) self );
-	if ( err ) goto bail;
-	self->type                  = ISOMetaboxRelationAtomType;
-	self->name                  = "metabox relation";
-	self->createFromInputStream = (cisfunc) createFromInputStream;
-	self->destroy               = destroy;
-	self->calculateSize         = calculateSize;
-	self->serialize             = serialize;
-    
-	*outAtom = self;
+  MP4Err err;
+  ISOMetaboxRelationAtomPtr self;
+
+  self = (ISOMetaboxRelationAtomPtr)calloc(1, sizeof(ISOMetaboxRelationAtom));
+  TESTMALLOC(self);
+
+  err = MP4CreateFullAtom((MP4AtomPtr)self);
+  if(err) goto bail;
+  self->type                  = ISOMetaboxRelationAtomType;
+  self->name                  = "metabox relation";
+  self->createFromInputStream = (cisfunc)createFromInputStream;
+  self->destroy               = destroy;
+  self->calculateSize         = calculateSize;
+  self->serialize             = serialize;
+
+  *outAtom = self;
 bail:
-	TEST_RETURN( err );
-    
-	return err;
+  TEST_RETURN(err);
+
+  return err;
 }

@@ -28,91 +28,92 @@
 #include <stdlib.h>
 #include <string.h>
 
-static void destroy( MP4AtomPtr s )
+static void destroy(MP4AtomPtr s)
 {
-	MP4Err err;
-	MP4TrackFragmentDecodeTimeAtomPtr self = (MP4TrackFragmentDecodeTimeAtomPtr) s;
-    err = MP4NoErr;
-    
-	if ( self == NULL )
-		BAILWITHERROR( MP4BadParamErr )
-        
-        if ( self->super )
-            self->super->destroy( s );
+  MP4Err err;
+  MP4TrackFragmentDecodeTimeAtomPtr self = (MP4TrackFragmentDecodeTimeAtomPtr)s;
+  err                                    = MP4NoErr;
+
+  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+
+  if(self->super) self->super->destroy(s);
 bail:
-	TEST_RETURN( err );
-    
-	return;
+  TEST_RETURN(err);
+
+  return;
 }
 
-static MP4Err serialize( struct MP4Atom* s, char* buffer )
+static MP4Err serialize(struct MP4Atom *s, char *buffer)
 {
-	MP4Err err;
-	MP4TrackFragmentDecodeTimeAtomPtr self = (MP4TrackFragmentDecodeTimeAtomPtr) s;
-	err = MP4NoErr;
-	
-	err = MP4SerializeCommonFullAtomFields( (MP4FullAtomPtr) s, buffer ); if (err) goto bail;
-    buffer += self->bytesWritten;
-	PUT32( baseMediaDecodeTime );
-    
-	assert( self->bytesWritten == self->size );
+  MP4Err err;
+  MP4TrackFragmentDecodeTimeAtomPtr self = (MP4TrackFragmentDecodeTimeAtomPtr)s;
+  err                                    = MP4NoErr;
+
+  err = MP4SerializeCommonFullAtomFields((MP4FullAtomPtr)s, buffer);
+  if(err) goto bail;
+  buffer += self->bytesWritten;
+  PUT32(baseMediaDecodeTime);
+
+  assert(self->bytesWritten == self->size);
 bail:
-	TEST_RETURN( err );
-    
-	return err;
+  TEST_RETURN(err);
+
+  return err;
 }
 
-static MP4Err calculateSize( struct MP4Atom* s )
+static MP4Err calculateSize(struct MP4Atom *s)
 {
-	MP4Err err;
-	MP4TrackFragmentDecodeTimeAtomPtr self = (MP4TrackFragmentDecodeTimeAtomPtr) s;
-	err = MP4NoErr;
-	
-	err = MP4CalculateFullAtomFieldSize( (MP4FullAtomPtr) s ); if (err) goto bail;
-	self->size += 4;
+  MP4Err err;
+  MP4TrackFragmentDecodeTimeAtomPtr self = (MP4TrackFragmentDecodeTimeAtomPtr)s;
+  err                                    = MP4NoErr;
+
+  err = MP4CalculateFullAtomFieldSize((MP4FullAtomPtr)s);
+  if(err) goto bail;
+  self->size += 4;
 bail:
-	TEST_RETURN( err );
-    
-	return err;
+  TEST_RETURN(err);
+
+  return err;
 }
 
-static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream )
+static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream)
 {
-	MP4Err err;
-	MP4TrackFragmentDecodeTimeAtomPtr self = (MP4TrackFragmentDecodeTimeAtomPtr) s;
-	
-	err = MP4NoErr;
-	if ( self == NULL )	BAILWITHERROR( MP4BadParamErr )
-        err = self->super->createFromInputStream( s, proto, (char*) inputStream ); if ( err ) goto bail;
-	GET32( baseMediaDecodeTime );
-	assert( self->bytesRead == self->size );
-    
+  MP4Err err;
+  MP4TrackFragmentDecodeTimeAtomPtr self = (MP4TrackFragmentDecodeTimeAtomPtr)s;
+
+  err = MP4NoErr;
+  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+  err = self->super->createFromInputStream(s, proto, (char *)inputStream);
+  if(err) goto bail;
+  GET32(baseMediaDecodeTime);
+  assert(self->bytesRead == self->size);
+
 bail:
-	TEST_RETURN( err );
-    
-	return err;
+  TEST_RETURN(err);
+
+  return err;
 }
 
-MP4Err MP4CreateTrackFragmentDecodeTimeAtom( MP4TrackFragmentDecodeTimeAtomPtr *outAtom )
+MP4Err MP4CreateTrackFragmentDecodeTimeAtom(MP4TrackFragmentDecodeTimeAtomPtr *outAtom)
 {
-	MP4Err err;
-	MP4TrackFragmentDecodeTimeAtomPtr self;
-	
-	self = (MP4TrackFragmentDecodeTimeAtomPtr) calloc( 1, sizeof(MP4TrackFragmentDecodeTimeAtom) );
-	TESTMALLOC( self );
-    
-	err = MP4CreateFullAtom( (MP4AtomPtr) self );
-	if ( err ) goto bail;
-	self->type                  = MP4TrackFragmentDecodeTimeAtomType;
-	self->name                  = "track fragment decode time";
-	self->createFromInputStream = (cisfunc) createFromInputStream;
-	self->destroy               = destroy;
-	self->calculateSize         = calculateSize;
-	self->serialize             = serialize;
-    
-	*outAtom = self;
+  MP4Err err;
+  MP4TrackFragmentDecodeTimeAtomPtr self;
+
+  self = (MP4TrackFragmentDecodeTimeAtomPtr)calloc(1, sizeof(MP4TrackFragmentDecodeTimeAtom));
+  TESTMALLOC(self);
+
+  err = MP4CreateFullAtom((MP4AtomPtr)self);
+  if(err) goto bail;
+  self->type                  = MP4TrackFragmentDecodeTimeAtomType;
+  self->name                  = "track fragment decode time";
+  self->createFromInputStream = (cisfunc)createFromInputStream;
+  self->destroy               = destroy;
+  self->calculateSize         = calculateSize;
+  self->serialize             = serialize;
+
+  *outAtom = self;
 bail:
-	TEST_RETURN( err );
-    
-	return err;
+  TEST_RETURN(err);
+
+  return err;
 }

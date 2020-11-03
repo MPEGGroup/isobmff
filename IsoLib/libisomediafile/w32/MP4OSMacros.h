@@ -1,9 +1,9 @@
 /*
-	This header file may be freely copied and distributed.
+        This header file may be freely copied and distributed.
 */
 
 /*
-	Windows OS Macros for the ISO file format library
+        Windows OS Macros for the ISO file format library
 */
 
 #ifndef INCLUDED_MP4OSMACROS_H
@@ -23,7 +23,7 @@
 #define MP4_EXTERN(v) extern v
 #else
 #ifdef ISOMP4DLLAPI
-#define MP4_EXTERN(v) extern __declspec( dllexport ) v __cdecl
+#define MP4_EXTERN(v) extern __declspec(dllexport) v __cdecl
 #else
 #define MP4_EXTERN(v) extern v __cdecl
 #endif
@@ -43,7 +43,7 @@ typedef int s32;
 typedef short s16;
 typedef char s8;
 
-#define MP4_FOUR_CHAR_CODE( a, b, c, d ) (((a)<<24)|((b)<<16)|((c)<<8)|(d))
+#define MP4_FOUR_CHAR_CODE(a, b, c, d) (((a) << 24) | ((b) << 16) | ((c) << 8) | (d))
 #if defined(_MSC_VER)
 #define strcasecmp _stricmp
 #else
