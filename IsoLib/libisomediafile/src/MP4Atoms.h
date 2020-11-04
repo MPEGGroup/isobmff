@@ -450,6 +450,8 @@ typedef struct MP4MediaAtom
                               s32 sample_index, u32 count);
   MP4Err (*getSampleGroupMap)(struct MP4MediaAtom *self, u32 groupType, u32 sample_number,
                               u32 *group_index);
+  MP4Err (*getSampleGroupSampleNumbers)(struct MP4MediaAtom *self, u32 groupType,
+                              u32 groupIndex, u32 **outSampleNumbers, u32 *outSampleCnt);
   MP4Err (*getGroupDescription)(struct MP4MediaAtom *self, u32 groupType, u32 index,
                                 MP4Handle description);
 
@@ -534,6 +536,8 @@ typedef struct MP4MediaInformationAtom
                                 MP4Handle description, u32 *index);
   MP4Err (*getSampleGroupMap)(struct MP4MediaInformationAtom *self, u32 groupType,
                               u32 sample_number, u32 *group_index);
+  MP4Err (*getSampleGroupSampleNumbers)(struct MP4MediaInformationAtom *self, u32 groupType,
+                              u32 groupIndex, u32 **outSampleNumbers, u32 *outSampleCnt);
   MP4Err (*getGroupDescription)(struct MP4MediaInformationAtom *self, u32 groupType, u32 index,
                                 MP4Handle description);
   MP4Err (*getSampleDependency)(struct MP4MediaInformationAtom *self, u32 sampleNumber,
@@ -709,6 +713,8 @@ typedef struct MP4SampleTableAtom
                               s32 sample_index, u32 count, u32 enableCompactSamples);
   MP4Err (*getSampleGroupMap)(struct MP4SampleTableAtom *self, u32 groupType, u32 sample_number,
                               u32 *group_index);
+  MP4Err (*getSampleGroupSampleNumbers)(struct MP4SampleTableAtom *self, u32 groupType,
+                              u32 groupIndex, u32 **outSampleNumbers, u32 *outSampleCnt);
   MP4Err (*getGroupDescription)(struct MP4SampleTableAtom *self, u32 theType, u32 index,
                                 MP4Handle theDescription);
 
@@ -1335,6 +1341,8 @@ typedef struct MP4TrackFragmentAtom
                                 MP4Handle description, u32 *index);
   MP4Err (*getSampleGroupMap)(struct MP4TrackFragmentAtom *self, u32 groupType, u32 sample_number,
                               u32 *group_index);
+  MP4Err (*getSampleGroupSampleNumbers)(struct MP4TrackFragmentAtom *self, u32 groupType,
+                              u32 groupIndex, u32 **outSampleNumbers, u32 *outSampleCnt);
   MP4Err (*getGroupDescription)(struct MP4TrackFragmentAtom *self, u32 theType, u32 index,
                                 MP4Handle theDescription);
   u32 default_sample_description_index; /* all copied from the matching trex */

@@ -387,6 +387,25 @@ bail:
   return err;
 }
 
+static MP4Err getSampleGroupSampleNumbers(struct MP4MediaAtom *self, u32 groupType, u32 groupIndex,
+                                          u32 **outSampleNumbers, u32 *outSampleCnt)
+{
+  MP4Err err;
+  MP4MediaInformationAtomPtr minf;
+  err = MP4NoErr;
+
+  minf = (MP4MediaInformationAtomPtr)self->information;
+  assert(minf);
+  assert(minf->getSampleGroupSampleNumbers);
+  err = minf->getSampleGroupSampleNumbers(minf, groupType, groupIndex, outSampleNumbers,
+                                          outSampleCnt);
+  if(err) goto bail;
+bail:
+  TEST_RETURN(err);
+
+  return err;
+}
+
 static MP4Err setSampleDependency(struct MP4MediaAtom *self, s32 sample_index,
                                   MP4Handle dependencies)
 {
@@ -509,19 +528,20 @@ MP4Err MP4CreateMediaAtom(MP4MediaAtomPtr *outAtom)
   self->destroy               = destroy;
   err                         = MP4MakeLinkedList(&self->atomList);
   if(err) goto bail;
-  self->calculateSize       = calculateSize;
-  self->serialize           = serialize;
-  self->addSamples          = addSamples;
-  self->calculateDuration   = calculateDuration;
-  self->setfieldsize        = setfieldsize;
-  self->setupNew            = setupNew;
-  self->mdatMoved           = mdatMoved;
-  self->addSampleReference  = addSampleReference;
-  self->settrackfragment    = settrackfragment;
-  self->addGroupDescription = addGroupDescription;
-  self->mapSamplestoGroup   = mapSamplestoGroup;
-  self->getSampleGroupMap   = getSampleGroupMap;
-  self->getGroupDescription = getGroupDescription;
+  self->calculateSize               = calculateSize;
+  self->serialize                   = serialize;
+  self->addSamples                  = addSamples;
+  self->calculateDuration           = calculateDuration;
+  self->setfieldsize                = setfieldsize;
+  self->setupNew                    = setupNew;
+  self->mdatMoved                   = mdatMoved;
+  self->addSampleReference          = addSampleReference;
+  self->settrackfragment            = settrackfragment;
+  self->addGroupDescription         = addGroupDescription;
+  self->mapSamplestoGroup           = mapSamplestoGroup;
+  self->getSampleGroupMap           = getSampleGroupMap;
+  self->getSampleGroupSampleNumbers = getSampleGroupSampleNumbers;
+  self->getGroupDescription         = getGroupDescription;
 
   self->setSampleDependency = setSampleDependency;
   self->getSampleDependency = getSampleDependency;

@@ -184,6 +184,7 @@ extern "C"
 #define ISOGetTrackOffset MP4GetTrackOffset
 #define ISOGetTrackReference MP4GetTrackReference
 #define ISOGetTrackReferenceCount MP4GetTrackReferenceCount
+#define ISOGetTrackGroup MP4GetTrackGroup
 #define ISOInsertMediaIntoTrack MP4InsertMediaIntoTrack
 #define ISONewMovieTrack MP4NewMovieTrack
 #define ISONewMovieTrackWithID MP4NewMovieTrackWithID

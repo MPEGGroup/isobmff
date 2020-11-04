@@ -602,6 +602,26 @@ bail:
   return err;
 }
 
+static MP4Err getSampleGroupSampleNumbers(struct MP4MediaInformationAtom *self, u32 groupType,
+                                          u32 groupIndex, u32 **outSampleNumbers, u32 *outSampleCnt)
+{
+  MP4Err err;
+  MP4SampleTableAtomPtr stbl;
+
+  err = MP4NoErr;
+
+  stbl = (MP4SampleTableAtomPtr)self->sampleTable;
+  assert(stbl);
+  assert(stbl->getSampleGroupSampleNumbers);
+  err = stbl->getSampleGroupSampleNumbers(stbl, groupType, groupIndex, outSampleNumbers,
+                                          outSampleCnt);
+  if(err) goto bail;
+bail:
+  TEST_RETURN(err);
+
+  return err;
+}
+
 static MP4Err setSampleDependency(struct MP4MediaInformationAtom *self, s32 sample_index,
                                   MP4Handle dependencies)
 {
@@ -758,22 +778,23 @@ MP4Err MP4CreateMediaInformationAtom(MP4MediaInformationAtomPtr *outAtom)
   self->getMediaDuration      = getMediaDuration;
   err                         = MP4MakeLinkedList(&self->atomList);
   if(err) goto bail;
-  self->calculateSize            = calculateSize;
-  self->serialize                = serialize;
-  self->addSamples               = addSamples;
-  self->setfieldsize             = setfieldsize;
-  self->mdatMoved                = mdatMoved;
-  self->mdatArrived              = mdatArrived;
-  self->addSampleReference       = addSampleReference;
-  self->testDataEntry            = testDataEntry;
-  self->addGroupDescription      = addGroupDescription;
-  self->mapSamplestoGroup        = mapSamplestoGroup;
-  self->getSampleGroupMap        = getSampleGroupMap;
-  self->getGroupDescription      = getGroupDescription;
-  self->getSampleDependency      = getSampleDependency;
-  self->setSampleDependency      = setSampleDependency;
-  self->extendLastSampleDuration = extendLastSampleDuration;
-  self->setSampleEntry           = setSampleEntry;
+  self->calculateSize               = calculateSize;
+  self->serialize                   = serialize;
+  self->addSamples                  = addSamples;
+  self->setfieldsize                = setfieldsize;
+  self->mdatMoved                   = mdatMoved;
+  self->mdatArrived                 = mdatArrived;
+  self->addSampleReference          = addSampleReference;
+  self->testDataEntry               = testDataEntry;
+  self->addGroupDescription         = addGroupDescription;
+  self->mapSamplestoGroup           = mapSamplestoGroup;
+  self->getSampleGroupMap           = getSampleGroupMap;
+  self->getSampleGroupSampleNumbers = getSampleGroupSampleNumbers;
+  self->getGroupDescription         = getGroupDescription;
+  self->getSampleDependency         = getSampleDependency;
+  self->setSampleDependency         = setSampleDependency;
+  self->extendLastSampleDuration    = extendLastSampleDuration;
+  self->setSampleEntry              = setSampleEntry;
 
   *outAtom = self;
 bail:

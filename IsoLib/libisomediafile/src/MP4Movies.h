@@ -328,6 +328,9 @@ extern "C"
   MP4GetTrackReferenceCount(MP4Track theTrack, u32 referenceType, u32 *outReferenceCount);
 
   MP4_EXTERN(MP4Err)
+  MP4GetTrackGroup(MP4Track theTrack, u32 groupType, u32 *outGroupId);
+
+  MP4_EXTERN(MP4Err)
   MP4GetTrackUserData(MP4Track theTrack, MP4UserData *outUserData);
 
   MP4_EXTERN(MP4Err)
@@ -397,6 +400,10 @@ extern "C"
 
   MP4_EXTERN(MP4Err)
   ISOGetSampletoGroupMap(MP4Media media, u32 groupType, u32 sample_number, u32 *group_index);
+
+  MP4_EXTERN(MP4Err)
+  ISOGetSampleGroupSampleNumbers(MP4Media media, u32 groupType, u32 group_index,
+                                 u32 **outSampleNubers, u32 *outSampleCnt);
 
   MP4_EXTERN(MP4Err)
   ISOSetSampleDependency(MP4Media media, s32 sample_index, MP4Handle dependencies);

@@ -262,6 +262,28 @@ bail:
 }
 
 MP4_EXTERN(MP4Err)
+ISOGetSampleGroupSampleNumbers(MP4Media media, u32 groupType, u32 groupIndex,
+                               u32 **outSampleNumbers, u32 *outSampleCnt)
+{
+  MP4Err err;
+  MP4MediaAtomPtr mdia;
+
+  err = MP4NoErr;
+  if(media == NULL)
+  {
+    BAILWITHERROR(MP4BadParamErr);
+  }
+  mdia = (MP4MediaAtomPtr)media;
+  err  = mdia->getSampleGroupSampleNumbers(mdia, groupType, groupIndex, outSampleNumbers,
+                                          outSampleCnt);
+
+bail:
+  TEST_RETURN(err);
+
+  return err;
+}
+
+MP4_EXTERN(MP4Err)
 ISOSetSampleDependency(MP4Media media, s32 sample_index, MP4Handle dependencies)
 {
   MP4Err err;

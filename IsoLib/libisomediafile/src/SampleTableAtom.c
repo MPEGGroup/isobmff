@@ -696,6 +696,48 @@ bail:
   return err;
 }
 
+static MP4Err getSampleGroupSampleNumbers(struct MP4SampleTableAtom *self, u32 groupType,
+                                          u32 groupIndex, u32 **outSampleNumbers, u32 *outSampleCnt)
+{
+  MP4Err err;
+
+  u32 i;
+  u32 cur_index, cur_count;
+  *outSampleCnt = 0;
+  TESTMALLOC(*outSampleNumbers);
+
+  MP4SampletoGroupAtomPtr theGroup;
+  err = MP4FindGroupAtom(self->sampletoGroupList, groupType, (MP4AtomPtr *)&theGroup);
+  if(theGroup)
+  {
+    *outSampleNumbers = (u32 *)malloc((theGroup->sampleCount) * sizeof(u32));
+    cur_index         = (theGroup->group_index)[0];
+    cur_count         = 1;
+    for(i = 1; i < theGroup->sampleCount; i++)
+    {
+      if((theGroup->group_index)[i - 1] == (theGroup->group_index)[i]) cur_count++;
+      else
+      {
+        if(cur_index == groupIndex)
+        {
+          (*outSampleNumbers)[(*outSampleCnt)++] = i;
+        }
+        cur_count = 1;
+        cur_index = (theGroup->group_index)[i];
+      }
+    }
+    if(cur_index == groupIndex)
+    {
+      (*outSampleNumbers)[(*outSampleCnt)++] = i+1;
+    }
+  }
+
+bail:
+  TEST_RETURN(err);
+
+  return err;
+}
+
 static MP4Err setSampleDependency(struct MP4SampleTableAtom *self, s32 sample_index,
                                   MP4Handle dependencies)
 {
@@ -835,10 +877,11 @@ MP4Err MP4CreateSampleTableAtom(MP4SampleTableAtomPtr *outAtom)
   self->getCurrentSampleEntryIndex   = getCurrentSampleEntryIndex;
   self->setDefaultSampleEntry        = setDefaultSampleEntry;
 
-  self->addGroupDescription = addGroupDescription;
-  self->mapSamplestoGroup   = mapSamplestoGroup;
-  self->getSampleGroupMap   = getSampleGroupMap;
-  self->getGroupDescription = getGroupDescription;
+  self->addGroupDescription         = addGroupDescription;
+  self->mapSamplestoGroup           = mapSamplestoGroup;
+  self->getSampleGroupMap           = getSampleGroupMap;
+  self->getSampleGroupSampleNumbers = getSampleGroupSampleNumbers;
+  self->getGroupDescription         = getGroupDescription;
 
   self->setSampleDependency = setSampleDependency;
   self->getSampleDependency = getSampleDependency;

@@ -95,6 +95,11 @@ static MP4Err mergeFragments(struct MP4MovieFragmentAtom *self, MP4MovieAtomPtr 
     MP4Track trak;
     u64 mediaDuration, initialMediaDuration;
     u32 tfhd_flags;
+    u32 groupDescriptionCount;
+    ISOHandle desc;
+    u32 n;
+    u32 descIdx;
+    MP4SampleGroupDescriptionAtomPtr theGroup;
 
     err = MP4GetListEntry(self->atomList, i, (char **)&traf);
     if(err) goto bail;
@@ -131,6 +136,21 @@ static MP4Err mergeFragments(struct MP4MovieFragmentAtom *self, MP4MovieAtomPtr 
     if(err) goto bail;
     err = MP4GetMediaTrack((MP4Media)mdia, &trak);
     if(err) goto bail;
+
+    /* sample group descriptions */
+    ISONewHandle(0, &desc);
+    MP4GetListEntryCount(traf->groupDescriptionList, &groupDescriptionCount);
+    for(n = 0; n < groupDescriptionCount; n++)
+    {
+      MP4GetListEntry(traf->groupDescriptionList, n, (char **)&theGroup);
+
+      /* check if we already have this group in moov */
+      err = mdia->getGroupDescription(mdia, theGroup->grouping_type, 1, desc);
+      if(err != MP4NoErr)
+      {
+        mdia->addGroupDescription(mdia, theGroup->grouping_type, desc, &descIdx);
+      }
+    }
 
     err = MP4GetMediaDuration((MP4Media)mdia, &initialMediaDuration);
     if(err) goto bail;
