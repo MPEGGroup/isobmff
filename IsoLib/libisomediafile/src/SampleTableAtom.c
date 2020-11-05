@@ -606,7 +606,7 @@ static MP4Err mapSamplestoGroup(struct MP4SampleTableAtom *self, u32 groupType, 
   if(!theDesc) BAILWITHERROR(MP4BadParamErr);
   if(group_index > theDesc->groupCount) BAILWITHERROR(MP4BadParamErr);
 
-  if(enableCompactSamples)
+  if(enableCompactSamples==1)
   {
     MP4CompactSampletoGroupAtomPtr compactSampleGroup;
     err = MP4FindGroupAtom(self->compactSampletoGroupList, groupType,
@@ -632,7 +632,7 @@ static MP4Err mapSamplestoGroup(struct MP4SampleTableAtom *self, u32 groupType, 
         compactSampleGroup->mapSamplestoGroup(compactSampleGroup, group_index, sample_index, count);
     if(err) goto bail;
   }
-  else
+  else if(enableCompactSamples==0)
   {
     err = MP4FindGroupAtom(self->sampletoGroupList, groupType, (MP4AtomPtr *)&theGroup);
     if(!theGroup)
@@ -647,13 +647,26 @@ static MP4Err mapSamplestoGroup(struct MP4SampleTableAtom *self, u32 groupType, 
       err = MP4CreateSampletoGroupAtom(&theGroup);
       if(err) goto bail;
       theGroup->grouping_type = groupType;
-      err                     = addAtom(self, (MP4AtomPtr)theGroup);
+      // err                     = addAtom(self, (MP4AtomPtr)theGroup);
       if(err) goto bail;
       err = theGroup->addSamples(theGroup, stsz->sampleCount);
       if(err) goto bail;
     }
     err = theGroup->mapSamplestoGroup(theGroup, group_index, sample_index, count);
+    err                     = addAtom(self, (MP4AtomPtr)theGroup);
     if(err) goto bail;
+  }
+  else
+  {
+    /* automatic mode, use both normal and compressed and see what has the smaller size when done */
+    MP4CompactSampletoGroupAtomPtr compactSampleGroup;
+    MP4SampletoGroupAtomPtr normalSampleGroup;
+
+    err = MP4FindGroupAtom(self->compactSampletoGroupList, groupType, (MP4AtomPtr*)&compactSampleGroup);
+    err = MP4FindGroupAtom(self->sampletoGroupList, groupType, (MP4AtomPtr *)&normalSampleGroup);
+
+    /* TODO: implement me*/
+    normalSampleGroup->size;
   }
 
 bail:

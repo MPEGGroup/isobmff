@@ -237,6 +237,7 @@ ISOErr addGroups(MP4Media media, std::string strPattern, u32 repeatPattern = 1) 
       }
     }
   }
+  return err;
 }
 
 ISOErr createFile(std::string strFilename) {
@@ -281,22 +282,22 @@ ISOErr createFile(std::string strFilename) {
   err = addSamples(media, "r", 0, sampleEntryH);  if(err) return err;
   err = MP4EndMediaEdits(media);
 
-  // fragment 1
-  ISOSetSamplestoGroupType(media, 0);
+  std::cout << "fragment 1" << std::endl;
+  ISOSetSamplestoGroupType(media,0);
   err = ISOStartMovieFragment( moov ); if(err) return err;
   err = addSamples(media, "rb", 3);  if(err) return err;
 
-  // fragment 2 (compressed sample group)
+  std::cout << "fragment 2 (compressed sample group)" << std::endl;
   ISOSetSamplestoGroupType(media, 1);
   err = ISOStartMovieFragment( moov ); if(err) return err;
   err = addSamples(media, "gry", 2);  if(err) return err;
 
-  // framgment 3
+  std::cout << "fragment 3" << std::endl;
   ISOSetSamplestoGroupType(media, 0);
   err = ISOStartMovieFragment( moov ); if(err) return err;
   err = addSamples(media, "bgy", 2);  if(err) return err;
 
-  // framgment 4
+  std::cout << "fragment 4" << std::endl;
   err = ISOStartMovieFragment( moov ); if(err) return err;
   err = addSamples(media, "wk", 3);  if(err) return err;
   
