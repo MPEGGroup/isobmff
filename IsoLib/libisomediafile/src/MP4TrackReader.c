@@ -107,7 +107,7 @@ MP4TrackReaderGetCurrentSampleDescriptionIndex(MP4TrackReader theReader, u32 *in
   MP4TrackReaderPtr reader;
 
   err = MP4NoErr;
-  if((theReader == 0)) BAILWITHERROR(MP4BadParamErr)
+  if(theReader == 0) BAILWITHERROR(MP4BadParamErr)
   reader = (MP4TrackReaderPtr)theReader;
   *index = reader->sampleDescIndex;
 bail:

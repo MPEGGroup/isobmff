@@ -128,8 +128,8 @@ enum
   ISOItemProtectionAtomType                    = MP4_FOUR_CHAR_CODE('i', 'p', 'r', 'o'),
   ISOItemInfoAtomType                          = MP4_FOUR_CHAR_CODE('i', 'i', 'n', 'f'),
   ISOItemInfoEntryAtomType                     = MP4_FOUR_CHAR_CODE('i', 'n', 'f', 'e'),
-  ISOAdditionalMetaDataContainerAtomType       = MP4_FOUR_CHAR_CODE('m', 'e', 'c', 'o'),
-  ISOMetaboxRelationAtomType                   = MP4_FOUR_CHAR_CODE('m', 'e', 'r', 'e'),
+  ISOAdditionalMetaDataContainerAtomType       = MP4_FOUR_CHAR_CODE('m', 'e', 'c', 'o'), /* Deprecated */
+  ISOMetaboxRelationAtomType                   = MP4_FOUR_CHAR_CODE('m', 'e', 'r', 'e'), /* Deprecated */
   ISOItemDataAtomType                          = MP4_FOUR_CHAR_CODE('i', 'd', 'a', 't'),
   ISOItemReferenceAtomType                     = MP4_FOUR_CHAR_CODE('i', 'r', 'e', 'f'),
   ISOVCConfigAtomType                          = MP4_FOUR_CHAR_CODE('a', 'v', 'c', 'C'),
@@ -228,7 +228,7 @@ typedef struct MP4PrivateMovieRecord
   MP4AtomPtr jp2h; /* for JPEG-2000, the JP2 header atom */
   MP4AtomPtr sgnt; /* for JPEG-2000, the signature atom */
   MP4AtomPtr meta; /* file-level meta-data */
-  MP4AtomPtr meco; /* file-level additional meta-data container */
+  MP4AtomPtr meco; /* Deprecated file-level additional meta-data container */
 
   void *inMemoryDataHandler;
   MP4Handle prepend_handle;

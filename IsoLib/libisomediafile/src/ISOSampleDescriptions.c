@@ -1422,7 +1422,7 @@ ISONewHEVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32
   height = read_golomb_uev(bb, &err);
   if(err) goto bail;
   ((MP4VisualSampleEntryAtomPtr)entry)->height = height;
-  ((MP4TrackAtomPtr)theTrack)->setDimensions(theTrack, width, height);
+  ((MP4TrackAtomPtr)theTrack)->setDimensions((MP4TrackAtomPtr)theTrack, width, height);
 
   /* conformance_window_flag */
   x = GetBits(bb, 1, &err);

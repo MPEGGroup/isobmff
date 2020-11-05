@@ -127,7 +127,7 @@ bail:
   return err;
 }
 
-static MP4Err addEntry(MP4AtomPtr s, u32 sample_delta, u32 subsample_count,
+static MP4Err addEntry(MP4SubSampleInformationAtom *s, u32 sample_delta, u32 subsample_count,
                        MP4Handle subsample_size_array, MP4Handle subsample_priority_array,
                        MP4Handle subsample_discardable_array)
 {
@@ -137,7 +137,7 @@ static MP4Err addEntry(MP4AtomPtr s, u32 sample_delta, u32 subsample_count,
   u32 current_entry;
 
   err = MP4NoErr;
-  if((s == NULL)) BAILWITHERROR(MP4BadParamErr);
+  if(s == NULL) BAILWITHERROR(MP4BadParamErr);
   self          = (MP4SubSampleInformationAtomPtr)s;
   current_entry = self->entry_count;
 

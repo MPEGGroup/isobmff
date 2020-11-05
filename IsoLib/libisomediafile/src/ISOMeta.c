@@ -113,11 +113,11 @@ ISO_EXTERN(ISOErr) ISONewMovieMeta(ISOMovie theMovie, u32 metaType, ISOMeta *out
   err = newMeta(&myMeta, metaType);
   if(err) goto bail;
 
-  if(moov->meta != NULL)
+  if(movieAtom->meta != NULL)
   {
-    if(moov->meta->type == metaType) BAILWITHERROR(MP4BadParamErr);
+    if(movieAtom->meta->type == metaType) BAILWITHERROR(MP4BadParamErr);
 
-    if(moov->meco == NULL)
+    if(movieAtom->meco == NULL)
     {
       MP4AtomPtr tempMeco;
       err = ISOCreateAdditionalMetaDataContainerAtom(
@@ -128,7 +128,7 @@ ISO_EXTERN(ISOErr) ISONewMovieMeta(ISOMovie theMovie, u32 metaType, ISOMeta *out
       myMeta->relatedMeco = (MP4AtomPtr)mecoPtr;
     }
 
-    mecoPtr = (ISOAdditionalMetaDataContainerAtomPtr)moov->meco;
+    mecoPtr = (ISOAdditionalMetaDataContainerAtomPtr)movieAtom->meco;
     err     = mecoPtr->addMeta(mecoPtr, (MP4AtomPtr)myMeta);
     if(err) goto bail;
   }
@@ -194,6 +194,7 @@ bail:
   return err;
 }
 
+/* Deprecated */
 ISO_EXTERN(ISOErr) ISOAddMetaBoxRelation(ISOMeta first_meta, ISOMeta second_meta, u8 relation_type)
 {
   MP4Err err;
@@ -233,6 +234,7 @@ bail:
   return err;
 }
 
+/* Deprecated */
 ISO_EXTERN(ISOErr) ISOGetMetaBoxRelation(ISOMeta first_meta, ISOMeta second_meta, u8 *relation_type)
 {
   MP4Err err;
@@ -1926,7 +1928,7 @@ ISOAddMetaItemProperty(ISOMetaItem item, MP4GenericAtom *itemProperty, u8 essent
 
   if(myMeta->iprp == NULL)
   {
-    err = MP4CreateItemPropertiesAtom(&myMeta->iprp);
+    err = MP4CreateItemPropertiesAtom( (MP4ItemPropertiesAtomPtr*) &myMeta->iprp);
     if(err) goto bail;
     err = MP4AddListEntry(myMeta->iprp, myMeta->atomList);
     if(err) goto bail;
@@ -1967,7 +1969,7 @@ ISOGetProperitesOfMetaItem(ISOMetaItem item, MP4GenericAtom **properties, u32 *p
 
   if(myMeta->iprp == NULL)
   {
-    err = MP4CreateItemPropertiesAtom(&myMeta->iprp);
+    err = MP4CreateItemPropertiesAtom( (MP4ItemPropertiesAtomPtr*) &myMeta->iprp);
     if(err) goto bail;
     err = MP4AddListEntry(myMeta->iprp, myMeta->atomList);
     if(err) goto bail;

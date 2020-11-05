@@ -53,11 +53,11 @@ static MP4Err addAtom(MP4ItemPropertiesAtomPtr self, MP4AtomPtr atom)
   switch(atom->type)
   {
   case MP4ItemPropertyContainerAtomType:
-    self->ipco = atom;
+    self->ipco = (MP4ItemPropertyContainerAtomPtr)atom;
     break;
 
   case MP4ItemPropertyAssociationAtomType:
-    self->ipma = atom;
+    self->ipma = (MP4ItemPropertyAssociationAtomPtr)atom;
     break;
   }
 

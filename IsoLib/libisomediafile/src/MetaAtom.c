@@ -257,7 +257,7 @@ static MP4Err getData(ISOMetaAtomPtr self, u32 box_type, MP4Handle data, u8 is_f
   u32 i, count;
 
   err = MP4NoErr;
-  if((self == NULL)) BAILWITHERROR(MP4BadParamErr)
+  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
 
   if(self->atomList)
   {

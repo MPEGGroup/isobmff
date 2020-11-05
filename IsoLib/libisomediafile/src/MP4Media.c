@@ -1078,7 +1078,7 @@ MP4_EXTERN(MP4Err) MP4CheckMediaDataReferences(MP4Media theMedia)
   u32 dataEntryIndex;
 
   err = MP4NoErr;
-  if((theMedia == NULL))
+  if(theMedia == NULL)
   {
     BAILWITHERROR(MP4BadParamErr);
   }
@@ -1122,7 +1122,7 @@ MP4AddMediaDataReference(MP4Media theMedia, u32 *outReferenceIndex, MP4Handle ur
   MP4DataReferenceAtomPtr dref;
 
   err = MP4NoErr;
-  if((theMedia == NULL))
+  if(theMedia == NULL)
   {
     BAILWITHERROR(MP4BadParamErr);
   }
@@ -1989,7 +1989,7 @@ MP4MediaTimeToSampleNum(MP4Media theMedia, u64 mediaTime, u32 *outSampleNum, u64
   s32 sampleDuration;
 
   err = MP4NoErr;
-  if((theMedia == NULL))
+  if(theMedia == NULL)
   {
     BAILWITHERROR(MP4BadParamErr);
   }
@@ -2133,7 +2133,7 @@ MP4CheckMediaDataRef(MP4Media theMedia, u32 dataEntryIndex)
   MP4DataReferenceAtomPtr dref;
 
   err = MP4NoErr;
-  if((theMedia == NULL)) BAILWITHERROR(MP4BadParamErr);
+  if(theMedia == NULL) BAILWITHERROR(MP4BadParamErr);
   minf = (MP4MediaInformationAtomPtr)((MP4MediaAtomPtr)theMedia)->information;
   if(minf == NULL) BAILWITHERROR(MP4InvalidMediaErr);
   dinf = (MP4DataInformationAtomPtr)minf->dataInformation;

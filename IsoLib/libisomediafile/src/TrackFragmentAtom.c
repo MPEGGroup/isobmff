@@ -331,12 +331,11 @@ bail:
   return err;
 }
 
-static MP4Err addGroupDescription(struct MP4Atom *s, u32 theType, MP4Handle theDescription,
+static MP4Err addGroupDescription(MP4TrackFragmentAtomPtr self, u32 theType, MP4Handle theDescription,
                                   u32 *index)
 {
   MP4Err err;
   MP4SampleGroupDescriptionAtomPtr theGroup;
-  MP4TrackFragmentAtomPtr self = (MP4TrackFragmentAtomPtr)s;
 
   err = MP4FindGroupAtom(self->groupDescriptionList, theType, (MP4AtomPtr *)&theGroup);
   if(!theGroup)
@@ -355,7 +354,7 @@ bail:
   return err;
 }
 
-static MP4Err getGroupDescription(struct MP4SampleTableAtom *self, u32 theType, u32 index,
+static MP4Err getGroupDescription(MP4TrackFragmentAtomPtr self, u32 theType, u32 index,
                                   MP4Handle theDescription)
 {
   MP4Err err;
@@ -909,13 +908,12 @@ bail:
   return err;
 }
 
-static MP4Err getSampleGroupMap(struct MP4Atom *s, u32 groupType, u32 sample_number,
+static MP4Err getSampleGroupMap(MP4TrackFragmentAtomPtr self, u32 groupType, u32 sample_number,
                                 u32 *group_index)
 {
   MP4Err err;
   MP4SampletoGroupAtomPtr theGroup;
   MP4CompactSampletoGroupAtomPtr compactSampleGroup;
-  MP4TrackFragmentAtomPtr self = (MP4TrackFragmentAtomPtr)s;
 
   err = MP4FindGroupAtom(self->groupList, groupType, (MP4AtomPtr *)&theGroup);
   if(theGroup)

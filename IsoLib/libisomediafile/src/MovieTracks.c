@@ -146,7 +146,7 @@ MP4_EXTERN(MP4Err) MP4AddSubSampleInformationToTrack(MP4Track theTrack, MP4Gener
 
   err = MP4NoErr;
 
-  if((theTrack == NULL)) BAILWITHERROR(MP4BadParamErr);
+  if(theTrack == NULL) BAILWITHERROR(MP4BadParamErr);
   trak = (MP4TrackAtomPtr)theTrack;
 
   mdia = (MP4MediaAtomPtr)trak->trackMedia;
@@ -190,7 +190,7 @@ MP4_EXTERN(MP4Err) MP4SetSubSampleInformationFlags(MP4GenericAtom subsample, u32
   MP4SubSampleInformationAtomPtr subs;
 
   err = MP4NoErr;
-  if((subsample == NULL)) BAILWITHERROR(MP4BadParamErr);
+  if(subsample == NULL) BAILWITHERROR(MP4BadParamErr);
   subs = (MP4SubSampleInformationAtomPtr)subsample;
 
   subs->flags = flags;
@@ -215,7 +215,7 @@ MP4GetSubSampleInformationEntryFromTrack(MP4Track theTrack, u32 *flags, u32 *ent
   MP4SampleTableAtomPtr stbl = NULL;
   err                        = MP4NoErr;
 
-  if((theTrack == NULL)) BAILWITHERROR(MP4BadParamErr);
+  if(theTrack == NULL) BAILWITHERROR(MP4BadParamErr);
   trak = (MP4TrackAtomPtr)theTrack;
 
   mdia = (MP4MediaAtomPtr)trak->trackMedia;
@@ -310,10 +310,10 @@ MP4AddSubSampleInformationEntry(MP4GenericAtom subsample, u32 sample_delta, u32 
   MP4SubSampleInformationAtomPtr subs;
 
   err = MP4NoErr;
-  if((subsample == NULL)) BAILWITHERROR(MP4BadParamErr);
+  if(subsample == NULL) BAILWITHERROR(MP4BadParamErr);
   subs = (MP4SubSampleInformationAtomPtr)subsample;
 
-  err = subs->addEntry((MP4AtomPtr)subs, sample_delta, subsample_count, subsample_size_array,
+  err = subs->addEntry(subs, sample_delta, subsample_count, subsample_size_array,
                        subsample_priority_array, subsample_discardable_array);
 
 bail:
@@ -329,7 +329,7 @@ MP4_EXTERN(MP4Err) MP4AddTrackGroup(MP4Track theTrack, u32 groupID, u32 dependen
   MP4TrackGroupTypeAtomPtr msrc;
 
   err = MP4NoErr;
-  if((theTrack == NULL)) BAILWITHERROR(MP4BadParamErr);
+  if(theTrack == NULL) BAILWITHERROR(MP4BadParamErr);
   trak = (MP4TrackAtomPtr)theTrack;
   trgr = (MP4TrackGroupAtomPtr)trak->trackGroups;
   if(trgr == NULL)
@@ -644,7 +644,7 @@ MP4_EXTERN(MP4Err) MP4GetTrackGroup(MP4Track theTrack, u32 groupType, u32 *outGr
   if(trgr == NULL) BAILWITHERROR(MP4BadParamErr);
   err = trgr->findAtomOfType(trgr, groupType, (MP4AtomPtr *)&msrc);
   if(err) goto bail;
-  if((msrc == NULL)) BAILWITHERROR(MP4BadParamErr);
+  if(msrc == NULL) BAILWITHERROR(MP4BadParamErr);
 
   *outGroupId = msrc->track_group_id;
 bail:
@@ -893,7 +893,7 @@ MP4_EXTERN(MP4Err) MP4SetTrackOffset(MP4Track track, u32 movieOffsetTime)
   u64 trackDuration;
 
   err = MP4NoErr;
-  if((track == 0)) BAILWITHERROR(MP4BadParamErr);
+  if(track == 0) BAILWITHERROR(MP4BadParamErr);
 
   err = MP4GetTrackDuration(track, &trackDuration);
   if(err) goto bail;
@@ -979,7 +979,7 @@ MP4_EXTERN(MP4Err) MP4TrackTimeToMediaTime(MP4Track theTrack, u64 inTrackTime, s
   err = MP4GetMediaTimeScale(theMedia, &mediaTimeScale);
   if(err) goto bail;
 
-  if((movieTimeScale == 0)) BAILWITHERROR(MP4InvalidMediaErr)
+  if(movieTimeScale == 0) BAILWITHERROR(MP4InvalidMediaErr)
 
   trak = (MP4TrackAtomPtr)theTrack;
   edts = (MP4EditAtomPtr)trak->trackEditAtom;

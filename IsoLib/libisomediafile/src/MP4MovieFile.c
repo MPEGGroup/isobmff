@@ -48,7 +48,7 @@ static MP4Err LocalPutMovieIntoHandle(MP4Movie theMovie, MP4Handle movieH, u32 i
   MP4AtomPtr headatom;
 
   err = MP4NoErr;
-  if((theMovie == NULL)) BAILWITHERROR(MP4BadParamErr);
+  if(theMovie == NULL) BAILWITHERROR(MP4BadParamErr);
   /* if movieH is NULL, then we append the movie into the prepend_handle */
 
   movie = (MP4PrivateMovieRecordPtr)theMovie;
