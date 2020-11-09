@@ -179,6 +179,8 @@ ISOErr addSamples(MP4Media media, std::string strPattern, u32 repeatPattern = 1,
     }
   }
 
+  // TODO: group color with different descriptions
+
   err = ISODisposeHandle(sampleDataH); if(err) return err;
   err = ISODisposeHandle(durationsH); if(err) return err;
   err = ISODisposeHandle(sizesH); if(err) return err;
@@ -358,6 +360,6 @@ int main() {
   }
   // ISOGetSampleGroupSamples()
   
-  // err = MP4WriteMovieToFile(moov, strFileDefrag.c_str());
+  err = MP4WriteMovieToFile(moov, strFileDefrag.c_str());
   return err;
 }

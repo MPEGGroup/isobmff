@@ -148,7 +148,8 @@ static MP4Err mergeFragments(struct MP4MovieFragmentAtom *self, MP4MovieAtomPtr 
       err = mdia->getGroupDescription(mdia, theGroup->grouping_type, 1, desc);
       if(err != MP4NoErr)
       {
-        mdia->addGroupDescription(mdia, theGroup->grouping_type, desc, &descIdx);
+        mdia->addGroupDescription(mdia, theGroup->grouping_type, desc, &descIdx); /* TODO: map to correct indexes fomr memory */
+        /* check the description as well, not only the type */
       }
     }
 

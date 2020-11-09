@@ -1357,7 +1357,7 @@ typedef struct MP4TrackFragmentAtom
   MP4LinkedList atomList;               /* track runs */
   MP4LinkedList groupDescriptionList;   /* sample group description list */
   MP4LinkedList groupList;              /* sample to group maps */
-  MP4LinkedList compactSampleGroupList; /* compact sample to group maps */
+  MP4LinkedList compactSampleGroupList; /* TODO: consider using just one. compact sample to group maps */ 
   MP4LinkedList saizList;
   MP4LinkedList saioList;
 } MP4TrackFragmentAtom, *MP4TrackFragmentAtomPtr;
