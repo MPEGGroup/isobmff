@@ -55,7 +55,7 @@ static MP4Err addGroupDescription(struct MP4SampleGroupDescriptionAtom *self,
   sampleGroupEntry *p;
   u32 theSize;
 
-  if(self->groups != NULL) self->groups = calloc(1, sizeof(sampleGroupEntry));
+  if(self->groups == NULL) self->groups = calloc(1, sizeof(sampleGroupEntry));
   else
     self->groups = realloc(self->groups, (self->groupCount + 1) * sizeof(sampleGroupEntry));
   TESTMALLOC(self->groups);
