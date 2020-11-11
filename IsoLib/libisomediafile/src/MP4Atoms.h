@@ -728,6 +728,9 @@ typedef struct MP4SampleTableAtom
                                           MP4SampleAuxiliaryInformationSizesAtomPtr *saizOut,
                                           MP4SampleAuxiliaryInformationOffsetsAtomPtr *saioOut);
 
+
+  MP4Err (*mergeSampleGroupDescriptions)(struct MP4SampleTableAtom *self, MP4AtomPtr otherSampleGroupDescr);
+
   MP4AtomPtr TimeToSample;
   MP4AtomPtr CompositionOffset;
   MP4AtomPtr CompositionToDecode;
@@ -1705,6 +1708,7 @@ typedef struct MP4SampleGroupDescriptionAtom
                                 MP4Handle theDescription, u32 *index);
   MP4Err (*getGroupDescription)(struct MP4SampleGroupDescriptionAtom *self, u32 index,
                                 MP4Handle theDescription);
+  MP4Err (*findGroupDescriptionIdx)(struct MP4SampleGroupDescriptionAtom *self, MP4Handle searchH, u32 *index);
 
 } MP4SampleGroupDescriptionAtom, *MP4SampleGroupDescriptionAtomPtr;
 

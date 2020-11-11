@@ -595,6 +595,64 @@ bail:
   return err;
 }
 
+static MP4Err mergeSampleGroupDescriptions(struct MP4SampleTableAtom *self, MP4AtomPtr otherSampleGroupDescr)
+{
+  MP4Err err, errTemp;
+  MP4SampleGroupDescriptionAtomPtr stblGroup;
+  MP4SampleGroupDescriptionAtomPtr other;
+  u32 idx, dummy;
+  MP4Handle descrH;
+
+  if(otherSampleGroupDescr==NULL) BAILWITHERROR(MP4BadParamErr);
+
+  err = errTemp = MP4NoErr;
+  other = (MP4SampleGroupDescriptionAtomPtr)otherSampleGroupDescr;
+  idx = 1;
+
+  err = MP4FindGroupAtom(self->groupDescriptionList, other->grouping_type, (MP4AtomPtr *)&stblGroup);
+
+  if(err == MP4NoErr && stblGroup != NULL) 
+  {
+    /* group description of the same type is already present in stbl, add only entries which are not yet present */
+    while(errTemp==MP4NoErr)
+    {
+      MP4NewHandle(0, &descrH);
+      errTemp = other->getGroupDescription(other, idx++, descrH);
+      if(errTemp == MP4NoErr) 
+      {
+        err = stblGroup->findGroupDescriptionIdx(stblGroup, descrH, &dummy);
+        if(err == MP4NotFoundErr) err = addGroupDescription(self, other->grouping_type, descrH, &dummy);
+      }
+      MP4DisposeHandle(descrH);
+    }
+  }
+  else
+  {
+    /* no such group description, iterate over all entries and add them */
+    while(errTemp==MP4NoErr)
+    {
+      MP4NewHandle(0, &descrH);
+      errTemp = other->getGroupDescription(other, idx++, descrH);
+      if(errTemp == MP4NoErr) err = addGroupDescription(self, other->grouping_type, descrH, &dummy);
+      MP4DisposeHandle(descrH);
+    }
+
+    /* check if we already have this group in moov */
+    // err = mdia->getGroupDescription(mdia, groupDescriptionTraf->grouping_type, 1, desc);
+    // if(err != MP4NoErr)
+    // {
+    //   mdia->addGroupDescription(mdia, groupDescriptionTraf->grouping_type, desc, &descIdx); /* TODO: map to correct indexes from memory */
+    //   /* check the description as well, not only the type */
+    // }
+  }
+
+
+bail:
+  TEST_RETURN(err);
+
+  return err;
+}
+
 static MP4Err mapSamplestoGroup(struct MP4SampleTableAtom *self, u32 groupType, u32 group_index,
                                 s32 sample_index, u32 count, u32 enableCompactSamples)
 {
@@ -650,13 +708,12 @@ static MP4Err mapSamplestoGroup(struct MP4SampleTableAtom *self, u32 groupType, 
       err = MP4CreateSampletoGroupAtom(&theGroup);
       if(err) goto bail;
       theGroup->grouping_type = groupType;
-      // err                     = addAtom(self, (MP4AtomPtr)theGroup);
+      err                     = addAtom(self, (MP4AtomPtr)theGroup);
       if(err) goto bail;
       err = theGroup->addSamples(theGroup, stsz->sampleCount);
       if(err) goto bail;
     }
     err = theGroup->mapSamplestoGroup(theGroup, group_index, sample_index, count);
-    err                     = addAtom(self, (MP4AtomPtr)theGroup);
     if(err) goto bail;
   }
 
@@ -889,6 +946,8 @@ MP4Err MP4CreateSampleTableAtom(MP4SampleTableAtomPtr *outAtom)
 
   self->setSampleDependency = setSampleDependency;
   self->getSampleDependency = getSampleDependency;
+
+  self->mergeSampleGroupDescriptions = mergeSampleGroupDescriptions;
 
   err = MP4MakeLinkedList(&(self->groupDescriptionList));
   if(err) goto bail;

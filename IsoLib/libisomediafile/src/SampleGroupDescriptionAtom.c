@@ -99,6 +99,36 @@ bail:
   return err;
 }
 
+static MP4Err findGroupDescriptionIdx(struct MP4SampleGroupDescriptionAtom *self, MP4Handle searchH, u32 *index)
+{
+  MP4Err err;
+  u32 size, i, temp;
+  sampleGroupEntry *p;
+
+  err = MP4GetHandleSize(searchH, &size); if(err) goto bail;
+  if(index==NULL || self == NULL || size == 0) BAILWITHERROR(MP4BadParamErr);
+
+  err = MP4NotFoundErr;
+  for(i=0; i<self->groupCount; ++i)
+  {
+    p = &((self->groups)[i]);
+    if(p->groupSize != size) continue;
+    
+    temp = memcmp(p->groupDescription, *searchH, size);
+    if(temp==0)
+    {
+      *index = i+1;
+      err = MP4NoErr;
+      break;
+    }
+  }
+
+bail:
+  TEST_RETURN(err);
+
+  return err;
+}
+
 static MP4Err serialize(struct MP4Atom *s, char *buffer)
 {
   MP4Err err;
@@ -252,6 +282,7 @@ MP4Err MP4CreateSampleGroupDescriptionAtom(MP4SampleGroupDescriptionAtomPtr *out
   self->serialize             = serialize;
   self->addGroupDescription   = addGroupDescription;
   self->getGroupDescription   = getGroupDescription;
+  self->findGroupDescriptionIdx = findGroupDescriptionIdx;
   self->default_length        = 0;
   self->groupCount            = 0;
   self->groups                = NULL;
