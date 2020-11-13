@@ -53,7 +53,11 @@ static MP4Err addGroupDescription(struct MP4SampleGroupDescriptionAtom *self,
 {
   MP4Err err;
   sampleGroupEntry *p;
-  u32 theSize;
+  u32 theSize, foundIdx;
+
+  /* make sure we don't add duplicate descriptions */
+  err = self->findGroupDescriptionIdx(self, theDescription, &foundIdx);
+  if(err != MP4NotFoundErr) BAILWITHERROR(MP4BadParamErr);
 
   if(self->groups == NULL) self->groups = calloc(1, sizeof(sampleGroupEntry));
   else

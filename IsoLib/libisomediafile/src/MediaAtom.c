@@ -319,30 +319,15 @@ static MP4Err addGroupDescription(struct MP4MediaAtom *self, u32 groupType, MP4H
 {
   MP4Err err;
   MP4MediaInformationAtomPtr minf, true_minf;
-  MP4SampleTableAtomPtr stbl;
-  MP4SampleGroupDescriptionAtomPtr group_descr_in_stbl;
 
   err  = MP4NoErr;
   minf = (MP4MediaInformationAtomPtr)self->information; /* this can be 'traf' if fragmented */
   assert(minf);
-  true_minf = (self->true_minf == NULL) ? minf : (MP4MediaInformationAtomPtr)self->true_minf;
-  assert(true_minf);
-  stbl = (MP4SampleTableAtomPtr)true_minf->sampleTable;
-  assert(stbl);
-  err = MP4FindGroupAtom(stbl->groupDescriptionList, groupType, (MP4AtomPtr *)&group_descr_in_stbl);
-
-  if(err==MP4NoErr && group_descr_in_stbl != NULL && minf != true_minf)
-  {
-    /* same group is already in stbl and its already serialized */
-    BAILWITHERROR(MP4InvalidMediaErr);
-  }
-  else
-  {
-    /* new group type, we can add it to traf or stbl */
-    assert(minf->addGroupDescription);
-    err = minf->addGroupDescription(minf, groupType, description, index);
-    if(err) goto bail;
-  }
+  assert(minf->addGroupDescription);
+  
+  err = minf->addGroupDescription(minf, groupType, description, index);
+  if(err) goto bail;
+  
 bail:
   TEST_RETURN(err);
 

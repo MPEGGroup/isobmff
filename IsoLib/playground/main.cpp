@@ -70,6 +70,14 @@ const u32 FOURCC_BLU = MP4_FOUR_CHAR_CODE('b', 'l', 'u', 'e');
 const u32 FOURCC_GRN = MP4_FOUR_CHAR_CODE('g', 'r', 'e', 'n');
 const u32 FOURCC_YLW = MP4_FOUR_CHAR_CODE('y', 'e', 'l', 'w');
 
+const u32 FOURCC_COLOR = MP4_FOUR_CHAR_CODE('c', 'o', 'l', 'r');
+const u32 FOURCC_TEST  = MP4_FOUR_CHAR_CODE('t', 'e', 's', 't');
+
+u32 groupIdRed = 0;
+u32 groupIdBlue = 0;
+u32 groupIdGreen = 0;
+u32 groupIdYellow = 0;
+
 ISOErr addSamples(MP4Media media, std::string strPattern, u32 repeatPattern = 1, ISOHandle sampleEntryH = 0) {
   ISOErr err;
   u32 sampleCount = 0;
@@ -133,62 +141,38 @@ ISOErr addSamples(MP4Media media, std::string strPattern, u32 repeatPattern = 1,
 
   err = ISOAddMediaSamples(media, sampleDataH, bufferSizesPattern.size()*repeatPattern, durationsH, sizesH, sampleEntryH, 0, 0); if(err) return err;
 
-  // add sample groups
-  std::cout << "fullPattern = " << fullPattern << std::endl;
-  if(repeatPattern>0) {
-    size_t nr = std::count(fullPattern.begin(), fullPattern.end(), 'r');
-    size_t nb = std::count(fullPattern.begin(), fullPattern.end(), 'b');
-    size_t ng = std::count(fullPattern.begin(), fullPattern.end(), 'g');
-    size_t ny = std::count(fullPattern.begin(), fullPattern.end(), 'y');
-    std::cout << "r = " << nr << std::endl;
-    std::cout << "b = " << nb << std::endl;
-    std::cout << "g = " << ng << std::endl;
-    std::cout << "y = " << ny << std::endl;
-
-    u32 descrIdxR, descrIdxB, descrIdxG, descrIdxY;
-    ISOHandle descrR;
-    ISONewHandle(0, &descrR);
-    if(nr) err = ISOAddGroupDescription(media, FOURCC_RED, descrR, &descrIdxR); if(err) return err;
-    if(nb) err = ISOAddGroupDescription(media, FOURCC_BLU, descrR, &descrIdxB); if(err) return err;
-    if(ng) err = ISOAddGroupDescription(media, FOURCC_GRN, descrR, &descrIdxG); if(err) return err;
-    if(ny) err = ISOAddGroupDescription(media, FOURCC_YLW, descrR, &descrIdxY); if(err) return err;
-
-    for(u32 n=0; n<fullPattern.size(); ++n){
-      std::cout << fullPattern[n] << " ";
-      switch (fullPattern[n])
-      {
-      case 'r':
-        ISOMapSamplestoGroup(media, FOURCC_RED, descrIdxR, n, 1);
-        std::cout << "RED  map sample_index=" << n << " to group_index=" << descrIdxR << std::endl;
-        break;
-      case 'b':
-        ISOMapSamplestoGroup(media, FOURCC_BLU, descrIdxB, n, 1);
-        std::cout << "BLUE map sample_index=" << n << " to group_index=" << descrIdxB << std::endl;
-        break;
-      case 'g':
-        ISOMapSamplestoGroup(media, FOURCC_GRN, descrIdxG, n, 1);
-        std::cout << "GREEN map sample_index=" << n << " to group_index=" << descrIdxG << std::endl;
-        break;
-      case 'y':
-        ISOMapSamplestoGroup(media, FOURCC_YLW, descrIdxY, n, 1);
-        std::cout << "YELLOW map sample_index=" << n << " to group_index=" << descrIdxY << std::endl;
-        break;
-      default:
-        break;
-      }
-    }
-  }
-
-  // TODO: group color with different descriptions
-
   err = ISODisposeHandle(sampleDataH); if(err) return err;
   err = ISODisposeHandle(durationsH); if(err) return err;
   err = ISODisposeHandle(sizesH); if(err) return err;
   return err;
 }
 
-ISOErr addGroups(MP4Media media, std::string strPattern, u32 repeatPattern = 1) {
+ISOErr addGroupDescription(MP4Media media, u32 fcc, std::string strDescription, u32 &idx)
+{
   ISOErr err;
+  ISOHandle descrH;
+  ISONewHandle(strDescription.length()*sizeof(char), &descrH);
+  memcpy(*descrH, strDescription.data(), strDescription.length()*sizeof(char));
+
+  err = ISOAddGroupDescription(media, fcc, descrH, &idx);
+
+  ISODisposeHandle(descrH);
+  return err;
+}
+
+ISOErr addGroupDescriptions(MP4Media media) 
+{
+  ISOErr err = ISONoErr;
+  err = addGroupDescription(media, FOURCC_COLOR, "Red frames", groupIdRed); if(err) return err;
+  err = addGroupDescription(media, FOURCC_COLOR, "Blue frames", groupIdBlue); if(err) return err;
+  err = addGroupDescription(media, FOURCC_COLOR, "Green frames", groupIdGreen); if(err) return err;
+  err = addGroupDescription(media, FOURCC_COLOR, "Yellow frames", groupIdYellow); if(err) return err;
+  return err;
+}
+
+ISOErr mapSamplesToGroups(MP4Media media, std::string strPattern, u32 repeatPattern = 1) 
+{
+  ISOErr err = ISONoErr;
   std::string fullPattern = strPattern;
   for(u32 n = 1; n<repeatPattern; ++n) {
     fullPattern += strPattern;
@@ -206,35 +190,28 @@ ISOErr addGroups(MP4Media media, std::string strPattern, u32 repeatPattern = 1) 
     std::cout << "g = " << ng << std::endl;
     std::cout << "y = " << ny << std::endl;
 
-    u32 descrIdxR, descrIdxB, descrIdxG, descrIdxY;
-    ISOHandle descrR;
-    ISONewHandle(0, &descrR);
-    if(nr) err = ISOAddGroupDescription(media, FOURCC_RED, descrR, &descrIdxR); if(err) return err;
-    if(nb) err = ISOAddGroupDescription(media, FOURCC_BLU, descrR, &descrIdxB); if(err) return err;
-    if(ng) err = ISOAddGroupDescription(media, FOURCC_GRN, descrR, &descrIdxG); if(err) return err;
-    if(ny) err = ISOAddGroupDescription(media, FOURCC_YLW, descrR, &descrIdxY); if(err) return err;
-
     for(u32 n=0; n<fullPattern.size(); ++n){
       std::cout << fullPattern[n] << " ";
       switch (fullPattern[n])
       {
       case 'r':
-        ISOMapSamplestoGroup(media, FOURCC_RED, descrIdxR, n, 1);
-        std::cout << "RED  map sample_index=" << n << " to group_index=" << descrIdxR << std::endl;
+        ISOMapSamplestoGroup(media, FOURCC_COLOR, groupIdRed, n, 1);
+        std::cout << "RED  map sample_index=" << n << " to group_index=" << groupIdRed << std::endl;
         break;
       case 'b':
-        ISOMapSamplestoGroup(media, FOURCC_BLU, descrIdxB, n, 1);
-        std::cout << "BLUE map sample_index=" << n << " to group_index=" << descrIdxB << std::endl;
+        ISOMapSamplestoGroup(media, FOURCC_COLOR, groupIdBlue, n, 1);
+        std::cout << "BLUE map sample_index=" << n << " to group_index=" << groupIdBlue << std::endl;
         break;
       case 'g':
-        ISOMapSamplestoGroup(media, FOURCC_GRN, descrIdxG, n, 1);
-        std::cout << "GREEN map sample_index=" << n << " to group_index=" << descrIdxG << std::endl;
+        ISOMapSamplestoGroup(media, FOURCC_COLOR, groupIdGreen, n, 1);
+        std::cout << "GREEN map sample_index=" << n << " to group_index=" << groupIdGreen << std::endl;
         break;
       case 'y':
-        ISOMapSamplestoGroup(media, FOURCC_YLW, descrIdxY, n, 1);
-        std::cout << "YELLOW map sample_index=" << n << " to group_index=" << descrIdxY << std::endl;
+        ISOMapSamplestoGroup(media, FOURCC_COLOR, groupIdYellow, n, 1);
+        std::cout << "YELLOW map sample_index=" << n << " to group_index=" << groupIdYellow << std::endl;
         break;
       default:
+        std::cout << "SKIP (" << fullPattern[n] << ") sample_index=" << n << std::endl;
         break;
       }
     }
@@ -243,6 +220,7 @@ ISOErr addGroups(MP4Media media, std::string strPattern, u32 repeatPattern = 1) 
 }
 
 ISOErr createFile(std::string strFilename) {
+  std::cout << "create file..." << std::endl;
   ISOErr err;
   ISOMovie moov;
   ISOMedia media;
@@ -280,6 +258,10 @@ ISOErr createFile(std::string strFilename) {
 
   err = ISOSetTrackFragmentDefaults( trak, TIMESCALE/FPS, sizeof(auBlue), 1, 0);
 
+  err = addGroupDescriptions(media); if(err) return err;
+  u32 temp = 0;
+  err = addGroupDescription(media, FOURCC_COLOR, "Yellow frames", temp); if(err == MP4NoErr) return -5; // this must fail because "Yellow frames" payload is already added with the same type
+
   // just add sample entry, call addSamples with sample count = 0
   err = addSamples(media, "r", 0, sampleEntryH);  if(err) return err;
   err = MP4EndMediaEdits(media);
@@ -288,20 +270,31 @@ ISOErr createFile(std::string strFilename) {
   ISOSetSamplestoGroupType(media,0);
   err = ISOStartMovieFragment( moov ); if(err) return err;
   err = addSamples(media, "rb", 3);  if(err) return err;
+  err = addGroupDescription(media, FOURCC_COLOR, "This must pass even if in stbl", temp); if(err) return err;
+  err = addGroupDescription(media, FOURCC_TEST, "This must pass", temp); if(err) return err;
+  err = addGroupDescription(media, FOURCC_COLOR, "Yellow frames", temp); if(err) return err; // this must pass even if the same type and payload is in stbl (but it shall not be in defragmented file)
+  err = addGroupDescription(media, FOURCC_TEST, "Test", temp); if(err) return err;
+  err = addGroupDescription(media, FOURCC_TEST, "Test", temp); if(!err) return -5; // this must fail because same type and payload already added
+  err = mapSamplesToGroups(media, "rb", 3); if(err) return err;
 
   std::cout << "fragment 2 (compressed sample group)" << std::endl;
   ISOSetSamplestoGroupType(media, 1);
   err = ISOStartMovieFragment( moov ); if(err) return err;
   err = addSamples(media, "gry", 2);  if(err) return err;
+  err = addGroupDescription(media, FOURCC_TEST, "Same as in previous fragment but different entry", groupIdBlue); if(err) return err;
+  err = addGroupDescription(media, FOURCC_TEST, "This must pass", groupIdBlue); if(err) return err;
+  err = mapSamplesToGroups(media, "gry", 2); if(err) return err;
 
   std::cout << "fragment 3" << std::endl;
   ISOSetSamplestoGroupType(media, 0);
   err = ISOStartMovieFragment( moov ); if(err) return err;
   err = addSamples(media, "bgy", 2);  if(err) return err;
+  err = mapSamplesToGroups(media, "bgy", 2); if(err) return err;
 
-  std::cout << "fragment 4" << std::endl;
-  err = ISOStartMovieFragment( moov ); if(err) return err;
-  err = addSamples(media, "wk", 3);  if(err) return err;
+  // std::cout << "fragment 4" << std::endl;
+  // err = ISOStartMovieFragment( moov ); if(err) return err;
+  // err = addSamples(media, "wk", 3);  if(err) return err;
+  // err = mapSamplesToGroups(media, "wk", 3); if(err) return err;
   
   err = MP4WriteMovieToFile(moov, strFilename.c_str());
   return err;
@@ -312,8 +305,11 @@ int main() {
   std::string strFileFrag = "hevc_fragments.mp4";
   std::string strFileDefrag = "hevc_defrag.mp4";
 
-  std::cout << "create file..." << std::endl;
-  err = createFile(strFileFrag); if(err) return err;
+  err = createFile(strFileFrag); if(err)
+  {
+    std::cerr << "could not create the file" << std::endl;
+    return err;
+  }
 
   std::cout << "\n\nParse file..." << std::endl;
   ISOMovie moov;
@@ -328,28 +324,28 @@ int main() {
     err = ISOGetTrackMedia(trak, &media);
     u32 sampleCnt = 0;
     u32* sampleNumbers;
-    err = ISOGetSampleGroupSampleNumbers(media, FOURCC_RED, 1, &sampleNumbers, &sampleCnt);
+    err = ISOGetSampleGroupSampleNumbers(media, FOURCC_COLOR, groupIdRed, &sampleNumbers, &sampleCnt);
 
     std::cout << "RED sampleCnt=" << sampleCnt << std::endl;
     for(u32 i=0; i<sampleCnt; ++i) {
       std::cout  << "sample " << sampleNumbers[i] << std::endl;
     }
 
-    err = ISOGetSampleGroupSampleNumbers(media, FOURCC_BLU, 1, &sampleNumbers, &sampleCnt);
+    err = ISOGetSampleGroupSampleNumbers(media, FOURCC_COLOR, groupIdBlue, &sampleNumbers, &sampleCnt);
 
     std::cout << "BLUE sampleCnt=" << sampleCnt << std::endl;
     for(u32 i=0; i<sampleCnt; ++i) {
       std::cout  << "sample " << sampleNumbers[i] << std::endl;
     }
 
-    err = ISOGetSampleGroupSampleNumbers(media, FOURCC_GRN, 1, &sampleNumbers, &sampleCnt);
+    err = ISOGetSampleGroupSampleNumbers(media, FOURCC_COLOR, groupIdGreen, &sampleNumbers, &sampleCnt);
 
     std::cout << "GREEN sampleCnt=" << sampleCnt << std::endl;
     for(u32 i=0; i<sampleCnt; ++i) {
       std::cout  << "sample " << sampleNumbers[i] << std::endl;
     }
 
-    err = ISOGetSampleGroupSampleNumbers(media, FOURCC_YLW, 1, &sampleNumbers, &sampleCnt);
+    err = ISOGetSampleGroupSampleNumbers(media, FOURCC_COLOR, groupIdYellow, &sampleNumbers, &sampleCnt);
 
     std::cout << "YELLOW sampleCnt=" << sampleCnt << std::endl;
     for(u32 i=0; i<sampleCnt; ++i) {
