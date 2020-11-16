@@ -202,7 +202,7 @@ bail:
 }
 
 MP4_EXTERN(MP4Err)
-ISOSetSamplestoGroupType(MP4Media media, u32 enableCompactSamples)
+ISOSetSamplestoGroupType(MP4Media media, u32 sampleToGroupType)
 {
   MP4Err err;
   MP4MediaAtomPtr mdia;
@@ -212,8 +212,8 @@ ISOSetSamplestoGroupType(MP4Media media, u32 enableCompactSamples)
   {
     BAILWITHERROR(MP4BadParamErr);
   }
-  mdia                       = (MP4MediaAtomPtr)media;
-  mdia->enableCompactSamples = enableCompactSamples;
+  mdia                    = (MP4MediaAtomPtr)media;
+  mdia->sampleToGroupType = sampleToGroupType;
 
 bail:
   TEST_RETURN(err);

@@ -41,8 +41,6 @@ static void destroy(MP4AtomPtr s)
   if(err) goto bail;
   err = MP4DeleteLinkedList(self->sampletoGroupList);
   if(err) goto bail;
-  err = MP4DeleteLinkedList(self->compactSampletoGroupList);
-  if(err) goto bail;
   err = MP4DeleteLinkedList(self->SampleAuxiliaryInformationSizes);
   if(err) goto bail;
   err = MP4DeleteLinkedList(self->SampleAuxiliaryInformationOffsets);
@@ -71,23 +69,11 @@ MP4Err MP4FindGroupAtom(MP4LinkedList theList, u32 type, MP4AtomPtr *theAtom)
     if(err) goto bail;
     if(desc)
     {
-      if(desc->type == MP4CompactSampletoGroupAtomType)
+      MP4SampletoGroupAtomPtr grp = (MP4SampletoGroupAtomPtr)desc;
+      if(grp->grouping_type == type)
       {
-        MP4CompactSampletoGroupAtomPtr grp = (MP4CompactSampletoGroupAtomPtr)desc;
-        if(grp->grouping_type == type)
-        {
-          *theAtom = desc;
-          return err;
-        }
-      }
-      else
-      {
-        MP4SampletoGroupAtomPtr grp = (MP4SampletoGroupAtomPtr)desc;
-        if(grp->grouping_type == type)
-        {
-          *theAtom = desc;
-          return err;
-        }
+        *theAtom = desc;
+        return err;
       }
     }
   }
@@ -145,11 +131,8 @@ static MP4Err addAtom(MP4SampleTableAtomPtr self, MP4AtomPtr atom)
     break;
 
   case MP4SampletoGroupAtomType:
-    err = MP4AddListEntry((void *)atom, self->sampletoGroupList);
-    break;
-
   case MP4CompactSampletoGroupAtomType:
-    err = MP4AddListEntry((void *)atom, self->compactSampletoGroupList);
+    err = MP4AddListEntry((void *)atom, self->sampletoGroupList);
     break;
   }
 bail:
@@ -431,20 +414,7 @@ static MP4Err addSamples(struct MP4SampleTableAtom *self, u32 sampleCount, u64 s
       if(err) goto bail;
     }
   }
-  err = MP4GetListEntryCount(self->compactSampletoGroupList, &groupCount);
-  if(err) goto bail;
-  for(i = 0; i < groupCount; i++)
-  {
-    MP4CompactSampletoGroupAtomPtr desc;
-    err = MP4GetListEntry(self->compactSampletoGroupList, i, (char **)&desc);
-    if(err) goto bail;
-    if(desc)
-    {
-      err = desc->addSamples(desc, sampleCount);
-      if(err) goto bail;
-    }
-  }
-
+  
   if(self->SampleDependency)
   {
     MP4SampleDependencyAtomPtr sdtp;
@@ -654,7 +624,7 @@ bail:
 }
 
 static MP4Err mapSamplestoGroup(struct MP4SampleTableAtom *self, u32 groupType, u32 group_index,
-                                s32 sample_index, u32 count, u32 enableCompactSamples)
+                                s32 sample_index, u32 count, u32 sampleToGroupType)
 {
   MP4Err err;
   MP4SampletoGroupAtomPtr theGroup;
@@ -664,58 +634,80 @@ static MP4Err mapSamplestoGroup(struct MP4SampleTableAtom *self, u32 groupType, 
   if(!theDesc) BAILWITHERROR(MP4BadParamErr);
   if(group_index > theDesc->groupCount) BAILWITHERROR(MP4BadParamErr);
 
-  // if self->gourp==0 && self->compactGroup==0
-  // create one depending on the type
-  
-  if(enableCompactSamples==1)
-  {
-    MP4CompactSampletoGroupAtomPtr compactSampleGroup;
-    err = MP4FindGroupAtom(self->compactSampletoGroupList, groupType, /* TODO: flip it over */
-                           (MP4AtomPtr *)&compactSampleGroup);
-    if(!compactSampleGroup)
-    {
-      MP4SampleSizeAtomPtr stsz;
-      stsz = (MP4SampleSizeAtomPtr)self->SampleSize;
-      if(stsz == NULL)
-      {
-        BAILWITHERROR(MP4InvalidMediaErr);
-      }
-      err = MP4CreateCompactSampletoGroupAtom(&compactSampleGroup);
-      if(err) goto bail;
-      compactSampleGroup->grouping_type             = groupType;
-      compactSampleGroup->fragmentLocalIndexPresent = 0;
-      err                                           = addAtom(self, (MP4AtomPtr)compactSampleGroup);
-      if(err) goto bail;
-      err = compactSampleGroup->addSamples(compactSampleGroup, stsz->sampleCount);
-      if(err) goto bail;
-    }
-    err =
-        compactSampleGroup->mapSamplestoGroup(compactSampleGroup, group_index, sample_index, count);
-    if(err) goto bail;
-  }
-  else
-  {
-    err = MP4FindGroupAtom(self->sampletoGroupList, groupType, (MP4AtomPtr *)&theGroup);
-    if(!theGroup)
-    {
-      MP4SampleSizeAtomPtr stsz;
 
-      stsz = (MP4SampleSizeAtomPtr)self->SampleSize;
-      if(stsz == NULL)
-      {
-        BAILWITHERROR(MP4InvalidMediaErr);
-      }
-      err = MP4CreateSampletoGroupAtom(&theGroup);
-      if(err) goto bail;
-      theGroup->grouping_type = groupType;
-      err                     = addAtom(self, (MP4AtomPtr)theGroup);
-      if(err) goto bail;
-      err = theGroup->addSamples(theGroup, stsz->sampleCount);
-      if(err) goto bail;
+  /* create one if the box doesn't extist */
+  err = MP4FindGroupAtom(self->sampletoGroupList, groupType, (MP4AtomPtr *)&theGroup);
+  if(!theGroup)
+  {
+    MP4SampleSizeAtomPtr stsz;
+
+    stsz = (MP4SampleSizeAtomPtr)self->SampleSize;
+    if(stsz == NULL)
+    {
+      BAILWITHERROR(MP4InvalidMediaErr);
     }
-    err = theGroup->mapSamplestoGroup(theGroup, group_index, sample_index, count);
+    err = MP4CreateSampletoGroupAtom(&theGroup, sampleToGroupType);
+    if(err) goto bail;
+    theGroup->grouping_type = groupType;
+    theGroup->fragmentLocalIndexPresent = 0;
+    err                     = addAtom(self, (MP4AtomPtr)theGroup);
+    if(err) goto bail;
+    err = theGroup->addSamples(theGroup, stsz->sampleCount);
     if(err) goto bail;
   }
+
+  err = theGroup->mapSamplestoGroup(theGroup, group_index, sample_index, count);
+  if(err) goto bail;
+  
+  // if(sampleToGroupType==1)
+  // {
+  //   MP4CompactSampletoGroupAtomPtr compactSampleGroup;
+  //   err = MP4FindGroupAtom(self->compactSampletoGroupList, groupType, /* TODO: flip it over */
+  //                          (MP4AtomPtr *)&compactSampleGroup);
+  //   if(!compactSampleGroup)
+  //   {
+  //     MP4SampleSizeAtomPtr stsz;
+  //     stsz = (MP4SampleSizeAtomPtr)self->SampleSize;
+  //     if(stsz == NULL)
+  //     {
+  //       BAILWITHERROR(MP4InvalidMediaErr);
+  //     }
+  //     err = MP4CreateCompactSampletoGroupAtom(&compactSampleGroup);
+  //     if(err) goto bail;
+  //     compactSampleGroup->grouping_type             = groupType;
+  //     compactSampleGroup->fragmentLocalIndexPresent = 0;
+  //     err                                           = addAtom(self, (MP4AtomPtr)compactSampleGroup);
+  //     if(err) goto bail;
+  //     err = compactSampleGroup->addSamples(compactSampleGroup, stsz->sampleCount);
+  //     if(err) goto bail;
+  //   }
+  //   err =
+  //       compactSampleGroup->mapSamplestoGroup(compactSampleGroup, group_index, sample_index, count);
+  //   if(err) goto bail;
+  // }
+  // else
+  // {
+  //   err = MP4FindGroupAtom(self->sampletoGroupList, groupType, (MP4AtomPtr *)&theGroup);
+  //   if(!theGroup)
+  //   {
+  //     MP4SampleSizeAtomPtr stsz;
+
+  //     stsz = (MP4SampleSizeAtomPtr)self->SampleSize;
+  //     if(stsz == NULL)
+  //     {
+  //       BAILWITHERROR(MP4InvalidMediaErr);
+  //     }
+  //     err = MP4CreateSampletoGroupAtom(&theGroup);
+  //     if(err) goto bail;
+  //     theGroup->grouping_type = groupType;
+  //     err                     = addAtom(self, (MP4AtomPtr)theGroup);
+  //     if(err) goto bail;
+  //     err = theGroup->addSamples(theGroup, stsz->sampleCount);
+  //     if(err) goto bail;
+  //   }
+  //   err = theGroup->mapSamplestoGroup(theGroup, group_index, sample_index, count);
+  //   if(err) goto bail;
+  // }
 
 bail:
   TEST_RETURN(err);
@@ -728,28 +720,14 @@ static MP4Err getSampleGroupMap(struct MP4SampleTableAtom *self, u32 groupType, 
 {
   MP4Err err;
   MP4SampletoGroupAtomPtr theGroup;
-  MP4CompactSampletoGroupAtomPtr compactSampleGroup;
 
   err = MP4FindGroupAtom(self->sampletoGroupList, groupType, (MP4AtomPtr *)&theGroup);
   if(theGroup)
   {
     err = theGroup->getSampleGroupMap(theGroup, sample_number, group_index);
     if(err) goto bail;
-    return err;
   }
-
-  err = MP4FindGroupAtom(self->compactSampletoGroupList, groupType,
-                         (MP4AtomPtr *)&compactSampleGroup);
-  if(compactSampleGroup)
-  {
-    err = compactSampleGroup->getSampleGroupMap(compactSampleGroup, sample_number, group_index);
-    if(err) goto bail;
-  }
-  else
-  {
-    err = MP4BadParamErr;
-    goto bail;
-  }
+  else BAILWITHERROR(MP4BadParamErr);
 
 bail:
   TEST_RETURN(err);
@@ -952,8 +930,6 @@ MP4Err MP4CreateSampleTableAtom(MP4SampleTableAtomPtr *outAtom)
   err = MP4MakeLinkedList(&(self->groupDescriptionList));
   if(err) goto bail;
   err = MP4MakeLinkedList(&(self->sampletoGroupList));
-  if(err) goto bail;
-  err = MP4MakeLinkedList(&(self->compactSampletoGroupList));
   if(err) goto bail;
 
   self->useSignedCompositionTimeOffsets = 0;

@@ -564,7 +564,7 @@ bail:
 
 static MP4Err mapSamplestoGroup(struct MP4MediaInformationAtom *self, u32 groupType,
                                 u32 group_index, s32 sample_index, u32 count,
-                                u32 enableCompactSamples)
+                                u32 sampleToGroupType)
 {
   MP4Err err;
   MP4SampleTableAtomPtr stbl;
@@ -575,7 +575,7 @@ static MP4Err mapSamplestoGroup(struct MP4MediaInformationAtom *self, u32 groupT
   assert(stbl);
   assert(stbl->mapSamplestoGroup);
   err = stbl->mapSamplestoGroup(stbl, groupType, group_index, sample_index, count,
-                                enableCompactSamples);
+                                sampleToGroupType);
   if(err) goto bail;
 bail:
   TEST_RETURN(err);
