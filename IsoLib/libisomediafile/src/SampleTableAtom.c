@@ -614,6 +614,32 @@ bail:
   return err;
 }
 
+static MP4Err changeSamplestoGroupType(struct MP4SampleTableAtom *self, sampleToGroupType_t sampleToGroupType)
+{
+  MP4Err err;
+  u32 i, count;
+
+  err = MP4GetListEntryCount(self->sampletoGroupList, &count);
+  if(err) goto bail;
+  
+  for(i = 0; i < count; i++)
+  {
+    MP4AtomPtr desc;
+    err = MP4GetListEntry(self->sampletoGroupList, i, (char **)&desc);
+    if(err) goto bail;
+    if(desc)
+    {
+      MP4SampletoGroupAtomPtr grp = (MP4SampletoGroupAtomPtr)desc;
+      grp->changeSamplestoGroupType(grp, sampleToGroupType);
+    }
+  }
+
+bail:
+  TEST_RETURN(err);
+
+  return err;
+}
+
 static MP4Err mapSamplestoGroup(struct MP4SampleTableAtom *self, u32 groupType, u32 group_index,
                                 s32 sample_index, u32 count, sampleToGroupType_t sampleToGroupType)
 {
@@ -858,6 +884,7 @@ MP4Err MP4CreateSampleTableAtom(MP4SampleTableAtomPtr *outAtom)
   self->setDefaultSampleEntry        = setDefaultSampleEntry;
 
   self->addGroupDescription         = addGroupDescription;
+  self->changeSamplestoGroupType    = changeSamplestoGroupType;
   self->mapSamplestoGroup           = mapSamplestoGroup;
   self->getSampleGroupMap           = getSampleGroupMap;
   self->getSampleGroupSampleNumbers = getSampleGroupSampleNumbers;

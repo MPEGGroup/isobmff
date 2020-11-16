@@ -35,7 +35,7 @@ static void destroy(MP4AtomPtr s)
   self = (MP4TrackFragmentAtomPtr)s;
   if(self == NULL) BAILWITHERROR(MP4BadParamErr)
   DESTROY_ATOM_LIST_F(atomList);
-  DESTROY_ATOM_LIST_F(groupList);
+  DESTROY_ATOM_LIST_F(sampletoGroupList);
   DESTROY_ATOM_LIST_F(groupDescriptionList);
   (self->tfhd)->destroy((MP4AtomPtr)(self->tfhd));
   (self->tfdt)->destroy((MP4AtomPtr)(self->tfdt));
@@ -73,7 +73,7 @@ static MP4Err addAtom(MP4TrackFragmentAtomPtr self, MP4AtomPtr atom)
     break;
   case MP4SampletoGroupAtomType: /* sbgp */
   case MP4CompactSampletoGroupAtomType: /* csgp */
-    err = MP4AddListEntry(atom, self->groupList);
+    err = MP4AddListEntry(atom, self->sampletoGroupList);
     break; 
   case MP4SampleGroupDescriptionAtomType: /* sgpd */
     err = MP4AddListEntry(atom, self->groupDescriptionList);
@@ -114,12 +114,12 @@ static MP4Err addSampleGroups(struct MP4TrackFragmentAtom *self, u32 sampleCount
   MP4Err err;
   u32 groupListSize, i;
 
-  err = MP4GetListEntryCount(self->groupList, &groupListSize);
+  err = MP4GetListEntryCount(self->sampletoGroupList, &groupListSize);
   if(err) goto bail;
   for(i = 0; i < groupListSize; i++)
   {
     MP4SampletoGroupAtomPtr theGroup;
-    err = MP4GetListEntry(self->groupList, i, (char **)&theGroup);
+    err = MP4GetListEntry(self->sampletoGroupList, i, (char **)&theGroup);
     if(err) goto bail;
     if(theGroup)
     {
@@ -371,7 +371,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
 
     SERIALIZE_ATOM_LIST(atomList);
     SERIALIZE_ATOM_LIST(groupDescriptionList);
-    SERIALIZE_ATOM_LIST(groupList);
+    SERIALIZE_ATOM_LIST(sampletoGroupList);
     assert(self->bytesWritten == self->size);
   }
 
@@ -461,7 +461,7 @@ static MP4Err calculateSize(struct MP4Atom *s)
     ADD_ATOM_LIST_SIZE(saioList);
     ADD_ATOM_LIST_SIZE(atomList);
     ADD_ATOM_LIST_SIZE(groupDescriptionList);
-    ADD_ATOM_LIST_SIZE(groupList);
+    ADD_ATOM_LIST_SIZE(sampletoGroupList);
   }
   else
     self->size = 0;
@@ -608,17 +608,17 @@ static MP4Err mergeRuns(MP4TrackFragmentAtomPtr self, MP4MediaAtomPtr mdia)
     }
   }
 
-  if(self->groupList)
+  if(self->sampletoGroupList)
   {
     u32 groupListSize;
     err = ISOSetSamplestoGroupType((MP4Media)mdia, 0);
     if(err) goto bail;
-    err = MP4GetListEntryCount(self->groupList, &groupListSize);
+    err = MP4GetListEntryCount(self->sampletoGroupList, &groupListSize);
     if(err) goto bail;
     for(i = 0; i < groupListSize; i++)
     {
       MP4SampletoGroupAtomPtr theGroup;
-      err = MP4GetListEntry(self->groupList, i, (char **)&theGroup);
+      err = MP4GetListEntry(self->sampletoGroupList, i, (char **)&theGroup);
       if(err) goto bail;
       if(theGroup)
       {
@@ -782,6 +782,37 @@ bail:
   return err;
 }
 
+static MP4Err changeSamplestoGroupType(struct MP4MediaInformationAtom *s, sampleToGroupType_t sampleToGroupType)
+{
+  MP4Err err;
+  u32 i, count;
+  MP4TrackFragmentAtomPtr self;
+
+  if(s == NULL) BAILWITHERROR(MP4BadParamErr);
+
+  self = (MP4TrackFragmentAtomPtr)s;
+  
+  err = MP4GetListEntryCount(self->sampletoGroupList, &count);
+  if(err) goto bail;
+
+  for(i = 0; i < count; i++)
+  {
+    MP4AtomPtr desc;
+    err = MP4GetListEntry(self->sampletoGroupList, i, (char **)&desc);
+    if(err) goto bail;
+    if(desc)
+    {
+      MP4SampletoGroupAtomPtr grp = (MP4SampletoGroupAtomPtr)desc;
+      grp->changeSamplestoGroupType(grp, sampleToGroupType);
+    }
+  }
+
+bail:
+  TEST_RETURN(err);
+
+  return err;
+}
+
 static MP4Err mapSamplestoGroup(struct MP4MediaInformationAtom *s, u32 groupType, u32 group_index,
                                 s32 sample_index, u32 count, sampleToGroupType_t sampleToGroupType)
 {
@@ -792,7 +823,7 @@ static MP4Err mapSamplestoGroup(struct MP4MediaInformationAtom *s, u32 groupType
 
   self = (MP4TrackFragmentAtomPtr)s;
 
-  err = MP4FindGroupAtom(self->groupList, groupType, (MP4AtomPtr *)&theGroup);
+  err = MP4FindGroupAtom(self->sampletoGroupList, groupType, (MP4AtomPtr *)&theGroup);
   if(!theGroup)
   {
     err = MP4CreateSampletoGroupAtom(&theGroup, sampleToGroupType);
@@ -833,7 +864,7 @@ static MP4Err getSampleGroupMap(MP4TrackFragmentAtomPtr self, u32 groupType, u32
   MP4Err err;
   MP4SampletoGroupAtomPtr theGroup;
 
-  err = MP4FindGroupAtom(self->groupList, groupType, (MP4AtomPtr *)&theGroup);
+  err = MP4FindGroupAtom(self->sampletoGroupList, groupType, (MP4AtomPtr *)&theGroup);
   if(theGroup)
   {
     err = theGroup->getSampleGroupMap(theGroup, sample_number, group_index);
@@ -929,7 +960,7 @@ MP4Err MP4CreateTrackFragmentAtom(MP4TrackFragmentAtomPtr *outAtom)
   self->destroy               = destroy;
   err                         = MP4MakeLinkedList(&self->atomList);
   if(err) goto bail;
-  err = MP4MakeLinkedList(&self->groupList);
+  err = MP4MakeLinkedList(&self->sampletoGroupList);
   if(err) goto bail;
   err = MP4MakeLinkedList(&self->groupDescriptionList);
   if(err) goto bail;
@@ -942,6 +973,7 @@ MP4Err MP4CreateTrackFragmentAtom(MP4TrackFragmentAtomPtr *outAtom)
   self->calculateDataEnd   = calculateDataEnd;
 
   self->addGroupDescription = addGroupDescription;
+  self->changeSamplestoGroupType = changeSamplestoGroupType;
   self->mapSamplestoGroup   = mapSamplestoGroup;
   self->getSampleGroupMap   = getSampleGroupMap;
   self->getGroupDescription = getGroupDescription;

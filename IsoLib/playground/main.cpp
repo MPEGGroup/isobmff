@@ -65,18 +65,15 @@ u8 auBlack[] = {
 const u32 TIMESCALE = 30000;
 const u32 FPS = 30;
 
-const u32 FOURCC_RED = MP4_FOUR_CHAR_CODE('r', 'e', 'd', ' ');
-const u32 FOURCC_BLU = MP4_FOUR_CHAR_CODE('b', 'l', 'u', 'e');
-const u32 FOURCC_GRN = MP4_FOUR_CHAR_CODE('g', 'r', 'e', 'n');
-const u32 FOURCC_YLW = MP4_FOUR_CHAR_CODE('y', 'e', 'l', 'w');
-
 const u32 FOURCC_COLOR = MP4_FOUR_CHAR_CODE('c', 'o', 'l', 'r');
 const u32 FOURCC_TEST  = MP4_FOUR_CHAR_CODE('t', 'e', 's', 't');
+const u32 FOURCC_BLACK = MP4_FOUR_CHAR_CODE('b', 'l', 'c', 'k');
 
 u32 groupIdRed = 0;
 u32 groupIdBlue = 0;
 u32 groupIdGreen = 0;
 u32 groupIdYellow = 0;
+u32 groupIdBlack = 0;
 
 ISOErr addSamples(MP4Media media, std::string strPattern, u32 repeatPattern = 1, ISOHandle sampleEntryH = 0) {
   ISOErr err;
@@ -278,7 +275,7 @@ ISOErr createFile(std::string strFilename) {
   err = mapSamplesToGroups(media, "rb", 3); if(err) return err;
 
   std::cout << "fragment 2 (compressed sample group)" << std::endl;
-  ISOSetSamplestoGroupType(media, SAMPLE_GROUP_COMPRESSED);
+  ISOSetSamplestoGroupType(media, SAMPLE_GROUP_COMPACT);
   err = ISOStartMovieFragment( moov ); if(err) return err;
   err = addSamples(media, "gry", 2);  if(err) return err;
   err = addGroupDescription(media, FOURCC_TEST, "Same as in previous fragment but different entry", groupIdBlue); if(err) return err;
@@ -291,9 +288,13 @@ ISOErr createFile(std::string strFilename) {
   err = addSamples(media, "bgy", 2);  if(err) return err;
   err = mapSamplesToGroups(media, "bgy", 2); if(err) return err;
 
-  // std::cout << "fragment 4" << std::endl;
-  // err = ISOStartMovieFragment( moov ); if(err) return err;
-  // err = addSamples(media, "wk", 3);  if(err) return err;
+  std::cout << "fragment 4" << std::endl;
+  err = ISOStartMovieFragment( moov ); if(err) return err;
+  ISOSetSamplestoGroupType(media, SAMPLE_GROUP_AUTO); // FIXME: no sampleToGroupBox in the last fragment
+  // ISOSetSamplestoGroupType(media, SAMPLE_GROUP_COMPACT);
+  err = addSamples(media, "wwwk", 1);  if(err) return err;
+  err = addGroupDescription(media, FOURCC_BLACK, "Single black frame", groupIdBlack); if(err) return err;
+  ISOMapSamplestoGroup(media, FOURCC_BLACK, groupIdBlack, 3, 1); 
   // err = mapSamplesToGroups(media, "wk", 3); if(err) return err;
   
   err = MP4WriteMovieToFile(moov, strFilename.c_str());
@@ -303,7 +304,7 @@ ISOErr createFile(std::string strFilename) {
 int main() {
   ISOErr err;
   std::string strFileFrag = "hevc_fragments.mp4";
-  std::string strFileDefrag = "hevc_defrag.mp4";
+  std::string strFileDefragBase = "hevc_defrag_";
 
   err = createFile(strFileFrag); if(err)
   {
@@ -319,7 +320,8 @@ int main() {
 
   u32 trackCount = 0;
   err = MP4GetMovieTrackCount(moov, &trackCount);
-  for (u32 trackNumber = 1; trackNumber <= trackCount; ++trackNumber) {
+  for (u32 trackNumber = 1; trackNumber <= trackCount; ++trackNumber) 
+  {
     err = ISOGetMovieIndTrack(moov, trackNumber, &trak);
     err = ISOGetTrackMedia(trak, &media);
     u32 sampleCnt = 0;
@@ -351,11 +353,39 @@ int main() {
     for(u32 i=0; i<sampleCnt; ++i) {
       std::cout  << "sample " << sampleNumbers[i] << std::endl;
     }
-
-
   }
   // ISOGetSampleGroupSamples()
-  
-  err = MP4WriteMovieToFile(moov, strFileDefrag.c_str());
+
+
+  // write file with compact sample groups
+  for (u32 trackNumber = 1; trackNumber <= trackCount; ++trackNumber)
+  {
+    err = ISOGetMovieIndTrack(moov, trackNumber, &trak);
+    err = ISOGetTrackMedia(trak, &media);
+    ISOSetSamplestoGroupType(media, SAMPLE_GROUP_COMPACT);
+  }
+  std::string strFileDefragCompact = strFileDefragBase + "compact.mp4";
+  err = MP4WriteMovieToFile(moov, strFileDefragCompact.c_str());
+
+  // write file with normal sample groups
+  for (u32 trackNumber = 1; trackNumber <= trackCount; ++trackNumber)
+  {
+    err = ISOGetMovieIndTrack(moov, trackNumber, &trak);
+    err = ISOGetTrackMedia(trak, &media);
+    ISOSetSamplestoGroupType(media, SAMPLE_GROUP_NORMAL);
+  }
+  std::string strFileDefragNormal = strFileDefragBase + "normal.mp4";
+  err = MP4WriteMovieToFile(moov, strFileDefragNormal.c_str());
+
+  // write file with auto sample groups
+  for (u32 trackNumber = 1; trackNumber <= trackCount; ++trackNumber)
+  {
+    err = ISOGetMovieIndTrack(moov, trackNumber, &trak);
+    err = ISOGetTrackMedia(trak, &media);
+    ISOSetSamplestoGroupType(media, SAMPLE_GROUP_AUTO);
+  }
+  std::string strFileDefragAuto = strFileDefragBase + "auto.mp4";
+  err = MP4WriteMovieToFile(moov, strFileDefragAuto.c_str());
+
   return err;
 }

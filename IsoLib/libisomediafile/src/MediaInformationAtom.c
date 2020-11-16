@@ -562,6 +562,24 @@ bail:
   return err;
 }
 
+static MP4Err changeSamplestoGroupType(struct MP4MediaInformationAtom *self, sampleToGroupType_t sampleToGroupType)
+{
+  MP4Err err;
+  MP4SampleTableAtomPtr stbl;
+
+  err = MP4NoErr;
+
+  stbl = (MP4SampleTableAtomPtr)self->sampleTable;
+  assert(stbl);
+  assert(stbl->changeSamplestoGroupType);
+  err = stbl->changeSamplestoGroupType(stbl, sampleToGroupType);
+  if(err) goto bail;
+bail:
+  TEST_RETURN(err);
+
+  return err;
+}
+
 static MP4Err mapSamplestoGroup(struct MP4MediaInformationAtom *self, u32 groupType,
                                 u32 group_index, s32 sample_index, u32 count,
                                 sampleToGroupType_t sampleToGroupType)
@@ -787,6 +805,7 @@ MP4Err MP4CreateMediaInformationAtom(MP4MediaInformationAtomPtr *outAtom)
   self->addSampleReference          = addSampleReference;
   self->testDataEntry               = testDataEntry;
   self->addGroupDescription         = addGroupDescription;
+  self->changeSamplestoGroupType    = changeSamplestoGroupType;
   self->mapSamplestoGroup           = mapSamplestoGroup;
   self->getSampleGroupMap           = getSampleGroupMap;
   self->getSampleGroupSampleNumbers = getSampleGroupSampleNumbers;

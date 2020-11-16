@@ -538,6 +538,39 @@ bail:
   return err;
 }
 
+static MP4Err changeSamplestoGroupType(struct MP4SampletoGroupAtom *self, sampleToGroupType_t sampleToGroupType)
+{
+  MP4Err err;
+
+  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+
+  self->sampleToGroupType = sampleToGroupType;
+  switch (self->sampleToGroupType)
+  {
+  case SAMPLE_GROUP_NORMAL:
+    self->type = MP4SampletoGroupAtomType;
+    self->name = "sample to group";
+    break;
+  case SAMPLE_GROUP_COMPACT:
+    self->type = MP4CompactSampletoGroupAtomType;
+    self->name = "compact sample to group";
+    break;
+  case SAMPLE_GROUP_AUTO:
+    self->type = 0;
+    self->name = "auto sample to group";
+    break;
+  default:
+    self->type = MP4SampletoGroupAtomType;
+    self->name = "(default) sample to group";
+    break;
+  }
+
+bail:
+  TEST_RETURN(err);
+
+  return err;
+}
+
 static MP4Err getSampleGroupMap(struct MP4SampletoGroupAtom *self, u32 sampleNumber,
                                 u32 *groupIndex)
 {
@@ -646,8 +679,7 @@ bail:
 static MP4Err serialize(struct MP4Atom *s, char *buffer)
 {
   MP4Err err;
-  u32 i;
-  u32 cur_index, cur_count, entryCount;
+  u32 i, cur_index, cur_count, entryCount;
 
   MP4SampletoGroupAtomPtr self = (MP4SampletoGroupAtomPtr)s;
   err                          = MP4NoErr;
@@ -739,41 +771,77 @@ static MP4Err calculateSize(struct MP4Atom *s)
 {
   MP4Err err;
   MP4SampletoGroupAtomPtr self = (MP4SampletoGroupAtomPtr)s;
-  u32 entryCount, i;
+  u32 entryCount, i, normalSize, compactSize;
 
   err = MP4NoErr;
 
   err = MP4CalculateFullAtomFieldSize((MP4FullAtomPtr)s);
   if(err) goto bail;
 
-  if(self->type == MP4SampletoGroupAtomType)
+  if(self->sampleToGroupType != SAMPLE_GROUP_AUTO)
   {
+    if(self->type == MP4SampletoGroupAtomType)
+    {
+      entryCount = 1;
+      for(i = 1; i < (self->sampleCount); i++)
+      {
+        if((self->group_index)[i - 1] != (self->group_index)[i]) entryCount++;
+      }
+      self->size += (entryCount * 8) + 8;
+      self->entryCount = entryCount;
+    }
+    else if(self->type == MP4CompactSampletoGroupAtomType)
+    {
+      CreateCompactSampleGroups(self);
+
+      /* If grouping type parameter is enabled in flags, will need to add an additional byte*/
+      self->size += 8;
+
+      u32 sizeInBits =
+          (self->compressedGroup.patternCount *
+          (self->compressedGroup.patternLengthFieldSize + self->compressedGroup.sampleCountFieldSize));
+      sizeInBits +=
+          (self->compressedGroup.totalIndexDescriptionCount * self->compressedGroup.indexFieldSize);
+      self->size = self->size + (sizeInBits + 4) / 8;
+
+      self->entryCount = self->compressedGroup.patternCount;
+    }
+  }
+  else
+  {
+    normalSize = compactSize = self->size;
+    /* normal */
     entryCount = 1;
     for(i = 1; i < (self->sampleCount); i++)
     {
       if((self->group_index)[i - 1] != (self->group_index)[i]) entryCount++;
     }
-    self->size += (entryCount * 8) + 8;
-    self->entryCount = entryCount;
-  }
-  else
-  {
+    normalSize += (entryCount * 8) + 8;
+    /* compact */
     CreateCompactSampleGroups(self);
-
-    /* If grouping type parameter is enabled in flags, will need to add an additional byte*/
-    self->size += 8;
-
+    compactSize += 8;
     u32 sizeInBits =
         (self->compressedGroup.patternCount *
         (self->compressedGroup.patternLengthFieldSize + self->compressedGroup.sampleCountFieldSize));
     sizeInBits +=
         (self->compressedGroup.totalIndexDescriptionCount * self->compressedGroup.indexFieldSize);
-    self->size = self->size + (sizeInBits + 4) / 8;
+    compactSize += (sizeInBits + 4) / 8;
 
-    self->entryCount = self->compressedGroup.patternCount;
+    /* pick compact only if the size is smaller */
+    if(normalSize<=compactSize)
+    {
+      self->changeSamplestoGroupType(self, SAMPLE_GROUP_NORMAL);
+      self->size = normalSize;
+      self->entryCount = entryCount;
+    }
+    else
+    {
+      self->changeSamplestoGroupType(self, SAMPLE_GROUP_COMPACT);
+      self->size = compactSize;
+      self->entryCount = self->compressedGroup.patternCount;
+    }
   }
   
-
 bail:
   TEST_RETURN(err);
 
@@ -934,16 +1002,25 @@ MP4Err MP4CreateSampletoGroupAtom(MP4SampletoGroupAtomPtr *outAtom, sampleToGrou
 
   err = MP4CreateFullAtom((MP4AtomPtr)self);
   if(err) goto bail;
-  self->sampleToGroupType         = sampleToGroupType;
-  if(self->sampleToGroupType == 0)
+  self->sampleToGroupType = sampleToGroupType;
+  switch (self->sampleToGroupType)
   {
-    self->type                      = MP4SampletoGroupAtomType;
-    self->name                      = "sample to group";
-  }
-  else //if(self->sampleToGroupType == 1)
-  {
-    self->type                      = MP4CompactSampletoGroupAtomType;
-    self->name                      = "compact sample to group";
+  case SAMPLE_GROUP_NORMAL:
+    self->type = MP4SampletoGroupAtomType;
+    self->name = "sample to group";
+    break;
+  case SAMPLE_GROUP_COMPACT:
+    self->type = MP4CompactSampletoGroupAtomType;
+    self->name = "compact sample to group";
+    break;
+  case SAMPLE_GROUP_AUTO:
+    self->type = 0;
+    self->name = "auto sample to group";
+    break;
+  default:
+    self->type = MP4SampletoGroupAtomType;
+    self->name = "(default) sample to group";
+    break;
   }
   self->createFromInputStream     = (cisfunc)createFromInputStream;
   self->destroy                   = destroy;
@@ -951,6 +1028,7 @@ MP4Err MP4CreateSampletoGroupAtom(MP4SampletoGroupAtomPtr *outAtom, sampleToGrou
   self->serialize                 = serialize;
   self->mapSamplestoGroup         = mapSamplestoGroup;
   self->addSamples                = addSamples;
+  self->changeSamplestoGroupType  = changeSamplestoGroupType;
   self->getSampleGroupMap         = getSampleGroupMap;
   self->group_index               = NULL;
   self->sampleCount               = 0;

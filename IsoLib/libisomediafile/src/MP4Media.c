@@ -215,6 +215,9 @@ ISOSetSamplestoGroupType(MP4Media media, sampleToGroupType_t sampleToGroupType)
   mdia                    = (MP4MediaAtomPtr)media;
   mdia->sampleToGroupType = sampleToGroupType;
 
+  err = mdia->changeSamplestoGroupType(mdia, sampleToGroupType);
+  if(err) goto bail;
+
 bail:
   TEST_RETURN(err);
 

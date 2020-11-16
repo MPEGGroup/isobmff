@@ -101,9 +101,9 @@ enum
 
 typedef enum sampleToGroupType_t
 {
-  SAMPLE_GROUP_NORMAL = 0,
-  SAMPLE_GROUP_COMPRESSED,
-  SAMPLE_GROUP_AUTO
+  SAMPLE_GROUP_NORMAL = 0, /* sbgp */
+  SAMPLE_GROUP_COMPACT, /* csgp */
+  SAMPLE_GROUP_AUTO /* automatically decide based on atom size */
 } sampleToGroupType_t;
 
 #define GETMOOV(arg)                            \

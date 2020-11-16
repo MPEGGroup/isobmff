@@ -558,7 +558,7 @@ MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom)
 
   case MP4SampletoGroupAtomType:
   case MP4CompactSampletoGroupAtomType:
-    err = MP4CreateSampletoGroupAtom((MP4SampletoGroupAtomPtr *)&newAtom, 0);
+    err = MP4CreateSampletoGroupAtom((MP4SampletoGroupAtomPtr *)&newAtom, SAMPLE_GROUP_COMPACT);
     break;
 
   case ISOMetaAtomType:

@@ -352,6 +352,23 @@ bail:
   return err;
 }
 
+static MP4Err changeSamplestoGroupType(struct MP4MediaAtom *self, sampleToGroupType_t sampleToGroupType)
+{
+  MP4Err err;
+  MP4MediaInformationAtomPtr minf;
+
+  err  = MP4NoErr;
+  minf = (MP4MediaInformationAtomPtr)self->information; /* this can be 'traf' if fragmented */
+  assert(minf);
+  assert(minf->changeSamplestoGroupType);
+  err = minf->changeSamplestoGroupType(minf, sampleToGroupType);
+  if(err) goto bail;
+bail:
+  TEST_RETURN(err);
+
+  return err;
+}
+
 static MP4Err mapSamplestoGroup(struct MP4MediaAtom *self, u32 groupType, u32 group_index,
                                 s32 sample_index, u32 count)
 {
@@ -540,6 +557,7 @@ MP4Err MP4CreateMediaAtom(MP4MediaAtomPtr *outAtom)
   self->addSampleReference          = addSampleReference;
   self->settrackfragment            = settrackfragment;
   self->addGroupDescription         = addGroupDescription;
+  self->changeSamplestoGroupType    = changeSamplestoGroupType;
   self->mapSamplestoGroup           = mapSamplestoGroup;
   self->getSampleGroupMap           = getSampleGroupMap;
   self->getSampleGroupSampleNumbers = getSampleGroupSampleNumbers;

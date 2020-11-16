@@ -446,6 +446,7 @@ typedef struct MP4MediaAtom
   MP4Err (*settrackfragment)(struct MP4MediaAtom *self, MP4AtomPtr fragment);
   MP4Err (*addGroupDescription)(struct MP4MediaAtom *self, u32 groupType, MP4Handle description,
                                 u32 *index);
+  MP4Err (*changeSamplestoGroupType)(struct MP4MediaAtom *self, sampleToGroupType_t sampleToGroupType);
   MP4Err (*mapSamplestoGroup)(struct MP4MediaAtom *self, u32 groupType, u32 group_index,
                               s32 sample_index, u32 count);
   MP4Err (*getSampleGroupMap)(struct MP4MediaAtom *self, u32 groupType, u32 sample_number,
@@ -518,7 +519,9 @@ typedef struct MP4ExtendedLanguageTag
                               u32 group_index, s32 sample_index, u32 count,                       \
                               sampleToGroupType_t sampleToGroupType);                             \
   MP4Err (*setSampleDependency)(struct MP4MediaInformationAtom * self, s32 sample_index,          \
-                                MP4Handle dependencies);
+                                MP4Handle dependencies);                                          \
+  MP4Err (*changeSamplestoGroupType)(struct MP4MediaInformationAtom * self,                       \
+                                     sampleToGroupType_t sampleToGroupType);
 
 typedef struct MP4MediaInformationAtom
 {
@@ -709,6 +712,7 @@ typedef struct MP4SampleTableAtom
   MP4Err (*setDefaultSampleEntry)(struct MP4SampleTableAtom *self, u32 index);
   MP4Err (*addGroupDescription)(struct MP4SampleTableAtom *self, u32 theType,
                                 MP4Handle theDescription, u32 *index);
+  MP4Err (*changeSamplestoGroupType)(struct MP4SampleTableAtom *self, sampleToGroupType_t sampleToGroupType);
   MP4Err (*mapSamplestoGroup)(struct MP4SampleTableAtom *self, u32 groupType, u32 group_index,
                               s32 sample_index, u32 count, sampleToGroupType_t sampleToGroupType);
   MP4Err (*getSampleGroupMap)(struct MP4SampleTableAtom *self, u32 groupType, u32 sample_number,
@@ -1358,7 +1362,7 @@ typedef struct MP4TrackFragmentAtom
 
   MP4LinkedList atomList;               /* track runs */
   MP4LinkedList groupDescriptionList;   /* sample group description list */
-  MP4LinkedList groupList;              /* sample to group maps */
+  MP4LinkedList sampletoGroupList;      /* sample to group maps */
   MP4LinkedList saizList;
   MP4LinkedList saioList;
 } MP4TrackFragmentAtom, *MP4TrackFragmentAtomPtr;
@@ -1752,6 +1756,7 @@ typedef struct MP4SampletoGroupAtom
   MP4Err (*addSamples)(struct MP4SampletoGroupAtom *self, u32 count);
   MP4Err (*mapSamplestoGroup)(struct MP4SampletoGroupAtom *self, u32 group_index, s32 sample_index,
                               u32 count);
+  MP4Err (*changeSamplestoGroupType)(struct MP4SampletoGroupAtom *self, sampleToGroupType_t sampleToGroupType);
   MP4Err (*getSampleGroupMap)(struct MP4SampletoGroupAtom *self, u32 sampleNumber, u32 *groupIndex);
 } MP4SampletoGroupAtom, *MP4SampletoGroupAtomPtr;
 
