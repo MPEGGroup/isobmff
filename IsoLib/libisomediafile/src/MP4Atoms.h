@@ -2124,7 +2124,6 @@ MP4Err MP4CreateEncBaseAtom(MP4EncBaseSampleEntryAtomPtr outAtom);
 #endif
 
 MP4Err MP4CreateSampletoGroupAtom(MP4SampletoGroupAtomPtr *outAtom, u32 sampleToGroupType); // sampleToGroupType_t
-// MP4Err MP4CreateCompactSampletoGroupAtom(MP4SampletoGroupAtomPtr *outAtom);
 MP4Err MP4CreateSampleGroupDescriptionAtom(MP4SampleGroupDescriptionAtomPtr *outAtom);
 
 MP4Err MP4CreateSampleDependencyAtom(MP4SampleDependencyAtomPtr *outAtom);

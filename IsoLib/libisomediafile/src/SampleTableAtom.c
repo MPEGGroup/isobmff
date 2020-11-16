@@ -606,16 +606,7 @@ static MP4Err mergeSampleGroupDescriptions(struct MP4SampleTableAtom *self, MP4A
       if(errTemp == MP4NoErr) err = addGroupDescription(self, other->grouping_type, descrH, &dummy);
       MP4DisposeHandle(descrH);
     }
-
-    /* check if we already have this group in moov */
-    // err = mdia->getGroupDescription(mdia, groupDescriptionTraf->grouping_type, 1, desc);
-    // if(err != MP4NoErr)
-    // {
-    //   mdia->addGroupDescription(mdia, groupDescriptionTraf->grouping_type, desc, &descIdx); /* TODO: map to correct indexes from memory */
-    //   /* check the description as well, not only the type */
-    // }
   }
-
 
 bail:
   TEST_RETURN(err);
@@ -658,56 +649,6 @@ static MP4Err mapSamplestoGroup(struct MP4SampleTableAtom *self, u32 groupType, 
 
   err = theGroup->mapSamplestoGroup(theGroup, group_index, sample_index, count);
   if(err) goto bail;
-  
-  // if(sampleToGroupType==1)
-  // {
-  //   MP4CompactSampletoGroupAtomPtr compactSampleGroup;
-  //   err = MP4FindGroupAtom(self->compactSampletoGroupList, groupType, /* TODO: flip it over */
-  //                          (MP4AtomPtr *)&compactSampleGroup);
-  //   if(!compactSampleGroup)
-  //   {
-  //     MP4SampleSizeAtomPtr stsz;
-  //     stsz = (MP4SampleSizeAtomPtr)self->SampleSize;
-  //     if(stsz == NULL)
-  //     {
-  //       BAILWITHERROR(MP4InvalidMediaErr);
-  //     }
-  //     err = MP4CreateCompactSampletoGroupAtom(&compactSampleGroup);
-  //     if(err) goto bail;
-  //     compactSampleGroup->grouping_type             = groupType;
-  //     compactSampleGroup->fragmentLocalIndexPresent = 0;
-  //     err                                           = addAtom(self, (MP4AtomPtr)compactSampleGroup);
-  //     if(err) goto bail;
-  //     err = compactSampleGroup->addSamples(compactSampleGroup, stsz->sampleCount);
-  //     if(err) goto bail;
-  //   }
-  //   err =
-  //       compactSampleGroup->mapSamplestoGroup(compactSampleGroup, group_index, sample_index, count);
-  //   if(err) goto bail;
-  // }
-  // else
-  // {
-  //   err = MP4FindGroupAtom(self->sampletoGroupList, groupType, (MP4AtomPtr *)&theGroup);
-  //   if(!theGroup)
-  //   {
-  //     MP4SampleSizeAtomPtr stsz;
-
-  //     stsz = (MP4SampleSizeAtomPtr)self->SampleSize;
-  //     if(stsz == NULL)
-  //     {
-  //       BAILWITHERROR(MP4InvalidMediaErr);
-  //     }
-  //     err = MP4CreateSampletoGroupAtom(&theGroup);
-  //     if(err) goto bail;
-  //     theGroup->grouping_type = groupType;
-  //     err                     = addAtom(self, (MP4AtomPtr)theGroup);
-  //     if(err) goto bail;
-  //     err = theGroup->addSamples(theGroup, stsz->sampleCount);
-  //     if(err) goto bail;
-  //   }
-  //   err = theGroup->mapSamplestoGroup(theGroup, group_index, sample_index, count);
-  //   if(err) goto bail;
-  // }
 
 bail:
   TEST_RETURN(err);

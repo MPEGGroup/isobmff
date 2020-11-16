@@ -128,20 +128,6 @@ static MP4Err addSampleGroups(struct MP4TrackFragmentAtom *self, u32 sampleCount
     }
   }
 
-  // err = MP4GetListEntryCount(self->compactSampleGroupList, &groupListSize);
-  // if(err) goto bail;
-  // for(i = 0; i < groupListSize; i++)
-  // {
-  //   MP4CompactSampletoGroupAtomPtr compactSampleGroup;
-  //   err = MP4GetListEntry(self->compactSampleGroupList, i, (char **)&compactSampleGroup);
-  //   if(err) goto bail;
-  //   if(compactSampleGroup)
-  //   {
-  //     err = compactSampleGroup->addSamples(compactSampleGroup, sampleCount);
-  //     if(err) goto bail;
-  //   }
-  // }
-
 bail:
   TEST_RETURN(err);
   return err;
@@ -649,33 +635,6 @@ static MP4Err mergeRuns(MP4TrackFragmentAtomPtr self, MP4MediaAtomPtr mdia)
     }
   }
 
-  // if(self->compactSampleGroupList)
-  // {
-  //   u32 groupListSize;
-  //   err = ISOSetSamplestoGroupType((MP4Media)mdia, 1);
-  //   if(err) goto bail;
-  //   err = MP4GetListEntryCount(self->compactSampleGroupList, &groupListSize);
-  //   if(err) goto bail;
-  //   for(i = 0; i < groupListSize; i++)
-  //   {
-  //     MP4CompactSampletoGroupAtomPtr compactSampleGroup;
-  //     err = MP4GetListEntry(self->compactSampleGroupList, i, (char **)&compactSampleGroup);
-  //     if(err) goto bail;
-  //     if(compactSampleGroup)
-  //     {
-  //       u32 j;
-  //       for(j = 0; j < compactSampleGroup->sampleCount; j++)
-  //       {
-  //         s32 position;
-  //         position = j - total_samples;
-  //         err      = mdia->mapSamplestoGroup(mdia, compactSampleGroup->grouping_type,
-  //                                       (compactSampleGroup->group_index)[j], position, 1);
-  //         if(err) goto bail;
-  //       }
-  //     }
-  //   }
-  // }
-
 bail:
   TEST_RETURN(err);
 
@@ -823,82 +782,6 @@ bail:
   return err;
 }
 
-// static MP4Err finalizeSampleToGroup(MP4TrackFragmentAtomPtr self, u32 mode) {
-//   u32 count1, count2;
-//   s32 i, j;
-//   MP4Err err;
-
-//   MP4SampletoGroupAtomPtr normalSampleGroup;
-//   MP4CompactSampletoGroupAtomPtr compactSampleGroup;
-
-//   err = MP4GetListEntryCount(self->groupList, &count1);
-//   if(err) goto bail;
-
-//   for(i = 0; i < count1; i++)
-//   {
-//     MP4AtomPtr desc1, desc2;
-//     err = MP4GetListEntry(self->groupList, i, (char **)&desc1);
-//     if(err) goto bail;
-
-//     err = MP4GetListEntryCount(self->compactSampleGroupList, &count2);
-//     if(err) goto bail;
-//     for(j = 0; j < count2; j++)
-//     {
-//       err = MP4GetListEntry(self->compactSampleGroupList, j, (char **)&desc2);
-//       if(err) goto bail;
-
-//       if(desc1 && desc2)
-//       {
-//         MP4SampletoGroupAtomPtr grp1 = (MP4SampletoGroupAtomPtr)desc1;
-//         MP4CompactSampletoGroupAtomPtr grp2 = (MP4CompactSampletoGroupAtomPtr)desc2;
-//         if(grp1->grouping_type == grp2->grouping_type)
-//         {
-//           switch (mode)
-//           {
-//           case 0:
-//             /* we want to keep normal only */
-//             MP4DeleteListEntry(self->compactSampleGroupList, j);
-//             j--;
-//             count2--;
-//             break;
-//           case 1:
-//             /* we want to keep compressed only */
-//             MP4DeleteListEntry(self->groupList, i);
-//             i--;
-//             count1--;
-//             break;
-//           default:
-//             /* decide based on atom size */
-//             grp1->calculateSize((MP4AtomPtr)grp1);
-//             grp2->calculateSize((MP4AtomPtr)grp2);
-
-//             if(grp1->size < grp2->size)
-//             {
-//               /* normal is smaller */
-//               MP4DeleteListEntry(self->compactSampleGroupList, j);
-//               j--;
-//               count2--;
-//             }
-//             else
-//             {
-//               /* compressed is smaller */
-//               MP4DeleteListEntry(self->groupList, i);
-//               i--;
-//               count1--;
-//             }
-//             break;
-//           }
-//         }
-//       }
-//     }
-//   }
-
-// bail:
-//   TEST_RETURN(err);
-
-//   return err;
-// }
-
 static MP4Err mapSamplestoGroup(struct MP4MediaInformationAtom *s, u32 groupType, u32 group_index,
                                 s32 sample_index, u32 count, u32 sampleToGroupType)
 {
@@ -937,73 +820,7 @@ static MP4Err mapSamplestoGroup(struct MP4MediaInformationAtom *s, u32 groupType
   }
 
   err = theGroup->mapSamplestoGroup(theGroup, group_index, sample_index, count);
-  if(err) goto bail;
-
-  // if(compactSamples==1)
-  // {
-  //   MP4CompactSampletoGroupAtomPtr compactSampleGroup;
-  //   err = MP4FindGroupAtom(self->compactSampleGroupList, groupType,
-  //                          (MP4AtomPtr *)&compactSampleGroup);
-  //   if(!compactSampleGroup)
-  //   {
-  //     err = MP4CreateCompactSampletoGroupAtom(&compactSampleGroup);
-  //     if(err) goto bail;
-  //     compactSampleGroup->fragmentLocalIndexPresent = 1;
-  //     compactSampleGroup->grouping_type             = groupType;
-  //     err                                           = addAtom(self, (MP4AtomPtr)compactSampleGroup);
-  //     if(err) goto bail;
-
-  //     fragment_sample_count = 0;
-  //     err                   = MP4GetListEntryCount(self->atomList, &atomListSize);
-  //     if(err) goto bail;
-  //     for(i = 0; i < atomListSize; i++)
-  //     {
-  //       MP4TrackRunAtomPtr trun;
-  //       err = MP4GetListEntry(self->atomList, i, (char **)&trun);
-  //       if(err) goto bail;
-  //       if(trun) fragment_sample_count += trun->samplecount;
-  //     }
-
-  //     if(fragment_sample_count > 0)
-  //     {
-  //       err = compactSampleGroup->addSamples(compactSampleGroup, fragment_sample_count);
-  //     }
-  //   }
-  //   err =
-  //       compactSampleGroup->mapSamplestoGroup(compactSampleGroup, group_index, sample_index, count);
-  //   if(err) goto bail;
-  // }
-  // else
-  // {
-  //   MP4SampletoGroupAtomPtr theGroup;
-  //   err = MP4FindGroupAtom(self->groupList, groupType, (MP4AtomPtr *)&theGroup);
-  //   if(!theGroup)
-  //   {
-  //     err = MP4CreateSampletoGroupAtom(&theGroup);
-  //     if(err) goto bail;
-  //     theGroup->grouping_type = groupType;
-  //     err                     = addAtom(self, (MP4AtomPtr)theGroup);
-  //     if(err) goto bail;
-
-  //     fragment_sample_count = 0;
-  //     err                   = MP4GetListEntryCount(self->atomList, &atomListSize);
-  //     if(err) goto bail;
-  //     for(i = 0; i < atomListSize; i++)
-  //     {
-  //       MP4TrackRunAtomPtr trun;
-  //       err = MP4GetListEntry(self->atomList, i, (char **)&trun);
-  //       if(err) goto bail;
-  //       if(trun) fragment_sample_count += trun->samplecount;
-  //     }
-
-  //     if(fragment_sample_count > 0)
-  //     {
-  //       err = theGroup->addSamples(theGroup, fragment_sample_count);
-  //     }
-  //   }
-  //   err = theGroup->mapSamplestoGroup(theGroup, group_index, sample_index, count);
-  //   if(err) goto bail;
-  // }
+  if(err) goto bail;  
 
 bail:
   TEST_RETURN(err);
