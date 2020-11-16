@@ -708,7 +708,7 @@ static MP4Err getSampleGroupSampleNumbers(struct MP4SampleTableAtom *self, u32 g
     }
     if(cur_index == groupIndex)
     {
-      (*outSampleNumbers)[(*outSampleCnt)++] = i+1;
+      (*outSampleNumbers)[(*outSampleCnt)++] = i;
     }
   }
 
