@@ -267,7 +267,7 @@ ISOErr createFile(std::string strFilename) {
   err = MP4EndMediaEdits(media);
 
   std::cout << "fragment 1" << std::endl;
-  ISOSetSamplestoGroupType(media,0);
+  ISOSetSamplestoGroupType(media, SAMPLE_GROUP_NORMAL);
   err = ISOStartMovieFragment( moov ); if(err) return err;
   err = addSamples(media, "rb", 3);  if(err) return err;
   err = addGroupDescription(media, FOURCC_COLOR, "This must pass even if in stbl", temp); if(err) return err;
@@ -278,7 +278,7 @@ ISOErr createFile(std::string strFilename) {
   err = mapSamplesToGroups(media, "rb", 3); if(err) return err;
 
   std::cout << "fragment 2 (compressed sample group)" << std::endl;
-  ISOSetSamplestoGroupType(media, 1);
+  ISOSetSamplestoGroupType(media, SAMPLE_GROUP_COMPRESSED);
   err = ISOStartMovieFragment( moov ); if(err) return err;
   err = addSamples(media, "gry", 2);  if(err) return err;
   err = addGroupDescription(media, FOURCC_TEST, "Same as in previous fragment but different entry", groupIdBlue); if(err) return err;
@@ -286,7 +286,7 @@ ISOErr createFile(std::string strFilename) {
   err = mapSamplesToGroups(media, "gry", 2); if(err) return err;
 
   std::cout << "fragment 3" << std::endl;
-  ISOSetSamplestoGroupType(media, 0);
+  ISOSetSamplestoGroupType(media, SAMPLE_GROUP_NORMAL);
   err = ISOStartMovieFragment( moov ); if(err) return err;
   err = addSamples(media, "bgy", 2);  if(err) return err;
   err = mapSamplesToGroups(media, "bgy", 2); if(err) return err;

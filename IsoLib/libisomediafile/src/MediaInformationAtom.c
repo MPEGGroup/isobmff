@@ -564,7 +564,7 @@ bail:
 
 static MP4Err mapSamplestoGroup(struct MP4MediaInformationAtom *self, u32 groupType,
                                 u32 group_index, s32 sample_index, u32 count,
-                                u32 sampleToGroupType)
+                                sampleToGroupType_t sampleToGroupType)
 {
   MP4Err err;
   MP4SampleTableAtomPtr stbl;

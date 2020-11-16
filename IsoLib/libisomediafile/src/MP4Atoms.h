@@ -429,14 +429,6 @@ typedef struct MP4TrackGroupAtom
   MP4LinkedList atomList;
 } MP4TrackGroupAtom, *MP4TrackGroupAtomPtr;
 
-// TODO: use this enum instead of u32
-typedef enum sampleToGroupType_t
-{
-  SAMPLE_GROUP_NORMAL = 0,
-  SAMPLE_GROUP_COMPRESSED,
-  SAMPLE_GROUP_AUTO
-} sampleToGroupType_t;
-
 typedef struct MP4MediaAtom
 {
   MP4_BASE_ATOM
@@ -478,7 +470,7 @@ typedef struct MP4MediaAtom
   MP4AtomPtr extendedLanguageTag;
   MP4LinkedList atomList;
   MP4AtomPtr true_minf;
-  u32 sampleToGroupType;
+  sampleToGroupType_t sampleToGroupType;
 } MP4MediaAtom, *MP4MediaAtomPtr;
 
 typedef struct MP4MediaHeaderAtom
@@ -524,7 +516,7 @@ typedef struct MP4ExtendedLanguageTag
                       s32 mdatOffset);                                                            \
   MP4Err (*mapSamplestoGroup)(struct MP4MediaInformationAtom * self, u32 groupType,               \
                               u32 group_index, s32 sample_index, u32 count,                       \
-                              u32 sampleToGroupType);                                             \
+                              sampleToGroupType_t sampleToGroupType);                             \
   MP4Err (*setSampleDependency)(struct MP4MediaInformationAtom * self, s32 sample_index,          \
                                 MP4Handle dependencies);
 
@@ -718,7 +710,7 @@ typedef struct MP4SampleTableAtom
   MP4Err (*addGroupDescription)(struct MP4SampleTableAtom *self, u32 theType,
                                 MP4Handle theDescription, u32 *index);
   MP4Err (*mapSamplestoGroup)(struct MP4SampleTableAtom *self, u32 groupType, u32 group_index,
-                              s32 sample_index, u32 count, u32 sampleToGroupType);
+                              s32 sample_index, u32 count, sampleToGroupType_t sampleToGroupType);
   MP4Err (*getSampleGroupMap)(struct MP4SampleTableAtom *self, u32 groupType, u32 sample_number,
                               u32 *group_index);
   MP4Err (*getSampleGroupSampleNumbers)(struct MP4SampleTableAtom *self, u32 groupType,
@@ -1749,7 +1741,7 @@ typedef struct MP4SampletoGroupAtom
   u32 entryCount;
   u32 allocatedSize;
 
-  u32 sampleToGroupType; /* 0 - normal; 1 - compact; 2 - auto */
+  sampleToGroupType_t sampleToGroupType;
 
   /* these are required for CompactSampletoGroup */
   u32 groupingTypeParameter;
@@ -2123,7 +2115,7 @@ MP4Err MP4CreateEncVisualSampleEntryAtom(MP4EncVisualSampleEntryAtomPtr *outAtom
 MP4Err MP4CreateEncBaseAtom(MP4EncBaseSampleEntryAtomPtr outAtom);
 #endif
 
-MP4Err MP4CreateSampletoGroupAtom(MP4SampletoGroupAtomPtr *outAtom, u32 sampleToGroupType); // sampleToGroupType_t
+MP4Err MP4CreateSampletoGroupAtom(MP4SampletoGroupAtomPtr *outAtom, sampleToGroupType_t sampleToGroupType);
 MP4Err MP4CreateSampleGroupDescriptionAtom(MP4SampleGroupDescriptionAtomPtr *outAtom);
 
 MP4Err MP4CreateSampleDependencyAtom(MP4SampleDependencyAtomPtr *outAtom);

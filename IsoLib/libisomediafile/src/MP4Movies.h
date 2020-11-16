@@ -15,89 +15,96 @@ extern "C"
 
 #define ISMACrypt
 
-  typedef int MP4Err;
+typedef int MP4Err;
 
-  enum
-  {
-    /* JLF 12/00 : support for OD, returned by MP4GetInline... and MP4GetProfiles... */
-    MP4HasRootOD                    = 2,
-    MP4EOF                          = 1,
-    MP4NoErr                        = 0,
-    MP4FileNotFoundErr              = -1,
-    MP4BadParamErr                  = -2,
-    MP4NoMemoryErr                  = -3,
-    MP4IOErr                        = -4,
-    MP4NoLargeAtomSupportErr        = -5,
-    MP4BadDataErr                   = -6,
-    MP4VersionNotSupportedErr       = -7,
-    MP4InvalidMediaErr              = -8,
-    MP4InternalErr                  = -9,
-    MP4NotFoundErr                  = -10,
-    MP4DataEntryTypeNotSupportedErr = -100,
-    MP4NoQTAtomErr                  = -500,
-    MP4NotImplementedErr            = -1000
-  };
+enum
+{
+  /* JLF 12/00 : support for OD, returned by MP4GetInline... and MP4GetProfiles... */
+  MP4HasRootOD                    = 2,
+  MP4EOF                          = 1,
+  MP4NoErr                        = 0,
+  MP4FileNotFoundErr              = -1,
+  MP4BadParamErr                  = -2,
+  MP4NoMemoryErr                  = -3,
+  MP4IOErr                        = -4,
+  MP4NoLargeAtomSupportErr        = -5,
+  MP4BadDataErr                   = -6,
+  MP4VersionNotSupportedErr       = -7,
+  MP4InvalidMediaErr              = -8,
+  MP4InternalErr                  = -9,
+  MP4NotFoundErr                  = -10,
+  MP4DataEntryTypeNotSupportedErr = -100,
+  MP4NoQTAtomErr                  = -500,
+  MP4NotImplementedErr            = -1000
+};
 
-  enum
-  {
-    MP4OpenMovieNormal  = 0,
-    MP4OpenMovieDebug   = (1 << 0),
-    MP4OpenMovieInPlace = (1 << 1)
+enum
+{
+  MP4OpenMovieNormal  = 0,
+  MP4OpenMovieDebug   = (1 << 0),
+  MP4OpenMovieInPlace = (1 << 1)
 
-  };
+};
 
-  enum
-  {
-    MP4NewTrackIsVisual   = (1 << 1),
-    MP4NewTrackIsAudio    = (1 << 2),
-    MP4NewTrackIsMetadata = (1 << 3),
-    MP4NewTrackIsPrivate  = (1 << 8)
-  };
+enum
+{
+  MP4NewTrackIsVisual   = (1 << 1),
+  MP4NewTrackIsAudio    = (1 << 2),
+  MP4NewTrackIsMetadata = (1 << 3),
+  MP4NewTrackIsPrivate  = (1 << 8)
+};
 
-  enum
-  {
-    MP4ObjectDescriptorHandlerType = MP4_FOUR_CHAR_CODE('o', 'd', 's', 'm'),
-    MP4ClockReferenceHandlerType   = MP4_FOUR_CHAR_CODE('c', 'r', 's', 'm'),
-    MP4SceneDescriptionHandlerType = MP4_FOUR_CHAR_CODE('s', 'd', 's', 'm'),
-    MP4VisualHandlerType           = MP4_FOUR_CHAR_CODE('v', 'i', 'd', 'e'),
-    MP4AudioHandlerType            = MP4_FOUR_CHAR_CODE('s', 'o', 'u', 'n'),
-    MP4MPEG7HandlerType            = MP4_FOUR_CHAR_CODE('m', '7', 's', 'm'),
-    MP4OCIHandlerType              = MP4_FOUR_CHAR_CODE('o', 'c', 's', 'm'),
-    MP4IPMPHandlerType             = MP4_FOUR_CHAR_CODE('i', 'p', 's', 'm'),
-    MP4MPEGJHandlerType            = MP4_FOUR_CHAR_CODE('m', 'j', 's', 'm'),
-    MP4HintHandlerType             = MP4_FOUR_CHAR_CODE('h', 'i', 'n', 't'),
-    MP4TextHandlerType             = MP4_FOUR_CHAR_CODE('t', 'e', 'x', 't'),
-    MP7TextHandlerType             = MP4_FOUR_CHAR_CODE('m', 'p', '7', 't'),
-    MP7BinaryHandlerType           = MP4_FOUR_CHAR_CODE('m', 'p', '7', 'b'),
-    MP21HandlerType                = MP4_FOUR_CHAR_CODE('m', 'p', '2', '1'),
-    MP4NullHandlerType             = MP4_FOUR_CHAR_CODE('n', 'u', 'l', 'l'),
-    MP4MetaHandlerType             = MP4_FOUR_CHAR_CODE('m', 'e', 't', 'a'),
+enum
+{
+  MP4ObjectDescriptorHandlerType = MP4_FOUR_CHAR_CODE('o', 'd', 's', 'm'),
+  MP4ClockReferenceHandlerType   = MP4_FOUR_CHAR_CODE('c', 'r', 's', 'm'),
+  MP4SceneDescriptionHandlerType = MP4_FOUR_CHAR_CODE('s', 'd', 's', 'm'),
+  MP4VisualHandlerType           = MP4_FOUR_CHAR_CODE('v', 'i', 'd', 'e'),
+  MP4AudioHandlerType            = MP4_FOUR_CHAR_CODE('s', 'o', 'u', 'n'),
+  MP4MPEG7HandlerType            = MP4_FOUR_CHAR_CODE('m', '7', 's', 'm'),
+  MP4OCIHandlerType              = MP4_FOUR_CHAR_CODE('o', 'c', 's', 'm'),
+  MP4IPMPHandlerType             = MP4_FOUR_CHAR_CODE('i', 'p', 's', 'm'),
+  MP4MPEGJHandlerType            = MP4_FOUR_CHAR_CODE('m', 'j', 's', 'm'),
+  MP4HintHandlerType             = MP4_FOUR_CHAR_CODE('h', 'i', 'n', 't'),
+  MP4TextHandlerType             = MP4_FOUR_CHAR_CODE('t', 'e', 'x', 't'),
+  MP7TextHandlerType             = MP4_FOUR_CHAR_CODE('m', 'p', '7', 't'),
+  MP7BinaryHandlerType           = MP4_FOUR_CHAR_CODE('m', 'p', '7', 'b'),
+  MP21HandlerType                = MP4_FOUR_CHAR_CODE('m', 'p', '2', '1'),
+  MP4NullHandlerType             = MP4_FOUR_CHAR_CODE('n', 'u', 'l', 'l'),
+  MP4MetaHandlerType             = MP4_FOUR_CHAR_CODE('m', 'e', 't', 'a'),
 
-    ISOXMLAtomType       = MP4_FOUR_CHAR_CODE('x', 'm', 'l', ' '),
-    ISOBinaryXMLAtomType = MP4_FOUR_CHAR_CODE('b', 'x', 'm', 'l')
+  ISOXMLAtomType       = MP4_FOUR_CHAR_CODE('x', 'm', 'l', ' '),
+  ISOBinaryXMLAtomType = MP4_FOUR_CHAR_CODE('b', 'x', 'm', 'l')
 
-  };
+};
 
-  enum
-  {
-    MP4IPMP_NoControlPoint             = 0x00,
-    MP4IPMP_DB_Decoder_ControlPoint    = 0x01,
-    MP4IPMP_Decoder_CB_ControlPoint    = 0x02,
-    MP4IPMP_CB_Compositor_ControlPoint = 0x03,
-    MP4IPMP_BIFSTree_ControlPoint      = 0x04
-  };
+enum
+{
+  MP4IPMP_NoControlPoint             = 0x00,
+  MP4IPMP_DB_Decoder_ControlPoint    = 0x01,
+  MP4IPMP_Decoder_CB_ControlPoint    = 0x02,
+  MP4IPMP_CB_Compositor_ControlPoint = 0x03,
+  MP4IPMP_BIFSTree_ControlPoint      = 0x04
+};
 
-  enum
-  {
-    does_depend_on     = 0x10,
-    does_not_depend_on = 0x20,
+enum
+{
+  does_depend_on     = 0x10,
+  does_not_depend_on = 0x20,
 
-    is_depended_on     = 0x4,
-    is_not_depended_on = 0x8,
+  is_depended_on     = 0x4,
+  is_not_depended_on = 0x8,
 
-    has_redundancy    = 1,
-    has_no_redundancy = 2
-  };
+  has_redundancy    = 1,
+  has_no_redundancy = 2
+};
+
+typedef enum sampleToGroupType_t
+{
+  SAMPLE_GROUP_NORMAL = 0,
+  SAMPLE_GROUP_COMPRESSED,
+  SAMPLE_GROUP_AUTO
+} sampleToGroupType_t;
 
 #define GETMOOV(arg)                            \
   MP4PrivateMovieRecordPtr moov;                \

@@ -924,7 +924,7 @@ bail:
   return err;
 }
 
-MP4Err MP4CreateSampletoGroupAtom(MP4SampletoGroupAtomPtr *outAtom, u32 sampleToGroupType)
+MP4Err MP4CreateSampletoGroupAtom(MP4SampletoGroupAtomPtr *outAtom, sampleToGroupType_t sampleToGroupType)
 {
   MP4Err err;
   MP4SampletoGroupAtomPtr self;

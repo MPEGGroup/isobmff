@@ -202,7 +202,7 @@ bail:
 }
 
 MP4_EXTERN(MP4Err)
-ISOSetSamplestoGroupType(MP4Media media, u32 sampleToGroupType)
+ISOSetSamplestoGroupType(MP4Media media, sampleToGroupType_t sampleToGroupType)
 {
   MP4Err err;
   MP4MediaAtomPtr mdia;
