@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: ChunkOffsetAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
+  $Id: ChunkOffsetAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -31,21 +31,15 @@ derivative works. Copyright (c) 1999.
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
   MP4ChunkOffsetAtomPtr self;
-  err  = MP4NoErr;
   self = (MP4ChunkOffsetAtomPtr)s;
-  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+  if(self == NULL) return;
   if(self->offsets)
   {
     free(self->offsets);
     self->offsets = NULL;
   }
   if(self->super) self->super->destroy(s);
-bail:
-  TEST_RETURN(err);
-
-  return;
 }
 
 static MP4Err serialize(struct MP4Atom *s, char *buffer)

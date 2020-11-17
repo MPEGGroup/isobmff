@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: MediaAtom.c,v 1.2 2002/10/01 12:49:19 julien Exp $
+  $Id: MediaAtom.c,v 1.2 2002/10/01 12:49:19 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -318,7 +318,7 @@ static MP4Err addGroupDescription(struct MP4MediaAtom *self, u32 groupType, MP4H
                                   u32 *index)
 {
   MP4Err err;
-  MP4MediaInformationAtomPtr minf, true_minf;
+  MP4MediaInformationAtomPtr minf;
 
   err  = MP4NoErr;
   minf = (MP4MediaInformationAtomPtr)self->information; /* this can be 'traf' if fragmented */

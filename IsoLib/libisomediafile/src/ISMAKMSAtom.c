@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: ISMAKMSAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
+  $Id: ISMAKMSAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -32,21 +32,15 @@ derivative works. Copyright (c) 1999.
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
   ISMAKMSAtomPtr self = (ISMAKMSAtomPtr)s;
-  err                 = MP4NoErr;
 
-  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+  if(self == NULL) return;
   if(self->kms_url)
   {
     free(self->kms_url);
     self->kms_url = NULL;
   }
   if(self->super) self->super->destroy(s);
-bail:
-  TEST_RETURN(err);
-
-  return;
 }
 
 static MP4Err serialize(struct MP4Atom *s, char *buffer)

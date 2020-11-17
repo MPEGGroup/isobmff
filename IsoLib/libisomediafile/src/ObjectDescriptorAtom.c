@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: ObjectDescriptorAtom.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
+  $Id: ObjectDescriptorAtom.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -30,20 +30,14 @@ derivative works. Copyright (c) 1999.
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
   MP4ObjectDescriptorAtomPtr self = (MP4ObjectDescriptorAtomPtr)s;
-  err                             = MP4NoErr;
-  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+  if(self == NULL) return;
   if(self->descriptor)
   {
     self->descriptor->destroy(self->descriptor);
     self->descriptor = NULL;
   }
   if(self->super) self->super->destroy(s);
-bail:
-  TEST_RETURN(err);
-
-  return;
 }
 
 static MP4Err setDescriptor(struct MP4Atom *s, struct MP4DescriptorRecord *desc)

@@ -20,6 +20,7 @@
  This copyright notice must be included in all copies or
  derivative works. Copyright (c) 2014.
  */
+
 #include "MP4Atoms.h"
 
 #include <stdlib.h>
@@ -27,23 +28,16 @@
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
   MP4ExtendedLanguageTagAtomPtr self;
-  err  = MP4NoErr;
   self = (MP4ExtendedLanguageTagAtomPtr)s;
-  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+  if(self == NULL) return;
 
   if(self->extended_language)
   {
     free(self->extended_language);
     self->extended_language = NULL;
   }
-
   if(self->super) self->super->destroy(s);
-bail:
-  TEST_RETURN(err);
-
-  return;
 }
 
 static MP4Err serialize(struct MP4Atom *s, char *buffer)

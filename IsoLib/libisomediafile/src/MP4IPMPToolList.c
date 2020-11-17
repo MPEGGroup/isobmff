@@ -110,12 +110,10 @@ bail:
 
 static void destroy(struct MP4DescriptorRecord *s)
 {
-  MP4Err err;
   MP4IPMPToolListDescriptorPtr self = (MP4IPMPToolListDescriptorPtr)s;
-  if(s == NULL) BAILWITHERROR(MP4BadParamErr);
+  if(s == NULL) return;
 
   DESTROY_DESCRIPTOR_LIST(ipmpTools)
-
   free(s);
 
 bail:

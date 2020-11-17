@@ -21,8 +21,8 @@
  derivative works. Copyright (c) 1999.
  */
 /*
- $Id: SampleAuxiliaryInformationOffsetsAtom.c,v 1.1.1.1 2014/08/08 08:10:00 armin Exp $
- */
+  $Id: SampleAuxiliaryInformationOffsetsAtom.c,v 1.1.1.1 2014/08/08 08:10:00 armin Exp $
+*/
 
 #include "MP4Atoms.h"
 #include <stdlib.h>
@@ -30,17 +30,9 @@
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
   MP4SampleAuxiliaryInformationOffsetsAtomPtr self = (MP4SampleAuxiliaryInformationOffsetsAtomPtr)s;
-  err                                              = MP4NoErr;
-
-  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
-
+  if(self == NULL) return;
   if(self->super) self->super->destroy(s);
-bail:
-  TEST_RETURN(err);
-
-  return;
 }
 
 static MP4Err serialize(struct MP4Atom *s, char *buffer)
@@ -164,6 +156,7 @@ static MP4Err addOffsets(MP4AtomPtr s, u32 entryCount, MP4Handle sizesH)
   MP4SampleAuxiliaryInformationOffsetsAtomPtr self = (MP4SampleAuxiliaryInformationOffsetsAtomPtr)s;
 
   err = MP4NoErr;
+  onlySize = 0;
 
   sizes = (u32 *)*sizesH;
 
@@ -210,7 +203,7 @@ static MP4Err mdatMoved(MP4AtomPtr s, u64 mdatBase, u64 mdatEnd, s32 mdatOffset)
   return err;
 }
 
-MP4Err mergeOffsets(MP4AtomPtr s, MP4AtomPtr otherSaio, u64 baseOffset)
+static MP4Err mergeOffsets(MP4AtomPtr s, MP4AtomPtr otherSaio, u64 baseOffset)
 {
   u32 i;
   MP4Err err;

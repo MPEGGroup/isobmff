@@ -428,7 +428,6 @@ ISOAddDelayToTrackFragmentDecodeTime(MP4Movie theMovie, u32 delay)
   MP4Err err;
   MP4PrivateMovieRecordPtr movie;
   MP4MovieFragmentAtomPtr moof;
-  MP4AtomPtr moofEntry;
   MP4TrackFragmentAtomPtr traf;
   MP4TrackExtendsAtomPtr trex;
   MP4TrackFragmentDecodeTimeAtomPtr tfdt;
@@ -442,7 +441,8 @@ ISOAddDelayToTrackFragmentDecodeTime(MP4Movie theMovie, u32 delay)
 
   for(i = 0; i < moof->atomList->entryCount; i++)
   {
-    MP4GetListEntry(moof->atomList, i, (char **)moofEntry);
+    MP4AtomPtr moofEntry;
+    MP4GetListEntry(moof->atomList, i, (char **)&moofEntry);
     if(moofEntry->type == MP4TrackFragmentAtomType)
     {
       traf = (MP4TrackFragmentAtomPtr)moofEntry;

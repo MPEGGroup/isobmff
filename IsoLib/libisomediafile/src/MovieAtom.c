@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: MovieAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
+  $Id: MovieAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -372,7 +372,6 @@ static u32 getTrackCount(MP4MovieAtomPtr self)
 
 static MP4Err setupTracks(MP4MovieAtomPtr self, MP4PrivateMovieRecordPtr moov)
 {
-  u32 trackIdx;
   u32 i;
   MP4Err err;
   u32 trackCount;
@@ -380,7 +379,7 @@ static MP4Err setupTracks(MP4MovieAtomPtr self, MP4PrivateMovieRecordPtr moov)
 
   self->moov = moov;
   trackCount = getTrackCount(self);
-  for(i = 0, trackIdx = 0; i < trackCount; i++)
+  for(i = 0; i < trackCount; i++)
   {
     MP4TrackAtomPtr atom;
     err = MP4GetListEntry(self->trackList, i, (char **)&atom);
@@ -424,7 +423,6 @@ bail:
 
 static MP4Err getTrackMedia(struct MP4MovieAtom *self, u32 trackID, MP4AtomPtr *outTrack)
 {
-  u32 trackIdx;
   u32 i;
   MP4Err err;
   u32 trackCount;
@@ -433,7 +431,7 @@ static MP4Err getTrackMedia(struct MP4MovieAtom *self, u32 trackID, MP4AtomPtr *
   if((trackID == 0) || (outTrack == NULL)) BAILWITHERROR(MP4BadParamErr)
 
   MP4GetListEntryCount(self->trackList, &trackCount);
-  for(i = 0, trackIdx = 0; i < trackCount; i++)
+  for(i = 0; i < trackCount; i++)
   {
     MP4TrackAtomPtr trak;
 
@@ -463,6 +461,7 @@ static MP4Err getSampleDescriptionIndex(struct MP4MovieAtom *self, u32 trackID, 
   MP4Err err;
 
   err = MP4NoErr;
+  mdia = NULL;
 
   err = getTrackMedia(self, trackID, (MP4AtomPtr *)&mdia);
   if(err) goto bail;
@@ -477,14 +476,13 @@ bail:
 
 static MP4Err settrackfragment(struct MP4MovieAtom *self, u32 trackID, MP4AtomPtr fragment)
 {
-  u32 trackIdx;
   u32 i;
   MP4Err err;
   u32 trackCount;
   err = MP4NoErr;
 
   trackCount = getTrackCount(self);
-  for(i = 0, trackIdx = 0; i < trackCount; i++)
+  for(i = 0; i < trackCount; i++)
   {
     MP4TrackAtomPtr atom;
     err = MP4GetListEntry(self->trackList, i, (char **)&atom);

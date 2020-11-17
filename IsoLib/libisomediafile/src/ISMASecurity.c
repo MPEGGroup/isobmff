@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999, 2000.
 */
 /*
-        $Id: ISMASecurity.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
+  $Id: ISMASecurity.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
 */
 #include "MP4Movies.h"
 #include "MP4Atoms.h"
@@ -65,6 +65,7 @@ ISMATransformSampleEntrySalt(u32 newTrackFlags, MP4Handle insampleEntryH, u8 sel
   kms   = NULL;
   fmt   = NULL;
   slt   = NULL;
+  is    = NULL;
 
   if(newTrackFlags & ISONewTrackIsVisual) atomType = MP4EncVisualSampleEntryAtomType;
   else if(newTrackFlags & ISONewTrackIsAudio)

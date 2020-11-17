@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: TrackFragmentRunAtom.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
+  $Id: TrackFragmentRunAtom.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -29,31 +29,22 @@ derivative works. Copyright (c) 1999.
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
-  MP4TrackRunAtomPtr self;
-
-  self = (MP4TrackRunAtomPtr)s;
-  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+  MP4TrackRunAtomPtr self = (MP4TrackRunAtomPtr)s;
+  if(self == NULL) return;
   if(self->entries)
   {
     free(self->entries);
     self->entries = NULL;
   }
   if(self->super) self->super->destroy(s);
-bail:
-  TEST_RETURN(err);
-
-  return;
 }
 
 static void calculateDefaults(struct MP4TrackRunAtom *self, MP4TrackFragmentHeaderAtomPtr tfhd,
                               u32 flags_index)
 {
-  MP4Err err;
   MP4TrackRunEntryPtr entry;
-  err = MP4NoErr;
 
-  if(self->samplecount == 0) goto bail;
+  if(self->samplecount == 0) return;
 
   entry = self->entries;
 
@@ -61,21 +52,14 @@ static void calculateDefaults(struct MP4TrackRunAtom *self, MP4TrackFragmentHead
   if(tfhd->default_sample_size == 0) tfhd->default_sample_size = entry->sample_size;
   if((tfhd->default_sample_flags == 0) && (self->samplecount >= flags_index))
     tfhd->default_sample_flags = entry[flags_index - 1].sample_flags;
-
-bail:
-  TEST_RETURN(err);
-
-  return;
 }
 
 static void setFlags(struct MP4TrackRunAtom *self, MP4TrackFragmentHeaderAtomPtr tfhd)
 {
   u32 flags;
-  MP4Err err;
   u32 i;
   MP4TrackRunEntryPtr entry;
 
-  err   = MP4NoErr;
   flags = 0;
 
   if(self->data_offset != 0) flags |= trun_data_offset_present;
@@ -97,8 +81,6 @@ static void setFlags(struct MP4TrackRunAtom *self, MP4TrackFragmentHeaderAtomPtr
     if((flags & trun_all_sample_flags) == trun_all_sample_flags) break;
   }
   self->flags = flags;
-
-  return;
 }
 
 static MP4Err serialize(struct MP4Atom *s, char *buffer)
@@ -181,7 +163,7 @@ bail:
   return err;
 }
 
-int bitcount(int v)
+static int bitcount(int v)
 {
   unsigned int c; /* c accumulates the total bits set in v */
   for(c = 0; v; c++)

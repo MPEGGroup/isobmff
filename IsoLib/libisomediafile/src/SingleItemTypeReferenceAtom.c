@@ -27,19 +27,11 @@ derivative works. Copyright (c) 2014.
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
   ISOSingleItemTypeReferenceAtomPtr self;
-  err  = MP4NoErr;
   self = (ISOSingleItemTypeReferenceAtomPtr)s;
-  if(self == NULL) BAILWITHERROR(MP4BadParamErr);
-
+  if(self == NULL) return;
   if(self->to_item_IDs) free(self->to_item_IDs);
-
   if(self->super) self->super->destroy(s);
-bail:
-  TEST_RETURN(err);
-
-  return;
 }
 
 static MP4Err serialize(struct MP4Atom *s, char *buffer)
@@ -121,6 +113,8 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
 
   err = MP4NoErr;
   if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+
+  err = self->super->createFromInputStream(s, proto, (char *)inputStream);
 
   self->bytesRead = 0;
 

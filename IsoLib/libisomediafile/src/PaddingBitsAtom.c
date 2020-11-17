@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: PaddingBitsAtom.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
+  $Id: PaddingBitsAtom.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -30,21 +30,15 @@ derivative works. Copyright (c) 1999.
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
   MP4PaddingBitsAtomPtr self;
-  err  = MP4NoErr;
   self = (MP4PaddingBitsAtomPtr)s;
-  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+  if(self == NULL) return;
   if(self->pads)
   {
     free(self->pads);
     self->pads = NULL;
   }
   if(self->super) self->super->destroy(s);
-bail:
-  TEST_RETURN(err);
-
-  return;
 }
 
 static MP4Err addSamplePads(struct MP4PaddingBitsAtom *self, u32 sampleCount, MP4Handle padsH)

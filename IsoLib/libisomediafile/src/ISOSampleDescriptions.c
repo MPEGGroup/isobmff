@@ -27,7 +27,7 @@
  */
 
 /*
-        $Id: MP4Media.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
+  $Id: MP4Media.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
 */
 #include "MP4Movies.h"
 #include "MP4Atoms.h"
@@ -567,14 +567,12 @@ ISONewXMLMetaDataSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptio
 {
   MP4Err err;
   MP4XMLMetaSampleEntryAtomPtr entry;
-  MP4TrackAtomPtr trak;
 
   if((theTrack == NULL) || (sampleDescriptionH == NULL))
   {
     BAILWITHERROR(MP4BadParamErr);
   }
 
-  trak = (MP4TrackAtomPtr)theTrack;
   err  = MP4CreateXMLMetaSampleEntryAtom((MP4XMLMetaSampleEntryAtomPtr *)&entry);
   if(err) goto bail;
 
@@ -623,14 +621,12 @@ ISONewTextMetaDataSampleDescription(MP4Track theTrack, MP4Handle sampleDescripti
 {
   MP4Err err;
   MP4TextMetaSampleEntryAtomPtr entry;
-  MP4TrackAtomPtr trak;
 
   if((theTrack == NULL) || (sampleDescriptionH == NULL))
   {
     BAILWITHERROR(MP4BadParamErr);
   }
 
-  trak = (MP4TrackAtomPtr)theTrack;
   err  = MP4CreateTextMetaSampleEntryAtom((MP4TextMetaSampleEntryAtomPtr *)&entry);
   if(err) goto bail;
 

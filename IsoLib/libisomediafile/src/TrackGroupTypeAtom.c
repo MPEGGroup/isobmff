@@ -68,14 +68,12 @@ bail:
 static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream)
 {
   MP4Err err;
-  long bytesToRead;
   MP4TrackGroupTypeAtomPtr self = (MP4TrackGroupTypeAtomPtr)s;
 
   err = MP4NoErr;
   if(self == NULL) BAILWITHERROR(MP4BadParamErr)
   err = self->super->createFromInputStream(s, proto, (char *)inputStream);
 
-  bytesToRead = s->size - s->bytesRead;
   GET32(track_group_id);
 
 bail:

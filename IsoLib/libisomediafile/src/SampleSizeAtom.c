@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: SampleSizeAtom.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
+  $Id: SampleSizeAtom.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -32,21 +32,15 @@ derivative works. Copyright (c) 1999.
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
   MP4SampleSizeAtomPtr self;
-  err  = MP4NoErr;
   self = (MP4SampleSizeAtomPtr)s;
-  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+  if(self == NULL) return;
   if(self->sizes)
   {
     free(self->sizes);
     self->sizes = NULL;
   }
   if(self->super) self->super->destroy(s);
-bail:
-  TEST_RETURN(err);
-
-  return;
 }
 
 static MP4Err addSamples(struct MP4SampleSizeAtom *self, u32 sampleCount, MP4Handle sizesH)
@@ -194,7 +188,6 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
 {
   MP4Err err;
   u32 i;
-  u32 fieldsize;
   MP4SampleSizeAtomPtr self = (MP4SampleSizeAtomPtr)s;
 
   err = MP4NoErr;
@@ -219,7 +212,6 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   }
   else
   {
-    fieldsize = self->fieldsize;
     PUT32(fieldsize);
     PUT32(sampleCount);
     switch(self->fieldsize)

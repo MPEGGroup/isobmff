@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: MJ2ColorSpecificationAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
+  $Id: MJ2ColorSpecificationAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
 */
 
 #include "MJ2Atoms.h"
@@ -30,22 +30,14 @@ derivative works. Copyright (c) 1999.
 
 static void destroy(MP4AtomPtr s)
 {
-  ISOErr err                        = ISONoErr;
   MJ2ColorSpecificationAtomPtr self = (MJ2ColorSpecificationAtomPtr)s;
-
-  if(self == NULL) BAILWITHERROR(ISOBadParamErr)
-
+  if(self == NULL) return;
   if(self->profile)
   {
     free(self->profile);
     self->profile = NULL;
   }
-
   if(self->super) self->super->destroy(s);
-bail:
-  TEST_RETURN(err);
-
-  return;
 }
 
 static ISOErr serialize(struct MP4Atom *s, char *buffer)

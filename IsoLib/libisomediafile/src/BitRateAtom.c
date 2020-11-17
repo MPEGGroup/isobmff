@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) Apple Computer and Telefonaktiebolaget LM Ericsson 2001
 */
 /*
-        $Id: BitRateAtom.c,v 1.1 2004/09/15 17:00:48 erapefh Exp $
+  $Id: BitRateAtom.c,v 1.1 2004/09/15 17:00:48 erapefh Exp $
 */
 
 #include "MP4Atoms.h"
@@ -29,16 +29,10 @@ derivative works. Copyright (c) Apple Computer and Telefonaktiebolaget LM Ericss
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
   MP4BitRateAtomPtr self;
-  err  = MP4NoErr;
   self = (MP4BitRateAtomPtr)s;
-  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+  if(self == NULL) return;
   if(self->super) self->super->destroy(s);
-bail:
-  TEST_RETURN(err);
-
-  return;
 }
 
 static MP4Err serialize(struct MP4Atom *s, char *buffer)

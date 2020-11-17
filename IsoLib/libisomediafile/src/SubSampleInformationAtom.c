@@ -27,12 +27,10 @@ derivative works. Copyright (c) 1999.
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
   u32 i;
   MP4SubSampleInformationAtomPtr self;
-  err  = MP4NoErr;
   self = (MP4SubSampleInformationAtomPtr)s;
-  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+  if(self == NULL) return;
   if(self->entry_count)
   {
     for(i = 0; i < self->entry_count; i++)
@@ -64,10 +62,6 @@ static void destroy(MP4AtomPtr s)
     self->sample_delta = NULL;
   }
   if(self->super) self->super->destroy(s);
-bail:
-  TEST_RETURN(err);
-
-  return;
 }
 
 static MP4Err serialize(struct MP4Atom *s, char *buffer)

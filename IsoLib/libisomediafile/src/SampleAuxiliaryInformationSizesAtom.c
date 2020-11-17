@@ -21,8 +21,8 @@
  derivative works. Copyright (c) 1999.
  */
 /*
- $Id: SampleAuxiliaryInformationSizesAtom.c,v 1.1.1.1 2014/08/08 08:10:00 armin Exp $
- */
+  $Id: SampleAuxiliaryInformationSizesAtom.c,v 1.1.1.1 2014/08/08 08:10:00 armin Exp $
+*/
 
 #include "MP4Atoms.h"
 #include <stdlib.h>
@@ -30,17 +30,9 @@
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
   MP4SampleAuxiliaryInformationSizesAtomPtr self = (MP4SampleAuxiliaryInformationSizesAtomPtr)s;
-  err                                            = MP4NoErr;
-
-  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
-
+  if(self == NULL) return;
   if(self->super) self->super->destroy(s);
-bail:
-  TEST_RETURN(err);
-
-  return;
 }
 
 static MP4Err serialize(struct MP4Atom *s, char *buffer)
@@ -149,7 +141,8 @@ static MP4Err addSizes(MP4AtomPtr s, u32 sampleCount, MP4Handle sizesH)
   MP4Err err;
   MP4SampleAuxiliaryInformationSizesAtomPtr self = (MP4SampleAuxiliaryInformationSizesAtomPtr)s;
 
-  err = MP4NoErr;
+  err      = MP4NoErr;
+  onlySize = 0;
 
   if(self->default_sample_info_size == 0)
   {
@@ -179,7 +172,7 @@ bail:
   return err;
 }
 
-MP4Err mergeSizes(MP4AtomPtr s, MP4AtomPtr otherSaiz)
+static MP4Err mergeSizes(MP4AtomPtr s, MP4AtomPtr otherSaiz)
 {
   u32 i;
   MP4Err err;

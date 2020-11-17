@@ -174,6 +174,11 @@ extern "C"
 #define ISOPutMovieIntoHandle MP4PutMovieIntoHandle
 #define ISOSetMovieTimeScale MP4SetMovieTimeScale
 #define ISOAddTrackReference MP4AddTrackReference
+#define ISOAddSubSampleInformationToTrack MP4AddSubSampleInformationToTrack
+#define ISOSetSubSampleInformationFlags MP4SetSubSampleInformationFlags
+#define ISOGetSubSampleInformationEntryFromTrack MP4GetSubSampleInformationEntryFromTrack
+#define ISOAddSubSampleInformationEntry MP4AddSubSampleInformationEntry
+#define ISOAddTrackGroup MP4AddTrackGroup
 #define ISOAddTrackReferenceWithID MP4AddTrackReferenceWithID
 #define ISOGetMovieIndTrack MP4GetMovieIndTrack
 #define ISOGetMovieTrackCount MP4GetMovieTrackCount
@@ -335,7 +340,7 @@ extern "C"
   ISO_EXTERN(ISOErr)
   ISOGetMovieBrand(ISOMovie theMovie, u32 *brand, u32 *minorversion);
 
-  ISO_EXTERN(u32)
+  ISO_EXTERN(ISOErr)
   ISOIsMovieCompatibleBrand(ISOMovie theMovie, u32 brand);
 
   /* AVC Sample descriptions */
@@ -353,6 +358,18 @@ extern "C"
 
   ISO_EXTERN(ISOErr)
   ISOGetVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, u32 index);
+  ISO_EXTERN(ISOErr)
+  ISOGetHEVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, u32 index);
+  ISO_EXTERN(ISOErr)
+  ISOGetRESVSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, u32 index);
+  ISO_EXTERN(ISOErr)
+  ISOGetRESVLengthSizeMinusOne(MP4Handle sampleEntryH, u32 *out);
+  ISO_EXTERN(ISOErr)
+  ISOGetRESVOriginalFormat(MP4Handle sampleEntryH, u32 *outOrigFmt);
+  ISO_EXTERN(ISOErr)
+  ISONewHEVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 dataReferenceIndex,
+                            u32 length_size, MP4Handle first_sps, MP4Handle first_pps,
+                            MP4Handle first_vps);
   /* 3GPP media */
   MP4_EXTERN(MP4Err)
   ISOAddBitrateToSampleDescription(MP4Handle sampleEntryH, u8 is_3GPP, u32 buffersizeDB,
@@ -411,7 +428,8 @@ extern "C"
   ISO_EXTERN(ISOErr)
   ISOGetItemReferences(ISOMetaItem item, u32 reference_type, u16 *reference_count,
                        MP4Handle to_item_IDs);
-
+  ISO_EXTERN(ISOErr)
+  ISOGetItemReference(ISOMetaItem item, u32 reference_type, u16 reference_index, ISOMetaItem *outItem);
   ISO_EXTERN(ISOErr)
   ISOAddPrimaryData(ISOMeta meta, u32 box_type, MP4Handle data, u8 is_full_atom);
   ISO_EXTERN(ISOErr)

@@ -21,8 +21,8 @@
  derivative works. Copyright (c) 1999.
  */
 /*
- $Id: ItemPropertyContainerAtom.c,v 1.1.1.1 2016/09/14 armin Exp $
- */
+  $Id: ItemPropertyContainerAtom.c,v 1.1.1.1 2016/09/14 armin Exp $
+*/
 
 #include "MP4Atoms.h"
 #include <stdlib.h>
@@ -30,17 +30,9 @@
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
   MP4ItemPropertyContainerAtomPtr self = (MP4ItemPropertyContainerAtomPtr)s;
-  err                                  = MP4NoErr;
-
-  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
-
+  if(self == NULL) return;
   if(self->super) self->super->destroy(s);
-bail:
-  TEST_RETURN(err);
-
-  return;
 }
 
 static MP4Err addAtom(MP4ItemPropertyContainerAtomPtr self, MP4AtomPtr atom)

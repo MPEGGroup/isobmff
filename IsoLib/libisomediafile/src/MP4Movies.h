@@ -294,7 +294,25 @@ typedef enum sampleToGroupType_t
   MP4_EXTERN(MP4Err)
   MP4AddTrackReferenceWithID(MP4Track theTrack, u32 dependsOnID, u32 dependencyType,
                              u32 *outReferenceIndex);
-
+  MP4_EXTERN(MP4Err)
+  MP4AddSubSampleInformationToTrack(MP4Track theTrack, MP4GenericAtom *subs);
+  MP4_EXTERN(MP4Err) 
+  MP4SetSubSampleInformationFlags(MP4GenericAtom subsample, u32 flags);
+  MP4_EXTERN(MP4Err)
+  MP4GetSubSampleInformationEntryFromTrack(MP4Track theTrack, u32 *flags, 
+                                          u32 *entry_count,
+                                          u32 **sample_delta, u32 **subsample_count,
+                                          u32 ***subsample_size_array,
+                                          u32 ***subsample_priority_array,
+                                          u32 ***subsample_discardable_array);
+  MP4_EXTERN(MP4Err)
+  MP4AddSubSampleInformationEntry(MP4GenericAtom subsample, u32 sample_delta, 
+                                  u32 subsample_count,
+                                  MP4Handle subsample_size_array, 
+                                  MP4Handle subsample_priority_array,
+                                  MP4Handle subsample_discardable_array);
+  MP4_EXTERN(MP4Err) 
+  MP4AddTrackGroup(MP4Track theTrack, u32 groupID, u32 dependencyType);
   MP4_EXTERN(MP4Err)
   MP4AddTrackToMovieIOD(MP4Track theTrack);
 

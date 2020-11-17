@@ -26,7 +26,7 @@
  * All rights reserved.
  */
 /*
-        $Id: MP4Atoms.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
+  $Id: MP4Atoms.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -558,7 +558,7 @@ MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom)
 
   case MP4SampletoGroupAtomType:
   case MP4CompactSampletoGroupAtomType:
-    err = MP4CreateSampletoGroupAtom((MP4SampletoGroupAtomPtr *)&newAtom, SAMPLE_GROUP_COMPACT);
+    err = MP4CreateSampletoGroupAtom((MP4SampletoGroupAtomPtr *)&newAtom, SAMPLE_GROUP_NORMAL);
     break;
 
   case ISOMetaAtomType:

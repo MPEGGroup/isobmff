@@ -21,8 +21,8 @@
  derivative works. Copyright (c) 2014.
  */
 /*
- $Id: MetaboxRelationAtom.c,v 1.1.1.1 2014/11/07 08:10:00 armin Exp $
- */
+  $Id: MetaboxRelationAtom.c,v 1.1.1.1 2014/11/07 08:10:00 armin Exp $
+*/
 
 #include "MP4Atoms.h"
 #include <stdlib.h>
@@ -30,17 +30,9 @@
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
   ISOMetaboxRelationAtomPtr self = (ISOMetaboxRelationAtomPtr)s;
-  err                            = MP4NoErr;
-
-  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
-
+  if(self == NULL) return;
   if(self->super) self->super->destroy(s);
-bail:
-  TEST_RETURN(err);
-
-  return;
 }
 
 static MP4Err serialize(struct MP4Atom *s, char *buffer)

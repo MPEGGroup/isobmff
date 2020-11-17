@@ -54,7 +54,6 @@ static MP4Err doOpen(struct FileMappingObjectRecord *s, const char *pathname)
 {
   MP4Err err;
   struct stat info;
-  long count;
   char *separator;
 
   SimpleFileMappingObject self = (SimpleFileMappingObject)s;
@@ -71,7 +70,6 @@ static MP4Err doOpen(struct FileMappingObjectRecord *s, const char *pathname)
   self->size   = info.st_size;
   self->data   = (char *)malloc(self->size);
   if(self->data == NULL) BAILWITHERROR(MP4IOErr);
-  count = self->size;
   if(read(self->fd, self->data, self->size) != ((s32)self->size))
   {
     BAILWITHERROR(MP4IOErr);

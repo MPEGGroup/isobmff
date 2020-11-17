@@ -113,6 +113,8 @@ ISO_EXTERN(ISOErr) ISONewMovieMeta(ISOMovie theMovie, u32 metaType, ISOMeta *out
   err = newMeta(&myMeta, metaType);
   if(err) goto bail;
 
+  mecoPtr = NULL;
+
   if(movieAtom->meta != NULL)
   {
     if(movieAtom->meta->type == metaType) BAILWITHERROR(MP4BadParamErr);
@@ -158,6 +160,8 @@ ISO_EXTERN(ISOErr) ISONewTrackMeta(ISOTrack theTrack, u32 metaType, ISOMeta *out
   err = newMeta(&myMeta, metaType);
   if(err) goto bail;
   trak = (MP4TrackAtomPtr)theTrack;
+
+  mecoPtr = NULL;
 
   if(trak->meta != NULL)
   {
@@ -1476,6 +1480,8 @@ ISO_EXTERN(ISOErr) ISOGetItemData(ISOMetaItem item, MP4Handle data, u64 *base_of
   ISOItemDataAtomPtr idat;
 
   err    = MP4NoErr;
+  dhlr   = NULL;
+  idat   = NULL;
   myItem = (MetaItemLocationPtr)item;
   if(myItem == NULL) BAILWITHERROR(MP4BadParamErr)
 

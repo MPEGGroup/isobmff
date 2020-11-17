@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: SampleTableAtom.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
+  $Id: SampleTableAtom.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -706,13 +706,11 @@ static MP4Err getSampleGroupSampleNumbers(struct MP4SampleTableAtom *self, u32 g
                                           u32 groupIndex, u32 **outSampleNumbers, u32 *outSampleCnt)
 {
   MP4Err err;
-
-  u32 i;
-  u32 cur_index, cur_count;
+  MP4SampletoGroupAtomPtr theGroup;
+  u32 i, cur_index, cur_count;
   *outSampleCnt = 0;
   TESTMALLOC(*outSampleNumbers);
 
-  MP4SampletoGroupAtomPtr theGroup;
   err = MP4FindGroupAtom(self->sampletoGroupList, groupType, (MP4AtomPtr *)&theGroup);
   if(theGroup)
   {
@@ -804,7 +802,7 @@ bail:
   return err;
 }
 
-MP4Err getSampleAuxiliaryInformation(struct MP4SampleTableAtom *self,
+static MP4Err getSampleAuxiliaryInformation(struct MP4SampleTableAtom *self,
                                      u8 isUsingAuxInfoPropertiesFlag, u32 aux_info_type,
                                      u32 aux_info_type_parameter,
                                      MP4SampleAuxiliaryInformationSizesAtomPtr *saizOut,

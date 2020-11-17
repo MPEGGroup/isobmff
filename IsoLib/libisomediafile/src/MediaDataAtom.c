@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: MediaDataAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
+  $Id: MediaDataAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -99,7 +99,7 @@ static MP4Err writeToFile(struct MP4MediaDataAtom *self, FILE *fd)
     if(written != (self->dataSize - FORCE_OFFSET)) BAILWITHERROR(MP4IOErr)
 #else
     written = fwrite(self->data, 1, (size_t)self->dataSize, fd);
-    if(written != self->dataSize) BAILWITHERROR(MP4IOErr)
+    if(written != (size_t)self->dataSize) BAILWITHERROR(MP4IOErr)
 #endif
     self->bytesWritten += written;
     /* this is not reliable because bytesWritten is only a 32 and we may have written more */

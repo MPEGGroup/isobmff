@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: EditListAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
+  $Id: EditListAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -75,11 +75,8 @@ static MP4Err getTrackOffset(struct MP4EditListAtom *self, u32 *outTrackStartTim
 {
   MP4Err err;
   u32 entryCount;
-  edtsEntryPtr p;
 
   err = MP4NoErr;
-  p   = NULL;
-
   err = MP4GetListEntryCount(self->entryList, &entryCount);
   if(entryCount == 0)
   {

@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999, 2000.
 */
 /*
-        $Id: MP4Media.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
+  $Id: MP4Media.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
 */
 #include "MP4Movies.h"
 #include "MP4Atoms.h"
@@ -1355,7 +1355,6 @@ MP4GetMediaNextInterestingTime(MP4Media theMedia,
   MP4MediaInformationAtomPtr minf;
   MP4SampleTableAtomPtr stbl;
   MP4TimeToSampleAtomPtr stts;
-  MP4SyncSampleAtomPtr stss;
   s64 priorSample;
   s64 exactSample;
   s64 nextSample;
@@ -1382,7 +1381,6 @@ MP4GetMediaNextInterestingTime(MP4Media theMedia,
   {
     BAILWITHERROR(MP4InvalidMediaErr);
   }
-  stss = (MP4SyncSampleAtomPtr)stbl->SyncSample;
   err  = stts->findSamples(stbl->TimeToSample, searchFromTime, &priorSample, &exactSample,
                           &nextSample, &sampleNumber, &sampleDuration);
   if(err) goto bail;
@@ -1429,7 +1427,6 @@ MP4Err MP4GetMediaSampleDescIndex(MP4Media theMedia, u64 desiredTime,
   MP4MediaInformationAtomPtr minf;
   MP4SampleTableAtomPtr stbl;
   MP4TimeToSampleAtomPtr stts;
-  MP4SyncSampleAtomPtr stss;
   MP4SampleSizeAtomPtr stsz;
   MP4SampleToChunkAtomPtr stsc;
 
@@ -1462,7 +1459,6 @@ MP4Err MP4GetMediaSampleDescIndex(MP4Media theMedia, u64 desiredTime,
   {
     BAILWITHERROR(MP4InvalidMediaErr);
   }
-  stss = (MP4SyncSampleAtomPtr)stbl->SyncSample;
   stsz = (MP4SampleSizeAtomPtr)stbl->SampleSize;
   if(stsz == NULL)
   {

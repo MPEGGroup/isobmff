@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: DataEntryURNAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
+  $Id: DataEntryURNAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -30,10 +30,8 @@ derivative works. Copyright (c) 1999.
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
   MP4DataEntryURNAtomPtr self = (MP4DataEntryURNAtomPtr)s;
-  err                         = MP4NoErr;
-  if(s == NULL) BAILWITHERROR(MP4BadParamErr)
+  if(s == NULL) return;
 
   if(self->nameURN)
   {
@@ -42,10 +40,6 @@ static void destroy(MP4AtomPtr s)
   }
 
   if(s->super) s->super->destroy(s);
-bail:
-  TEST_RETURN(err);
-
-  return;
 }
 
 static MP4Err getOffset(struct MP4DataEntryAtom *self, u64 *outOffset)

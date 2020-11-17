@@ -75,20 +75,14 @@ bail:
 
 static void destroy(struct MP4IPMPXDataRecord *s)
 {
-  MP4Err err;
-
   MP4IPMPXDefaultDataPtr self = (MP4IPMPXDefaultDataPtr)s;
-  err                         = MP4NoErr;
-  if(s == NULL) BAILWITHERROR(MP4BadParamErr);
+  if(s == NULL) return;
   if(self->data)
   {
     free(self->data);
     self->data = NULL;
   }
   free(s);
-
-bail:
-  return;
 }
 
 MP4Err MP4CreateIPMPXDefaultData(u32 tag, u32 size, u32 bytesRead, MP4IPMPXDataPtr *outData)

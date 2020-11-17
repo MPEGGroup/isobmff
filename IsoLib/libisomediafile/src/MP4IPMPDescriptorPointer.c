@@ -85,12 +85,8 @@ bail:
 
 static void destroy(struct MP4DescriptorRecord *s)
 {
-  MP4Err err;
-  err = MP4NoErr;
-  if(s == NULL) BAILWITHERROR(MP4BadParamErr);
+  if(s == NULL) return;
   free(s);
-bail:
-  return;
 }
 
 MP4Err MP4CreateIPMPDescriptorPointer(u32 tag, u32 size, u32 bytesRead, MP4DescriptorPtr *outDesc)

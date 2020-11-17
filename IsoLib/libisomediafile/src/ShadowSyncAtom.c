@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: ShadowSyncAtom.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
+  $Id: ShadowSyncAtom.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -29,21 +29,15 @@ derivative works. Copyright (c) 1999.
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
   MP4ShadowSyncAtomPtr self;
-  err  = MP4NoErr;
   self = (MP4ShadowSyncAtomPtr)s;
-  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+  if(self == NULL) return;
   if(self->entries)
   {
     free(self->entries);
     self->entries = NULL;
   }
   if(self->super) self->super->destroy(s);
-bail:
-  TEST_RETURN(err);
-
-  return;
 }
 
 typedef struct

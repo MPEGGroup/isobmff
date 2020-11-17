@@ -36,25 +36,14 @@
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
-  MP4SegmentTypeAtomPtr self;
-
-  err  = MP4NoErr;
-  self = (MP4SegmentTypeAtomPtr)s;
-
-  if(self == NULL) BAILWITHERROR(MP4BadParamErr);
-
+  MP4SegmentTypeAtomPtr self = (MP4SegmentTypeAtomPtr)s;
+  if(self == NULL) return;
   if(self->compatibilityList)
   {
     free(self->compatibilityList);
     self->compatibilityList = NULL;
   }
-
   if(self->super) self->super->destroy(s);
-bail:
-  TEST_RETURN(err);
-
-  return;
 }
 
 static ISOErr serialize(struct MP4Atom *s, char *buffer)

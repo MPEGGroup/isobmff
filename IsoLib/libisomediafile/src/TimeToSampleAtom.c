@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: TimeToSampleAtom.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
+  $Id: TimeToSampleAtom.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -211,8 +211,6 @@ static MP4Err getTimeForSampleNumber(MP4AtomPtr s, u32 sampleNumber, u64 *outSam
 #endif
     {
       /* this is the desired entry */
-      u64 sampleOffset;
-      sampleOffset   = sampleNumber - entrySampleNumber;
       sampleCTS      = entryTime + ((sampleNumber - entrySampleNumber) * pe->sampleDuration);
       sampleDuration = pe->sampleDuration;
       break;

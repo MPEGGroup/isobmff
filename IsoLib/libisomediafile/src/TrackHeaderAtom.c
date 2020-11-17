@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: TrackHeaderAtom.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
+  $Id: TrackHeaderAtom.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -30,14 +30,8 @@ derivative works. Copyright (c) 1999.
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
-  err = MP4NoErr;
-  if(s == NULL) BAILWITHERROR(MP4BadParamErr)
+  if(s == NULL) return;
   if(s->super) s->super->destroy(s);
-bail:
-  TEST_RETURN(err);
-
-  return;
 }
 
 static MP4Err serialize(struct MP4Atom *s, char *buffer)

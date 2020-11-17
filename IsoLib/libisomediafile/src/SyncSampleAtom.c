@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: SyncSampleAtom.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
+  $Id: SyncSampleAtom.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -31,21 +31,15 @@ derivative works. Copyright (c) 1999.
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
   MP4SyncSampleAtomPtr self;
-  err  = MP4NoErr;
   self = (MP4SyncSampleAtomPtr)s;
-  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+  if(self == NULL) return;
   if(self->sampleNumbers)
   {
     free(self->sampleNumbers);
     self->sampleNumbers = NULL;
   }
   if(self->super) self->super->destroy(s);
-bail:
-  TEST_RETURN(err);
-
-  return;
 }
 
 static MP4Err isSyncSample(MP4AtomPtr s, u32 sampleNumber, u32 *outSync)

@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: MdatDataHandler.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
+  $Id: MdatDataHandler.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
 */
 #include "MP4Movies.h"
 #include "MP4Impl.h"
@@ -33,15 +33,9 @@ derivative works. Copyright (c) 1999.
 static MP4Err doOpen(struct MP4DataHandler *s, struct MP4InputStreamRecord *inputStream,
                      MP4DataEntryAtomPtr dataEntry)
 {
-  u64 b;
-  MP4DataEntryAtomPtr d;
-
-  b = inputStream->available;
-  d = dataEntry;
-
-  if(s == NULL) return MP4BadParamErr;
+  if(s == NULL || inputStream == NULL || dataEntry == NULL) return MP4BadParamErr;
   else
-    return MP4NoErr;
+    return MP4NotImplementedErr;
 }
 
 static MP4Err doClose(struct MP4DataHandler *s)

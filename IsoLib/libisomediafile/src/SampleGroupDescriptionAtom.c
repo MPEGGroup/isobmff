@@ -27,12 +27,10 @@ derivative works. Copyright (c) 1999.
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
   u32 i;
   MP4SampleGroupDescriptionAtomPtr self;
-  err  = MP4NoErr;
   self = (MP4SampleGroupDescriptionAtomPtr)s;
-  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+  if(self == NULL) return;
   if(self->groups != NULL)
   {
     for(i = 0; i < self->groupCount; i++)
@@ -42,10 +40,6 @@ static void destroy(MP4AtomPtr s)
     self->groups = NULL;
   }
   if(self->super) self->super->destroy(s);
-bail:
-  TEST_RETURN(err);
-
-  return;
 }
 
 static MP4Err addGroupDescription(struct MP4SampleGroupDescriptionAtom *self,

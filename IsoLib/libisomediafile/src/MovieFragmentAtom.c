@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: MovieFragmentAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
+  $Id: MovieFragmentAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -98,8 +98,7 @@ static MP4Err mergeFragments(struct MP4MovieFragmentAtom *self, MP4MovieAtomPtr 
     u32 groupDescriptionCount;
     ISOHandle desc;
     u32 n;
-    u32 descIdx;
-    MP4SampleGroupDescriptionAtomPtr groupDescriptionTraf, groupDescriptionStbl;
+    MP4SampleGroupDescriptionAtomPtr groupDescriptionTraf;
     MP4MediaInformationAtomPtr minf;
     MP4SampleTableAtomPtr stbl;
 

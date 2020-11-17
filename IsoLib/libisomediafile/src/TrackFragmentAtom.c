@@ -91,13 +91,12 @@ static MP4Err mdatMoved(struct MP4MediaInformationAtom *s, u64 mdatBase, u64 mda
   MP4Err err;
   MP4TrackFragmentAtomPtr self;
   MP4TrackFragmentHeaderAtomPtr tfhd;
-  u64 mdatSize;
 
   self = (MP4TrackFragmentAtomPtr)s;
 
   err = MP4NoErr;
-  mdatSize =
-      mdatEnd - mdatBase; /* not something we need to know, but it avoids an unused param warning */
+  (void)mdatBase;
+  (void)mdatEnd;
 
   tfhd = (MP4TrackFragmentHeaderAtomPtr)self->tfhd;
   if(tfhd == NULL) BAILWITHERROR(MP4BadParamErr)
@@ -385,16 +384,13 @@ static MP4Err calculateSize(struct MP4Atom *s)
   MP4Err err;
   MP4TrackFragmentAtomPtr self = (MP4TrackFragmentAtomPtr)s;
   MP4TrackFragmentHeaderAtomPtr tfhd;
-  MP4TrackFragmentDecodeTimeAtomPtr tfdt;
 
   u32 tfhd_flags;
   u32 i;
   u32 atomListSize;
 
-  err = MP4NoErr;
-
+  err  = MP4NoErr;
   tfhd = (MP4TrackFragmentHeaderAtomPtr)self->tfhd;
-  tfdt = (MP4TrackFragmentDecodeTimeAtomPtr)self->tfdt;
 
   tfhd->default_sample_duration = 0;
   tfhd->default_sample_flags    = 0;
@@ -641,7 +637,7 @@ bail:
   return err;
 }
 
-MP4Err mergeSampleAuxiliaryInformation(struct MP4TrackFragmentAtom *self, MP4MediaAtomPtr mdia)
+static MP4Err mergeSampleAuxiliaryInformation(struct MP4TrackFragmentAtom *self, MP4MediaAtomPtr mdia)
 {
   u32 i;
   MP4Err err;
@@ -682,7 +678,7 @@ bail:
   return err;
 }
 
-MP4Err getSampleAuxiliaryInfoFromTrackFragment(struct MP4TrackFragmentAtom *self,
+static MP4Err getSampleAuxiliaryInfoFromTrackFragment(struct MP4TrackFragmentAtom *self,
                                                u8 isUsingAuxInfoPropertiesFlag, u32 aux_info_type,
                                                u32 aux_info_type_parameter,
                                                MP4SampleAuxiliaryInformationSizesAtomPtr *saizOut,

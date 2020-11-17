@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: SecurityInfoAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
+  $Id: SecurityInfoAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -32,12 +32,8 @@ derivative works. Copyright (c) 1999.
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
-
   MP4SecurityInfoAtomPtr self = (MP4SecurityInfoAtomPtr)s;
-  err                         = MP4NoErr;
-
-  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+  if(self == NULL) return;
   if(self->MP4OriginalFormat)
   {
     self->MP4OriginalFormat->destroy(self->MP4OriginalFormat);
@@ -53,12 +49,7 @@ static void destroy(MP4AtomPtr s)
     self->MP4SchemeInfo->destroy(self->MP4SchemeInfo);
     self->MP4SchemeInfo = NULL;
   }
-
   if(self->super) self->super->destroy(s);
-bail:
-  TEST_RETURN(err);
-
-  return;
 }
 
 static MP4Err serialize(struct MP4Atom *s, char *buffer)

@@ -160,3 +160,5 @@ bail:
 
 #endif
 */
+
+typedef int suppress_iso_compiler_warning_empty_translation;

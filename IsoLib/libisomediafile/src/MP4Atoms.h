@@ -1734,7 +1734,7 @@ typedef struct
   MP4CompactSampleToGroupPatternEntryPtr patternEntries;
   u32 *indexDescriptionArray;
 
-} CompressedGroupInfo;
+} CompressedGroupInfo, *CompressedGroupInfoPtr;
 
 typedef struct MP4SampletoGroupAtom
 {

@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: MovieTracks.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
+  $Id: MovieTracks.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
 */
 
 #include "MP4Movies.h"

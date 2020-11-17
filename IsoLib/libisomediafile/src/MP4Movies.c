@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999, 2000.
 */
 /*
-        $Id: MP4Movies.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
+  $Id: MP4Movies.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
 */
 #include "MP4Movies.h"
 #include "MP4Atoms.h"
@@ -968,7 +968,7 @@ bail:
   return err;
 }
 
-ISO_EXTERN(u32)
+ISO_EXTERN(MP4Err)
 ISOIsMovieCompatibleBrand(ISOMovie theMovie, u32 brand)
 {
   ISOFileTypeAtomPtr ftyp;
@@ -977,11 +977,11 @@ ISOIsMovieCompatibleBrand(ISOMovie theMovie, u32 brand)
   GETMOOV(theMovie);
   ftyp = (ISOFileTypeAtomPtr)moov->ftyp;
   if(ftyp) outval = ftyp->getStandard(ftyp, brand);
-  else
-    BAILWITHERROR(MP4NoQTAtomErr)
+  else BAILWITHERROR(MP4NoQTAtomErr)
+  if(outval != brand) err = MP4NotFoundErr;
 bail:
   TEST_RETURN(err);
-  return outval;
+  return err;
 }
 
 MP4_EXTERN(MP4Err)

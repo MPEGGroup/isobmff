@@ -29,21 +29,15 @@ derivative works. Copyright (c) 1999.
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
   MP4SampleDependencyAtomPtr self;
-  err  = MP4NoErr;
   self = (MP4SampleDependencyAtomPtr)s;
-  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+  if(self == NULL) return;
   if(self->dependency != NULL)
   {
     free(self->dependency);
     self->dependency = NULL;
   }
   if(self->super) self->super->destroy(s);
-bail:
-  TEST_RETURN(err);
-
-  return;
 }
 
 static MP4Err ensureSize(struct MP4SampleDependencyAtom *self, u32 newSize)

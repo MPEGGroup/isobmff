@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 2014.
 */
 /*
- $Id: LoudnessAtom.c,v 1.1.1.1 2014/09/19 armin Exp $
+  $Id: LoudnessAtom.c,v 1.1.1.1 2014/09/19 armin Exp $
 */
 
 #include "MP4Atoms.h"
@@ -127,15 +127,12 @@ bail:
 static MP4Err calculateSize(struct MP4Atom *s)
 {
   MP4Err err;
-  u32 baseAtomFieldSize;
   MP4LoudnessAtomPtr self;
 
   self = (MP4LoudnessAtomPtr)s;
   err  = MP4NoErr;
   err  = MP4CalculateBaseAtomFieldSize((MP4AtomPtr)s);
   if(err) goto bail;
-
-  baseAtomFieldSize = self->size;
 
   ADD_ATOM_LIST_SIZE(trackLoudnessInfoList);
   ADD_ATOM_LIST_SIZE(albumLoudnessInfoList);

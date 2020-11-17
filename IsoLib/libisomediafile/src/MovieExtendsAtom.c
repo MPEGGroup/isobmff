@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: MovieExtendsAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
+  $Id: MovieExtendsAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -162,14 +162,13 @@ bail:
 static MP4Err maketrackfragments(struct MP4MovieExtendsAtom *self, MP4MovieFragmentAtomPtr moof,
                                  MP4MovieAtomPtr moov, MP4MediaDataAtomPtr mdat)
 {
-  u32 trackIdx;
   u32 i;
   MP4Err err;
   u32 trackCount;
   err = MP4NoErr;
 
   MP4GetListEntryCount(self->trackExtendsList, &trackCount);
-  for(i = 0, trackIdx = 0; i < trackCount; i++)
+  for(i = 0; i < trackCount; i++)
   {
     MP4TrackExtendsAtomPtr trex;
     MP4TrackFragmentAtomPtr traf;

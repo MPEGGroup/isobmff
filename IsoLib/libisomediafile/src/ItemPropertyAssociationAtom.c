@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-$Id: ItemPropertyContainerAtom.c,v 1.1.1.1 2016/09/14 armin Exp $
+  $Id: ItemPropertyContainerAtom.c,v 1.1.1.1 2016/09/14 armin Exp $
 */
 
 #include "MP4Atoms.h"
@@ -228,7 +228,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
       if(self->flags & 1)
       {
         GET16_V(propertyIndex->property_index);
-        propertyIndex->essential = propertyIndex->property_index & (1 << 15);
+        propertyIndex->essential = (u8)(propertyIndex->property_index & (1 << 15));
         if(propertyIndex->essential == 1)
         {
           propertyIndex->property_index &= ~(1 << 15);

@@ -46,7 +46,7 @@ static MP4Err addSubsegment(struct MP4SubsegmentIndexAtom *self, struct Subsegme
   err = MP4NoErr;
 
   err = MP4AddListEntry(ss, self->subsegmentsList);
-  /* if (err) goto bail; */
+  if (err) goto bail;
 
 bail:
   TEST_RETURN(err);
@@ -194,10 +194,8 @@ static MP4Err calculateSize(struct MP4Atom *s)
 
   for(i = 0; i < self->subsegmentCount; i++)
   {
-
-    self->size += 4;
-
     SubsegmentPtr ss;
+    self->size += 4;
     err = MP4GetListEntry(self->subsegmentsList, i, (char **)&ss);
     if(err) goto bail;
 

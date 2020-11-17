@@ -105,7 +105,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   /* constantFrameRate (2) + numTemporalLayers (3) + temporalIdNested (1) + lengthSizeMinusOne (2)
    */
   x = /*(1<<6) |*/ (1 << 3) | (self->sps_temporal_id_nesting_flag << 2) |
-      self->lengthSizeMinusOne + 3;
+      (self->lengthSizeMinusOne + 3);
   PUT8_V(x);
 
   PUT8(numOfArrays);

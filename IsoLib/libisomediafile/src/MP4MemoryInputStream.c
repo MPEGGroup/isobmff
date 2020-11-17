@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: MP4MemoryInputStream.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
+  $Id: MP4MemoryInputStream.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
 */
 #include "MP4InputStream.h"
 #include "MP4Impl.h"
@@ -75,6 +75,7 @@ static MP4Err read8(struct MP4InputStreamRecord *s, u32 *outVal, char *msg)
   u8 val;
   MP4MemoryInputStreamPtr self = (MP4MemoryInputStreamPtr)s;
   err                          = MP4NoErr;
+  val                          = 0;
   if((s == 0) || (outVal == 0)) BAILWITHERROR(MP4BadParamErr);
   err     = readData(s, 1, (char *)&val, NULL);
   *outVal = val;
