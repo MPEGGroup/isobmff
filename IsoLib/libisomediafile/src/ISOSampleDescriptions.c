@@ -573,7 +573,7 @@ ISONewXMLMetaDataSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptio
     BAILWITHERROR(MP4BadParamErr);
   }
 
-  err  = MP4CreateXMLMetaSampleEntryAtom((MP4XMLMetaSampleEntryAtomPtr *)&entry);
+  err = MP4CreateXMLMetaSampleEntryAtom((MP4XMLMetaSampleEntryAtomPtr *)&entry);
   if(err) goto bail;
 
   entry->dataReferenceIndex = dataReferenceIndex;
@@ -627,7 +627,7 @@ ISONewTextMetaDataSampleDescription(MP4Track theTrack, MP4Handle sampleDescripti
     BAILWITHERROR(MP4BadParamErr);
   }
 
-  err  = MP4CreateTextMetaSampleEntryAtom((MP4TextMetaSampleEntryAtomPtr *)&entry);
+  err = MP4CreateTextMetaSampleEntryAtom((MP4TextMetaSampleEntryAtomPtr *)&entry);
   if(err) goto bail;
 
   entry->dataReferenceIndex = dataReferenceIndex;

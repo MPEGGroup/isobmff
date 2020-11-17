@@ -367,9 +367,9 @@ extern "C"
   ISO_EXTERN(ISOErr)
   ISOGetRESVOriginalFormat(MP4Handle sampleEntryH, u32 *outOrigFmt);
   ISO_EXTERN(ISOErr)
-  ISONewHEVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 dataReferenceIndex,
-                            u32 length_size, MP4Handle first_sps, MP4Handle first_pps,
-                            MP4Handle first_vps);
+  ISONewHEVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
+                              u32 dataReferenceIndex, u32 length_size, MP4Handle first_sps,
+                              MP4Handle first_pps, MP4Handle first_vps);
   /* 3GPP media */
   MP4_EXTERN(MP4Err)
   ISOAddBitrateToSampleDescription(MP4Handle sampleEntryH, u8 is_3GPP, u32 buffersizeDB,
@@ -429,7 +429,8 @@ extern "C"
   ISOGetItemReferences(ISOMetaItem item, u32 reference_type, u16 *reference_count,
                        MP4Handle to_item_IDs);
   ISO_EXTERN(ISOErr)
-  ISOGetItemReference(ISOMetaItem item, u32 reference_type, u16 reference_index, ISOMetaItem *outItem);
+  ISOGetItemReference(ISOMetaItem item, u32 reference_type, u16 reference_index,
+                      ISOMetaItem *outItem);
   ISO_EXTERN(ISOErr)
   ISOAddPrimaryData(ISOMeta meta, u32 box_type, MP4Handle data, u8 is_full_atom);
   ISO_EXTERN(ISOErr)

@@ -155,7 +155,7 @@ static MP4Err addOffsets(MP4AtomPtr s, u32 entryCount, MP4Handle sizesH)
   MP4Err err;
   MP4SampleAuxiliaryInformationOffsetsAtomPtr self = (MP4SampleAuxiliaryInformationOffsetsAtomPtr)s;
 
-  err = MP4NoErr;
+  err      = MP4NoErr;
   onlySize = 0;
 
   sizes = (u32 *)*sizesH;

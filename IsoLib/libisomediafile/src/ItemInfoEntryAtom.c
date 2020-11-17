@@ -143,7 +143,10 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
 
   if(self->version == 1)
   {
-    if(self->extension_type != 0) { PUT32(extension_type); }
+    if(self->extension_type != 0)
+    {
+      PUT32(extension_type);
+    }
 
     if(self->item_info_extension != NULL)
     {

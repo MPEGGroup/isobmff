@@ -71,10 +71,10 @@ static MP4Err addAtom(MP4TrackFragmentAtomPtr self, MP4AtomPtr atom)
   case MP4TrackRunAtomType:
     err = MP4AddListEntry(atom, self->atomList);
     break;
-  case MP4SampletoGroupAtomType: /* sbgp */
+  case MP4SampletoGroupAtomType:        /* sbgp */
   case MP4CompactSampletoGroupAtomType: /* csgp */
     err = MP4AddListEntry(atom, self->sampletoGroupList);
-    break; 
+    break;
   case MP4SampleGroupDescriptionAtomType: /* sgpd */
     err = MP4AddListEntry(atom, self->groupDescriptionList);
     break;
@@ -313,8 +313,8 @@ bail:
   return err;
 }
 
-static MP4Err addGroupDescription(MP4TrackFragmentAtomPtr self, u32 theType, MP4Handle theDescription,
-                                  u32 *index)
+static MP4Err addGroupDescription(MP4TrackFragmentAtomPtr self, u32 theType,
+                                  MP4Handle theDescription, u32 *index)
 {
   MP4Err err;
   MP4SampleGroupDescriptionAtomPtr theGroup;
@@ -637,7 +637,8 @@ bail:
   return err;
 }
 
-static MP4Err mergeSampleAuxiliaryInformation(struct MP4TrackFragmentAtom *self, MP4MediaAtomPtr mdia)
+static MP4Err mergeSampleAuxiliaryInformation(struct MP4TrackFragmentAtom *self,
+                                              MP4MediaAtomPtr mdia)
 {
   u32 i;
   MP4Err err;
@@ -678,11 +679,10 @@ bail:
   return err;
 }
 
-static MP4Err getSampleAuxiliaryInfoFromTrackFragment(struct MP4TrackFragmentAtom *self,
-                                               u8 isUsingAuxInfoPropertiesFlag, u32 aux_info_type,
-                                               u32 aux_info_type_parameter,
-                                               MP4SampleAuxiliaryInformationSizesAtomPtr *saizOut,
-                                               MP4SampleAuxiliaryInformationOffsetsAtomPtr *saioOut)
+static MP4Err getSampleAuxiliaryInfoFromTrackFragment(
+    struct MP4TrackFragmentAtom *self, u8 isUsingAuxInfoPropertiesFlag, u32 aux_info_type,
+    u32 aux_info_type_parameter, MP4SampleAuxiliaryInformationSizesAtomPtr *saizOut,
+    MP4SampleAuxiliaryInformationOffsetsAtomPtr *saioOut)
 {
   MP4Err err;
   u32 i;
@@ -778,7 +778,8 @@ bail:
   return err;
 }
 
-static MP4Err changeSamplestoGroupType(struct MP4MediaInformationAtom *s, sampleToGroupType_t sampleToGroupType)
+static MP4Err changeSamplestoGroupType(struct MP4MediaInformationAtom *s,
+                                       sampleToGroupType_t sampleToGroupType)
 {
   MP4Err err;
   u32 i, count;
@@ -787,7 +788,7 @@ static MP4Err changeSamplestoGroupType(struct MP4MediaInformationAtom *s, sample
   if(s == NULL) BAILWITHERROR(MP4BadParamErr);
 
   self = (MP4TrackFragmentAtomPtr)s;
-  
+
   err = MP4GetListEntryCount(self->sampletoGroupList, &count);
   if(err) goto bail;
 
@@ -847,7 +848,7 @@ static MP4Err mapSamplestoGroup(struct MP4MediaInformationAtom *s, u32 groupType
   }
 
   err = theGroup->mapSamplestoGroup(theGroup, group_index, sample_index, count);
-  if(err) goto bail;  
+  if(err) goto bail;
 
 bail:
   TEST_RETURN(err);
@@ -866,7 +867,8 @@ static MP4Err getSampleGroupMap(MP4TrackFragmentAtomPtr self, u32 groupType, u32
     err = theGroup->getSampleGroupMap(theGroup, sample_number, group_index);
     if(err) goto bail;
   }
-  else BAILWITHERROR(MP4BadParamErr);
+  else
+    BAILWITHERROR(MP4BadParamErr);
 
 bail:
   TEST_RETURN(err);
@@ -968,11 +970,11 @@ MP4Err MP4CreateTrackFragmentAtom(MP4TrackFragmentAtomPtr *outAtom)
   self->mergeRuns          = mergeRuns;
   self->calculateDataEnd   = calculateDataEnd;
 
-  self->addGroupDescription = addGroupDescription;
+  self->addGroupDescription      = addGroupDescription;
   self->changeSamplestoGroupType = changeSamplestoGroupType;
-  self->mapSamplestoGroup   = mapSamplestoGroup;
-  self->getSampleGroupMap   = getSampleGroupMap;
-  self->getGroupDescription = getGroupDescription;
+  self->mapSamplestoGroup        = mapSamplestoGroup;
+  self->getSampleGroupMap        = getSampleGroupMap;
+  self->getGroupDescription      = getGroupDescription;
 
   self->setSampleDependency = setSampleDependency;
 

@@ -26,7 +26,7 @@
  * All rights reserved.
  */
 /*
-        $Id: MP4Atoms.h,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
+  $Id: MP4Atoms.h,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
 */
 
 #ifndef INCLUDED_MP4ATOMS_H
@@ -128,8 +128,8 @@ enum
   ISOItemProtectionAtomType                    = MP4_FOUR_CHAR_CODE('i', 'p', 'r', 'o'),
   ISOItemInfoAtomType                          = MP4_FOUR_CHAR_CODE('i', 'i', 'n', 'f'),
   ISOItemInfoEntryAtomType                     = MP4_FOUR_CHAR_CODE('i', 'n', 'f', 'e'),
-  ISOAdditionalMetaDataContainerAtomType       = MP4_FOUR_CHAR_CODE('m', 'e', 'c', 'o'), /* Deprecated */
-  ISOMetaboxRelationAtomType                   = MP4_FOUR_CHAR_CODE('m', 'e', 'r', 'e'), /* Deprecated */
+  ISOAdditionalMetaDataContainerAtomType       = MP4_FOUR_CHAR_CODE('m', 'e', 'c', 'o'),
+  ISOMetaboxRelationAtomType                   = MP4_FOUR_CHAR_CODE('m', 'e', 'r', 'e'),
   ISOItemDataAtomType                          = MP4_FOUR_CHAR_CODE('i', 'd', 'a', 't'),
   ISOItemReferenceAtomType                     = MP4_FOUR_CHAR_CODE('i', 'r', 'e', 'f'),
   ISOVCConfigAtomType                          = MP4_FOUR_CHAR_CODE('a', 'v', 'c', 'C'),
@@ -446,13 +446,14 @@ typedef struct MP4MediaAtom
   MP4Err (*settrackfragment)(struct MP4MediaAtom *self, MP4AtomPtr fragment);
   MP4Err (*addGroupDescription)(struct MP4MediaAtom *self, u32 groupType, MP4Handle description,
                                 u32 *index);
-  MP4Err (*changeSamplestoGroupType)(struct MP4MediaAtom *self, sampleToGroupType_t sampleToGroupType);
+  MP4Err (*changeSamplestoGroupType)(struct MP4MediaAtom *self,
+                                     sampleToGroupType_t sampleToGroupType);
   MP4Err (*mapSamplestoGroup)(struct MP4MediaAtom *self, u32 groupType, u32 group_index,
                               s32 sample_index, u32 count);
   MP4Err (*getSampleGroupMap)(struct MP4MediaAtom *self, u32 groupType, u32 sample_number,
                               u32 *group_index);
-  MP4Err (*getSampleGroupSampleNumbers)(struct MP4MediaAtom *self, u32 groupType,
-                              u32 groupIndex, u32 **outSampleNumbers, u32 *outSampleCnt);
+  MP4Err (*getSampleGroupSampleNumbers)(struct MP4MediaAtom *self, u32 groupType, u32 groupIndex,
+                                        u32 **outSampleNumbers, u32 *outSampleCnt);
   MP4Err (*getGroupDescription)(struct MP4MediaAtom *self, u32 groupType, u32 index,
                                 MP4Handle description);
 
@@ -540,7 +541,7 @@ typedef struct MP4MediaInformationAtom
   MP4Err (*getSampleGroupMap)(struct MP4MediaInformationAtom *self, u32 groupType,
                               u32 sample_number, u32 *group_index);
   MP4Err (*getSampleGroupSampleNumbers)(struct MP4MediaInformationAtom *self, u32 groupType,
-                              u32 groupIndex, u32 **outSampleNumbers, u32 *outSampleCnt);
+                                        u32 groupIndex, u32 **outSampleNumbers, u32 *outSampleCnt);
   MP4Err (*getGroupDescription)(struct MP4MediaInformationAtom *self, u32 groupType, u32 index,
                                 MP4Handle description);
   MP4Err (*getSampleDependency)(struct MP4MediaInformationAtom *self, u32 sampleNumber,
@@ -712,13 +713,14 @@ typedef struct MP4SampleTableAtom
   MP4Err (*setDefaultSampleEntry)(struct MP4SampleTableAtom *self, u32 index);
   MP4Err (*addGroupDescription)(struct MP4SampleTableAtom *self, u32 theType,
                                 MP4Handle theDescription, u32 *index);
-  MP4Err (*changeSamplestoGroupType)(struct MP4SampleTableAtom *self, sampleToGroupType_t sampleToGroupType);
+  MP4Err (*changeSamplestoGroupType)(struct MP4SampleTableAtom *self,
+                                     sampleToGroupType_t sampleToGroupType);
   MP4Err (*mapSamplestoGroup)(struct MP4SampleTableAtom *self, u32 groupType, u32 group_index,
                               s32 sample_index, u32 count, sampleToGroupType_t sampleToGroupType);
   MP4Err (*getSampleGroupMap)(struct MP4SampleTableAtom *self, u32 groupType, u32 sample_number,
                               u32 *group_index);
   MP4Err (*getSampleGroupSampleNumbers)(struct MP4SampleTableAtom *self, u32 groupType,
-                              u32 groupIndex, u32 **outSampleNumbers, u32 *outSampleCnt);
+                                        u32 groupIndex, u32 **outSampleNumbers, u32 *outSampleCnt);
   MP4Err (*getGroupDescription)(struct MP4SampleTableAtom *self, u32 theType, u32 index,
                                 MP4Handle theDescription);
 
@@ -732,8 +734,8 @@ typedef struct MP4SampleTableAtom
                                           MP4SampleAuxiliaryInformationSizesAtomPtr *saizOut,
                                           MP4SampleAuxiliaryInformationOffsetsAtomPtr *saioOut);
 
-
-  MP4Err (*mergeSampleGroupDescriptions)(struct MP4SampleTableAtom *self, MP4AtomPtr otherSampleGroupDescr);
+  MP4Err (*mergeSampleGroupDescriptions)(struct MP4SampleTableAtom *self,
+                                         MP4AtomPtr otherSampleGroupDescr);
 
   MP4AtomPtr TimeToSample;
   MP4AtomPtr CompositionOffset;
@@ -1348,7 +1350,7 @@ typedef struct MP4TrackFragmentAtom
   MP4Err (*getSampleGroupMap)(struct MP4TrackFragmentAtom *self, u32 groupType, u32 sample_number,
                               u32 *group_index);
   MP4Err (*getSampleGroupSampleNumbers)(struct MP4TrackFragmentAtom *self, u32 groupType,
-                              u32 groupIndex, u32 **outSampleNumbers, u32 *outSampleCnt);
+                                        u32 groupIndex, u32 **outSampleNumbers, u32 *outSampleCnt);
   MP4Err (*getGroupDescription)(struct MP4TrackFragmentAtom *self, u32 theType, u32 index,
                                 MP4Handle theDescription);
   u32 default_sample_description_index; /* all copied from the matching trex */
@@ -1360,9 +1362,9 @@ typedef struct MP4TrackFragmentAtom
   u32 samples_use_mdat; /* 0 -- not yet decided, 1=yes, 2=no */
   u8 useSignedCompositionTimeOffsets;
 
-  MP4LinkedList atomList;               /* track runs */
-  MP4LinkedList groupDescriptionList;   /* sample group description list */
-  MP4LinkedList sampletoGroupList;      /* sample to group maps */
+  MP4LinkedList atomList;             /* track runs */
+  MP4LinkedList groupDescriptionList; /* sample group description list */
+  MP4LinkedList sampletoGroupList;    /* sample to group maps */
   MP4LinkedList saizList;
   MP4LinkedList saioList;
 } MP4TrackFragmentAtom, *MP4TrackFragmentAtomPtr;
@@ -1710,7 +1712,8 @@ typedef struct MP4SampleGroupDescriptionAtom
                                 MP4Handle theDescription, u32 *index);
   MP4Err (*getGroupDescription)(struct MP4SampleGroupDescriptionAtom *self, u32 index,
                                 MP4Handle theDescription);
-  MP4Err (*findGroupDescriptionIdx)(struct MP4SampleGroupDescriptionAtom *self, MP4Handle searchH, u32 *index);
+  MP4Err (*findGroupDescriptionIdx)(struct MP4SampleGroupDescriptionAtom *self, MP4Handle searchH,
+                                    u32 *index);
 
 } MP4SampleGroupDescriptionAtom, *MP4SampleGroupDescriptionAtomPtr;
 
@@ -1756,7 +1759,8 @@ typedef struct MP4SampletoGroupAtom
   MP4Err (*addSamples)(struct MP4SampletoGroupAtom *self, u32 count);
   MP4Err (*mapSamplestoGroup)(struct MP4SampletoGroupAtom *self, u32 group_index, s32 sample_index,
                               u32 count);
-  MP4Err (*changeSamplestoGroupType)(struct MP4SampletoGroupAtom *self, sampleToGroupType_t sampleToGroupType);
+  MP4Err (*changeSamplestoGroupType)(struct MP4SampletoGroupAtom *self,
+                                     sampleToGroupType_t sampleToGroupType);
   MP4Err (*getSampleGroupMap)(struct MP4SampletoGroupAtom *self, u32 sampleNumber, u32 *groupIndex);
 } MP4SampletoGroupAtom, *MP4SampletoGroupAtomPtr;
 
@@ -2120,7 +2124,8 @@ MP4Err MP4CreateEncVisualSampleEntryAtom(MP4EncVisualSampleEntryAtomPtr *outAtom
 MP4Err MP4CreateEncBaseAtom(MP4EncBaseSampleEntryAtomPtr outAtom);
 #endif
 
-MP4Err MP4CreateSampletoGroupAtom(MP4SampletoGroupAtomPtr *outAtom, sampleToGroupType_t sampleToGroupType);
+MP4Err MP4CreateSampletoGroupAtom(MP4SampletoGroupAtomPtr *outAtom,
+                                  sampleToGroupType_t sampleToGroupType);
 MP4Err MP4CreateSampleGroupDescriptionAtom(MP4SampleGroupDescriptionAtomPtr *outAtom);
 
 MP4Err MP4CreateSampleDependencyAtom(MP4SampleDependencyAtomPtr *outAtom);

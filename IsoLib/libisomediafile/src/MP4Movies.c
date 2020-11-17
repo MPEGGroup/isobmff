@@ -977,7 +977,8 @@ ISOIsMovieCompatibleBrand(ISOMovie theMovie, u32 brand)
   GETMOOV(theMovie);
   ftyp = (ISOFileTypeAtomPtr)moov->ftyp;
   if(ftyp) outval = ftyp->getStandard(ftyp, brand);
-  else BAILWITHERROR(MP4NoQTAtomErr)
+  else
+    BAILWITHERROR(MP4NoQTAtomErr)
   if(outval != brand) err = MP4NotFoundErr;
 bail:
   TEST_RETURN(err);

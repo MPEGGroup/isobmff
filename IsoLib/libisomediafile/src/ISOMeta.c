@@ -1934,7 +1934,7 @@ ISOAddMetaItemProperty(ISOMetaItem item, MP4GenericAtom *itemProperty, u8 essent
 
   if(myMeta->iprp == NULL)
   {
-    err = MP4CreateItemPropertiesAtom( (MP4ItemPropertiesAtomPtr*) &myMeta->iprp);
+    err = MP4CreateItemPropertiesAtom((MP4ItemPropertiesAtomPtr *)&myMeta->iprp);
     if(err) goto bail;
     err = MP4AddListEntry(myMeta->iprp, myMeta->atomList);
     if(err) goto bail;
@@ -1975,7 +1975,7 @@ ISOGetProperitesOfMetaItem(ISOMetaItem item, MP4GenericAtom **properties, u32 *p
 
   if(myMeta->iprp == NULL)
   {
-    err = MP4CreateItemPropertiesAtom( (MP4ItemPropertiesAtomPtr*) &myMeta->iprp);
+    err = MP4CreateItemPropertiesAtom((MP4ItemPropertiesAtomPtr *)&myMeta->iprp);
     if(err) goto bail;
     err = MP4AddListEntry(myMeta->iprp, myMeta->atomList);
     if(err) goto bail;

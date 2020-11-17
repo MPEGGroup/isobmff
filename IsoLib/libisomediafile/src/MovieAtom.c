@@ -460,7 +460,7 @@ static MP4Err getSampleDescriptionIndex(struct MP4MovieAtom *self, u32 trackID, 
   MP4SampleTableAtomPtr stbl;
   MP4Err err;
 
-  err = MP4NoErr;
+  err  = MP4NoErr;
   mdia = NULL;
 
   err = getTrackMedia(self, trackID, (MP4AtomPtr *)&mdia);

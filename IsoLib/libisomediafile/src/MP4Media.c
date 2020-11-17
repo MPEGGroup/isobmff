@@ -1381,7 +1381,7 @@ MP4GetMediaNextInterestingTime(MP4Media theMedia,
   {
     BAILWITHERROR(MP4InvalidMediaErr);
   }
-  err  = stts->findSamples(stbl->TimeToSample, searchFromTime, &priorSample, &exactSample,
+  err = stts->findSamples(stbl->TimeToSample, searchFromTime, &priorSample, &exactSample,
                           &nextSample, &sampleNumber, &sampleDuration);
   if(err) goto bail;
   if(outInterestingTime)

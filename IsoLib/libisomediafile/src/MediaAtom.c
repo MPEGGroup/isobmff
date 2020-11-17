@@ -324,10 +324,10 @@ static MP4Err addGroupDescription(struct MP4MediaAtom *self, u32 groupType, MP4H
   minf = (MP4MediaInformationAtomPtr)self->information; /* this can be 'traf' if fragmented */
   assert(minf);
   assert(minf->addGroupDescription);
-  
+
   err = minf->addGroupDescription(minf, groupType, description, index);
   if(err) goto bail;
-  
+
 bail:
   TEST_RETURN(err);
 
@@ -352,7 +352,8 @@ bail:
   return err;
 }
 
-static MP4Err changeSamplestoGroupType(struct MP4MediaAtom *self, sampleToGroupType_t sampleToGroupType)
+static MP4Err changeSamplestoGroupType(struct MP4MediaAtom *self,
+                                       sampleToGroupType_t sampleToGroupType)
 {
   MP4Err err;
   MP4MediaInformationAtomPtr minf;

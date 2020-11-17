@@ -46,7 +46,7 @@ static MP4Err addSubsegment(struct MP4SubsegmentIndexAtom *self, struct Subsegme
   err = MP4NoErr;
 
   err = MP4AddListEntry(ss, self->subsegmentsList);
-  if (err) goto bail;
+  if(err) goto bail;
 
 bail:
   TEST_RETURN(err);

@@ -146,15 +146,15 @@ static u8 SetFieldSize(u32 fieldSize)
   return 0;
 }
 
-static void AppendDescriptionIndexToCompactGroup(CompressedGroupInfo *compressedGroup, u32 descIndex,
-                                          u32 groupIndex)
+static void AppendDescriptionIndexToCompactGroup(CompressedGroupInfo *compressedGroup,
+                                                 u32 descIndex, u32 groupIndex)
 {
   assert(descIndex < compressedGroup->totalIndexDescriptionCount);
   compressedGroup->indexDescriptionArray[descIndex] = groupIndex;
 }
 
-static void AppendNewPatternEntry(CompressedGroupInfo *compressedGroup, u32 index, u32 patternLength,
-                           u32 sampleCount)
+static void AppendNewPatternEntry(CompressedGroupInfo *compressedGroup, u32 index,
+                                  u32 patternLength, u32 sampleCount)
 {
   assert(patternLength != 0);
   assert(sampleCount != 0);
@@ -167,14 +167,16 @@ static void AppendNewPatternEntry(CompressedGroupInfo *compressedGroup, u32 inde
 }
 
 static void SetMemoryCostForPattern(SampleGroupInfo *sampleGroup, u32 patternLength,
-                             u32 startPatternSampleIndex, u32 endPatternSampleIndex)
+                                    u32 startPatternSampleIndex, u32 endPatternSampleIndex)
 {
   s32 memoryCost;
   u32 sampleCount = endPatternSampleIndex - startPatternSampleIndex + 1;
 
   assert(startPatternSampleIndex + patternLength <= endPatternSampleIndex);
 
-  memoryCost = startPatternSampleIndex <= 0 ? sampleGroup->patternTracker[0].cumulativeMemoryCost : sampleGroup->patternTracker[startPatternSampleIndex - 1].cumulativeMemoryCost;
+  memoryCost = startPatternSampleIndex <= 0
+                   ? sampleGroup->patternTracker[0].cumulativeMemoryCost
+                   : sampleGroup->patternTracker[startPatternSampleIndex - 1].cumulativeMemoryCost;
   memoryCost += (patternLength * sampleGroup->groupIndexFieldSize);
 
   if(memoryCost < sampleGroup->patternTracker[endPatternSampleIndex].cumulativeMemoryCost)
@@ -368,9 +370,9 @@ static void CreateCompactSampleGroups(MP4SampletoGroupAtomPtr self)
   patternTracker[i].nextEfficientIndex);
   }*/
 
-  patternTracker   = sampleGroup.patternTracker;
-  descIndex        = 0;
-  nextIndex        = compressedGroup->efficientStartIndex;
+  patternTracker = sampleGroup.patternTracker;
+  descIndex      = 0;
+  nextIndex      = compressedGroup->efficientStartIndex;
   for(patternIndex = 0; patternIndex < compressedGroup->patternCount; patternIndex++)
   {
     u32 patternLength = patternTracker[nextIndex].patternLength;
@@ -530,14 +532,15 @@ bail:
   return err;
 }
 
-static MP4Err changeSamplestoGroupType(struct MP4SampletoGroupAtom *self, sampleToGroupType_t sampleToGroupType)
+static MP4Err changeSamplestoGroupType(struct MP4SampletoGroupAtom *self,
+                                       sampleToGroupType_t sampleToGroupType)
 {
   MP4Err err;
 
   if(self == NULL) BAILWITHERROR(MP4BadParamErr)
 
   self->sampleToGroupType = sampleToGroupType;
-  switch (self->sampleToGroupType)
+  switch(self->sampleToGroupType)
   {
   case SAMPLE_GROUP_NORMAL:
     self->type = MP4SampletoGroupAtomType;
@@ -679,9 +682,9 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   if(self->type == MP4CompactSampletoGroupAtomType)
   {
     self->flags = SetFieldSize(self->compressedGroup.indexFieldSize) |
-                (SetFieldSize(self->compressedGroup.sampleCountFieldSize) << 2) |
-                (SetFieldSize(self->compressedGroup.patternLengthFieldSize) << 4) |
-                (self->fragmentLocalIndexPresent ? 0x80 : 0);
+                  (SetFieldSize(self->compressedGroup.sampleCountFieldSize) << 2) |
+                  (SetFieldSize(self->compressedGroup.patternLengthFieldSize) << 4) |
+                  (self->fragmentLocalIndexPresent ? 0x80 : 0);
   }
 
   err = MP4SerializeCommonFullAtomFields((MP4FullAtomPtr)s, buffer);
@@ -721,25 +724,25 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   else
   {
     printf(" \n Field sizes of pattern is %d , sampleCount is %d , indexDescription is %d ",
-         self->compressedGroup.patternLengthFieldSize, self->compressedGroup.sampleCountFieldSize,
-         self->compressedGroup.indexFieldSize);
+           self->compressedGroup.patternLengthFieldSize, self->compressedGroup.sampleCountFieldSize,
+           self->compressedGroup.indexFieldSize);
 
     printf("\n Pattern count %d covering %d total samples ", self->compressedGroup.patternCount,
-          self->compressedGroup.totalSampleCount);
+           self->compressedGroup.totalSampleCount);
 
     for(i = 0; i < self->compressedGroup.patternCount; i++)
     {
       printf("\n Pattern length %d for %d samples ",
-            self->compressedGroup.patternEntries[i].patternLength,
-            self->compressedGroup.patternEntries[i].sampleCount);
+             self->compressedGroup.patternEntries[i].patternLength,
+             self->compressedGroup.patternEntries[i].sampleCount);
 
       /* Pattern entry is ensured to start at a byte boundary*/
       PackData(self, &buffer, self->compressedGroup.patternLengthFieldSize, 0,
-              self->compressedGroup.patternEntries[i].patternLength);
+               self->compressedGroup.patternEntries[i].patternLength);
 
       PackData(self, &buffer, self->compressedGroup.sampleCountFieldSize,
-              (self->compressedGroup.patternLengthFieldSize == 4),
-              self->compressedGroup.patternEntries[i].sampleCount);
+               (self->compressedGroup.patternLengthFieldSize == 4),
+               self->compressedGroup.patternEntries[i].sampleCount);
     }
 
     /* Index descriptor array is ensured to start at a byte boundary*/
@@ -748,7 +751,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
     {
       printf(" %d ", self->compressedGroup.indexDescriptionArray[i]);
       PackData(self, &buffer, self->compressedGroup.indexFieldSize, (i & 1),
-              self->compressedGroup.indexDescriptionArray[i]);
+               self->compressedGroup.indexDescriptionArray[i]);
     }
   }
 
@@ -790,8 +793,8 @@ static MP4Err calculateSize(struct MP4Atom *s)
       self->size += 8;
 
       sizeInBits =
-          (self->compressedGroup.patternCount *
-          (self->compressedGroup.patternLengthFieldSize + self->compressedGroup.sampleCountFieldSize));
+          (self->compressedGroup.patternCount * (self->compressedGroup.patternLengthFieldSize +
+                                                 self->compressedGroup.sampleCountFieldSize));
       sizeInBits +=
           (self->compressedGroup.totalIndexDescriptionCount * self->compressedGroup.indexFieldSize);
       self->size = self->size + (sizeInBits + 4) / 8;
@@ -813,27 +816,27 @@ static MP4Err calculateSize(struct MP4Atom *s)
     CreateCompactSampleGroups(self);
     compactSize += 8;
     sizeInBits =
-        (self->compressedGroup.patternCount *
-        (self->compressedGroup.patternLengthFieldSize + self->compressedGroup.sampleCountFieldSize));
+        (self->compressedGroup.patternCount * (self->compressedGroup.patternLengthFieldSize +
+                                               self->compressedGroup.sampleCountFieldSize));
     sizeInBits +=
         (self->compressedGroup.totalIndexDescriptionCount * self->compressedGroup.indexFieldSize);
     compactSize += (sizeInBits + 4) / 8;
 
     /* pick compact only if the size is smaller */
-    if(normalSize<=compactSize)
+    if(normalSize <= compactSize)
     {
       self->changeSamplestoGroupType(self, SAMPLE_GROUP_NORMAL);
-      self->size = normalSize;
+      self->size       = normalSize;
       self->entryCount = entryCount;
     }
     else
     {
       self->changeSamplestoGroupType(self, SAMPLE_GROUP_COMPACT);
-      self->size = compactSize;
+      self->size       = compactSize;
       self->entryCount = self->compressedGroup.patternCount;
     }
   }
-  
+
 bail:
   TEST_RETURN(err);
 
@@ -890,7 +893,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   else
   {
     self->sampleToGroupType = 1;
-    indexFieldSize = 4 << ((flags & 0x3) >> 0);
+    indexFieldSize          = 4 << ((flags & 0x3) >> 0);
     if(indexFieldSize != 4 && indexFieldSize != 8 && indexFieldSize != 16 && indexFieldSize != 32)
       BAILWITHERROR(MP4BadParamErr)
 
@@ -900,7 +903,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
 
     patternFieldSize = 4 << ((flags & 0x30) >> 4);
     if(patternFieldSize != 4 && patternFieldSize != 8 && patternFieldSize != 16 &&
-      patternFieldSize != 32)
+       patternFieldSize != 32)
       BAILWITHERROR(MP4BadParamErr)
 
     /* Ensure each pattern entry is always byte-aligned*/
@@ -909,8 +912,8 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
     self->fragmentLocalIndexPresent = (flags & 0x80);
     groupingTypeParamPresent        = (flags & 0x40);
 
-    sprintf(msgString, "field size for index %d , sample count %d pattern length %d ", indexFieldSize,
-            countFieldSize, patternFieldSize);
+    sprintf(msgString, "field size for index %d , sample count %d pattern length %d ",
+            indexFieldSize, countFieldSize, patternFieldSize);
     inputStream->msg(inputStream, msgString);
 
     GET32(grouping_type);
@@ -984,7 +987,8 @@ bail:
   return err;
 }
 
-MP4Err MP4CreateSampletoGroupAtom(MP4SampletoGroupAtomPtr *outAtom, sampleToGroupType_t sampleToGroupType)
+MP4Err MP4CreateSampletoGroupAtom(MP4SampletoGroupAtomPtr *outAtom,
+                                  sampleToGroupType_t sampleToGroupType)
 {
   MP4Err err;
   MP4SampletoGroupAtomPtr self;
@@ -995,7 +999,7 @@ MP4Err MP4CreateSampletoGroupAtom(MP4SampletoGroupAtomPtr *outAtom, sampleToGrou
   err = MP4CreateFullAtom((MP4AtomPtr)self);
   if(err) goto bail;
   self->sampleToGroupType = sampleToGroupType;
-  switch (self->sampleToGroupType)
+  switch(self->sampleToGroupType)
   {
   case SAMPLE_GROUP_NORMAL:
     self->type = MP4SampletoGroupAtomType;

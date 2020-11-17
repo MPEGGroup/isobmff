@@ -585,12 +585,12 @@ MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom)
     err = ISOCreateItemInfoEntryAtom((ISOItemInfoEntryAtomPtr *)&newAtom);
     break;
 
-  case ISOAdditionalMetaDataContainerAtomType:
+  case ISOAdditionalMetaDataContainerAtomType: /* Deprecated */
     err =
         ISOCreateAdditionalMetaDataContainerAtom((ISOAdditionalMetaDataContainerAtomPtr *)&newAtom);
     break;
 
-  case ISOMetaboxRelationAtomType:
+  case ISOMetaboxRelationAtomType: /* Deprecated */
     err = ISOCreateMetaboxRelationAtom((ISOMetaboxRelationAtomPtr *)&newAtom);
     break;
 
