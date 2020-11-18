@@ -608,6 +608,9 @@ MP4Err MP4ParseODFrame(struct MP4MediaAtom *self, MP4Handle sampleH, MP4Handle s
   MP4Err MP4ParseCommand(MP4InputStreamPtr inputStream, MP4DescriptorPtr * outDesc);
   MP4Err MP4CreateES_ID_RefDescriptor(u32 tag, u32 size, u32 bytesRead, MP4DescriptorPtr * outDesc);
 
+  descList = NULL;
+  is = NULL;
+
   err = MP4GetHandleSize(sampleH, &frameSize);
   if(err) goto bail;
   err = MP4CreateMemoryInputStream(*sampleH, frameSize, &is);

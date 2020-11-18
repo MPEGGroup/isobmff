@@ -59,7 +59,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
     if(self->version == 0)
     {
       u32 temp;
-      temp = self->offsets[i] + self->additionalOffset;
+      temp = (u32)(self->offsets[i] + self->additionalOffset);
       PUT32_V(temp);
     }
     else

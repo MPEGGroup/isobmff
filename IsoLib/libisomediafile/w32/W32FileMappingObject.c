@@ -82,7 +82,7 @@ static MP4Err doOpen(struct FileMappingObjectRecord *s, const char *filename)
   /* make parent */
   if((separator = strrchr(filename, '\\')) || (separator = strrchr(filename, '/')))
   {
-    int len = separator - filename;
+    int len = (int)(separator - filename);
     if(self->parent)
     {
       free(self->parent);

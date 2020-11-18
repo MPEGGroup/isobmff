@@ -2230,6 +2230,7 @@ MP4AddSampleAuxiliaryInformation(MP4Media theMedia, u8 isUsingAuxInfoPropertiesF
   minf = NULL;
   stbl = NULL;
   traf = NULL;
+  saiz = NULL;
 
   if(sampleCount == 0) goto bail;
 

@@ -101,7 +101,7 @@ static MP4Err writeToFile(struct MP4MediaDataAtom *self, FILE *fd)
     written = fwrite(self->data, 1, (size_t)self->dataSize, fd);
     if(written != (size_t)self->dataSize) BAILWITHERROR(MP4IOErr)
 #endif
-    self->bytesWritten += written;
+    self->bytesWritten += (u32)written;
     /* this is not reliable because bytesWritten is only a 32 and we may have written more */
   }
 bail:
@@ -158,7 +158,7 @@ static MP4Err addData(struct MP4MediaDataAtom *self, MP4Handle dataH)
     if(newSize > self->allocatedSize)
     {
       self->allocatedSize += allocation_size;
-      if(newSize > self->allocatedSize) self->allocatedSize = newSize;
+      if(newSize > self->allocatedSize) self->allocatedSize = (u32)newSize;
 
       if(self->data != NULL) self->data = (char *)realloc(self->data, self->allocatedSize);
       else
@@ -198,7 +198,7 @@ static MP4Err addMdat(struct MP4MediaDataAtom *self, struct MP4MediaDataAtom *ot
     if(newSize > self->allocatedSize)
     {
       self->allocatedSize += allocation_size;
-      if(newSize > self->allocatedSize) self->allocatedSize = newSize;
+      if(newSize > self->allocatedSize) self->allocatedSize = (u32)newSize;
 
       if(self->data != NULL) self->data = (char *)realloc(self->data, self->allocatedSize);
       else

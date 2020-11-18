@@ -47,7 +47,7 @@ static MP4Err createCanonicalPathName(struct MP4InputStreamRecord *inputStream,
   if((strncmp(fname, "file://", 7) == 0) || (strncmp(fname, "file|//", 7) == 0))
   {
     /* absolute URL */
-    err = MP4SetHandleSize(outPathNameH, strlen(fname + 6));
+    err = MP4SetHandleSize(outPathNameH, (u32)strlen(fname + 6));
     if(err) goto bail;
     strcpy(*outPathNameH, fname + 7);
   }
@@ -62,7 +62,7 @@ static MP4Err createCanonicalPathName(struct MP4InputStreamRecord *inputStream,
     if(parent)
     {
       /* prepend parent path */
-      err = MP4SetHandleSize(outPathNameH, (strlen(parent) + strlen(fname) + 1));
+      err = MP4SetHandleSize(outPathNameH, (u32)(strlen(parent) + strlen(fname) + 1));
       if(err) goto bail;
       strcpy(*outPathNameH, parent); /* parent includes platform-specific path separator */
       strcat(*outPathNameH, fname);
@@ -70,7 +70,7 @@ static MP4Err createCanonicalPathName(struct MP4InputStreamRecord *inputStream,
     else
     {
       /* bare: open relative to cwd */
-      err = MP4SetHandleSize(outPathNameH, (strlen(fname) + 1));
+      err = MP4SetHandleSize(outPathNameH, (u32)(strlen(fname) + 1));
       if(err) goto bail;
       strcat(*outPathNameH, fname);
     }

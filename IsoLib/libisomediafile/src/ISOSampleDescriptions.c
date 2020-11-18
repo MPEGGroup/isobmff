@@ -150,6 +150,9 @@ MP4NewSampleDescriptionWithOCRAssociation(MP4Track theTrack, MP4Handle sampleDes
   MP4TrackAtomPtr trak;
   u32 outReferenceIndex;
 
+  entry = NULL;
+  esdAtom = NULL;
+
   if((theTrack == NULL) || (sampleDescriptionH == NULL))
   {
     BAILWITHERROR(MP4BadParamErr);
@@ -436,8 +439,8 @@ ISONewGeneralSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
   MP4Err MP4CreateAudioSampleEntryAtom(MP4AudioSampleEntryAtomPtr * outAtom);
 
   MP4Err err;
-  GenericSampleEntryAtomPtr entry;
-  MP4TrackAtomPtr trak;
+  GenericSampleEntryAtomPtr entry = NULL;
+  MP4TrackAtomPtr trak = NULL;
 
   if((theTrack == NULL) || (sampleDescriptionH == NULL))
   {
@@ -566,7 +569,7 @@ ISONewXMLMetaDataSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptio
                                    char *xml_namespace, char *schema_location)
 {
   MP4Err err;
-  MP4XMLMetaSampleEntryAtomPtr entry;
+  MP4XMLMetaSampleEntryAtomPtr entry = NULL;
 
   if((theTrack == NULL) || (sampleDescriptionH == NULL))
   {
@@ -620,7 +623,7 @@ ISONewTextMetaDataSampleDescription(MP4Track theTrack, MP4Handle sampleDescripti
                                     char *mime_format)
 {
   MP4Err err;
-  MP4TextMetaSampleEntryAtomPtr entry;
+  MP4TextMetaSampleEntryAtomPtr entry = NULL;
 
   if((theTrack == NULL) || (sampleDescriptionH == NULL))
   {
@@ -665,9 +668,9 @@ ISONewH263SampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32
                             u32 vendor, u8 decoder_version, u8 H263_level, u8 H263_profile)
 {
   MP4Err err;
-  GenericSampleEntryAtomPtr entry;
-  MP4H263SpecificInfoAtomPtr H263SpecificInfoAtom;
-  MP4TrackAtomPtr trak;
+  GenericSampleEntryAtomPtr entry = NULL;
+  MP4H263SpecificInfoAtomPtr H263SpecificInfoAtom = NULL;
+  MP4TrackAtomPtr trak = NULL;
 
   if((theTrack == NULL) || (sampleDescriptionH == NULL))
   {
@@ -714,6 +717,8 @@ ISONewAMRSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 
   MP4TrackAtomPtr trak;
   MP4Media media;
   u32 timeScale;
+
+  entry = NULL;
 
   if((theTrack == NULL) || (sampleDescriptionH == NULL))
   {
@@ -766,6 +771,8 @@ ISONewAMRWPSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
   MP4TrackAtomPtr trak;
   MP4Media media;
   u32 timeScale;
+
+  entry = NULL;
 
   if((theTrack == NULL) || (sampleDescriptionH == NULL))
   {
@@ -974,6 +981,8 @@ ISONewAVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 
 
   u32 the_size, y;
   u8 x;
+
+  entry = NULL;
 
   if((theTrack == NULL) || (sampleDescriptionH == NULL))
   {

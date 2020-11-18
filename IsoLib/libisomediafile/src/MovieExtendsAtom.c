@@ -208,7 +208,7 @@ static MP4Err maketrackfragments(struct MP4MovieExtendsAtom *self, MP4MovieFragm
       err = MP4GetMediaDuration((MP4Media)mdia, &initialMediaDuration);
       if(err) goto bail;
 
-      trex->baseMediaDecodeTime           = initialMediaDuration;
+      trex->baseMediaDecodeTime           = (u32)initialMediaDuration;
       trex->isInitialMediaDecodeTimeAdded = 1;
     }
 

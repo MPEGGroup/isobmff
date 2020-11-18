@@ -59,7 +59,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   PUT32(scheme_version);
   if((self->flags & 1) == 1)
   {
-    u32 len = strlen(self->scheme_url) + 1;
+    u32 len = (u32)strlen(self->scheme_url) + 1;
     PUTBYTES(self->scheme_url, len);
   }
 
@@ -82,7 +82,7 @@ static MP4Err calculateSize(struct MP4Atom *s)
   if((self->scheme_url) && (strlen(self->scheme_url) > 0))
   {
     self->flags = 1;
-    self->size += 1 + strlen(self->scheme_url); /* strlen ignores \0 */
+    self->size += 1 + (u32)strlen(self->scheme_url); /* strlen ignores \0 */
   }
   else
     self->flags = 0;

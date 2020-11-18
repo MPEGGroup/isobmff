@@ -64,9 +64,9 @@ static MP4Err addSampleReference(struct MP4DataEntryAtom *self, u64 dataOffset, 
 {
   MP4Err err;
 
-  err        = MP4NoErr;
-  dataOffset = dataOffset;
-  sizesH     = sizesH;
+  err = MP4NoErr;
+  (void)dataOffset;
+  (void)sizesH;
   if(self->mdat) BAILWITHERROR(MP4BadParamErr)
 bail:
   TEST_RETURN(err);
@@ -112,7 +112,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   {
     if(self->location)
     {
-      u32 len = strlen(self->location) + 1;
+      u32 len = (u32)strlen(self->location) + 1;
       PUTBYTES(self->location, len);
     }
   }
@@ -133,7 +133,7 @@ static MP4Err calculateSize(struct MP4Atom *s)
   if(err) goto bail;
   if((self->flags & 1) == 0)
   {
-    if(self->location) self->size += 1 + strlen(self->location);
+    if(self->location) self->size += 1 + (u32)strlen(self->location);
   }
 bail:
   TEST_RETURN(err);

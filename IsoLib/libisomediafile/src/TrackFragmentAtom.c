@@ -584,7 +584,7 @@ static MP4Err mergeRuns(MP4TrackFragmentAtomPtr self, MP4MediaAtomPtr mdia)
 
         if(havedeps)
         {
-          err = mdia->setSampleDependency(mdia, -count, depsH);
+          err = mdia->setSampleDependency(mdia, (s32)count*(-1), depsH);
           if(err) goto bail;
         }
 
@@ -730,7 +730,7 @@ static MP4Err calculateDataEnd(MP4TrackFragmentAtomPtr self, u32 *outEnd)
 
   tfhd = (MP4TrackFragmentHeaderAtomPtr)self->tfhd;
 
-  data_end = tfhd->base_data_offset;
+  data_end = (u32)tfhd->base_data_offset;
 
   if(self->atomList)
   {
@@ -749,7 +749,7 @@ static MP4Err calculateDataEnd(MP4TrackFragmentAtomPtr self, u32 *outEnd)
         MP4TrackRunEntryPtr entry;
 
         if(trun->flags & trun_data_offset_present)
-          data_begin = tfhd->base_data_offset + trun->data_offset;
+          data_begin = (u32)(tfhd->base_data_offset + trun->data_offset);
         else
           data_begin = data_end;
 

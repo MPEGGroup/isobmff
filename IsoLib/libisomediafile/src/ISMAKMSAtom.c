@@ -56,7 +56,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
 
   if(self->kms_url)
   {
-    len = strlen(self->kms_url) + 1;
+    len = (u32)strlen(self->kms_url) + 1;
     PUTBYTES(self->kms_url, len);
   }
   else
@@ -78,7 +78,7 @@ static MP4Err calculateSize(struct MP4Atom *s)
 
   err = MP4CalculateFullAtomFieldSize((MP4FullAtomPtr)s);
   if(err) goto bail;
-  self->size += 1 + (self->kms_url ? strlen(self->kms_url) : 0);
+  self->size += 1 + (self->kms_url ? (u32)strlen(self->kms_url) : 0);
 bail:
   TEST_RETURN(err);
 

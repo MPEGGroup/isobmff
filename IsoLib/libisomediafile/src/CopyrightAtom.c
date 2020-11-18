@@ -52,7 +52,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   if(err) goto bail;
   buffer += self->bytesWritten;
   PUT16(packedLanguageCode);
-  len = strlen(self->notice) + 1;
+  len = (u32)strlen(self->notice) + 1;
   PUTBYTES(self->notice, len);
   assert(self->bytesWritten == self->size);
 bail:
@@ -69,7 +69,7 @@ static MP4Err calculateSize(struct MP4Atom *s)
 
   err = MP4CalculateFullAtomFieldSize((MP4FullAtomPtr)s);
   if(err) goto bail;
-  self->size += 3 + strlen(self->notice);
+  self->size += 3 + (u32)strlen(self->notice);
 bail:
   TEST_RETURN(err);
 

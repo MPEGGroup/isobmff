@@ -105,7 +105,7 @@ static MP4Err setName(struct MP4Atom *s, char *name, u32 is_qt)
 
   oldname = self->nameUTF8;
 
-  self->nameLength = strlen(name);
+  self->nameLength = (u32)strlen(name);
   self->nameUTF8   = (char *)calloc(1, self->nameLength + 1);
   TESTMALLOC(self->nameUTF8)
   memcpy(self->nameUTF8, name, self->nameLength + 1);

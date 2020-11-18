@@ -84,7 +84,7 @@ static MP4Err doOpen(struct FileMappingObjectRecord *s, const char *pathname)
   self->data =
       mmap(0, self->window_size, PROT_READ, MAP_FILE + MAP_PRIVATE, self->fd, self->window);
 
-  if(!(self->data) || (self->data < 0))
+  if(!(self->data) || (self->data == MAP_FAILED))
   { /* printf("Error was %d %s\n",errno,strerror( errno )); */
     BAILWITHERROR(MP4IOErr);
   }
@@ -173,7 +173,7 @@ static MP4Err copyData(struct FileMappingObjectRecord *s, u64 offset, char *dst,
   }
 
 #ifdef DO_MAP
-  if(self->window != (offset & WINDOW_BITS))
+  if(self->window != (u64)(offset & WINDOW_BITS))
   {
     err = munmap(self->data, self->window_size);
     if(err)
@@ -188,7 +188,7 @@ static MP4Err copyData(struct FileMappingObjectRecord *s, u64 offset, char *dst,
 
     self->data =
         mmap(0, self->window_size, PROT_READ, MAP_FILE + MAP_PRIVATE, self->fd, self->window);
-    if(!(self->data) || (self->data < 0))
+    if(!(self->data) || (self->data == MAP_FAILED))
     {
       BAILWITHERROR(MP4IOErr);
     }

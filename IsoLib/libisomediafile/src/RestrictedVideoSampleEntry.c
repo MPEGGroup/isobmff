@@ -170,9 +170,9 @@ static MP4Err transform(struct MP4Atom *s, u32 sch_type, u32 sch_version, char *
 
   MP4RestrictedSchemeInfoAtomPtr rinf;
   MP4OriginalFormatAtomPtr frma;
-  MP4SchemeTypeAtomPtr schm;
-  MP4SchemeInfoAtomPtr schi;
-  char *sch_url_copy = NULL;
+  MP4SchemeTypeAtomPtr schm = NULL;
+  MP4SchemeInfoAtomPtr schi = NULL;
+  char *sch_url_copy        = NULL;
 
   err = MP4CreateOriginalFormatAtom(&frma);
   if(err) goto bail;

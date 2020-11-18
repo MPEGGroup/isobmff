@@ -49,7 +49,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   err = MP4SerializeCommonFullAtomFields((MP4FullAtomPtr)s, buffer);
   if(err) goto bail;
   buffer += self->bytesWritten;
-  PUTBYTES(self->extended_language, strlen(self->extended_language) * sizeof(char) + 1);
+  PUTBYTES(self->extended_language, (u32)strlen(self->extended_language) * sizeof(char) + 1);
   assert(self->bytesWritten == self->size);
 bail:
   TEST_RETURN(err);
@@ -66,7 +66,7 @@ static MP4Err calculateSize(struct MP4Atom *s)
   err = MP4CalculateFullAtomFieldSize((MP4FullAtomPtr)s);
   if(err) goto bail;
 
-  self->size += strlen(self->extended_language) * sizeof(char) + 1;
+  self->size += (u32)strlen(self->extended_language) * sizeof(char) + 1;
 
 bail:
   TEST_RETURN(err);

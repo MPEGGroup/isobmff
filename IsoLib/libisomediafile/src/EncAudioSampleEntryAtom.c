@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: EncAudioSampleEntryAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
+  $Id: EncAudioSampleEntryAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -156,8 +156,8 @@ static MP4Err transform(struct MP4Atom *s, u32 sch_type, u32 sch_version, char *
   MP4EncBaseSampleEntryAtomPtr self = (MP4EncBaseSampleEntryAtomPtr)s;
   MP4OriginalFormatAtomPtr fmt;
   MP4SecurityInfoAtomPtr sinf;
-  MP4SchemeTypeAtomPtr schm;
-  MP4SchemeInfoAtomPtr schi;
+  MP4SchemeTypeAtomPtr schm = NULL;
+  MP4SchemeInfoAtomPtr schi = NULL;
   char *sch_url_copy = NULL;
 
   err = MP4CreateOriginalFormatAtom(&fmt);

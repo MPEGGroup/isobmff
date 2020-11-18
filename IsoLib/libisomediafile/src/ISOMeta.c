@@ -1016,7 +1016,7 @@ ISOSetItemInfo(ISOMetaItem item, u16 protection_index, char *name, char *content
 
   if(name)
   {
-    sz              = strlen(name);
+    sz              = (u32)strlen(name);
     infe->item_name = (char *)calloc(1, sz + 1);
     memcpy(infe->item_name, name, sz);
     (infe->item_name)[sz] = '\0';
@@ -1029,7 +1029,7 @@ ISOSetItemInfo(ISOMetaItem item, u16 protection_index, char *name, char *content
 
   if(content_encoding)
   {
-    sz                     = strlen(content_encoding);
+    sz                     = (u32)strlen(content_encoding);
     infe->content_encoding = (char *)calloc(1, sz);
     memcpy(infe->content_encoding, content_encoding, sz);
   }
@@ -1041,7 +1041,7 @@ ISOSetItemInfo(ISOMetaItem item, u16 protection_index, char *name, char *content
 
   if(content_type)
   {
-    sz                 = strlen(content_type);
+    sz                 = (u32)strlen(content_type);
     infe->content_type = (char *)calloc(1, sz);
     memcpy(infe->content_type, content_type, sz);
   }
@@ -1152,7 +1152,7 @@ ISO_EXTERN(ISOErr) ISOSetItemInfoItemType(ISOMetaItem item, u32 item_type, char 
 
   if(item_uri_type)
   {
-    u32 sz              = strlen(item_uri_type);
+    u32 sz              = (u32)strlen(item_uri_type);
     infe->item_uri_type = (char *)calloc(1, sz);
     memcpy(infe->item_uri_type, item_uri_type, sz);
   }
@@ -1193,7 +1193,7 @@ ISO_EXTERN(ISOErr) ISOGetItemInfoItemType(ISOMetaItem item, u32 *item_type, char
 
   if(infe->item_uri_type)
   {
-    u32 sz         = strlen(infe->item_uri_type);
+    u32 sz         = (u32)strlen(infe->item_uri_type);
     *item_uri_type = (char *)calloc(1, sz);
     memcpy(*item_uri_type, infe->item_uri_type, sz);
   }
@@ -1557,7 +1557,7 @@ ISO_EXTERN(ISOErr) ISOGetItemData(ISOMetaItem item, MP4Handle data, u64 *base_of
         else if(myItem->construction_method == 2)
         {
           u64 k;
-          err = ISOGetItemReference(item, MP4_FOUR_CHAR_CODE('i', 'l', 'o', 'c'), b->extent_index,
+          err = ISOGetItemReference(item, MP4_FOUR_CHAR_CODE('i', 'l', 'o', 'c'), (u16)b->extent_index,
                                     &referenceItem);
           if(err) goto bail;
           err = MP4NewHandle(0, &referenceItemData);
@@ -1586,7 +1586,7 @@ ISO_EXTERN(ISOErr) ISOGetItemData(ISOMetaItem item, MP4Handle data, u64 *base_of
       }
       else if(myItem->construction_method == 1)
       {
-        err = idat->getData((MP4AtomPtr)idat, (*data) + datasize, b->extent_offset, length);
+        err = idat->getData((MP4AtomPtr)idat, (*data) + datasize, (u32)b->extent_offset, length);
         if(err) goto bail;
       }
       else if(myItem->construction_method == 2)
@@ -1594,7 +1594,7 @@ ISO_EXTERN(ISOErr) ISOGetItemData(ISOMetaItem item, MP4Handle data, u64 *base_of
         u64 k;
         u32 referenceDataLength;
 
-        err = ISOGetItemReference(item, MP4_FOUR_CHAR_CODE('i', 'l', 'o', 'c'), b->extent_index,
+        err = ISOGetItemReference(item, MP4_FOUR_CHAR_CODE('i', 'l', 'o', 'c'), (u16)b->extent_index,
                                   &referenceItem);
         if(err) goto bail;
         err = MP4NewHandle(0, &referenceItemData);
@@ -1656,7 +1656,7 @@ ISOGetItemInfo(ISOMetaItem item, u16 *protection_index, char *name, char *conten
         u32 sz;
         if(name && infe->item_name)
         {
-          sz = strlen(infe->item_name);
+          sz = (u32)strlen(infe->item_name);
           memcpy(name, infe->item_name, sz + 1);
         }
         else if(name)
@@ -1664,7 +1664,7 @@ ISOGetItemInfo(ISOMetaItem item, u16 *protection_index, char *name, char *conten
 
         if(content_encoding && infe->content_encoding)
         {
-          sz = strlen(infe->content_encoding);
+          sz = (u32)strlen(infe->content_encoding);
           memcpy(content_encoding, infe->content_encoding, sz + 1);
         }
         else if(content_encoding)
@@ -1672,7 +1672,7 @@ ISOGetItemInfo(ISOMetaItem item, u16 *protection_index, char *name, char *conten
 
         if(content_type && infe->content_type)
         {
-          sz = strlen(infe->content_type);
+          sz = (u32)strlen(infe->content_type);
           memcpy(content_type, infe->content_type, sz + 1);
         }
         else if(content_type)
@@ -1746,6 +1746,7 @@ ISONewMetaProtection(ISOMeta meta, u32 sch_type, u32 sch_version, char *sch_url,
   u32 j;
 
   char *sch_url_copy = NULL;
+  schm               = NULL;
 
   err    = MP4NoErr;
   myMeta = (ISOMetaAtomPtr)meta;

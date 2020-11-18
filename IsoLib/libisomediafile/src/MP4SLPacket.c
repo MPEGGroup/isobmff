@@ -53,6 +53,7 @@ MP4Err rewriteODFrame(MP4Track track, MP4Handle sampleH, u64 cts, MP4TrackRefere
   u32 i;
   u32 j;
 
+  is  = NULL;
   err = MP4NoErr;
   err = MP4GetHandleSize(sampleH, &unitSize);
   if(err) goto bail;
@@ -315,7 +316,7 @@ MP4Err rewriteIPMPDescriptorPointers(MP4DescriptorPtr desc, MP4TrackReferenceTyp
     MP4IPMPDescriptorPointerPtr ipmpDescPtr;
     err = MP4GetListEntry(ipmpDescPointersList, k, (char **)&ipmpDescPtr);
     if(err) goto bail;
-    if((ipmpDescPtr->ipmpEsId != 0) || (ipmpDescPtr->ipmpEsId != 0xFFFF))
+    if((ipmpDescPtr->ipmpEsId != 0) && (ipmpDescPtr->ipmpEsId != 0xFFFF))
     {
       /* rewrite the good ID */
       ipmpDescPtr->ipmpEsId = mpod->trackIDs[ipmpDescPtr->ipmpEsId - 1];

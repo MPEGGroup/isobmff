@@ -98,7 +98,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
 
   if(self->item_name)
   {
-    u32 len = strlen(self->item_name) + 1;
+    u32 len = (u32)strlen(self->item_name) + 1;
     PUTBYTES(self->item_name, len);
   }
   else
@@ -110,7 +110,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   {
     if(self->content_type)
     {
-      u32 len = strlen(self->content_type) + 1;
+      u32 len = (u32)strlen(self->content_type) + 1;
       PUTBYTES(self->content_type, len);
     }
     else
@@ -120,7 +120,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
 
     if(self->content_encoding)
     {
-      u32 len = strlen(self->content_encoding) + 1;
+      u32 len = (u32)strlen(self->content_encoding) + 1;
       PUTBYTES(self->content_encoding, len);
     }
     else
@@ -132,7 +132,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   {
     if(self->item_uri_type)
     {
-      u32 len = strlen(self->item_uri_type) + 1;
+      u32 len = (u32)strlen(self->item_uri_type) + 1;
       PUTBYTES(self->item_uri_type, len);
     }
     else
@@ -178,9 +178,9 @@ static MP4Err calculateSize(struct MP4Atom *s)
   if((self->version == 0) || (self->version == 1))
   {
     self->size += 7; /* includes the null terminators of the three strings */
-    if(self->item_name) self->size += strlen(self->item_name);
-    if(self->content_type) self->size += strlen(self->content_type);
-    if(self->content_encoding) self->size += strlen(self->content_encoding);
+    if(self->item_name) self->size += (u32)strlen(self->item_name);
+    if(self->content_type) self->size += (u32)strlen(self->content_type);
+    if(self->content_encoding) self->size += (u32)strlen(self->content_encoding);
   }
 
   if(self->version == 1)
@@ -203,18 +203,18 @@ static MP4Err calculateSize(struct MP4Atom *s)
       self->size += 4;
 
     self->size += 7;
-    if(self->item_name) self->size += strlen(self->item_name);
+    if(self->item_name) self->size += (u32)strlen(self->item_name);
 
     if(self->item_type == MP4_FOUR_CHAR_CODE('m', 'i', 'm', 'e'))
     {
       self->size += 2;
-      if(self->content_type) self->size += strlen(self->content_type);
-      if(self->content_encoding) self->size += strlen(self->content_encoding);
+      if(self->content_type) self->size += (u32)strlen(self->content_type);
+      if(self->content_encoding) self->size += (u32)strlen(self->content_encoding);
     }
     else if(self->item_type == MP4_FOUR_CHAR_CODE('u', 'r', 'i', ' '))
     {
       self->size += 1;
-      if(self->item_uri_type) self->size += strlen(self->item_uri_type);
+      if(self->item_uri_type) self->size += (u32)strlen(self->item_uri_type);
     }
   }
 
@@ -274,7 +274,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
 
   if(bytesToRead > 0)
   {
-    i = strlen(str);
+    i = (u32)strlen(str);
     bytesToRead -= i + 1;
     self->item_name = calloc(i + 1, 1);
     strcpy(self->item_name, str);
@@ -289,7 +289,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   {
     if(bytesToRead > 0)
     {
-      i = strlen(str);
+      i = (u32)strlen(str);
       bytesToRead -= i + 1;
       self->content_type = calloc(i + 1, 1);
       strcpy(self->content_type, str);
@@ -302,7 +302,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
 
     if(bytesToRead > 0)
     {
-      i = strlen(str);
+      i = (u32)strlen(str);
       bytesToRead -= i + 1;
       self->content_encoding = calloc(i + 1, 1);
       strcpy(self->content_encoding, str);
@@ -317,7 +317,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   {
     if(bytesToRead > 0)
     {
-      i = strlen(str);
+      i = (u32)strlen(str);
       bytesToRead -= i + 1;
       self->item_uri_type = calloc(i + 1, 1);
       strcpy(self->item_uri_type, str);

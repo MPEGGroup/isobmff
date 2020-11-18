@@ -535,7 +535,7 @@ bail:
 static MP4Err changeSamplestoGroupType(struct MP4SampletoGroupAtom *self,
                                        sampleToGroupType_t sampleToGroupType)
 {
-  MP4Err err;
+  MP4Err err = MP4NoErr;
 
   if(self == NULL) BAILWITHERROR(MP4BadParamErr)
 

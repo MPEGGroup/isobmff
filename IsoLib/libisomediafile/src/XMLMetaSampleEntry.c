@@ -77,7 +77,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
 
   if(self->content_encoding)
   {
-    u32 len = strlen(self->content_encoding) + 1;
+    u32 len = (u32)strlen(self->content_encoding) + 1;
     PUTBYTES(self->content_encoding, len);
   }
   else
@@ -87,7 +87,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
 
   if(self->xml_namespace)
   {
-    u32 len = strlen(self->xml_namespace) + 1;
+    u32 len = (u32)strlen(self->xml_namespace) + 1;
     PUTBYTES(self->xml_namespace, len);
   }
   else
@@ -97,7 +97,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
 
   if(self->schema_location)
   {
-    u32 len = strlen(self->schema_location) + 1;
+    u32 len = (u32)strlen(self->schema_location) + 1;
     PUTBYTES(self->schema_location, len);
   }
   else
@@ -123,9 +123,9 @@ static MP4Err calculateSize(struct MP4Atom *s)
   if(err) goto bail;
   self->size += 8 + 3; /* the null terminators of the three strings */
 
-  if(self->content_encoding) self->size += strlen(self->content_encoding);
-  if(self->xml_namespace) self->size += strlen(self->xml_namespace);
-  if(self->schema_location) self->size += strlen(self->schema_location);
+  if(self->content_encoding) self->size += (u32)strlen(self->content_encoding);
+  if(self->xml_namespace) self->size += (u32)strlen(self->xml_namespace);
+  if(self->schema_location) self->size += (u32)strlen(self->schema_location);
 
   ADD_ATOM_LIST_SIZE(ExtensionAtomList);
 bail:

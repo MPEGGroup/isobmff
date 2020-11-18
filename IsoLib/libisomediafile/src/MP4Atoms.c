@@ -61,7 +61,7 @@ static void baseAtomDestroy(MP4AtomPtr self)
 static MP4Err baseAtomCreateFromInputStream(MP4AtomPtr self, MP4AtomPtr proto,
                                             MP4InputStreamPtr inputStream)
 {
-  inputStream = inputStream;
+  (void)inputStream;
   self->type  = proto->type;
   memcpy(self->uuid, proto->uuid, 16);
   self->size         = proto->size;

@@ -1220,7 +1220,7 @@ MP4Err MP4GetCurrentTime(u64 *outTime)
     {
       time_t t;
       t        = time(NULL);
-      calctime = t + MAC_EPOCH;
+      calctime = (unsigned long)(t + MAC_EPOCH);
     }
 #endif
   ret      = calctime;
@@ -1340,7 +1340,7 @@ MP4NewMovieExt(MP4Movie *outMovie, u32 initialODID, u8 OD_profileAndLevel, u8 sc
       od->objectDescriptorID = initialODID;
       if(strlen(url))
       {
-        od->URLStringLength = strlen(url);
+        od->URLStringLength = (u32)strlen(url);
         od->URLString       = (char *)malloc(sizeof(char) * od->URLStringLength);
         strcpy(od->URLString, url);
       }
@@ -1363,7 +1363,7 @@ MP4NewMovieExt(MP4Movie *outMovie, u32 initialODID, u8 OD_profileAndLevel, u8 sc
       iod->graphics_profileAndLevel = graphics_profileAndLevel;
       if(strlen(url))
       {
-        iod->URLStringLength = strlen(url);
+        iod->URLStringLength = (u32)strlen(url);
         iod->URLString       = (char *)malloc(sizeof(char) * iod->URLStringLength);
         strcpy(iod->URLString, url);
       }

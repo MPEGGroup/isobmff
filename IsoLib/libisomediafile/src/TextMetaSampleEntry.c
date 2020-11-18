@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: TextMetaSampleEntryAtom.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
+  $Id: TextMetaSampleEntryAtom.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -73,7 +73,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
 
   if(self->content_encoding)
   {
-    u32 len = strlen(self->content_encoding) + 1;
+    u32 len = (u32)strlen(self->content_encoding) + 1;
     PUTBYTES(self->content_encoding, len);
   }
   else
@@ -83,7 +83,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
 
   if(self->mime_format)
   {
-    u32 len = strlen(self->mime_format) + 1;
+    u32 len = (u32)strlen(self->mime_format) + 1;
     PUTBYTES(self->mime_format, len);
   }
   else
@@ -109,8 +109,8 @@ static MP4Err calculateSize(struct MP4Atom *s)
   if(err) goto bail;
   self->size += 8 + 2; /* the null terminators of the two strings */
 
-  if(self->content_encoding) self->size += strlen(self->content_encoding);
-  if(self->mime_format) self->size += strlen(self->mime_format);
+  if(self->content_encoding) self->size += (u32)strlen(self->content_encoding);
+  if(self->mime_format) self->size += (u32)strlen(self->mime_format);
 
   ADD_ATOM_LIST_SIZE(ExtensionAtomList);
 bail:
