@@ -714,14 +714,14 @@ static MP4Err getSampleGroupSampleNumbers(struct MP4SampleTableAtom *self, u32 g
   MP4SampletoGroupAtomPtr theGroup;
   u32 i, cur_index, cur_count;
   *outSampleCnt = 0;
-  TESTMALLOC(*outSampleNumbers);
 
   err = MP4FindGroupAtom(self->sampletoGroupList, groupType, (MP4AtomPtr *)&theGroup);
   if(theGroup)
   {
     *outSampleNumbers = (u32 *)malloc((theGroup->sampleCount) * sizeof(u32));
-    cur_index         = (theGroup->group_index)[0];
-    cur_count         = 1;
+    TESTMALLOC(*outSampleNumbers);
+    cur_index = (theGroup->group_index)[0];
+    cur_count = 1;
     for(i = 1; i < theGroup->sampleCount; i++)
     {
       if((theGroup->group_index)[i - 1] == (theGroup->group_index)[i]) cur_count++;
