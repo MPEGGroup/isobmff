@@ -21,8 +21,9 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999, 2000.
 */
 /*
-        $Id: MP4Movies.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
+  $Id: MP4Movies.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
 */
+
 #include "MP4Movies.h"
 #include "MP4Atoms.h"
 #include "FileMappingObject.h"
@@ -347,7 +348,7 @@ ISOAddMetaDataReference(ISOMeta meta, u16 *out_ref, ISOHandle urlHandle, ISOHand
     err = dref->addDataEntry(dref, (MP4AtomPtr)urn);
     if(err) goto bail;
   }
-  *out_ref = dref->getEntryCount(dref);
+  *out_ref = (u16)dref->getEntryCount(dref);
 
 bail:
   TEST_RETURN(err);
@@ -757,7 +758,7 @@ ISOGetItemReference(ISOMetaItem item, u32 reference_type, u16 reference_index, I
 
   referencedItemID = toItemIDsArray[reference_index - 1];
 
-  err = ISOFindItemByID((ISOMeta)myMeta, outItem, referencedItemID);
+  err = ISOFindItemByID((ISOMeta)myMeta, outItem, (u16)referencedItemID);
   if(err) goto bail;
 
 bail:
@@ -856,7 +857,7 @@ ISOAddItemReferences(ISOMetaItem item, u32 reference_type, u16 reference_count,
 
   irefPtr = (ISOItemReferenceAtomPtr)myMeta->iref;
 
-  err = ISOCreateSingleItemTypeReferenceAtom(&singleIrefPtr, reference_type, irefPtr->version);
+  err = ISOCreateSingleItemTypeReferenceAtom(&singleIrefPtr, reference_type, (u8)irefPtr->version);
   if(err) goto bail;
 
   singleIrefPtr->from_item_ID    = myItem->item_ID;
@@ -954,7 +955,7 @@ ISO_EXTERN(ISOErr) ISOGetPrimaryItemID(ISOMeta meta, u16 *ID)
   pitm   = (ISOPrimaryItemAtomPtr)myMeta->pitm;
   if(pitm)
   {
-    *ID = pitm->item_ID;
+    *ID = (u16)pitm->item_ID;
   }
   else
     BAILWITHERROR(MP4NotFoundErr);
@@ -1534,8 +1535,8 @@ ISO_EXTERN(ISOErr) ISOGetItemData(ISOMetaItem item, MP4Handle data, u64 *base_of
       MetaExtentLocationPtr b;
       ISOMetaItem referenceItem;
       MP4Handle referenceItemData;
-      u32 length;
-      u64 fileSize;
+      u32 length   = 0;
+      u64 fileSize = 0;
 
       err = MP4GetListEntry(myItem->extentList, j, (char **)&b);
       if(err) goto bail;
@@ -1678,7 +1679,7 @@ ISOGetItemInfo(ISOMetaItem item, u16 *protection_index, char *name, char *conten
         else if(content_type)
           name[0] = 0;
 
-        if(protection_index) *protection_index = infe->protection_index;
+        if(protection_index) *protection_index = (u16)infe->protection_index;
         err = MP4NoErr;
         goto bail;
       }
@@ -1787,7 +1788,7 @@ ISONewMetaProtection(ISOMeta meta, u32 sch_type, u32 sch_version, char *sch_url,
   }
   err = MP4GetListEntryCount(ipro->atomList, &j);
   if(err) goto bail;
-  *protection_index = j + 1;
+  *protection_index = (u16)(j + 1);
 
   err = ipro->addAtom(ipro, (MP4AtomPtr)sinf);
   if(err) goto bail;

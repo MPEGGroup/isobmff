@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: ItemLocationAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
+  $Id: ItemLocationAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -124,9 +124,9 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
       }
       else if(self->base_offset_size == 4)
       {
-        u32 x;
-        x = (u32)a->base_offset;
-        PUT32_V(x);
+        u32 x1;
+        x1 = (u32)a->base_offset;
+        PUT32_V(x1);
       }
 
       list2Size = 0;
@@ -151,9 +151,9 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
             }
             else if(self->index_size == 4)
             {
-              u32 x;
-              x = (u32)b->extent_index;
-              PUT32_V(x);
+              u32 x2;
+              x2 = (u32)b->extent_index;
+              PUT32_V(x2);
             }
           }
 
@@ -163,9 +163,9 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
           }
           else if(self->offset_size == 4)
           {
-            u32 x;
-            x = (u32)b->extent_offset;
-            PUT32_V(x);
+            u32 x3;
+            x3 = (u32)b->extent_offset;
+            PUT32_V(x3);
           }
 
           if(self->length_size == 8)
@@ -174,9 +174,9 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
           }
           else if(self->length_size == 4)
           {
-            u32 x;
-            x = (u32)b->extent_length;
-            PUT32_V(x);
+            u32 x4;
+            x4 = (u32)b->extent_length;
+            PUT32_V(x4);
           }
         }
       }
@@ -366,10 +366,10 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   if(err) goto bail;
 
   GET8_V(x);
-  self->offset_size = (x >> 4);
+  self->offset_size = (u8)(x >> 4);
   self->length_size = (x & 0xF);
   GET8_V_MSG(x, "base offset size");
-  self->base_offset_size = (x >> 4);
+  self->base_offset_size = (u8)(x >> 4);
   self->index_size       = (x & 0xF);
 
   GET16_V(item_count);
@@ -387,16 +387,16 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
     if(err) goto bail;
 
     GET16_V_MSG(tmp, "item_ID");
-    a->item_ID = tmp;
+    a->item_ID = (u16)tmp;
 
     if(self->version == 1)
     {
       GET16_V_MSG(tmp, "construction_method");
-      a->construction_method = tmp;
+      a->construction_method = (u8)tmp;
     }
 
     GET16_V_MSG(tmp, "dref_index");
-    a->dref_index = tmp;
+    a->dref_index = (u16)tmp;
     switch(self->base_offset_size)
     {
     case 8:

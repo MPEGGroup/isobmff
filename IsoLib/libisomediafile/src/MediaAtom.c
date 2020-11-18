@@ -656,7 +656,6 @@ MP4Err MP4ParseODFrame(struct MP4MediaAtom *self, MP4Handle sampleH, MP4Handle s
 
   while(is->available > 0)
   {
-
     MP4DescriptorPtr desc;
     MP4ObjectDescriptorUpdatePtr odUpdate;
     MP4ESDescriptorUpdatePtr esUpdate;
@@ -721,7 +720,20 @@ MP4Err MP4ParseODFrame(struct MP4MediaAtom *self, MP4Handle sampleH, MP4Handle s
         /* Remove the ESDescriptor List from each OD present in the ObjectDescriptor !! */
         if(od->ESDescriptors)
         {
-          DESTROY_DESCRIPTOR_LIST_V(od->ESDescriptors);
+          u32 listSize; 
+          u32 i1; 
+          err = MP4GetListEntryCount(od->ESDescriptors, &listSize); 
+          if(err) goto bail; 
+          for(i1 = 0; i1 < listSize; i1++) 
+          { 
+            MP4DescriptorPtr a; 
+            err = MP4GetListEntry(od->ESDescriptors, i1, (char **)&a); 
+            if(err) goto bail; 
+            if(a) a->destroy(a); 
+          } 
+          err = MP4DeleteLinkedList(od->ESDescriptors); 
+          if(err) goto bail; 
+          
           od->ESDescriptors = NULL;
         }
       }
@@ -762,7 +774,19 @@ MP4Err MP4ParseODFrame(struct MP4MediaAtom *self, MP4Handle sampleH, MP4Handle s
       /* Remove the ESDescriptors from the ES Listr present in this update!! */
       if(esUpdate->ESDescriptors)
       {
-        DESTROY_DESCRIPTOR_LIST_V(esUpdate->ESDescriptors);
+        u32 listSize; 
+        u32 i1; 
+        err = MP4GetListEntryCount(esUpdate->ESDescriptors, &listSize); 
+        if(err) goto bail; 
+        for(i1 = 0; i1 < listSize; i1++) 
+        { 
+          MP4DescriptorPtr a; 
+          err = MP4GetListEntry(esUpdate->ESDescriptors, i1, (char **)&a); 
+          if(err) goto bail; 
+          if(a) a->destroy(a); 
+        } 
+        err = MP4DeleteLinkedList(esUpdate->ESDescriptors); if(err) goto bail; 
+        
         esUpdate->ESDescriptors = NULL;
       }
 
@@ -802,7 +826,18 @@ bail:
   if(is) is->destroy(is);
   if(descList)
   {
-    DESTROY_DESCRIPTOR_LIST_V(descList);
+    u32 listSize; 
+    u32 i1; 
+    err = MP4GetListEntryCount(descList, &listSize); 
+    if(err) goto bail; 
+    for(i1 = 0; i1 < listSize; i1++) 
+    { 
+      MP4DescriptorPtr a; 
+      err = MP4GetListEntry(descList, i1, (char **)&a); 
+      if(err) goto bail; 
+      if(a) a->destroy(a); 
+    } 
+    err = MP4DeleteLinkedList(descList); if(err) goto bail; 
   }
   TEST_RETURN(err);
   return err;
@@ -812,7 +847,7 @@ MP4Err storeIPMPDescriptorPointers(MP4DescriptorPtr desc, MP4TrackReferenceTypeA
 {
   u32 k;
   u32 ipmpDescPointersCount;
-  u32 err;
+  MP4Err err;
   MP4LinkedList ipmpDescPointersList;
 
   err = MP4NoErr;
@@ -843,7 +878,7 @@ MP4Err storeIPMPDescriptorPointers(MP4DescriptorPtr desc, MP4TrackReferenceTypeA
       err = mpod->addTrackID(mpod, ipmpDescPtr->ipmpEsId);
       if(err) goto bail;
       /* change the id */
-      ipmpDescPtr->ipmpEsId = mpod->trackIDCount;
+      ipmpDescPtr->ipmpEsId = (u16)mpod->trackIDCount;
     }
   }
 

@@ -222,9 +222,9 @@ ISMAUnTransformSampleEntrySalt(MP4Handle insampleEntryH, u8 *selective_encryptio
 
   err = entry->getSchemeInfoAtom((MP4AtomPtr)entry, ISMASampleFormatAtomType, (MP4AtomPtr *)&fmt);
   if(err) goto bail;
-  *selective_encryption = fmt->selective_encryption;
-  *key_indicator_length = fmt->key_indicator_len;
-  *IV_length            = fmt->IV_len;
+  *selective_encryption = (u8)fmt->selective_encryption;
+  *key_indicator_length = (u8)fmt->key_indicator_len;
+  *IV_length            = (u8)fmt->IV_len;
 
   err = entry->untransform((MP4AtomPtr)entry);
   if(err) goto bail;

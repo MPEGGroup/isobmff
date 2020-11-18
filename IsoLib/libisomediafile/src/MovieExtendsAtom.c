@@ -121,6 +121,7 @@ static MP4Err setCompositionToDecodeProperties(struct MP4MovieExtendsAtom *self,
 
   err        = MP4NoErr;
   createCslg = 0;
+  cslg       = NULL;
 
   trep = NULL;
   self->getTrackExtensionPropertiesAtom(self, trackID, (MP4AtomPtr *)&trep);
@@ -148,11 +149,15 @@ static MP4Err setCompositionToDecodeProperties(struct MP4MovieExtendsAtom *self,
     trep->addAtom(trep, (MP4AtomPtr)cslg);
   }
 
-  cslg->compositionToDTSShift        = compositionToDTSShift;
-  cslg->leastDecodeToDisplayDelta    = leastDecodeToDisplayDelta;
-  cslg->greatestDecodeToDisplayDelta = greatestDecodeToDisplayDelta;
-  cslg->compositionStartTime         = compositionStartTime;
-  cslg->compositionEndTime           = compositionEndTime;
+  if(cslg)
+  {
+    cslg->compositionToDTSShift        = compositionToDTSShift;
+    cslg->leastDecodeToDisplayDelta    = leastDecodeToDisplayDelta;
+    cslg->greatestDecodeToDisplayDelta = greatestDecodeToDisplayDelta;
+    cslg->compositionStartTime         = compositionStartTime;
+    cslg->compositionEndTime           = compositionEndTime;
+  }
+  
 bail:
   TEST_RETURN(err);
 

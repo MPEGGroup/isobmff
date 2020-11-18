@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id:
+  $Id:
 */
 #include "MP4Descriptors.h"
 #include "MP4Movies.h"
@@ -52,7 +52,7 @@ static MP4Err serialize(struct MP4DescriptorRecord *s, char *buffer)
   buffer += DESCRIPTOR_TAG_LEN_SIZE;
 
   PUT8(objectTypeIndication);
-  val = self->streamType << 2;
+  val = (u8)(self->streamType << 2);
   if(self->upstream) val |= (1 << 1);
   val |= 1;
   PUT8_V(val);

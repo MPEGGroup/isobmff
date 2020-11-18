@@ -90,7 +90,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   while(self->bytesRead < self->size)
   {
     ISOSingleItemTypeReferenceAtomPtr atm;
-    err = ISOCreateSingleItemTypeReferenceAtom(&atm, 0, self->version);
+    err = ISOCreateSingleItemTypeReferenceAtom(&atm, 0, (u8)self->version);
     if(err) goto bail;
 
     err = atm->createFromInputStream((MP4AtomPtr)atm, NULL, (char *)inputStream);

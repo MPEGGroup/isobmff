@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999, 2000.
 */
 /*
-        $Id: MP4ESDescriptor.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
+  $Id: MP4ESDescriptor.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
 */
 #include "MP4Descriptors.h"
 #include "MP4Movies.h"
@@ -128,7 +128,7 @@ static MP4Err serialize(struct MP4DescriptorRecord *s, char *buffer)
   buffer += DESCRIPTOR_TAG_LEN_SIZE;
 
   PUT16(ESID);
-  val = self->streamPriority;
+  val = (u8)self->streamPriority;
   if(self->OCRESID) val |= (1 << 5);
   if(self->URLStringLength) val |= (1 << 6);
   if(self->dependsOnES) val |= (1 << 7);

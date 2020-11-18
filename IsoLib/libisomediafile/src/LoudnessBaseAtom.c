@@ -21,8 +21,8 @@
  derivative works. Copyright (c) 2014.
  */
 /*
- $Id: LoudnessBaseAtom.c,v 1.1.1.1 2014/09/19 08:10:00 armin Exp $
- */
+  $Id: LoudnessBaseAtom.c,v 1.1.1.1 2014/09/19 08:10:00 armin Exp $
+*/
 
 #include "MP4Atoms.h"
 #include <stdlib.h>
@@ -130,30 +130,30 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   if(err) goto bail;
 
   GET8_V(tmp8);
-  self->reserved = tmp8 >> 5;
+  self->reserved = (u8)(tmp8 >> 5);
   tmpVar         = (tmp8 & 0x1F) << 2;
 
   GET8_V(tmp8);
-  tmpVar += tmp8 >> 6;
+  tmpVar += (u8)(tmp8 >> 6);
   self->downmix_ID = tmpVar;
   self->DRC_set_ID = tmp8 & 0x3F;
 
   GET8_V(tmp8);
-  self->bs_sample_peak_level = tmp8;
+  self->bs_sample_peak_level = (s16)tmp8;
 
   GET8_V(tmp8);
-  self->bs_sample_peak_level = (self->bs_sample_peak_level << 4) + (tmp8 >> 4);
+  self->bs_sample_peak_level = (s16)((self->bs_sample_peak_level << 4) + (tmp8 >> 4));
   self->bs_sample_peak_level = self->bs_sample_peak_level << 4;
   self->bs_sample_peak_level = self->bs_sample_peak_level >> 4; /* get sign right */
   self->bs_true_peak_level   = tmp8 & 0x0F;
 
   GET8_V(tmp8);
-  self->bs_true_peak_level = (self->bs_true_peak_level << 8) + tmp8;
+  self->bs_true_peak_level = (s16)((self->bs_true_peak_level << 8) + tmp8);
   self->bs_true_peak_level = self->bs_true_peak_level << 4;
   self->bs_true_peak_level = self->bs_true_peak_level >> 4; /* get sign right */
 
   GET8_V(tmp8);
-  self->measurement_system_for_TP = tmp8 >> 4;
+  self->measurement_system_for_TP = (u8)(tmp8 >> 4);
   self->reliability_for_TP        = tmp8 & 0x0F;
 
   GET8(measurement_count);
@@ -167,7 +167,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
     GET8_V(measurement->method_definition);
     GET8_V(measurement->method_value);
     GET8_V(tmp8);
-    measurement->measurement_system = tmp8 >> 4;
+    measurement->measurement_system = (u8)(tmp8 >> 4);
     measurement->reliability        = tmp8 & 0x0F;
     MP4AddListEntry(measurement, self->measurements);
   }

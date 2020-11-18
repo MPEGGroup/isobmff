@@ -119,7 +119,7 @@ static MP4Err addItemProperty(struct MP4ItemPropertiesAtom *self, MP4AtomPtr ite
       1, sizeof(MP4ItemPropertyAssociationEntryPropertyIndex));
   TESTMALLOC(propertyIndex);
   propertyIndex->essential      = essential;
-  propertyIndex->property_index = property_index + 1;
+  propertyIndex->property_index = (u16)(property_index + 1);
   err                           = MP4AddListEntry(propertyIndex, targetEntry->propertyIndexes);
   if(err) goto bail;
 

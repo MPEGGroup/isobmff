@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: ItemProtectionAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
+  $Id: ItemProtectionAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -60,7 +60,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
 {
   MP4Err err;
   ISOItemProtectionAtomPtr self = (ISOItemProtectionAtomPtr)s;
-  u32 count;
+  u32 countBase;
 
   err = MP4NoErr;
 
@@ -68,9 +68,9 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   if(err) goto bail;
   buffer += self->bytesWritten;
 
-  err = MP4GetListEntryCount(self->atomList, &count);
+  err = MP4GetListEntryCount(self->atomList, &countBase);
   if(err) goto bail;
-  PUT16_V(count);
+  PUT16_V(countBase);
 
   SERIALIZE_ATOM_LIST(atomList);
   assert(self->bytesWritten == self->size);

@@ -406,8 +406,8 @@ ISOGetSampleDescriptionDimensions(MP4Handle sampleEntryH, u16 *width, u16 *heigh
   err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType);
   if(err) goto bail;
 
-  *width  = entry->width;
-  *height = entry->height;
+  *width  = (u16)entry->width;
+  *height = (u16)entry->height;
 
 bail:
   if(entry) entry->destroy((MP4AtomPtr)entry);
@@ -1374,15 +1374,15 @@ ISONewHEVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32
   /* sub_layer_profile_present_flag[i] + sub_layer_level_present_flag[i] */
   for(i = 0; i < sps_max_sub_layers - 1; i++)
   {
-    sub_layer_profile_present_flag[i] = GetBits(bb, 1, &err);
+    sub_layer_profile_present_flag[i] = (u8)GetBits(bb, 1, &err);
     if(err) goto bail;
-    sub_layer_level_present_flag[i] = GetBits(bb, 1, &err);
+    sub_layer_level_present_flag[i] = (u8)GetBits(bb, 1, &err);
     if(err) goto bail;
   }
   /* reserved_zero_2bits[ i ] */
   if(sps_max_sub_layers > 1)
   {
-    x = GetBits(bb, 16 - (sps_max_sub_layers - 1) * 2, &err);
+    x = (u8)GetBits(bb, 16 - (sps_max_sub_layers - 1) * 2, &err);
     if(err) goto bail;
   }
 
@@ -1415,7 +1415,7 @@ ISONewHEVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32
   if(y == 3)
   {
     /* separate_colour_plane_flag */
-    x = GetBits(bb, 1, &err);
+    x = (u8)GetBits(bb, 1, &err);
     if(err) goto bail;
   }
   /* pic_width_in_luma_samples */
@@ -1430,14 +1430,14 @@ ISONewHEVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32
   ((MP4TrackAtomPtr)theTrack)->setDimensions((MP4TrackAtomPtr)theTrack, width, height);
 
   /* conformance_window_flag */
-  x = GetBits(bb, 1, &err);
+  x = (u8)GetBits(bb, 1, &err);
   if(err) goto bail;
   if(x)
   {
     /* conf_win_[left|right|top|bottom]_offset */
     for(i = 0; i < 4; i++)
     {
-      x = read_golomb_uev(bb, &err);
+      x = (u8)read_golomb_uev(bb, &err);
       if(err) goto bail;
     }
   }

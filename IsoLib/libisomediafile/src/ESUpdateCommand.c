@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: ESUpdateCommand.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
+  $Id: ESUpdateCommand.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
 */
 #include "MP4Descriptors.h"
 #include "MP4Movies.h"
@@ -149,14 +149,14 @@ bail:
 
 static MP4Err removeESDS(struct MP4DescriptorRecord *s)
 {
-  MP4Err err;
+  MP4Err errBase;
   MP4ESDescriptorUpdatePtr self = (MP4ESDescriptorUpdatePtr)s;
-  err                           = MP4NoErr;
+  errBase                       = MP4NoErr;
   DESTROY_DESCRIPTOR_LIST(ESDescriptors);
-  err = MP4MakeLinkedList(&self->ESDescriptors);
-  if(err) goto bail;
+  errBase = MP4MakeLinkedList(&self->ESDescriptors);
+  if(errBase) goto bail;
 bail:
-  return err;
+  return errBase;
 }
 
 MP4Err MP4CreateESDescriptorUpdate(u32 tag, u32 size, u32 bytesRead, MP4DescriptorPtr *outDesc)

@@ -1,4 +1,4 @@
-/*
+  /*
 This software module was originally developed by Apple Computer, Inc.
 in the course of development of MPEG-4.
 This software module is an implementation of a part of one or
@@ -98,7 +98,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   {
     u32 priority;
     GET16_V(priority);
-    *p = priority;
+    *p = (u16)priority;
   }
 bail:
   TEST_RETURN(err);

@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: ItemInfoAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
+  $Id: ItemInfoAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -61,6 +61,8 @@ static MP4Err getEntry(ISOItemInfoAtomPtr self, u32 itemID, ISOItemInfoEntryAtom
   MP4Err err;
   u32 i;
 
+  err = MP4NoErr;
+
   for(i = 0; i < self->atomList->entryCount; i++)
   {
     ISOItemInfoEntryAtomPtr entry;
@@ -81,23 +83,23 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
 {
   MP4Err err;
   ISOItemInfoAtomPtr self = (ISOItemInfoAtomPtr)s;
-  u32 count;
+  u32 countBase;
 
   err = MP4NoErr;
   err = MP4SerializeCommonFullAtomFields((MP4FullAtomPtr)s, buffer);
   if(err) goto bail;
   buffer += self->bytesWritten;
 
-  err = MP4GetListEntryCount(self->atomList, &count);
+  err = MP4GetListEntryCount(self->atomList, &countBase);
   if(err) goto bail;
 
   if(self->version == 0)
   {
-    PUT16_V(count);
+    PUT16_V(countBase);
   }
   else
   {
-    PUT32_V(count);
+    PUT32_V(countBase);
   }
 
   SERIALIZE_ATOM_LIST(atomList); /* should be sorted by item_id! */

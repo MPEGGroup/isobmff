@@ -262,7 +262,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   else
   { /* version > 0 */
     GET8_V(tmp8);
-    self->stream_structure = tmp8 >> 4;
+    self->stream_structure = (u8)(tmp8 >> 4);
     self->formatOrdering   = tmp8 & 0xF;
     GET8(baseChannelCount);
     if(self->stream_structure & STREAM_STRUCTURE_CHANNELS)

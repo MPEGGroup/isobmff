@@ -652,7 +652,7 @@ void MP4TypeToString(u32 inType, char *ioStr)
   for(i = 0; i < 4; i++, ioStr++)
   {
     ch = inType >> (8 * (3 - i)) & 0xff;
-    if(isprint(ch)) *ioStr = ch;
+    if(isprint(ch)) *ioStr = (char)ch;
     else
       *ioStr = '.';
   }

@@ -31,6 +31,8 @@ derivative works. Copyright (c) 1999.
 #include <stdio.h>
 #include <string.h>
 
+MP4Err MP4MovieAddTrackES_IDToIOD(MP4Movie theMovie, MP4Track theTrack);
+
 MP4_EXTERN(MP4Err) MP4GetTrackID(MP4Track theTrack, u32 *outTrackID)
 {
   MP4Err err;
@@ -358,7 +360,6 @@ bail:
 
 MP4_EXTERN(MP4Err) MP4AddTrackToMovieIOD(MP4Track theTrack)
 {
-  MP4Err MP4MovieAddTrackES_IDToIOD(MP4Movie theMovie, MP4Track theTrack);
   MP4Movie itsMovie;
   MP4Err err;
   if(theTrack == 0) BAILWITHERROR(MP4BadParamErr);
@@ -1036,6 +1037,8 @@ ISOSetTrackFragmentDefaults(MP4Track theTrack, u32 duration, u32 size, u32 is_sy
   MP4TrackHeaderAtomPtr tkhd;
   /* MP4SampleTableAtomPtr stbl; */
   MP4MovieExtendsAtomPtr mvex;
+  MP4MovieAtomPtr movieAtom; 
+  MP4PrivateMovieRecordPtr moov; 
 
   err  = MP4NoErr;
   trak = (MP4TrackAtomPtr)theTrack;
@@ -1043,42 +1046,40 @@ ISOSetTrackFragmentDefaults(MP4Track theTrack, u32 duration, u32 size, u32 is_sy
   if(err) goto bail;
 
   /* This function needs a re-write to be more object-oriented...*/
-
+  if(theMovie == NULL) BAILWITHERROR(MP4BadParamErr) 
+  moov = (MP4PrivateMovieRecordPtr)theMovie; 
+  movieAtom = (MP4MovieAtomPtr)moov->moovAtomPtr;
+  if(movieAtom->mvex == NULL)
   {
-    GETMOVIEATOM(theMovie);
-    if(movieAtom->mvex == NULL)
-    {
-      err = MP4CreateMovieExtendsAtom(&mvex);
-      if(err) goto bail;
-      err = movieAtom->addAtom(movieAtom, (MP4AtomPtr)mvex);
-      if(err) goto bail;
-    }
-    else
-      mvex = (MP4MovieExtendsAtomPtr)(movieAtom->mvex);
-
-    err = MP4CreateTrackExtendsAtom(&trex);
+    err = MP4CreateMovieExtendsAtom(&mvex);
     if(err) goto bail;
-    tkhd = (MP4TrackHeaderAtomPtr)trak->trackHeader;
-
-    trex->trackID                 = tkhd->trackID;
-    trex->default_sample_duration = duration;
-    trex->default_sample_size     = size;
-    trex->default_sample_flags =
-        ((pad & 7) << 17) | (is_sync ? 0 : fragment_difference_sample_flag);
-
-    /* stbl = ((MP4SampleTableAtomPtr)
-                 ((MP4MediaInformationAtomPtr)
-                  ((MP4MediaAtomPtr)
-                   (trak->trackMedia))->information)->sampleTable);
-
-    trex->default_sample_description_index = stbl->getCurrentSampleEntryIndex( stbl ); */
-
-    err = mvex->addAtom(mvex, (MP4AtomPtr)trex);
+    err = movieAtom->addAtom(movieAtom, (MP4AtomPtr)mvex);
     if(err) goto bail;
   }
-bail:
-  TEST_RETURN(err);
+  else
+    mvex = (MP4MovieExtendsAtomPtr)(movieAtom->mvex);
 
+  err = MP4CreateTrackExtendsAtom(&trex);
+  if(err) goto bail;
+  tkhd = (MP4TrackHeaderAtomPtr)trak->trackHeader;
+
+  trex->trackID                 = tkhd->trackID;
+  trex->default_sample_duration = duration;
+  trex->default_sample_size     = size;
+  trex->default_sample_flags =
+      ((pad & 7) << 17) | (is_sync ? 0 : fragment_difference_sample_flag);
+
+  /* stbl = ((MP4SampleTableAtomPtr)
+                ((MP4MediaInformationAtomPtr)
+                ((MP4MediaAtomPtr)
+                  (trak->trackMedia))->information)->sampleTable);
+
+  trex->default_sample_description_index = stbl->getCurrentSampleEntryIndex( stbl ); */
+
+  err = mvex->addAtom(mvex, (MP4AtomPtr)trex);
+  if(err) goto bail;
+  
+bail:
   return err;
 }
 

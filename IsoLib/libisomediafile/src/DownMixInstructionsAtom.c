@@ -126,17 +126,17 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   count = 0;
   GET8(targetLayout);
   GET8_V(tmp8);
-  self->reserved           = tmp8 >> 7;
+  self->reserved           = (u8)(tmp8 >> 7);
   self->targetChannelCount = tmp8 & 0x7F;
   GET8_V(tmp8);
-  self->in_stream  = tmp8 >> 7;
+  self->in_stream  = (u8)(tmp8 >> 7);
   self->downmix_ID = tmp8 & 0x7F;
 
   while(self->bytesRead < self->size)
   {
     self->bs_downmix_coefficients = realloc(self->bs_downmix_coefficients, count + 2);
     GET8_V(tmp8);
-    self->bs_downmix_coefficients[count]     = tmp8 >> 4;
+    self->bs_downmix_coefficients[count]     = (u8)(tmp8 >> 4);
     self->bs_downmix_coefficients[count + 1] = tmp8 & 0x0F;
     count += 2;
   }
