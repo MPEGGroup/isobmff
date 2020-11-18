@@ -328,6 +328,11 @@ static MP4Err addGroupDescription(struct MP4MediaAtom *self, u32 groupType, MP4H
   err = minf->addGroupDescription(minf, groupType, description, index);
   if(err) goto bail;
 
+  if(minf->type == MP4TrackFragmentAtomType)
+  {
+    *index += 0x10000;
+  }
+
 bail:
   TEST_RETURN(err);
 
@@ -364,6 +369,7 @@ static MP4Err changeSamplestoGroupType(struct MP4MediaAtom *self,
   assert(minf->changeSamplestoGroupType);
   err = minf->changeSamplestoGroupType(minf, sampleToGroupType);
   if(err) goto bail;
+  self->sampleToGroupType = sampleToGroupType;
 bail:
   TEST_RETURN(err);
 

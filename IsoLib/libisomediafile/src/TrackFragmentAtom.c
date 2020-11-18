@@ -607,7 +607,7 @@ static MP4Err mergeRuns(MP4TrackFragmentAtomPtr self, MP4MediaAtomPtr mdia)
   if(self->sampletoGroupList)
   {
     u32 groupListSize;
-    err = ISOSetSamplestoGroupType((MP4Media)mdia, 0);
+    err = ISOSetSamplestoGroupType((MP4Media)mdia, SAMPLE_GROUP_NORMAL);
     if(err) goto bail;
     err = MP4GetListEntryCount(self->sampletoGroupList, &groupListSize);
     if(err) goto bail;
@@ -622,10 +622,37 @@ static MP4Err mergeRuns(MP4TrackFragmentAtomPtr self, MP4MediaAtomPtr mdia)
         for(j = 0; j < theGroup->sampleCount; j++)
         {
           s32 position;
+          u32 index, localIndex, correctIndex;
           position = j - total_samples;
-          err = mdia->mapSamplestoGroup(mdia, theGroup->grouping_type, (theGroup->group_index)[j],
-                                        position, 1);
-          if(err) goto bail;
+          index = (theGroup->group_index)[j];
+          if(index<=0x10000)
+          {
+            err = mdia->mapSamplestoGroup(mdia, theGroup->grouping_type, index, position, 1);
+            if(err) goto bail;
+          }
+          else
+          {
+            MP4Handle descriptionPayload;
+            MP4SampleGroupDescriptionAtomPtr stblGroup;
+            MP4MediaInformationAtomPtr minf;
+            MP4SampleTableAtomPtr stbl;
+            localIndex = index - 0x10000;
+
+            err = ISONewHandle(1, &descriptionPayload); if (err) goto bail;
+
+            /* 1. get handler from the local group description using localIndex */            
+            err = self->getGroupDescription(self, theGroup->grouping_type, localIndex, descriptionPayload);
+
+            /* 2. find the same handler with the same type in stbl */
+            minf = (MP4MediaInformationAtomPtr)mdia->information;
+            stbl = (MP4SampleTableAtomPtr)minf->sampleTable;
+            err = MP4FindGroupAtom(stbl->groupDescriptionList, theGroup->grouping_type, (MP4AtomPtr *)&stblGroup);            
+            err = stblGroup->findGroupDescriptionIdx(stblGroup, descriptionPayload, &correctIndex);
+
+            err = mdia->mapSamplestoGroup(mdia, theGroup->grouping_type, correctIndex, position, 1);
+            // if(err) goto bail;
+            err = ISODisposeHandle(descriptionPayload);
+          }
         }
       }
     }

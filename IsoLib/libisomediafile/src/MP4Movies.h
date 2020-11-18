@@ -416,7 +416,7 @@ extern "C"
   ISOGetGroupDescription(MP4Media media, u32 groupType, u32 index, MP4Handle description);
 
   MP4_EXTERN(MP4Err)
-  ISOSetSamplestoGroupType(MP4Media media, u32 sampleToGroupType);
+  ISOSetSamplestoGroupType(MP4Media media, sampleToGroupType_t sampleToGroupType);
 
   MP4_EXTERN(MP4Err)
   ISOMapSamplestoGroup(MP4Media media, u32 groupType, u32 group_index, s32 sample_index, u32 count);

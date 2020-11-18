@@ -161,20 +161,6 @@ ISOErr addGroupDescription(MP4Media media, u32 fcc, std::string strDescription, 
   return err;
 }
 
-ISOErr addGroupDescriptions(MP4Media media)
-{
-  ISOErr err = ISONoErr;
-  err        = addGroupDescription(media, FOURCC_COLOR, "Red frames", groupIdRed);
-  if(err) return err;
-  err = addGroupDescription(media, FOURCC_COLOR, "Blue frames", groupIdBlue);
-  if(err) return err;
-  err = addGroupDescription(media, FOURCC_COLOR, "Green frames", groupIdGreen);
-  if(err) return err;
-  err = addGroupDescription(media, FOURCC_COLOR, "Yellow frames", groupIdYellow);
-  if(err) return err;
-  return err;
-}
-
 ISOErr mapSamplesToGroups(MP4Media media, std::string strPattern, u32 repeatPattern = 1)
 {
   ISOErr err              = ISONoErr;
@@ -188,18 +174,8 @@ ISOErr mapSamplesToGroups(MP4Media media, std::string strPattern, u32 repeatPatt
   std::cout << "fullPattern = " << fullPattern << std::endl;
   if(repeatPattern > 0)
   {
-    size_t nr = std::count(fullPattern.begin(), fullPattern.end(), 'r');
-    size_t nb = std::count(fullPattern.begin(), fullPattern.end(), 'b');
-    size_t ng = std::count(fullPattern.begin(), fullPattern.end(), 'g');
-    size_t ny = std::count(fullPattern.begin(), fullPattern.end(), 'y');
-    std::cout << "r = " << nr << std::endl;
-    std::cout << "b = " << nb << std::endl;
-    std::cout << "g = " << ng << std::endl;
-    std::cout << "y = " << ny << std::endl;
-
     for(u32 n = 0; n < fullPattern.size(); ++n)
     {
-      std::cout << fullPattern[n] << " ";
       switch(fullPattern[n])
       {
       case 'r':
@@ -273,32 +249,31 @@ ISOErr createFile(std::string strFilename)
 
   err = ISOSetTrackFragmentDefaults(trak, TIMESCALE / FPS, sizeof(auBlue), 1, 0);
 
-  err = addGroupDescriptions(media);
-  if(err) return err;
+  // red and blue are in stbl
+  err = addGroupDescription(media, FOURCC_COLOR, "Red frames", groupIdRed);   if(err) return err;
+  err = addGroupDescription(media, FOURCC_COLOR, "Blue frames", groupIdBlue); if(err) return err;
+  
   u32 temp = 0;
-  err      = addGroupDescription(media, FOURCC_COLOR, "Yellow frames", temp);
+  err      = addGroupDescription(media, FOURCC_COLOR, "Red frames", temp);
   if(err == MP4NoErr)
-    return -5; // this must fail because "Yellow frames" payload is already added with the same type
+    return -5; // this must fail because "Red frames" payload is already added with the same type
 
   // just add sample entry, call addSamples with sample count = 0
   err = addSamples(media, "r", 0, sampleEntryH);
   if(err) return err;
   err = MP4EndMediaEdits(media);
 
-  std::cout << "fragment 1" << std::endl;
-  ISOSetSamplestoGroupType(media, SAMPLE_GROUP_NORMAL);
+  std::cout << "\nfragment 1" << std::endl;
   err = ISOStartMovieFragment(moov);
+  ISOSetSamplestoGroupType(media, SAMPLE_GROUP_NORMAL);
   if(err) return err;
   err = addSamples(media, "rb", 3);
   if(err) return err;
-  err = addGroupDescription(media, FOURCC_COLOR, "This must pass even if in stbl", temp);
-  if(err) return err;
   err = addGroupDescription(media, FOURCC_TEST, "This must pass", temp);
   if(err) return err;
-  err = addGroupDescription(media, FOURCC_COLOR, "Yellow frames", temp);
-  if(err)
-    return err; // this must pass even if the same type and payload is in stbl (but it shall not be
-                // in defragmented file)
+  err = addGroupDescription(media, FOURCC_COLOR, "Red frames", temp);
+  if(err) return err; // this must pass even if the same type and payload is in stbl 
+                      // (but it shall not be in defragmented file)
   err = addGroupDescription(media, FOURCC_TEST, "Test", temp);
   if(err) return err;
   err = addGroupDescription(media, FOURCC_TEST, "Test", temp);
@@ -306,41 +281,40 @@ ISOErr createFile(std::string strFilename)
   err = mapSamplesToGroups(media, "rb", 3);
   if(err) return err;
 
-  std::cout << "fragment 2 (compressed sample group)" << std::endl;
-  ISOSetSamplestoGroupType(media, SAMPLE_GROUP_COMPACT);
+  std::cout << "\nfragment 2 (compressed sample group)" << std::endl;
   err = ISOStartMovieFragment(moov);
-  if(err) return err;
+  ISOSetSamplestoGroupType(media, SAMPLE_GROUP_NORMAL);
+  // local green and yellow groups
+  err = addGroupDescription(media, FOURCC_COLOR, "Green frames", groupIdGreen);   if(err) return err;
+  err = addGroupDescription(media, FOURCC_COLOR, "Yellow frames", groupIdYellow); if(err) return err;
   err = addSamples(media, "gry", 2);
   if(err) return err;
   err = addGroupDescription(media, FOURCC_TEST, "Same as in previous fragment but different entry",
-                            groupIdBlue);
+                            temp);
   if(err) return err;
-  err = addGroupDescription(media, FOURCC_TEST, "This must pass", groupIdBlue);
+  err = addGroupDescription(media, FOURCC_TEST, "This must pass", temp);
   if(err) return err;
   err = mapSamplesToGroups(media, "gry", 2);
   if(err) return err;
 
-  std::cout << "fragment 3" << std::endl;
-  ISOSetSamplestoGroupType(media, SAMPLE_GROUP_NORMAL);
+  std::cout << "\nfragment 3" << std::endl;
   err = ISOStartMovieFragment(moov);
-  if(err) return err;
+  ISOSetSamplestoGroupType(media, SAMPLE_GROUP_NORMAL);
+  // local green and yellow groups
+  err = addGroupDescription(media, FOURCC_COLOR, "Green frames", groupIdGreen);   if(err) return err;
+  err = addGroupDescription(media, FOURCC_COLOR, "Yellow frames", groupIdYellow); if(err) return err;
   err = addSamples(media, "bgy", 2);
   if(err) return err;
   err = mapSamplesToGroups(media, "bgy", 2);
   if(err) return err;
 
-  std::cout << "fragment 4" << std::endl;
+  std::cout << "\nfragment 4" << std::endl;
   err = ISOStartMovieFragment(moov);
   if(err) return err;
-  ISOSetSamplestoGroupType(media,
-                           SAMPLE_GROUP_AUTO); // FIXME: no sampleToGroupBox in the last fragment
-  // ISOSetSamplestoGroupType(media, SAMPLE_GROUP_COMPACT);
-  err = addSamples(media, "wwwk", 1);
+  ISOSetSamplestoGroupType(media, SAMPLE_GROUP_NORMAL);
+  err = addSamples(media, "wk", 3);
   if(err) return err;
-  err = addGroupDescription(media, FOURCC_BLACK, "Single black frame", groupIdBlack);
-  if(err) return err;
-  ISOMapSamplestoGroup(media, FOURCC_BLACK, groupIdBlack, 3, 1);
-  // err = mapSamplesToGroups(media, "wk", 3); if(err) return err;
+
 
   err = MP4WriteMovieToFile(moov, strFilename.c_str());
   return err;
@@ -373,6 +347,8 @@ int main()
     err           = ISOGetTrackMedia(trak, &media);
     u32 sampleCnt = 0;
     u32 *sampleNumbers;
+    groupIdGreen = 3; // TODO: get these IDs using the API
+    groupIdYellow = 4;
     err =
         ISOGetSampleGroupSampleNumbers(media, FOURCC_COLOR, groupIdRed, &sampleNumbers, &sampleCnt);
 
