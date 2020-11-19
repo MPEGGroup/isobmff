@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: MP4Impl.h,v 1.3 2002/10/01 12:49:19 julien Exp $
+  $Id: MP4Impl.h,v 1.3 2002/10/01 12:49:19 julien Exp $
 */
 #ifndef INCLUDED_MP4IMPL_H
 #define INCLUDED_MP4IMPL_H
@@ -46,6 +46,12 @@ derivative works. Copyright (c) 1999.
   {                      \
     err = (v);           \
     goto bail;           \
+  }
+
+#define BAILWITHFREEHANDLE(v)  \
+  {                            \
+    ISODisposeHandle(v);       \
+    goto bail;                 \
   }
 
 #define TEST_ATOM_TYPE(atomName)   \
