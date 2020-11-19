@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: MP4OrdinaryTrackReader.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
+  $Id: MP4OrdinaryTrackReader.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
 */
 #include "MP4Movies.h"
 #include "MP4TrackReader.h"
@@ -29,6 +29,9 @@ derivative works. Copyright (c) 1999.
 #include "MP4Atoms.h"
 #include <stdlib.h>
 #include <string.h>
+
+MP4Err MP4GetTrackReferenceType(MP4Track track, u32 atomType, MP4TrackReferenceTypeAtomPtr * outAtom);
+MP4Err rewriteODFrame(MP4Track track, MP4Handle sampleH, u64 cts, MP4TrackReferenceTypeAtomPtr mpod, MP4SLConfig slconfig);
 
 static void put32(u32 val, char *buf)
 {
@@ -133,11 +136,6 @@ static MP4Err getNextAccessUnit(struct MP4TrackReaderStruct *self, MP4Handle out
 
   if(self->isODTrack)
   {
-    MP4Err MP4GetTrackReferenceType(MP4Track track, u32 atomType,
-                                    MP4TrackReferenceTypeAtomPtr * outAtom);
-    MP4Err rewriteODFrame(MP4Track track, MP4Handle sampleH, u64 cts,
-                          MP4TrackReferenceTypeAtomPtr mpod, MP4SLConfig slconfig);
-
     MP4TrackReferenceTypeAtomPtr mpod;
     err = MP4GetTrackReferenceType(self->track, MP4ODTrackReferenceAtomType, &mpod);
     if(err) goto bail;

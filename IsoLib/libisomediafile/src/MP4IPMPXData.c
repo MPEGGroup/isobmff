@@ -70,7 +70,7 @@ MP4Err MP4ParseIPMPXData(MP4InputStreamPtr inputStream, MP4IPMPXDataPtr *outData
   /* read the version */
   err = inputStream->read8(inputStream, &version, NULL);
   if(err) goto bail;
-  data->version = version;
+  data->version = (u8)version;
   data->bytesRead++;
   if(data->version != 0x01) /* only version 1 is currently supported */
     BAILWITHERROR(MP4BadDataErr)

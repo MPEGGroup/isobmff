@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: MP4SLPacket.c,v 1.2 2002/10/01 12:49:19 julien Exp $
+  $Id: MP4SLPacket.c,v 1.2 2002/10/01 12:49:19 julien Exp $
 */
 #include "MP4Movies.h"
 #include "MP4Atoms.h"
@@ -32,16 +32,13 @@ derivative works. Copyright (c) 1999.
 
 MP4Err rewriteODFrame(MP4Track track, MP4Handle sampleH, u64 cts, MP4TrackReferenceTypeAtomPtr mpod,
                       MP4SLConfig slconfig);
-
 MP4Err rewriteIPMPDescriptorPointers(MP4DescriptorPtr desc, MP4TrackReferenceTypeAtomPtr mpod);
+MP4Err makeESD(MP4Movie theMovie, u32 trackNumber, u64 cts, MP4SLConfig slconfig,
+               MP4DescriptorPtr *outDesc);
 
 MP4Err rewriteODFrame(MP4Track track, MP4Handle sampleH, u64 cts, MP4TrackReferenceTypeAtomPtr mpod,
                       MP4SLConfig slconfig)
 {
-  MP4Err makeESD(MP4Movie theMovie, u32 trackNumber, u64 cts, MP4SLConfig slconfig,
-                 MP4DescriptorPtr * outDesc);
-  MP4Err MP4ParseCommand(MP4InputStreamPtr inputStream, MP4DescriptorPtr * outDesc);
-
   MP4Err err;
   u32 unitSize;
   MP4InputStreamPtr is;
@@ -113,7 +110,22 @@ MP4Err rewriteODFrame(MP4Track track, MP4Handle sampleH, u64 cts, MP4TrackRefere
           if(err) goto bail;
         }
         /* --awm to avoid putting the ES_ID_Ref descriptors in the output */
-        DESTROY_DESCRIPTOR_LIST_V(od->ES_ID_RefDescriptors);
+        if(od->ES_ID_RefDescriptors)
+        {
+          u32 listSize;
+          u32 i1;
+          err = MP4GetListEntryCount(od->ES_ID_RefDescriptors, &listSize);
+          if(err) goto bail;
+          for(i1 = 0; i1 < listSize; i1++)
+          {
+            MP4DescriptorPtr a;
+            err = MP4GetListEntry(od->ES_ID_RefDescriptors, i1, (char **)&a);
+            if(err) goto bail;
+            if(a) a->destroy(a);
+          }
+          err = MP4DeleteLinkedList(od->ES_ID_RefDescriptors);
+          if(err) goto bail;
+        }
         od->ES_ID_RefDescriptors = NULL;
       }
       break;
@@ -140,7 +152,22 @@ MP4Err rewriteODFrame(MP4Track track, MP4Handle sampleH, u64 cts, MP4TrackRefere
         if(err) goto bail;
       }
       /* --awm to avoid putting the ES_ID_Ref descriptors in the output */
-      DESTROY_DESCRIPTOR_LIST_V(esUpdate->ES_ID_RefDescriptors);
+      if(esUpdate->ES_ID_RefDescriptors)
+      {
+        u32 listSize;
+        u32 i2;
+        err = MP4GetListEntryCount(esUpdate->ES_ID_RefDescriptors, &listSize);
+        if(err) goto bail;
+        for(i2 = 0; i2 < listSize; i2++)
+        {
+          MP4DescriptorPtr a;
+          err = MP4GetListEntry(esUpdate->ES_ID_RefDescriptors, i2, (char **)&a);
+          if(err) goto bail;
+          if(a) a->destroy(a);
+        }
+        err = MP4DeleteLinkedList(esUpdate->ES_ID_RefDescriptors);
+        if(err) goto bail;
+      }
       esUpdate->ES_ID_RefDescriptors = NULL;
       break;
 
@@ -170,7 +197,22 @@ MP4Err rewriteODFrame(MP4Track track, MP4Handle sampleH, u64 cts, MP4TrackRefere
 
   /* MP4DeleteLinkedList( descList ); */
   /* Just deleting the list still leaves the allocated descriptors hanging around -- dws */
-  DESTROY_DESCRIPTOR_LIST_V(descList);
+  if(descList)
+  {
+    u32 listSize;
+    u32 i3;
+    err = MP4GetListEntryCount(descList, &listSize);
+    if(err) goto bail;
+    for(i3 = 0; i3 < listSize; i3++)
+    {
+      MP4DescriptorPtr a;
+      err = MP4GetListEntry(descList, i3, (char **)&a);
+      if(err) goto bail;
+      if(a) a->destroy(a);
+    }
+    err = MP4DeleteLinkedList(descList);
+    if(err) goto bail;
+  }
 bail:
   if(is)
   {
@@ -319,7 +361,7 @@ MP4Err rewriteIPMPDescriptorPointers(MP4DescriptorPtr desc, MP4TrackReferenceTyp
     if((ipmpDescPtr->ipmpEsId != 0) && (ipmpDescPtr->ipmpEsId != 0xFFFF))
     {
       /* rewrite the good ID */
-      ipmpDescPtr->ipmpEsId = mpod->trackIDs[ipmpDescPtr->ipmpEsId - 1];
+      ipmpDescPtr->ipmpEsId = (u16)mpod->trackIDs[ipmpDescPtr->ipmpEsId - 1];
     }
   }
 

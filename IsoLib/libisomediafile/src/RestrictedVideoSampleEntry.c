@@ -332,8 +332,8 @@ static MP4Err getSchemeInfoAtom(struct MP4Atom *s, u32 theType, struct MP4Atom *
       if(desc && (desc->type == theType))
       {
         *theAtom = desc;
-        break;
         err = MP4NoErr;
+        break;
       }
     }
   }

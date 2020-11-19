@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: TrackFragmentAtom.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
+  $Id: TrackFragmentAtom.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -386,7 +386,7 @@ static MP4Err calculateSize(struct MP4Atom *s)
   MP4TrackFragmentHeaderAtomPtr tfhd;
 
   u32 tfhd_flags;
-  u32 i;
+  u32 n;
   u32 atomListSize;
 
   err  = MP4NoErr;
@@ -410,9 +410,9 @@ static MP4Err calculateSize(struct MP4Atom *s)
     MP4TrackRunAtomPtr a;
 
     /* first, calculate what defaults are suitable in this track fragment header */
-    for(i = 0; i < atomListSize; i++)
+    for(n = 0; n < atomListSize; n++)
     {
-      err = MP4GetListEntry(self->atomList, i, (char **)&a);
+      err = MP4GetListEntry(self->atomList, n, (char **)&a);
       if(err) goto bail;
       if(a) a->calculateDefaults(a, tfhd, 2);
       /* first iteration gets the second flag value as the first can be special-cased */
@@ -421,9 +421,9 @@ static MP4Err calculateSize(struct MP4Atom *s)
     /* then come back round and pick up the flags if not already set from second position */
     if(tfhd->default_sample_flags == 0)
     {
-      for(i = 0; i < atomListSize; i++)
+      for(n = 0; n < atomListSize; n++)
       {
-        err = MP4GetListEntry(self->atomList, i, (char **)&a);
+        err = MP4GetListEntry(self->atomList, n, (char **)&a);
         if(err) goto bail;
         if(a) a->calculateDefaults(a, tfhd, 1);
         /* pick up flags from the first position */
@@ -441,9 +441,9 @@ static MP4Err calculateSize(struct MP4Atom *s)
       tfhd_flags |= tfhd_default_sample_flags_present;
 
     /* finally, tell each run to set its flags based on what we calculated */
-    for(i = 0; i < atomListSize; i++)
+    for(n = 0; n < atomListSize; n++)
     {
-      err = MP4GetListEntry(self->atomList, i, (char **)&a);
+      err = MP4GetListEntry(self->atomList, n, (char **)&a);
       if(err) goto bail;
       if(a) a->setFlags(a, tfhd);
     }
@@ -636,8 +636,6 @@ static MP4Err mergeRuns(MP4TrackFragmentAtomPtr self, MP4MediaAtomPtr mdia)
             /* mapping local indexes to corrected global indexes */
             MP4Handle descriptionEntry;
             MP4SampleGroupDescriptionAtomPtr stblGroup;
-            MP4MediaInformationAtomPtr minf;
-            MP4SampleTableAtomPtr stbl;
             u32 local_description_index, correct_description_index;
 
             local_description_index   = group_description_index - 0x10000;
@@ -650,8 +648,6 @@ static MP4Err mergeRuns(MP4TrackFragmentAtomPtr self, MP4MediaAtomPtr mdia)
             if(err) BAILWITHFREEHANDLE(descriptionEntry);
 
             /* 2. find the same handler with the same type in stbl */
-            minf = (MP4MediaInformationAtomPtr)mdia->information;
-            stbl = (MP4SampleTableAtomPtr)minf->sampleTable;
             err = MP4FindGroupAtom(stbl->groupDescriptionList, theGroup->grouping_type, (MP4AtomPtr *)&stblGroup);
             if(err) BAILWITHFREEHANDLE(descriptionEntry);
             err = stblGroup->findGroupDescriptionIdx(stblGroup, descriptionEntry, &correct_description_index);

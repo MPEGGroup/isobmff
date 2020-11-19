@@ -75,7 +75,7 @@ static MP4Err doOpen(struct FileMappingObjectRecord *s, const char *pathname)
     BAILWITHERROR(MP4IOErr);
   }
   /* make parent */
-  if((separator = strrchr(pathname, '\\')) || (separator = strrchr(pathname, '/')))
+  if((separator = strrchr(pathname, '\\')) != 0 || (separator = strrchr(pathname, '/')) != 0)
   {
     int len      = separator - pathname;
     self->parent = (char *)calloc(1, len + 2);

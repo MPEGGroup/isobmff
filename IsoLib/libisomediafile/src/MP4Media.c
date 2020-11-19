@@ -2344,7 +2344,7 @@ MP4GetSampleAuxiliaryInformation(MP4Media theMedia, u32 *outCount,
     err = MP4GetListEntry(stbl->SampleAuxiliaryInformationSizes, i, (char **)&saiz);
     if(err) goto bail;
 
-    flags[i]      = saiz->flags;
+    flags[i]      = (u8)saiz->flags;
     types[i]      = saiz->aux_info_type;
     parameters[i] = saiz->aux_info_type_parameter;
   }

@@ -28,10 +28,10 @@ derivative works. Copyright (c) 1999.
 #include "MJ2Atoms.h"
 #include <string.h>
 
+MP4Err MP4MovieCreateDescriptors(MP4Movie theMovie);
+
 static MP4Err LocalPutMovieIntoHandle(MP4Movie theMovie, MP4Handle movieH, u32 include_mdat)
 {
-  MP4Err MP4MovieCreateDescriptors(MP4Movie theMovie);
-
   MP4Err err;
   MP4PrivateMovieRecordPtr movie;
   MP4MovieAtomPtr moov;

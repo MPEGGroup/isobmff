@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: MP4ObjectDescriptor.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
+  $Id: MP4ObjectDescriptor.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
 */
 #include "MP4Descriptors.h"
 #include "MP4Movies.h"
@@ -99,7 +99,7 @@ static MP4Err serialize(struct MP4DescriptorRecord *s, char *buffer)
   if(err) goto bail;
   buffer += DESCRIPTOR_TAG_LEN_SIZE;
 
-  val = self->objectDescriptorID << 6;
+  val = (u16)(self->objectDescriptorID << 6);
   if(self->URLStringLength) val |= (1 << 5);
   val |= 0x1f;
   PUT16_V(val);
@@ -218,7 +218,20 @@ static MP4Err removeESDS(struct MP4DescriptorRecord *s)
   MP4Err err;
   MP4ObjectDescriptorPtr self = (MP4ObjectDescriptorPtr)s;
   err                         = MP4NoErr;
-  DESTROY_DESCRIPTOR_LIST(ESDescriptors);
+  if(self->ESDescriptors) 
+  { 
+    u32 listSize; 
+    u32 i; 
+    err = MP4GetListEntryCount(self->ESDescriptors, &listSize); 
+    if(err) goto bail; 
+    for(i = 0; i < listSize; i++) 
+    { 
+      MP4DescriptorPtr a; 
+      err = MP4GetListEntry(self->ESDescriptors, i, (char **)&a); if(err) goto bail; 
+      if(a) a->destroy(a);
+    } 
+    err = MP4DeleteLinkedList(self->ESDescriptors); if(err) goto bail; 
+  }
   err = MP4MakeLinkedList(&self->ESDescriptors);
   if(err) goto bail;
 bail:

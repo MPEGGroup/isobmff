@@ -73,14 +73,14 @@ static MP4Err addSamples(struct MP4SampleSizeAtom *self, u32 sampleCount, MP4Han
 
     if((self->sizes == NULL) && self->sampleCount)
     {
-      u32 i;
+      u32 i1;
       self->allocatedSize = newsize;
       if(self->allocatedSize < allocation_size) self->allocatedSize = allocation_size;
 
       self->sizes = (u32 *)calloc(self->allocatedSize, 1);
       TESTMALLOC(self->sizes);
-      for(i = 0; i < self->sampleCount; i++)
-        self->sizes[i] = self->sampleSize;
+      for(i1 = 0; i1 < self->sampleCount; i1++)
+        self->sizes[i1] = self->sampleSize;
     }
 
     if(self->allocatedSize < newsize)
@@ -95,10 +95,10 @@ static MP4Err addSamples(struct MP4SampleSizeAtom *self, u32 sampleCount, MP4Han
       memcpy(self->sizes + self->sampleCount, sampleSizes, sizesCount * sizeof(u32));
     else
     {
-      u32 i;
+      u32 i2;
       u32 *p;
       p = self->sizes + self->sampleCount;
-      for(i = 0; i < sampleCount; i++)
+      for(i2 = 0; i2 < sampleCount; i2++)
         *p++ = *sampleSizes;
     }
     self->sampleSize = 0;

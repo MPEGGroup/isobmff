@@ -84,9 +84,9 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   if(err) goto bail;
 
   GET8_V(tmp8);
-  self->format_flags = tmp8;
+  self->format_flags = (u8)tmp8;
   GET8_V(tmp8);
-  self->PCM_sample_size = tmp8;
+  self->PCM_sample_size = (u8)tmp8;
 
   assert(self->bytesRead == self->size);
 bail:

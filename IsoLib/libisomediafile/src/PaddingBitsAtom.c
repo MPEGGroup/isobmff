@@ -55,6 +55,7 @@ static MP4Err addSamplePads(struct MP4PaddingBitsAtom *self, u32 sampleCount, MP
 
   dodefault   = 1;
   defaultpad  = 0;
+  padsCount   = 0;
   PaddingBits = NULL;
 
   if(padsH != NULL)

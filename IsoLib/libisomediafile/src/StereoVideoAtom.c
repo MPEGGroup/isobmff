@@ -72,7 +72,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   MP4Err err;
   u32 tmp32;
   u8 tmp8;
-  u32 i;
+  u32 n;
   MP4StereoVideoAtomPtr self = (MP4StereoVideoAtomPtr)s;
   err                        = MP4NoErr;
 
@@ -88,9 +88,9 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
     PUT32(stereo_scheme);
     PUT32(length);
 
-    for(i = 0; i < self->length; i++)
+    for(n = 0; n < self->length; n++)
     {
-      tmp8 = self->stereo_indication_type[i];
+      tmp8 = self->stereo_indication_type[n];
       PUT8_V(tmp8);
     }
 

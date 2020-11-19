@@ -149,7 +149,7 @@ static MP4Err readstring(char **b, MP4XMLMetaSampleEntryAtomPtr self, MP4InputSt
   for(;;)
   {
     GET8_V_MSG(byte, NULL);
-    *p++ = byte;
+    *p++ = (char)byte;
     if(byte == 0) break;
   }
 

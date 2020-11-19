@@ -134,7 +134,7 @@ static MP4Err readstring(char **b, MP4TextMetaSampleEntryAtomPtr self,
   for(;;)
   {
     GET8_V_MSG(byte, NULL);
-    *p++ = byte;
+    *p++ = (char)byte;
     if(byte == 0) break;
   }
 

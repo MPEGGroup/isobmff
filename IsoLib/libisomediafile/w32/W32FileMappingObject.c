@@ -21,7 +21,7 @@ This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-        $Id: W32FileMappingObject.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
+  $Id: W32FileMappingObject.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
 */
 #include "W32FileMappingObject.h"
 #include <string.h>
@@ -80,7 +80,7 @@ static MP4Err doOpen(struct FileMappingObjectRecord *s, const char *filename)
   CloseHandle(fileHandle);
   CloseHandle(fileMappingHandle);
   /* make parent */
-  if((separator = strrchr(filename, '\\')) || (separator = strrchr(filename, '/')))
+  if((separator = strrchr(filename, '\\')) != 0 || (separator = strrchr(filename, '/')) != 0)
   {
     int len = (int)(separator - filename);
     if(self->parent)
