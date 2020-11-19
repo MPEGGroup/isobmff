@@ -1037,8 +1037,8 @@ ISOSetTrackFragmentDefaults(MP4Track theTrack, u32 duration, u32 size, u32 is_sy
   MP4TrackHeaderAtomPtr tkhd;
   /* MP4SampleTableAtomPtr stbl; */
   MP4MovieExtendsAtomPtr mvex;
-  MP4MovieAtomPtr movieAtom; 
-  MP4PrivateMovieRecordPtr moov; 
+  MP4MovieAtomPtr movieAtom;
+  MP4PrivateMovieRecordPtr moov;
 
   err  = MP4NoErr;
   trak = (MP4TrackAtomPtr)theTrack;
@@ -1046,8 +1046,8 @@ ISOSetTrackFragmentDefaults(MP4Track theTrack, u32 duration, u32 size, u32 is_sy
   if(err) goto bail;
 
   /* This function needs a re-write to be more object-oriented...*/
-  if(theMovie == NULL) BAILWITHERROR(MP4BadParamErr) 
-  moov = (MP4PrivateMovieRecordPtr)theMovie; 
+  if(theMovie == NULL) BAILWITHERROR(MP4BadParamErr)
+  moov      = (MP4PrivateMovieRecordPtr)theMovie;
   movieAtom = (MP4MovieAtomPtr)moov->moovAtomPtr;
   if(movieAtom->mvex == NULL)
   {
@@ -1066,8 +1066,7 @@ ISOSetTrackFragmentDefaults(MP4Track theTrack, u32 duration, u32 size, u32 is_sy
   trex->trackID                 = tkhd->trackID;
   trex->default_sample_duration = duration;
   trex->default_sample_size     = size;
-  trex->default_sample_flags =
-      ((pad & 7) << 17) | (is_sync ? 0 : fragment_difference_sample_flag);
+  trex->default_sample_flags = ((pad & 7) << 17) | (is_sync ? 0 : fragment_difference_sample_flag);
 
   /* stbl = ((MP4SampleTableAtomPtr)
                 ((MP4MediaInformationAtomPtr)
@@ -1078,7 +1077,7 @@ ISOSetTrackFragmentDefaults(MP4Track theTrack, u32 duration, u32 size, u32 is_sy
 
   err = mvex->addAtom(mvex, (MP4AtomPtr)trex);
   if(err) goto bail;
-  
+
 bail:
   return err;
 }

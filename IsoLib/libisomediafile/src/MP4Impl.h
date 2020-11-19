@@ -48,10 +48,10 @@ derivative works. Copyright (c) 1999.
     goto bail;           \
   }
 
-#define BAILWITHFREEHANDLE(v)  \
-  {                            \
-    ISODisposeHandle(v);       \
-    goto bail;                 \
+#define BAILWITHFREEHANDLE(v) \
+  {                           \
+    ISODisposeHandle(v);      \
+    goto bail;                \
   }
 
 #define TEST_ATOM_TYPE(atomName)   \

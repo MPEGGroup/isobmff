@@ -1558,8 +1558,8 @@ ISO_EXTERN(ISOErr) ISOGetItemData(ISOMetaItem item, MP4Handle data, u64 *base_of
         else if(myItem->construction_method == 2)
         {
           u64 k;
-          err = ISOGetItemReference(item, MP4_FOUR_CHAR_CODE('i', 'l', 'o', 'c'), (u16)b->extent_index,
-                                    &referenceItem);
+          err = ISOGetItemReference(item, MP4_FOUR_CHAR_CODE('i', 'l', 'o', 'c'),
+                                    (u16)b->extent_index, &referenceItem);
           if(err) goto bail;
           err = MP4NewHandle(0, &referenceItemData);
           if(err) goto bail;
@@ -1595,8 +1595,8 @@ ISO_EXTERN(ISOErr) ISOGetItemData(ISOMetaItem item, MP4Handle data, u64 *base_of
         u64 k;
         u32 referenceDataLength;
 
-        err = ISOGetItemReference(item, MP4_FOUR_CHAR_CODE('i', 'l', 'o', 'c'), (u16)b->extent_index,
-                                  &referenceItem);
+        err = ISOGetItemReference(item, MP4_FOUR_CHAR_CODE('i', 'l', 'o', 'c'),
+                                  (u16)b->extent_index, &referenceItem);
         if(err) goto bail;
         err = MP4NewHandle(0, &referenceItemData);
         if(err) goto bail;

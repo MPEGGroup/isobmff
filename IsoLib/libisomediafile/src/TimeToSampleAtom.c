@@ -182,7 +182,7 @@ static MP4Err getTimeForSampleNumber(MP4AtomPtr s, u32 sampleNumber, u64 *outSam
   MP4TimeToSampleAtomPtr self = (MP4TimeToSampleAtomPtr)s;
   if(self == NULL) BAILWITHERROR(MP4BadParamErr)
   err = MP4NoErr;
-  pe = NULL;
+  pe  = NULL;
   err = MP4GetListEntryCount(self->entryList, &entryCount);
   if(err) goto bail;
 

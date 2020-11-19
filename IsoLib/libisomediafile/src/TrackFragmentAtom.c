@@ -584,7 +584,7 @@ static MP4Err mergeRuns(MP4TrackFragmentAtomPtr self, MP4MediaAtomPtr mdia)
 
         if(havedeps)
         {
-          err = mdia->setSampleDependency(mdia, (s32)count*(-1), depsH);
+          err = mdia->setSampleDependency(mdia, (s32)count * (-1), depsH);
           if(err) goto bail;
         }
 
@@ -623,12 +623,13 @@ static MP4Err mergeRuns(MP4TrackFragmentAtomPtr self, MP4MediaAtomPtr mdia)
         {
           s32 position;
           u32 group_description_index;
-          position = j - total_samples;
+          position                = j - total_samples;
           group_description_index = (theGroup->group_index)[j];
           if(group_description_index <= 0x10000)
           {
             /* mapping to global indexes */
-            err = mdia->mapSamplestoGroup(mdia, theGroup->grouping_type, group_description_index, position, 1);
+            err = mdia->mapSamplestoGroup(mdia, theGroup->grouping_type, group_description_index,
+                                          position, 1);
             if(err) goto bail;
           }
           else
@@ -641,19 +642,24 @@ static MP4Err mergeRuns(MP4TrackFragmentAtomPtr self, MP4MediaAtomPtr mdia)
             local_description_index   = group_description_index - 0x10000;
             correct_description_index = 0;
 
-            err = ISONewHandle(1, &descriptionEntry); if (err) goto bail;
+            err = ISONewHandle(1, &descriptionEntry);
+            if(err) goto bail;
 
-            /* 1. get handler from the local group description using localIndex */            
-            err = self->getGroupDescription(self, theGroup->grouping_type, local_description_index, descriptionEntry);
+            /* 1. get handler from the local group description using localIndex */
+            err = self->getGroupDescription(self, theGroup->grouping_type, local_description_index,
+                                            descriptionEntry);
             if(err) BAILWITHFREEHANDLE(descriptionEntry);
 
             /* 2. find the same handler with the same type in stbl */
-            err = MP4FindGroupAtom(stbl->groupDescriptionList, theGroup->grouping_type, (MP4AtomPtr *)&stblGroup);
+            err = MP4FindGroupAtom(stbl->groupDescriptionList, theGroup->grouping_type,
+                                   (MP4AtomPtr *)&stblGroup);
             if(err) BAILWITHFREEHANDLE(descriptionEntry);
-            err = stblGroup->findGroupDescriptionIdx(stblGroup, descriptionEntry, &correct_description_index);
+            err = stblGroup->findGroupDescriptionIdx(stblGroup, descriptionEntry,
+                                                     &correct_description_index);
             if(err) BAILWITHFREEHANDLE(descriptionEntry);
 
-            err = mdia->mapSamplestoGroup(mdia, theGroup->grouping_type, correct_description_index, position, 1);
+            err = mdia->mapSamplestoGroup(mdia, theGroup->grouping_type, correct_description_index,
+                                          position, 1);
             ISODisposeHandle(descriptionEntry);
             if(err) goto bail;
           }

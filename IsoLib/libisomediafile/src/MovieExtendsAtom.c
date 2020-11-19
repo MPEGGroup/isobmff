@@ -157,7 +157,7 @@ static MP4Err setCompositionToDecodeProperties(struct MP4MovieExtendsAtom *self,
     cslg->compositionStartTime         = compositionStartTime;
     cslg->compositionEndTime           = compositionEndTime;
   }
-  
+
 bail:
   TEST_RETURN(err);
 

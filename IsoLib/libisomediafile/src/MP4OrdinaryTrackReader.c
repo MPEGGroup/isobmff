@@ -30,8 +30,10 @@ derivative works. Copyright (c) 1999.
 #include <stdlib.h>
 #include <string.h>
 
-MP4Err MP4GetTrackReferenceType(MP4Track track, u32 atomType, MP4TrackReferenceTypeAtomPtr * outAtom);
-MP4Err rewriteODFrame(MP4Track track, MP4Handle sampleH, u64 cts, MP4TrackReferenceTypeAtomPtr mpod, MP4SLConfig slconfig);
+MP4Err MP4GetTrackReferenceType(MP4Track track, u32 atomType,
+                                MP4TrackReferenceTypeAtomPtr *outAtom);
+MP4Err rewriteODFrame(MP4Track track, MP4Handle sampleH, u64 cts, MP4TrackReferenceTypeAtomPtr mpod,
+                      MP4SLConfig slconfig);
 
 static void put32(u32 val, char *buf)
 {

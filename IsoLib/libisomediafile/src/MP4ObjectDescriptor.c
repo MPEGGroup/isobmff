@@ -218,19 +218,21 @@ static MP4Err removeESDS(struct MP4DescriptorRecord *s)
   MP4Err err;
   MP4ObjectDescriptorPtr self = (MP4ObjectDescriptorPtr)s;
   err                         = MP4NoErr;
-  if(self->ESDescriptors) 
-  { 
-    u32 listSize; 
-    u32 i; 
-    err = MP4GetListEntryCount(self->ESDescriptors, &listSize); 
-    if(err) goto bail; 
-    for(i = 0; i < listSize; i++) 
-    { 
-      MP4DescriptorPtr a; 
-      err = MP4GetListEntry(self->ESDescriptors, i, (char **)&a); if(err) goto bail; 
+  if(self->ESDescriptors)
+  {
+    u32 listSize;
+    u32 i;
+    err = MP4GetListEntryCount(self->ESDescriptors, &listSize);
+    if(err) goto bail;
+    for(i = 0; i < listSize; i++)
+    {
+      MP4DescriptorPtr a;
+      err = MP4GetListEntry(self->ESDescriptors, i, (char **)&a);
+      if(err) goto bail;
       if(a) a->destroy(a);
-    } 
-    err = MP4DeleteLinkedList(self->ESDescriptors); if(err) goto bail; 
+    }
+    err = MP4DeleteLinkedList(self->ESDescriptors);
+    if(err) goto bail;
   }
   err = MP4MakeLinkedList(&self->ESDescriptors);
   if(err) goto bail;

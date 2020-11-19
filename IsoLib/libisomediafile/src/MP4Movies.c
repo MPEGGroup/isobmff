@@ -48,8 +48,10 @@ MP4Err MP4MovieCreateDescriptors(MP4Movie theMovie);
 MP4Err MP4MovieAddTrackES_IDToIOD(MP4Movie theMovie, MP4Track theTrack);
 MP4Err MP4GetMovieObjectDescriptorUsingSLConfig(MP4Movie theMovie, MP4SLConfig slconfig,
                                                 MP4Handle outDescriptorH);
-MP4Err MP4GetMediaSampleDescIndex(MP4Media theMedia, u64 desiredTime, u32 * outSampleDescriptionIndex);
-MP4Err MP4GetMediaESD(MP4Media theMedia, u32 index, MP4ES_DescriptorPtr * outESD, u32 * outDataReferenceIndex);
+MP4Err MP4GetMediaSampleDescIndex(MP4Media theMedia, u64 desiredTime,
+                                  u32 *outSampleDescriptionIndex);
+MP4Err MP4GetMediaESD(MP4Media theMedia, u32 index, MP4ES_DescriptorPtr *outESD,
+                      u32 *outDataReferenceIndex);
 
 MP4_EXTERN(MP4Err) MergeMovieFragments(MP4PrivateMovieRecordPtr movie);
 MP4_EXTERN(MP4Err) MergeMovieData(MP4PrivateMovieRecordPtr movie);

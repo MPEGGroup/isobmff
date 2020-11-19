@@ -158,7 +158,7 @@ static MP4Err transform(struct MP4Atom *s, u32 sch_type, u32 sch_version, char *
   MP4SecurityInfoAtomPtr sinf;
   MP4SchemeTypeAtomPtr schm = NULL;
   MP4SchemeInfoAtomPtr schi = NULL;
-  char *sch_url_copy = NULL;
+  char *sch_url_copy        = NULL;
 
   err = MP4CreateOriginalFormatAtom(&fmt);
   if(err) goto bail;
@@ -313,7 +313,7 @@ static MP4Err getSchemeInfoAtom(struct MP4Atom *s, u32 theType, struct MP4Atom *
       if(desc && (desc->type == theType))
       {
         *theAtom = desc;
-        err = MP4NoErr;
+        err      = MP4NoErr;
         break;
       }
     }

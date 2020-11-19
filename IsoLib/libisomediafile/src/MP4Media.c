@@ -175,8 +175,6 @@ ISOAddGroupDescription(MP4Media media, u32 groupType, MP4Handle description, u32
   mdia = (MP4MediaAtomPtr)media;
   err  = mdia->addGroupDescription(mdia, groupType, description, index);
 
-  if(!err) printf("Add group description: index = %u\n", *index);
-
 bail:
   TEST_RETURN(err);
 
@@ -2233,6 +2231,7 @@ MP4AddSampleAuxiliaryInformation(MP4Media theMedia, u8 isUsingAuxInfoPropertiesF
   stbl = NULL;
   traf = NULL;
   saiz = NULL;
+  saio = NULL;
 
   if(sampleCount == 0) goto bail;
 

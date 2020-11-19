@@ -150,7 +150,7 @@ MP4NewSampleDescriptionWithOCRAssociation(MP4Track theTrack, MP4Handle sampleDes
   MP4TrackAtomPtr trak;
   u32 outReferenceIndex;
 
-  entry = NULL;
+  entry   = NULL;
   esdAtom = NULL;
 
   if((theTrack == NULL) || (sampleDescriptionH == NULL))
@@ -440,7 +440,7 @@ ISONewGeneralSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
 
   MP4Err err;
   GenericSampleEntryAtomPtr entry = NULL;
-  MP4TrackAtomPtr trak = NULL;
+  MP4TrackAtomPtr trak            = NULL;
 
   if((theTrack == NULL) || (sampleDescriptionH == NULL))
   {
@@ -668,9 +668,9 @@ ISONewH263SampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32
                             u32 vendor, u8 decoder_version, u8 H263_level, u8 H263_profile)
 {
   MP4Err err;
-  GenericSampleEntryAtomPtr entry = NULL;
+  GenericSampleEntryAtomPtr entry                 = NULL;
   MP4H263SpecificInfoAtomPtr H263SpecificInfoAtom = NULL;
-  MP4TrackAtomPtr trak = NULL;
+  MP4TrackAtomPtr trak                            = NULL;
 
   if((theTrack == NULL) || (sampleDescriptionH == NULL))
   {

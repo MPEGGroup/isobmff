@@ -172,9 +172,9 @@ ISMAUnTransformSampleEntrySalt(MP4Handle insampleEntryH, u8 *selective_encryptio
   char *kms_url_copy;
   u32 sch_type, sch_version;
 
-  err = MP4NoErr;
+  err   = MP4NoErr;
   entry = NULL;
-  is = NULL;
+  is    = NULL;
 
   err = MP4GetHandleSize(insampleEntryH, &size);
   if(err) goto bail;
