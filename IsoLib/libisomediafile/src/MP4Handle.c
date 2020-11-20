@@ -1,28 +1,25 @@
-/*
-This software module was originally developed by Apple Computer, Inc.
-in the course of development of MPEG-4.
-This software module is an implementation of a part of one or
-more MPEG-4 tools as specified by MPEG-4.
-ISO/IEC gives users of MPEG-4 free license to this
-software module or modifications thereof for use in hardware
-or software products claiming conformance to MPEG-4.
-Those intending to use this software module in hardware or software
-products are advised that its use may infringe existing patents.
-The original developer of this software module and his/her company,
-the subsequent editors and their companies, and ISO/IEC have no
-liability for use of this software module or modifications thereof
-in an implementation.
-Copyright is not released for non MPEG-4 conforming
-products. Apple Computer, Inc. retains full right to use the code for its own
-purpose, assign or donate the code to a third party and to
-inhibit third parties from using the code for non
-MPEG-4 conforming products.
-This copyright notice must be included in all copies or
-derivative works. Copyright (c) 1999.
-*/
-/*
-        $Id: MP4Handle.c,v 1.4 2002/10/08 10:11:54 fred Exp $
-*/
+/**
+ * @file MP4Handle.c
+ * @author fred Exp
+ * @brief Utility functions
+ * @version 0.4
+ * @date 2020-11-20
+ *
+ * @copyright This software module was originally developed by Apple Computer, Inc. in the course of
+ * development of MPEG-4. This software module is an implementation of a part of one or more MPEG-4
+ * tools as specified by MPEG-4. ISO/IEC gives users of MPEG-4 free license to this software module
+ * or modifications thereof for use in hardware or software products claiming conformance to MPEG-4.
+ * Those intending to use this software module in hardware or software products are advised that its
+ * use may infringe existing patents. The original developer of this software module and his/her
+ * company, the subsequent editors and their companies, and ISO/IEC have no liability for use of
+ * this software module or modifications thereof in an implementation. Copyright is not released for
+ * non MPEG-4 conforming products. Apple Computer, Inc. retains full right to use the code for its
+ * own purpose, assign or donate the code to a third party and to inhibit third parties from using
+ * the code for non MPEG-4 conforming products. This copyright notice must be included in all copies
+ * or derivative works. Copyright (c) 2020.
+ *
+ */
+
 #include "MP4Movies.h"
 #include <stdlib.h>
 #include <string.h>
@@ -37,16 +34,22 @@ typedef struct
   u32 offset;
 } handleStruct, *actualHandle;
 
-/* The handle offset makes the handle point to an offset into the datablock.
-   Setting the offset thus 'reserves space' at the front of the block, and
-   reduces its effective size.  The handle size is thus set and reported without
-   the offset.
- */
+/* The handle offset makes the handle point to an offset into the datablock. Setting the offset thus
+ * 'reserves space' at the front of the block, and reduces its effective size.  The handle size is
+ * thus set and reported without the offset. */
 
 #define HANDLE_SIGNATURE 0x1234
 
-MP4_EXTERN(MP4Err)
-MP4NewHandle(u32 handleSize, MP4Handle *outHandle)
+/**
+ * @brief Creates a new handle, and allocates handleSize bytes for it. It is OK to call this with a
+ * size of zero. This is commonly done when the handle will be used as a parameter to a function
+ * that will size it appropriately.
+ *
+ * @param handleSize number of bytes to allocate
+ * @param outHandle output handle
+ * @return MP4Err error code
+ */
+MP4_EXTERN(MP4Err) MP4NewHandle(u32 handleSize, MP4Handle *outHandle)
 {
   MP4Err err;
   MP4Handle ret;
@@ -83,8 +86,14 @@ bail:
   return err;
 }
 
-MP4_EXTERN(MP4Err)
-MP4GetHandleSize(MP4Handle theHandle, u32 *outSize)
+/**
+ * @brief Use this to determine the present logical size (in bytes) of a handle.
+ *
+ * @param theHandle input handle
+ * @param outSize output size in bytes
+ * @return MP4Err error code
+ */
+MP4_EXTERN(MP4Err) MP4GetHandleSize(MP4Handle theHandle, u32 *outSize)
 {
   MP4Err err;
   actualHandle h = (actualHandle)theHandle;
@@ -101,8 +110,17 @@ bail:
   return err;
 }
 
-MP4_EXTERN(MP4Err)
-MP4SetHandleSize(MP4Handle theHandle, u32 requestedSize)
+/**
+ * @brief Sets the logical size of the handle to requestedSize bytes. If this is larger than the
+ * number of bytes allocated for this handle, the handle will be grown accordingly. If the new size
+ * is smaller than the allocated size the memory is not freed. The only way to free this memory is
+ * to dispose of the handle.
+ *
+ * @param theHandle input handle
+ * @param requestedSize new size in bytes
+ * @return MP4Err error code
+ */
+MP4_EXTERN(MP4Err) MP4SetHandleSize(MP4Handle theHandle, u32 requestedSize)
 {
   MP4Err err;
   actualHandle h = (actualHandle)theHandle;
@@ -135,8 +153,16 @@ MP4SetHandleSize(MP4Handle theHandle, u32 requestedSize)
   return err;
 }
 
-MP4_EXTERN(MP4Err)
-MP4SetHandleOffset(MP4Handle theHandle, u32 offset)
+/**
+ * @brief Sets the handle so that subsequent de-references of it refer to the data starting at the
+ * given byte offset. This can be used to cause data to be read from or written to locations after
+ * the beginning, leaving room (for example) for an encryption header.
+ *
+ * @param theHandle input handle
+ * @param offset byte offset
+ * @return MP4Err error code
+ */
+MP4_EXTERN(MP4Err) MP4SetHandleOffset(MP4Handle theHandle, u32 offset)
 {
   MP4Err err;
   actualHandle h = (actualHandle)theHandle;
@@ -169,8 +195,13 @@ MP4SetHandleOffset(MP4Handle theHandle, u32 offset)
   return err;
 }
 
-MP4_EXTERN(MP4Err)
-MP4DisposeHandle(MP4Handle theHandle)
+/**
+ * @brief Frees the memory that was allocated for a handle.
+ *
+ * @param theHandle input handle to kill
+ * @return MP4Err error code
+ */
+MP4_EXTERN(MP4Err) MP4DisposeHandle(MP4Handle theHandle)
 {
   MP4Err err;
   actualHandle h = (actualHandle)theHandle;
@@ -184,8 +215,15 @@ MP4DisposeHandle(MP4Handle theHandle)
   return err;
 }
 
-MP4_EXTERN(MP4Err)
-MP4HandleCat(MP4Handle theDstHandle, MP4Handle theSrcHandle)
+/**
+ * @brief Appends the data contained in theSrcHandle to data contained in theDstHandle by
+ * reallocating, if necessary, the number of bytes allocated for theDstHandle.
+ *
+ * @param theDstHandle destination handle
+ * @param theSrcHandle source handle
+ * @return MP4Err error code
+ */
+MP4_EXTERN(MP4Err) MP4HandleCat(MP4Handle theDstHandle, MP4Handle theSrcHandle)
 {
   MP4Err err;
   u32 requestedSize, offset;
