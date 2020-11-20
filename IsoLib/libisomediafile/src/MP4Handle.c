@@ -1,7 +1,7 @@
 /**
  * @file MP4Handle.c
  * @author fred Exp
- * @brief Utility functions
+ * @brief Implementation of utility functions
  * @version 0.4
  * @date 2020-11-20
  *
@@ -40,15 +40,6 @@ typedef struct
 
 #define HANDLE_SIGNATURE 0x1234
 
-/**
- * @brief Creates a new handle, and allocates handleSize bytes for it. It is OK to call this with a
- * size of zero. This is commonly done when the handle will be used as a parameter to a function
- * that will size it appropriately.
- *
- * @param handleSize number of bytes to allocate
- * @param outHandle output handle
- * @return MP4Err error code
- */
 MP4_EXTERN(MP4Err) MP4NewHandle(u32 handleSize, MP4Handle *outHandle)
 {
   MP4Err err;
@@ -86,13 +77,6 @@ bail:
   return err;
 }
 
-/**
- * @brief Use this to determine the present logical size (in bytes) of a handle.
- *
- * @param theHandle input handle
- * @param outSize output size in bytes
- * @return MP4Err error code
- */
 MP4_EXTERN(MP4Err) MP4GetHandleSize(MP4Handle theHandle, u32 *outSize)
 {
   MP4Err err;
@@ -110,16 +94,6 @@ bail:
   return err;
 }
 
-/**
- * @brief Sets the logical size of the handle to requestedSize bytes. If this is larger than the
- * number of bytes allocated for this handle, the handle will be grown accordingly. If the new size
- * is smaller than the allocated size the memory is not freed. The only way to free this memory is
- * to dispose of the handle.
- *
- * @param theHandle input handle
- * @param requestedSize new size in bytes
- * @return MP4Err error code
- */
 MP4_EXTERN(MP4Err) MP4SetHandleSize(MP4Handle theHandle, u32 requestedSize)
 {
   MP4Err err;
@@ -153,15 +127,6 @@ MP4_EXTERN(MP4Err) MP4SetHandleSize(MP4Handle theHandle, u32 requestedSize)
   return err;
 }
 
-/**
- * @brief Sets the handle so that subsequent de-references of it refer to the data starting at the
- * given byte offset. This can be used to cause data to be read from or written to locations after
- * the beginning, leaving room (for example) for an encryption header.
- *
- * @param theHandle input handle
- * @param offset byte offset
- * @return MP4Err error code
- */
 MP4_EXTERN(MP4Err) MP4SetHandleOffset(MP4Handle theHandle, u32 offset)
 {
   MP4Err err;
@@ -195,12 +160,6 @@ MP4_EXTERN(MP4Err) MP4SetHandleOffset(MP4Handle theHandle, u32 offset)
   return err;
 }
 
-/**
- * @brief Frees the memory that was allocated for a handle.
- *
- * @param theHandle input handle to kill
- * @return MP4Err error code
- */
 MP4_EXTERN(MP4Err) MP4DisposeHandle(MP4Handle theHandle)
 {
   MP4Err err;
@@ -215,14 +174,6 @@ MP4_EXTERN(MP4Err) MP4DisposeHandle(MP4Handle theHandle)
   return err;
 }
 
-/**
- * @brief Appends the data contained in theSrcHandle to data contained in theDstHandle by
- * reallocating, if necessary, the number of bytes allocated for theDstHandle.
- *
- * @param theDstHandle destination handle
- * @param theSrcHandle source handle
- * @return MP4Err error code
- */
 MP4_EXTERN(MP4Err) MP4HandleCat(MP4Handle theDstHandle, MP4Handle theSrcHandle)
 {
   MP4Err err;

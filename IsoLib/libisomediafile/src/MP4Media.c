@@ -202,6 +202,46 @@ bail:
 }
 
 MP4_EXTERN(MP4Err)
+ISOGetGroupDescriptionEntryCount(MP4Media media, u32 groupType, u32 *outEntryCount)
+{
+  MP4Err err;
+  MP4MediaAtomPtr mdia;
+  MP4MediaInformationAtomPtr minf;
+  MP4SampleTableAtomPtr stbl;
+  MP4TrackFragmentAtomPtr traf;
+  MP4SampleGroupDescriptionAtomPtr theGroup;
+
+  err = MP4NoErr;
+  mdia = (MP4MediaAtomPtr)media;
+  if(mdia == NULL) BAILWITHERROR(MP4BadParamErr);
+
+  if(mdia->information->type == MP4MediaInformationAtomType)
+  {
+    minf = (MP4MediaInformationAtomPtr)mdia->information;
+    if(minf == NULL) BAILWITHERROR(MP4InvalidMediaErr);
+    stbl = (MP4SampleTableAtomPtr)minf->sampleTable;
+    if(stbl == NULL) BAILWITHERROR(MP4BadParamErr);
+    MP4FindGroupAtom(stbl->groupDescriptionList, groupType, (MP4AtomPtr *)&theGroup);
+    if(!theGroup) BAILWITHERROR(MP4NotFoundErr);
+    *outEntryCount = theGroup->groupCount;
+  }
+  else if(mdia->information->type == MP4TrackFragmentAtomType)
+  {
+    traf = (MP4TrackFragmentAtomPtr)mdia->information;
+    if(traf == NULL) BAILWITHERROR(MP4InvalidMediaErr);
+    MP4FindGroupAtom(traf->groupDescriptionList, groupType, (MP4AtomPtr *)&theGroup);
+    if(!theGroup) BAILWITHERROR(MP4NotFoundErr);
+    *outEntryCount = theGroup->groupCount;
+  }
+  else BAILWITHERROR(MP4InvalidMediaErr);
+
+bail:
+  TEST_RETURN(err);
+
+  return err;
+}
+
+MP4_EXTERN(MP4Err)
 ISOSetSamplestoGroupType(MP4Media media, sampleToGroupType_t sampleToGroupType)
 {
   MP4Err err;

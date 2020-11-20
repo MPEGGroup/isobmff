@@ -1,7 +1,11 @@
-/*
-        This header file may be freely copied and distributed.
-
-*/
+/**
+ * @file MP4Movies.h
+ * @brief API
+ * @version 0.1
+ * 
+ * @copyright This header file may be freely copied and distributed.
+ * 
+ */
 
 #ifndef INCLUDED_MP4MOVIE_H
 #define INCLUDED_MP4MOVIE_H
@@ -101,9 +105,9 @@ extern "C"
 
   typedef enum sampleToGroupType_t
   {
-    SAMPLE_GROUP_NORMAL = 0, /* sbgp */
-    SAMPLE_GROUP_COMPACT,    /* csgp */
-    SAMPLE_GROUP_AUTO        /* automatically decide based on atom size */
+    SAMPLE_GROUP_NORMAL = 0, /**< sbgp */
+    SAMPLE_GROUP_COMPACT,    /**< csgp */
+    SAMPLE_GROUP_AUTO        /**< automatically decide based on atom size */
   } sampleToGroupType_t;
 
 #define GETMOOV(arg)                            \
@@ -185,23 +189,66 @@ extern "C"
 
   typedef char **MP4Handle;
 
-  MP4_EXTERN(MP4Err)
-  MP4NewHandle(u32 handleSize, MP4Handle *outHandle);
+  /**
+   * @brief Creates a new handle, and allocates handleSize bytes for it. It is OK to call this with a
+   * size of zero. This is commonly done when the handle will be used as a parameter to a function
+   * that will size it appropriately.
+   *
+   * @param handleSize number of bytes to allocate
+   * @param outHandle output handle
+   * @return MP4Err error code
+   */
+  MP4_EXTERN(MP4Err) MP4NewHandle(u32 handleSize, MP4Handle *outHandle);
 
-  MP4_EXTERN(MP4Err)
-  MP4SetHandleSize(MP4Handle h, u32 handleSize);
+  /**
+   * @brief Sets the logical size of the handle to requestedSize bytes. If this is larger than the
+   * number of bytes allocated for this handle, the handle will be grown accordingly. If the new size
+   * is smaller than the allocated size the memory is not freed. The only way to free this memory is
+   * to dispose of the handle.
+   *
+   * @param theHandle input handle
+   * @param requestedSize new size in bytes
+   * @return MP4Err error code
+   */
+  MP4_EXTERN(MP4Err) MP4SetHandleSize(MP4Handle theHandle, u32 handleSize);
 
-  MP4_EXTERN(MP4Err)
-  MP4DisposeHandle(MP4Handle h);
+  /**
+   * @brief Frees the memory that was allocated for a handle.
+   *
+   * @param theHandle input handle to kill
+   * @return MP4Err error code
+   */
+  MP4_EXTERN(MP4Err) MP4DisposeHandle(MP4Handle theHandle);
 
-  MP4_EXTERN(MP4Err)
-  MP4GetHandleSize(MP4Handle h, u32 *outHandleSize);
+  /**
+   * @brief Use this to determine the present logical size (in bytes) of a handle.
+   *
+   * @param theHandle input handle
+   * @param outSize output size in bytes
+   * @return MP4Err error code
+   */
+  MP4_EXTERN(MP4Err) MP4GetHandleSize(MP4Handle theHandle, u32 *outSize);
 
-  MP4_EXTERN(MP4Err)
-  MP4HandleCat(MP4Handle theDstHandle, MP4Handle theSrcHandle); /* FB_RESO 09/02 */
+  /**
+   * @brief Appends the data contained in theSrcHandle to data contained in theDstHandle by
+   * reallocating, if necessary, the number of bytes allocated for theDstHandle.
+   *
+   * @param theDstHandle destination handle
+   * @param theSrcHandle source handle
+   * @return MP4Err error code
+   */
+  MP4_EXTERN(MP4Err) MP4HandleCat(MP4Handle theDstHandle, MP4Handle theSrcHandle); /* FB_RESO 09/02 */
 
-  MP4_EXTERN(MP4Err)
-  MP4SetHandleOffset(MP4Handle theHandle, u32 offset);
+  /**
+   * @brief Sets the handle so that subsequent de-references of it refer to the data starting at the
+   * given byte offset. This can be used to cause data to be read from or written to locations after
+   * the beginning, leaving room (for example) for an encryption header.
+   *
+   * @param theHandle input handle
+   * @param offset byte offset
+   * @return MP4Err error code
+   */
+  MP4_EXTERN(MP4Err) MP4SetHandleOffset(MP4Handle theHandle, u32 offset);
 
   /* Movie related */
 
@@ -412,11 +459,37 @@ extern "C"
   MP4_EXTERN(MP4Err)
   ISOAddGroupDescription(MP4Media media, u32 groupType, MP4Handle description, u32 *index);
 
-  MP4_EXTERN(MP4Err)
-  ISOGetGroupDescription(MP4Media media, u32 groupType, u32 index, MP4Handle description);
+  /**
+   * @brief Returns in the handle ‘description’ the group description associated with the given group index of the given group type.
+   * 
+   * @param media media object where to look for the specific group description
+   * @param groupType grouping_type
+   * @param index index starting with 1
+   * @param description output handle holding the SampleGroupDescriptionEntry
+   * @return MP4Err error code 
+   */
+  MP4_EXTERN(MP4Err) ISOGetGroupDescription(MP4Media media, u32 groupType, u32 index, MP4Handle description);
 
-  MP4_EXTERN(MP4Err)
-  ISOSetSamplestoGroupType(MP4Media media, sampleToGroupType_t sampleToGroupType);
+  /**
+   * @brief Returns the entry_count of the desired SampleGroupDescriptionBox 'sgpd' of the given type
+   * 
+   * @param media media object where to look for the specific group description
+   * @param groupType grouping_type of 'sgpd'
+   * @param outEntryCount entry_count output
+   * @return MP4Err error code
+   */
+  MP4_EXTERN(MP4Err) ISOGetGroupDescriptionEntryCount(MP4Media media, u32 groupType, u32 *outEntryCount);
+
+  /**
+   * @brief Set the SampleToGroup mapping type: normal 'sbgp' (default), compact 'csgp', or decide which one to use automatically.
+   * 
+   * @note Calling this function will also change the mapping type in the current movie or fragment.
+   * 
+   * @param media media object
+   * @param sampleToGroupType choose between SAMPLE_GROUP_NORMAL, SAMPLE_GROUP_COMPACT or SAMPLE_GROUP_AUTO
+   * @return MP4Err error code 
+   */
+  MP4_EXTERN(MP4Err) ISOSetSamplestoGroupType(MP4Media media, sampleToGroupType_t sampleToGroupType);
 
   MP4_EXTERN(MP4Err)
   ISOMapSamplestoGroup(MP4Media media, u32 groupType, u32 group_index, s32 sample_index, u32 count);

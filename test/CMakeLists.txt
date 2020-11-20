@@ -28,7 +28,7 @@ add_executable(
 
   test_main.cpp
   test_01_simple.cpp
-  test_fragment_creation.cpp
+  test_sample_groups.cpp
   test_metadata.cpp
   ${LIBMD5_FILES}
 )

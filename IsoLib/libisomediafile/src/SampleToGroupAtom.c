@@ -159,8 +159,6 @@ static void AppendNewPatternEntry(CompressedGroupInfo *compressedGroup, u32 inde
   assert(patternLength != 0);
   assert(sampleCount != 0);
   assert(index < compressedGroup->patternCount);
-  /*printf("\n New pattern: length %d sampleCount %d", patternLength, sampleCount); */
-
   compressedGroup->patternEntries[index].patternLength = patternLength;
   compressedGroup->patternEntries[index].sampleCount   = sampleCount;
   compressedGroup->totalSampleCount += sampleCount;
@@ -182,16 +180,12 @@ static void SetMemoryCostForPattern(SampleGroupInfo *sampleGroup, u32 patternLen
   if(memoryCost < sampleGroup->patternTracker[endPatternSampleIndex].cumulativeMemoryCost)
   {
     PatternTracker patTrack;
-    patTrack.patternStart         = startPatternSampleIndex;
-    patTrack.patternLength        = patternLength;
-    patTrack.sampleCount          = sampleCount;
-    patTrack.cumulativeMemoryCost = memoryCost;
-    patTrack.prevEfficientIndex   = startPatternSampleIndex - 1;
-
+    patTrack.patternStart                              = startPatternSampleIndex;
+    patTrack.patternLength                             = patternLength;
+    patTrack.sampleCount                               = sampleCount;
+    patTrack.cumulativeMemoryCost                      = memoryCost;
+    patTrack.prevEfficientIndex                        = startPatternSampleIndex - 1;
     sampleGroup->patternTracker[endPatternSampleIndex] = patTrack;
-    /*printf("\n Pattern run of pattern length %d, sample count %d, starting @ %3d with memoryCost
-     * %d and prevMostEffIndex %d", patternLength, sampleCount, startPatternSampleIndex,
-     * patTrack.cumulativeMemoryCost, patTrack.prevEfficientIndex); */
   }
 }
 
@@ -205,15 +199,12 @@ static void SetMemoryCostForNonPattern(SampleGroupInfo *sampleGroup, s32 sampleI
   if(memoryCost < sampleGroup->patternTracker[sampleIndex].cumulativeMemoryCost)
   {
     PatternTracker patTrack;
-    patTrack.patternStart         = sampleIndex;
-    patTrack.patternLength        = 1;
-    patTrack.sampleCount          = 1;
-    patTrack.cumulativeMemoryCost = memoryCost;
-    patTrack.prevEfficientIndex   = sampleIndex - 1;
-
+    patTrack.patternStart                    = sampleIndex;
+    patTrack.patternLength                   = 1;
+    patTrack.sampleCount                     = 1;
+    patTrack.cumulativeMemoryCost            = memoryCost;
+    patTrack.prevEfficientIndex              = sampleIndex - 1;
     sampleGroup->patternTracker[sampleIndex] = patTrack;
-    /*printf("\n Writing non-pattern with memoryCost %d and prevMostEffIndex %d ",
-     * patTrack.cumulativeMemoryCost, patTrack.prevEfficientIndex);*/
   }
 }
 
@@ -279,10 +270,6 @@ static void FindPatternsStartingAtIndex(SampleGroupInfo *sampleGroup, u32 sample
         SetMemoryCostForPattern(sampleGroup, p, startPatternSampleIndex, i);
         i++;
       }
-
-      /* Pattern ended at i - 1.
-      printf("\n %3d: pattern run ended", i-1);
-      break; */
     }
   }
 }
@@ -360,15 +347,6 @@ static void CreateCompactSampleGroups(MP4SampletoGroupAtomPtr self)
     compressedGroup->indexDescriptionArray =
         (u32 *)malloc(sizeof(u32) * compressedGroup->totalIndexDescriptionCount);
   }
-
-  /*printf("\n The pattern tracker details are");
-  for(int i = 0; i < self->sampleCount; i++)
-  {
-          printf("\n Index %d Start: %d  PL: %d  SC: %d  Eff: %d  PrevIndex: %d NextIndex: %d ", i,
-  patternTracker[i].start, patternTracker[i].patternLength, patternTracker[i].sampleCount,
-  patternTracker[i].cumulativeMemoryCost, patternTracker[i].prevEfficientIndex,
-  patternTracker[i].nextEfficientIndex);
-  }*/
 
   patternTracker = sampleGroup.patternTracker;
   descIndex      = 0;
@@ -723,19 +701,9 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   }
   else
   {
-    printf(" \n Field sizes of pattern is %d , sampleCount is %d , indexDescription is %d ",
-           self->compressedGroup.patternLengthFieldSize, self->compressedGroup.sampleCountFieldSize,
-           self->compressedGroup.indexFieldSize);
-
-    printf("\n Pattern count %d covering %d total samples ", self->compressedGroup.patternCount,
-           self->compressedGroup.totalSampleCount);
-
+    /* compact sample groups */
     for(i = 0; i < self->compressedGroup.patternCount; i++)
     {
-      printf("\n Pattern length %d for %d samples ",
-             self->compressedGroup.patternEntries[i].patternLength,
-             self->compressedGroup.patternEntries[i].sampleCount);
-
       /* Pattern entry is ensured to start at a byte boundary*/
       PackData(self, &buffer, self->compressedGroup.patternLengthFieldSize, 0,
                self->compressedGroup.patternEntries[i].patternLength);
@@ -746,10 +714,8 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
     }
 
     /* Index descriptor array is ensured to start at a byte boundary*/
-    printf("\n Index Descriptors array is: ");
     for(i = 0; i < self->compressedGroup.totalIndexDescriptionCount; i++)
     {
-      printf(" %d ", self->compressedGroup.indexDescriptionArray[i]);
       PackData(self, &buffer, self->compressedGroup.indexFieldSize, (i & 1),
                self->compressedGroup.indexDescriptionArray[i]);
     }
