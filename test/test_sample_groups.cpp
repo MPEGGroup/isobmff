@@ -26,6 +26,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <cstring>
 #include "test_data.h"
 
 extern "C"
