@@ -38,5 +38,3 @@ add_subdirectory(IsoLib/ipmp_example)
 add_subdirectory(IsoLib/isoiff_tool)
 add_subdirectory(IsoLib/pcm_audio_example)
 add_subdirectory(test)
-
-add_subdirectory(IsoLib/playground)
