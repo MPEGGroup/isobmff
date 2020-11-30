@@ -625,14 +625,14 @@ static MP4Err mergeRuns(MP4TrackFragmentAtomPtr self, MP4MediaAtomPtr mdia)
           u32 group_description_index;
           position                = j - total_samples;
           group_description_index = (theGroup->group_index)[j];
-          if(group_description_index <= 0x10000)
+          if(group_description_index < 0x10000)
           {
             /* mapping to global indexes */
             err = mdia->mapSamplestoGroup(mdia, theGroup->grouping_type, group_description_index,
                                           position, 1);
             if(err) goto bail;
           }
-          else
+          else if(group_description_index != 0x10000)
           {
             /* mapping local indexes to corrected global indexes */
             MP4Handle descriptionEntry;
