@@ -42,10 +42,11 @@ const u32 FPS       = 30;
 
 const u32 FOURCC_COLOR = MP4_FOUR_CHAR_CODE('c', 'o', 'l', 'r');
 const u32 FOURCC_TEST  = MP4_FOUR_CHAR_CODE('t', 'e', 's', 't');
+const u32 FOURCC_BLACK = MP4_FOUR_CHAR_CODE('b', 'l', 'c', 'k');
 
 /**
  * @brief Helper function to add group description with the payload of a given string
- * 
+ *
  * @param media media to add the description to
  * @param fcc grouping_type
  * @param strDescription Playload string
@@ -67,14 +68,15 @@ ISOErr addGroupDescription(MP4Media media, u32 fcc, std::string strDescription, 
 
 /**
  * @brief Helper function to add samples given the color pattern
- * 
+ *
  * @param media media to add the sample to
  * @param strPattern color pattern of samples (r,b,g,y,w,k)
  * @param repeatPattern number of times to repeat the pattern. No samples are added if this is 0
  * @param sampleEntryH sample entry handle (for the first call)
  * @return ISOErr error code
  */
-ISOErr addSamples(MP4Media media, std::string strPattern, u32 repeatPattern = 1, ISOHandle sampleEntryH = 0)
+ISOErr addSamples(MP4Media media, std::string strPattern, u32 repeatPattern = 1,
+                  ISOHandle sampleEntryH = 0)
 {
   ISOErr err;
   u32 sampleCount = 0;
@@ -156,7 +158,7 @@ ISOErr addSamples(MP4Media media, std::string strPattern, u32 repeatPattern = 1,
 
 /**
  * @brief Helper function to map samples to groups based on pattern
- * 
+ *
  * @param media media to map sample in
  * @param strPattern color pattern same as used in addSamples
  * @param idRed The index of the Red entry in the COLOR group
@@ -166,7 +168,8 @@ ISOErr addSamples(MP4Media media, std::string strPattern, u32 repeatPattern = 1,
  * @param repeatPattern number of times to repeat the pattern. No samples are mapped if this is 0
  * @return ISOErr error code
  */
-ISOErr mapSamplesToGroups(MP4Media media, std::string strPattern, u32 idRed, u32 idBlue, u32 idGreen, u32 idYellow, u32 repeatPattern = 1)
+ISOErr mapSamplesToGroups(MP4Media media, std::string strPattern, u32 idRed, u32 idBlue,
+                          u32 idGreen, u32 idYellow, u32 repeatPattern = 1)
 {
   ISOErr err              = ISONoErr;
   std::string fullPattern = strPattern;
@@ -208,7 +211,7 @@ ISOErr mapSamplesToGroups(MP4Media media, std::string strPattern, u32 idRed, u32
 
 /**
  * @brief Helper function to check a single sample payload
- * 
+ *
  * @param media media to take a sample from
  * @param sampleNr sample number in that media
  * @param comparePtr pointer to data to compare out payload to
@@ -224,7 +227,8 @@ ISOErr checkSample(MP4Media media, u32 sampleNr, u8 *comparePtr, u32 compareSize
   s32 outCTSOffset;
 
   MP4NewHandle(0, &sampleH);
-  err = MP4GetIndMediaSample(media, sampleNr, sampleH, &outSize, &outDTS, &outCTSOffset, &outDuration, &outSampleFlags, &outSampleDescIndex);
+  err = MP4GetIndMediaSample(media, sampleNr, sampleH, &outSize, &outDTS, &outCTSOffset,
+                             &outDuration, &outSampleFlags, &outSampleDescIndex);
   CHECK(err == ISONoErr);
 
   u32 handleSize;
@@ -241,7 +245,7 @@ ISOErr checkSample(MP4Media media, u32 sampleNr, u8 *comparePtr, u32 compareSize
 
 /**
  * @brief Helper function to check all samples in the given file
- * 
+ *
  * @param strFile input file to check
  * @return ISOErr error code
  */
@@ -253,73 +257,101 @@ ISOErr checkSamples(std::string strFile)
   ISOMedia media;
   err = ISOOpenMovieFile(&moov, strFile.c_str(), MP4OpenMovieNormal);
 
-  err = ISOGetMovieIndTrack(moov, 1, &trak);
-  err = ISOGetTrackMedia(trak, &media);
-  u32 sampleCnt = 0;
+  err                 = ISOGetMovieIndTrack(moov, 1, &trak);
+  err                 = ISOGetTrackMedia(trak, &media);
+  u32 sampleCnt       = 0;
   u32 colorEntryCount = 0;
+  u32 blackEntryCount = 0;
   u32 *sampleNumbers;
-  u32 groupIdRed = 0;
-  u32 groupIdBlue = 0;
-  u32 groupIdGreen = 0; 
+  u32 groupIdRed    = 0;
+  u32 groupIdBlue   = 0;
+  u32 groupIdGreen  = 0;
   u32 groupIdYellow = 0;
+  u32 groupIdBlack  = 0;
 
-  // parse the entries of the COLOR type and get the indexes 
+  // parse the entries of the COLOR type and get the indexes
   err = ISOGetGroupDescriptionEntryCount(media, FOURCC_COLOR, &colorEntryCount);
   CHECK(err == ISONoErr);
-  if(colorEntryCount != 4) return -1;
-  for(u32 n=0; n<colorEntryCount; ++n)
+  CHECK(4 == colorEntryCount);
+  for(u32 n = 0; n < colorEntryCount; ++n)
   {
     MP4Handle entryH;
     u32 size = 0;
     MP4NewHandle(0, &entryH);
-    err = ISOGetGroupDescription(media, FOURCC_COLOR, n+1, entryH);
+    err = ISOGetGroupDescription(media, FOURCC_COLOR, n + 1, entryH);
     CHECK(err == ISONoErr);
     MP4GetHandleSize(entryH, &size);
     if(size == 0) return -1;
 
     std::string entryString(*entryH, size);
-    if(entryString == "Red frames") groupIdRed = n+1;
-    if(entryString == "Blue frames") groupIdBlue = n+1;
-    if(entryString == "Green frames") groupIdGreen = n+1;
-    if(entryString == "Yellow frames") groupIdYellow = n+1;
+    if(entryString == "Red frames") groupIdRed = n + 1;
+    if(entryString == "Blue frames") groupIdBlue = n + 1;
+    if(entryString == "Green frames") groupIdGreen = n + 1;
+    if(entryString == "Yellow frames") groupIdYellow = n + 1;
     MP4DisposeHandle(entryH);
   }
-  if(groupIdRed == 0) return -1;
-  if(groupIdBlue == 0) return -1;
-  if(groupIdGreen == 0) return -1;
-  if(groupIdYellow == 0) return -1;
-  
+  CHECK(groupIdRed != 0);
+  CHECK(groupIdBlue != 0);
+  CHECK(groupIdGreen != 0);
+  CHECK(groupIdYellow != 0);
+  // parse the entries of the BLACK type and get the indexes
+  err = ISOGetGroupDescriptionEntryCount(media, FOURCC_BLACK, &blackEntryCount);
+  CHECK(err == ISONoErr);
+  CHECK(1 == blackEntryCount);
+  for(u32 n = 0; n < blackEntryCount; ++n)
+  {
+    MP4Handle entryH;
+    u32 size = 0;
+    MP4NewHandle(0, &entryH);
+    err = ISOGetGroupDescription(media, FOURCC_BLACK, n + 1, entryH);
+    CHECK(err == ISONoErr);
+    MP4GetHandleSize(entryH, &size);
+    if(size == 0) return -1;
+
+    std::string entryString(*entryH, size);
+    if(entryString == "Single black frame") groupIdBlack = n + 1;
+    MP4DisposeHandle(entryH);
+  }
+  CHECK(groupIdBlack != 0);
 
   err = ISOGetSampleGroupSampleNumbers(media, FOURCC_COLOR, groupIdRed, &sampleNumbers, &sampleCnt);
   CHECK(err == ISONoErr);
-  if(sampleCnt != 5) return -1;
+  CHECK(sampleCnt == 5);
   for(u32 i = 0; i < sampleCnt; ++i)
   {
     err = checkSample(media, sampleNumbers[i], HEVC::auRed, sizeof(HEVC::auRed));
     CHECK(err == ISONoErr);
   }
-  err = ISOGetSampleGroupSampleNumbers(media, FOURCC_COLOR, groupIdBlue, &sampleNumbers,
-                                        &sampleCnt);
-  if(sampleCnt != 5) return -1;
+  err =
+      ISOGetSampleGroupSampleNumbers(media, FOURCC_COLOR, groupIdBlue, &sampleNumbers, &sampleCnt);
+  CHECK(sampleCnt == 5);
   for(u32 i = 0; i < sampleCnt; ++i)
   {
     err = checkSample(media, sampleNumbers[i], HEVC::auBlue, sizeof(HEVC::auBlue));
     CHECK(err == ISONoErr);
   }
-  err = ISOGetSampleGroupSampleNumbers(media, FOURCC_COLOR, groupIdGreen, &sampleNumbers,
-                                        &sampleCnt);
-  if(sampleCnt != 4) return -1;
+  err =
+      ISOGetSampleGroupSampleNumbers(media, FOURCC_COLOR, groupIdGreen, &sampleNumbers, &sampleCnt);
+  CHECK(sampleCnt == 4);
   for(u32 i = 0; i < sampleCnt; ++i)
   {
     err = checkSample(media, sampleNumbers[i], HEVC::auGreen, sizeof(HEVC::auGreen));
     CHECK(err == ISONoErr);
   }
   err = ISOGetSampleGroupSampleNumbers(media, FOURCC_COLOR, groupIdYellow, &sampleNumbers,
-                                        &sampleCnt);
-  if(sampleCnt != 4) return -1;
+                                       &sampleCnt);
+  CHECK(sampleCnt == 4);
   for(u32 i = 0; i < sampleCnt; ++i)
   {
     err = checkSample(media, sampleNumbers[i], HEVC::auYellow, sizeof(HEVC::auYellow));
+    CHECK(err == ISONoErr);
+  }
+  err = ISOGetSampleGroupSampleNumbers(media, FOURCC_BLACK, groupIdBlack, &sampleNumbers,
+                                       &sampleCnt);
+  CHECK(sampleCnt == 1);
+  for(u32 i = 0; i < sampleCnt; ++i)
+  {
+    err = checkSample(media, sampleNumbers[i], HEVC::auBlack, sizeof(HEVC::auBlack));
     CHECK(err == ISONoErr);
   }
   return err;
@@ -327,7 +359,7 @@ ISOErr checkSamples(std::string strFile)
 
 /**
  * @brief Starting point for this testing case
- * 
+ *
  */
 TEST_CASE("Test sample groups")
 {
@@ -338,7 +370,7 @@ TEST_CASE("Test sample groups")
 
   /**
    * @brief Create a Fragmented File with different sample groups for testing
-   * 
+   *
    * COLOR gropuing with: RED (r), BLUE (b), GREEN (g) and YELLOW (y)
    * Additional frames without groups: WHITE (w) and BLACK (k)
    *
@@ -347,13 +379,19 @@ TEST_CASE("Test sample groups")
    * Fragment 1:  local group description COLOR RED (not used)
    *              local group description TEST with 2 entries
    * Fragment 2:  local group description COLOR GREEN and YELLOW (both used in COMPACT
-   * sampleToGroupBox) local group description TEST with 2 entries (one of these entries is the same
-   * as in Fragment 1) Fragment 3:  no group description Fragment 4:  local group descrition COLOR
-   * GREEN and YELLOW (both used in NORMAL sampleToGroupBox) Fragment 5:  no group description
+   *              sampleToGroupBox)
+   *              local group description TEST with 2 entries (one of these entries is the same as
+   *              in Fragment 1)
+   * Fragment 3:  no group description
+   * Fragment 4:  local group descrition COLOR GREEN & YELLOW (both used in NORMAL sampleToGroupBox)
+   * Fragment 5:  local group description BLACK + mapping a single sample to it (SampleIdx=3)
    *
    * Samples: red (r), blue(b), green (g), yellow (y), white (w), black (k)
-   * |  frag. 1  |  frag. 2  |  frag. 3  |  frag. 4  |
-   * |r|b|r|b|r|b|g|r|y|g|r|y|b|g|y|b|g|y|w|k|w|k|w|k|
+   * Groups: global (*), local (.), none ( )
+   * |  frag. 1  |  frag. 2  |  frag. 3  |  frag. 4  |  frag. 5  |
+   * |r|b|r|b|r|b|g|r|y|g|r|y|w|k|w|k|w|k|b|g|y|b|g|y|w|k|w|k|w|k|
+   * |           |           |           |           |           |
+   * |*|*|*|*|*|*|.|*|.|.|*|.| | | | | | |*|.|.|*|.|.| | | |.| | |
    *
    */
   SECTION("Check Fragmented file creation with sample groups")
@@ -364,10 +402,10 @@ TEST_CASE("Test sample groups")
     ISOTrack trak;
 
     u32 colorEntryCount = 0;
-    u32 groupIdRed    = 0;
-    u32 groupIdBlue   = 0;
-    u32 groupIdGreen  = 0;
-    u32 groupIdYellow = 0;
+    u32 groupIdRed      = 0;
+    u32 groupIdBlue     = 0;
+    u32 groupIdGreen    = 0;
+    u32 groupIdYellow   = 0;
 
     ISOHandle spsHandle, ppsHandle, vpsHandle, sampleEntryH;
     err = MP4NewHandle(sizeof(HEVC::SPS), &spsHandle);
@@ -398,15 +436,15 @@ TEST_CASE("Test sample groups")
     CHECK(err != ISONoErr);
     CHECK(colorEntryCount == 0);
     // red and blue are in stbl
-    err = addGroupDescription(media, FOURCC_COLOR, "Red frames", groupIdRed);   
+    err = addGroupDescription(media, FOURCC_COLOR, "Red frames", groupIdRed);
     CHECK(err == ISONoErr);
-    err = addGroupDescription(media, FOURCC_COLOR, "Blue frames", groupIdBlue); 
+    err = addGroupDescription(media, FOURCC_COLOR, "Blue frames", groupIdBlue);
     CHECK(err == ISONoErr);
 
     err = ISOGetGroupDescriptionEntryCount(media, FOURCC_COLOR, &colorEntryCount);
     CHECK(err == ISONoErr);
     CHECK(colorEntryCount == 2);
-    
+
     u32 temp = 0;
     err      = addGroupDescription(media, FOURCC_COLOR, "Red frames", temp);
     // this must fail because "Red frames" payload is already added with the same type
@@ -426,14 +464,14 @@ TEST_CASE("Test sample groups")
     err = addSamples(media, "rb", 3);
     CHECK(err == ISONoErr);
     colorEntryCount = 0;
-    err = ISOGetGroupDescriptionEntryCount(media, FOURCC_COLOR, &colorEntryCount);
+    err             = ISOGetGroupDescriptionEntryCount(media, FOURCC_COLOR, &colorEntryCount);
     CHECK(err != ISONoErr); // there sould be no entries in this fragment yet
     CHECK(colorEntryCount == 0);
     err = addGroupDescription(media, FOURCC_TEST, "Duplicate test", temp);
     CHECK(err == ISONoErr);
     err = addGroupDescription(media, FOURCC_COLOR, "Red frames", temp);
-    CHECK(err == ISONoErr); // this must pass even if the same type and payload is in stbl 
-                        // (but it shall not be in defragmented file)
+    CHECK(err == ISONoErr); // this must pass even if the same type and payload is in stbl
+                            // (but it shall not be in defragmented file)
     err = addGroupDescription(media, FOURCC_TEST, "Test", temp);
     CHECK(err == ISONoErr);
     err = addGroupDescription(media, FOURCC_TEST, "Test", temp);
@@ -449,12 +487,13 @@ TEST_CASE("Test sample groups")
     err = ISOStartMovieFragment(moov);
     ISOSetSamplestoGroupType(media, SAMPLE_GROUP_COMPACT);
     // local green and yellow groups
-    err = addGroupDescription(media, FOURCC_COLOR, "Green frames", groupIdGreen);   CHECK(err == ISONoErr);
-    err = addGroupDescription(media, FOURCC_COLOR, "Yellow frames", groupIdYellow); CHECK(err == ISONoErr);
+    err = addGroupDescription(media, FOURCC_COLOR, "Green frames", groupIdGreen);
+    CHECK(err == ISONoErr);
+    err = addGroupDescription(media, FOURCC_COLOR, "Yellow frames", groupIdYellow);
+    CHECK(err == ISONoErr);
     err = addSamples(media, "gry", 2);
     CHECK(err == ISONoErr);
-    err = addGroupDescription(media, FOURCC_TEST, "Unique entry",
-                              temp);
+    err = addGroupDescription(media, FOURCC_TEST, "Unique entry", temp);
     CHECK(err == ISONoErr);
     err = addGroupDescription(media, FOURCC_TEST, "Duplicate test", temp);
     CHECK(err == ISONoErr);
@@ -472,8 +511,10 @@ TEST_CASE("Test sample groups")
     err = ISOStartMovieFragment(moov);
     ISOSetSamplestoGroupType(media, SAMPLE_GROUP_NORMAL);
     // local green and yellow groups
-    err = addGroupDescription(media, FOURCC_COLOR, "Green frames", groupIdGreen);   CHECK(err == ISONoErr);
-    err = addGroupDescription(media, FOURCC_COLOR, "Yellow frames", groupIdYellow); CHECK(err == ISONoErr);
+    err = addGroupDescription(media, FOURCC_COLOR, "Green frames", groupIdGreen);
+    CHECK(err == ISONoErr);
+    err = addGroupDescription(media, FOURCC_COLOR, "Yellow frames", groupIdYellow);
+    CHECK(err == ISONoErr);
     err = addSamples(media, "bgy", 2);
     CHECK(err == ISONoErr);
     err = mapSamplesToGroups(media, "bgy", groupIdRed, groupIdBlue, groupIdGreen, groupIdYellow, 2);
@@ -484,6 +525,11 @@ TEST_CASE("Test sample groups")
     CHECK(err == ISONoErr);
     ISOSetSamplestoGroupType(media, SAMPLE_GROUP_NORMAL);
     err = addSamples(media, "wk", 3);
+    CHECK(err == ISONoErr);
+    u32 groupIDBlack = 0;
+    err = addGroupDescription(media, FOURCC_BLACK, "Single black frame", groupIDBlack);
+    CHECK(err == ISONoErr);
+    err = ISOMapSamplestoGroup(media, FOURCC_BLACK, groupIDBlack, 3, 1);
     CHECK(err == ISONoErr);
 
     err = MP4WriteMovieToFile(moov, strFrag.c_str());
@@ -496,7 +542,7 @@ TEST_CASE("Test sample groups")
    * create Defragmented file with NORMAL SampleToGroupBox
    * create Defragmented file with COMPACT SampleToGroupBox
    * create Defragmented file with AUTO SampleToGroupBox (smaller size is used automatically)
-   * 
+   *
    */
   SECTION("Check defragmentation")
   {
