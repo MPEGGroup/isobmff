@@ -38,7 +38,7 @@ static void destroy(MP4AtomPtr s)
   DESTROY_ATOM_LIST_F(sampletoGroupList);
   DESTROY_ATOM_LIST_F(groupDescriptionList);
   (self->tfhd)->destroy((MP4AtomPtr)(self->tfhd));
-  (self->tfdt)->destroy((MP4AtomPtr)(self->tfdt));
+  if(self->tfdt) (self->tfdt)->destroy((MP4AtomPtr)(self->tfdt));
 
   if(self->super) self->super->destroy(s);
 
