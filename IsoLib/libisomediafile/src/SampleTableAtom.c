@@ -669,9 +669,9 @@ static MP4Err mapSamplestoGroup(struct MP4SampleTableAtom *self, u32 groupType, 
     }
     err = MP4CreateSampletoGroupAtom(&theGroup, sampleToGroupType);
     if(err) goto bail;
-    theGroup->grouping_type             = groupType;
-    theGroup->fragmentLocalIndexPresent = 0;
-    err                                 = addAtom(self, (MP4AtomPtr)theGroup);
+    theGroup->grouping_type     = groupType;
+    theGroup->groupIsInFragment = 0;
+    err                         = addAtom(self, (MP4AtomPtr)theGroup);
     if(err) goto bail;
     err = theGroup->addSamples(theGroup, stsz->sampleCount);
     if(err) goto bail;

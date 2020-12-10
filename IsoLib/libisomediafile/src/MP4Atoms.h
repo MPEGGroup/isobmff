@@ -1729,10 +1729,13 @@ typedef struct
   u32 totalSampleCount;
   u32 totalIndexDescriptionCount;
   u32 efficientStartIndex;
-  u8 patternLengthFieldSize;
-  u8 sampleCountFieldSize;
-  u8 indexFieldSize;
   u8 isSampleGroupCompressed;
+  /* flags */
+  u8 index_msb_indicates_fragment_local_description;
+  u8 grouping_type_parameter_present;
+  u8 pattern_size_code;
+  u8 count_size_code;
+  u8 index_size_code;
 
   MP4CompactSampleToGroupPatternEntryPtr patternEntries;
   u32 *indexDescriptionArray;
@@ -1747,12 +1750,12 @@ typedef struct MP4SampletoGroupAtom
   u32 sampleCount;
   u32 entryCount;
   u32 allocatedSize;
+  u8 groupIsInFragment; /**< If set to 1 this group is located in traf, else it is in stbl */
 
   sampleToGroupType_t sampleToGroupType;
 
   /* these are required for CompactSampletoGroup */
   u32 groupingTypeParameter;
-  u8 fragmentLocalIndexPresent;
   u32 mapSampleToGroupIndex;
   CompressedGroupInfo compressedGroup;
 
