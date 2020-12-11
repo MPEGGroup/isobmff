@@ -1,8 +1,11 @@
-/*
-        ISOMovies.h: A wrapper for the code defined in the MPEG-4 library.
-
-        This header file may be freely copied and distributed.
-*/
+/**
+ * @file ISOMovies.h
+ * @brief A wrapper for the code defined in the MPEG-4 library.
+ * @version 0.1
+ *
+ * @copyright This header file may be freely copied and distributed.
+ *
+ */
 
 #ifndef INCLUDED_ISOMOVIE_H
 #define INCLUDED_ISOMOVIE_H
@@ -57,113 +60,134 @@ extern "C"
 #define ISOOpenMovieDebug MP4OpenMovieDebug
 #define ISOOpenMovieInPlace MP4OpenMovieInPlace
 
-  /* constants for the graphics modes (e.g. for MJ2SetMediaGraphicsMode) */
-  enum
-  {
-    ISOGraphicsModeSrcCopy     = 0x00000000,
-    ISOGraphicsModeTransparent = 0x00000024,
-    ISOGraphicsModeAlpha       = 0x00000100,
-    ISOGraphicsModeWhiteAlpha  = 0x00000101,
-    ISOGraphicsModeBlackAlpha  = 0x00000102
-  };
+/**
+ * @brief constants for the graphics modes (e.g. for MJ2SetMediaGraphicsMode)
+ *
+ */
+enum
+{
+  ISOGraphicsModeSrcCopy     = 0x00000000,
+  ISOGraphicsModeTransparent = 0x00000024,
+  ISOGraphicsModeAlpha       = 0x00000100,
+  ISOGraphicsModeWhiteAlpha  = 0x00000101,
+  ISOGraphicsModeBlackAlpha  = 0x00000102
+};
 
-  /* These data types are specific to JPEG-2; however, they have "ISO" names. */
-  struct ISOMatrixRecord
-  {
-    u32 data[9];
-  };
-  typedef struct ISOMatrixRecord ISOMatrixRecord;
-  typedef ISOMatrixRecord *ISOMatrix;
+/**
+ * @brief These data types are specific to JPEG-2; however, they have "ISO" names.
+ *
+ */
+struct ISOMatrixRecord
+{
+  u32 data[9];
+};
+typedef struct ISOMatrixRecord ISOMatrixRecord;
+typedef ISOMatrixRecord *ISOMatrix;
 
-  struct ISORGBColor
-  {
-    u16 red;
-    u16 green;
-    u16 blue;
-  };
-  typedef struct ISORGBColor ISORGBColor;
-  typedef ISORGBColor *ISORGBColorPtr;
+/**
+ * @brief RGB color type
+ *
+ */
+struct ISORGBColor
+{
+  u16 red;
+  u16 green;
+  u16 blue;
+};
+typedef struct ISORGBColor ISORGBColor;
+typedef ISORGBColor *ISORGBColorPtr;
 
-  /* constants for the fileType field of the MP4PrivateMovieRecord structure */
-  enum
-  {
-    ISOUnknownFileType        = (u32)0,
-    ISOMPEG4FileType          = (u32)1,
-    ISOStillJPEG2000FileType  = (u32)2,
-    ISOMotionJPEG2000FileType = (u32)3,
-    ISOQuickTimeFileType      = (u32)4,
-    ISO3GPPFileType           = (u32)5,
-    ISOMPEG21FileType         = (u32)6
-  };
+/**
+ * @brief constants for the fileType field of the MP4PrivateMovieRecord structure
+ *
+ */
+enum
+{
+  ISOUnknownFileType        = (u32)0,
+  ISOMPEG4FileType          = (u32)1,
+  ISOStillJPEG2000FileType  = (u32)2,
+  ISOMotionJPEG2000FileType = (u32)3,
+  ISOQuickTimeFileType      = (u32)4,
+  ISO3GPPFileType           = (u32)5,
+  ISOMPEG21FileType         = (u32)6
+};
 
-  /* constants for the qt_componentType field of the MP4HandlerAtom structure */
-  enum
-  {
-    ISOMediaHandlerType = MP4_FOUR_CHAR_CODE('m', 'h', 'l', 'r'),
-    ISODataHandlerType  = MP4_FOUR_CHAR_CODE('d', 'h', 'l', 'r')
-  };
+/**
+ * @brief constants for the qt_componentType field of the MP4HandlerAtom structure
+ *
+ */
+enum
+{
+  ISOMediaHandlerType = MP4_FOUR_CHAR_CODE('m', 'h', 'l', 'r'),
+  ISODataHandlerType  = MP4_FOUR_CHAR_CODE('d', 'h', 'l', 'r')
+};
 
-  /* Brands */
+/**
+ * @brief Brands
+ *
+ */
+enum
+{
+  JP2JPEG2000Brand  = MP4_FOUR_CHAR_CODE('j', 'p', '2', ' '), /**< brand for JPEG-2000 */
+  MJ2JPEG2000Brand  = MP4_FOUR_CHAR_CODE('m', 'j', 'p', '2'), /**< brand for Motion JPEG-2000 */
+  ISOQuickTimeBrand = MP4_FOUR_CHAR_CODE('q', 't', ' ', ' '), /**< brand for QuickTime */
+  ISOMpeg4V1Brand   = MP4_FOUR_CHAR_CODE('m', 'p', '4', '1'), /**< brand for MPEG-4 version 1 */
+  ISOMpeg4V2Brand   = MP4_FOUR_CHAR_CODE('m', 'p', '4', '2'), /**< brand for MPEG-4 version 2 */
+  ISOISOBrand       = MP4_FOUR_CHAR_CODE('i', 's', 'o', 'm'), /**< conforming brand for all files */
+  ISOISO2Brand      = MP4_FOUR_CHAR_CODE('i', 's', 'o', '2'), /**< conforming brand for all files */
+  ISO3GP4Brand      = MP4_FOUR_CHAR_CODE('3', 'g', 'p', '4'), /**< 3GPP Release 4 */
+  ISO3GP5Brand      = MP4_FOUR_CHAR_CODE('3', 'g', 'p', '5'), /**< 3GPP Release 5 */
+  ISO3GP6Brand      = MP4_FOUR_CHAR_CODE('3', 'g', 'p', '6'), /**< 3GPP Release 6 */
+  ISOMPEG21Brand    = MP4_FOUR_CHAR_CODE('m', 'p', '2', '1'), /**< MPEG-21 */
+  ISOUnknownBrand   = MP4_FOUR_CHAR_CODE(' ', ' ', ' ', ' '), /**< default 'brand' */
 
-  enum
-  {
-    JP2JPEG2000Brand  = MP4_FOUR_CHAR_CODE('j', 'p', '2', ' '), /* brand for JPEG-2000 */
-    MJ2JPEG2000Brand  = MP4_FOUR_CHAR_CODE('m', 'j', 'p', '2'), /* brand for Motion JPEG-2000 */
-    ISOQuickTimeBrand = MP4_FOUR_CHAR_CODE('q', 't', ' ', ' '), /* brand for QuickTime */
-    ISOMpeg4V1Brand   = MP4_FOUR_CHAR_CODE('m', 'p', '4', '1'), /* brand for MPEG-4 version 1 */
-    ISOMpeg4V2Brand   = MP4_FOUR_CHAR_CODE('m', 'p', '4', '2'), /* brand for MPEG-4 version 2 */
-    ISOISOBrand       = MP4_FOUR_CHAR_CODE('i', 's', 'o', 'm'), /* conforming brand for all files */
-    ISOISO2Brand      = MP4_FOUR_CHAR_CODE('i', 's', 'o', '2'), /* conforming brand for all files */
-    ISO3GP4Brand      = MP4_FOUR_CHAR_CODE('3', 'g', 'p', '4'), /* 3GPP Release 4 */
-    ISO3GP5Brand      = MP4_FOUR_CHAR_CODE('3', 'g', 'p', '5'), /* 3GPP Release 5 */
-    ISO3GP6Brand      = MP4_FOUR_CHAR_CODE('3', 'g', 'p', '6'), /* 3GPP Release 6 */
-    ISOMPEG21Brand    = MP4_FOUR_CHAR_CODE('m', 'p', '2', '1'), /* MPEG-21 */
-    ISOUnknownBrand   = MP4_FOUR_CHAR_CODE(' ', ' ', ' ', ' '), /* default 'brand' */
+  /* DASH-related brands (ISO/IEC 23009-1) */
+  ISO_DASH_Brand      = MP4_FOUR_CHAR_CODE('d', 'a', 's', 'h'),
+  ISO_DASH_DSMS_Brand = MP4_FOUR_CHAR_CODE('d', 's', 'm', 's'), /**< self-initializing media seg. */
+  ISO_DASH_MSDH_Brand = MP4_FOUR_CHAR_CODE('m', 's', 'd', 'h'), /**< general format media segment */
+  ISO_DASH_MSIX_Brand = MP4_FOUR_CHAR_CODE('m', 's', 'd', 'h'), /**< indexed media segment */
+  ISO_DASH_RISX_Brand = MP4_FOUR_CHAR_CODE('r', 'i', 's', 'x'), /**< representation index segment */
+  ISO_DASH_LMSG_Brand = MP4_FOUR_CHAR_CODE('l', 'm', 's', 'g'), /**< last media segment indicator */
+  ISO_DASH_SISX_Brand = MP4_FOUR_CHAR_CODE('s', 'i', 's', 'x'), /**< single index segment */
+  ISO_DASH_SSSS_Brand = MP4_FOUR_CHAR_CODE('s', 's', 's', 's')  /**< subsegment index segment */
+};
 
-    /* DASH-related brands (ISO/IEC 23009-1) */
-    ISO_DASH_Brand = MP4_FOUR_CHAR_CODE('d', 'a', 's', 'h'),
-    ISO_DASH_DSMS_Brand =
-        MP4_FOUR_CHAR_CODE('d', 's', 'm', 's'), /* self-initializing media segment */
-    ISO_DASH_MSDH_Brand = MP4_FOUR_CHAR_CODE('m', 's', 'd', 'h'), /* general format media segment */
-    ISO_DASH_MSIX_Brand = MP4_FOUR_CHAR_CODE('m', 's', 'd', 'h'), /* indexed media segment */
-    ISO_DASH_RISX_Brand = MP4_FOUR_CHAR_CODE(
-        'r', 'i', 's', 'x'), /* representation index segment for MPEG-2 TS media segments */
-    ISO_DASH_LMSG_Brand =
-        MP4_FOUR_CHAR_CODE('l', 'm', 's', 'g'), /* last media segment indicator (ISO BMFF) */
-    ISO_DASH_SISX_Brand =
-        MP4_FOUR_CHAR_CODE('s', 'i', 's', 'x'), /* single index segment (MPEG-2 TS) */
-    ISO_DASH_SSSS_Brand =
-        MP4_FOUR_CHAR_CODE('s', 's', 's', 's') /* subsegment index segment (MPEG-2 TS) */
-  };
+/**
+ * @brief AVC/SVC Parameter Set places
+ *
+ */
+enum
+{
+  AVCsps    = 1,
+  AVCpps    = 2,
+  AVCspsext = 3,
 
-  /* AVC/SVC PS places */
+  SVCsps    = 0x11,
+  SVCpps    = 0x12,
+  SVCspsext = 0x13
+};
 
-  enum
-  {
-    AVCsps    = 1,
-    AVCpps    = 2,
-    AVCspsext = 3,
+/**
+ * @brief Meta-data records
+ *
+ */
+struct ISOMetaRecord
+{
+  void *data;
+};
+typedef struct ISOMetaRecord ISOMetaRecord;
+typedef ISOMetaRecord *ISOMeta;
 
-    SVCsps    = 0x11,
-    SVCpps    = 0x12,
-    SVCspsext = 0x13
-  };
-
-  /* Meta-data records */
-
-  struct ISOMetaRecord
-  {
-    void *data;
-  };
-  typedef struct ISOMetaRecord ISOMetaRecord;
-  typedef ISOMetaRecord *ISOMeta;
-
-  struct ISOMetaItemRecord
-  {
-    void *data;
-  };
-  typedef struct ISOMetaItemRecord ISOMetaItemRecord;
-  typedef ISOMetaItemRecord *ISOMetaItem;
+/**
+ * @brief Meta-item records
+ *
+ */
+struct ISOMetaItemRecord
+{
+  void *data;
+};
+typedef struct ISOMetaItemRecord ISOMetaItemRecord;
+typedef ISOMetaItemRecord *ISOMetaItem;
 
 /* These functions are general movie-handling functions and are common to both MPEG-4 and JPEG-2;
    ideally the "ISO" names should be used. */
@@ -261,249 +285,357 @@ extern "C"
 
 #define MJ2TrackReaderGetNextSample MP4TrackReaderGetNextAccessUnit
 
-  /* These functions are specific to Motion JPEG-2; they have only the "MJ2" names. */
-  ISO_EXTERN(ISOErr)
-  MJ2SetMovieMatrix(ISOMovie theMovie, u32 matrix[9]);
+/***************************************************************************************************
+ * These functions are specific to Motion JPEG-2; they have only the "MJ2" names.
+ **************************************************************************************************/
 
-  ISO_EXTERN(ISOErr)
-  MJ2GetMovieMatrix(ISOMovie theMovie, u32 outMatrix[9]);
+/**
+ * @brief This sets the matrix of the overall movie.
+ *
+ * The default matrix is the unity matrix, if none has been set.
+ *
+ */
+ISO_EXTERN(ISOErr) MJ2SetMovieMatrix(ISOMovie theMovie, u32 matrix[9]);
+/**
+ * @brief This returns the overall transformation matrix for the movie.
+ *
+ */
+ISO_EXTERN(ISOErr) MJ2GetMovieMatrix(ISOMovie theMovie, u32 outMatrix[9]);
+/**
+ * @brief This sets the rate of the movie (the normal and default rate is 1.0).
+ *
+ * The rate is represented as a 16.16 fixed-point number.
+ *
+ */
+ISO_EXTERN(ISOErr) MJ2SetMoviePreferredRate(ISOMovie theMovie, u32 rate);
+/**
+ * @brief This returns the currently set movie preferred rate.
+ *
+ */
+ISO_EXTERN(ISOErr) MJ2GetMoviePreferredRate(ISOMovie theMovie, u32 *outRate);
+/**
+ * @brief This sets the normal volume of the movie.
+ *
+ * The normal, default, value is 1.0. The volume is expressed as an 8.8 fixed-point number.
+ *
+ */
+ISO_EXTERN(ISOErr) MJ2SetMoviePreferredVolume(ISOMovie theMovie, s16 volume);
+/**
+ * @brief This returns the movie volume setting.
+ *
+ */
+ISO_EXTERN(ISOErr) MJ2GetMoviePreferredVolume(ISOMovie theMovie, s16 *outVolume);
+/**
+ * @brief This sets the overall transformation matrix for the movie as a whole.
+ *
+ * The matrix allows for 2D transformations; see the MJ2 specification for the details of how it
+ * is applied. The default matrix is the unitary transform.
+ *
+ */
+ISO_EXTERN(ISOErr) MJ2SetTrackMatrix(ISOTrack theTrack, u32 matrix[9]);
+/**
+ * @brief This returns the current matrix.
+ *
+ */
+ISO_EXTERN(ISOErr) MJ2GetTrackMatrix(ISOTrack theTrack, u32 outMatrix[9]);
+/**
+ * @brief This sets the ordering of the visual tracks.
+ *
+ * It should be set if there is more than one visual track. Smaller numbers are closer to the
+ * front.
+ *
+ */
+ISO_EXTERN(ISOErr) MJ2SetTrackLayer(ISOTrack theTrack, s16 layer);
+/**
+ * @brief This returns the currently set track layer.
+ *
+ */
+ISO_EXTERN(ISOErr) MJ2GetTrackLayer(ISOTrack theTrack, s16 *outLayer);
+/**
+ * @brief This sets the width and height of a track.
+ *
+ * Note that this may be different from the width and height of the media; scaling may occur.
+ * All MJ2 visual tracks should have this set explicitly.
+ *
+ */
+ISO_EXTERN(ISOErr) MJ2SetTrackDimensions(ISOTrack theTrack, u32 width, u32 height);
+/**
+ * @brief This returns the currently set dimensions.
+ *
+ */
+ISO_EXTERN(ISOErr) MJ2GetTrackDimensions(ISOTrack theTrack, u32 *outWidth, u32 *outHeight);
+/**
+ * @brief This sets the normal volume of the track.
+ *
+ * The normal, default, value is 1.0. The volume is expressed as an 8.8 fixed-point number.
+ * Different audio tracks may have different volume settings; they are mixed for playback.
+ *
+ */
+ISO_EXTERN(ISOErr) MJ2SetTrackVolume(ISOTrack theTrack, s16 volume);
+/**
+ * @brief Returns the currently set track volume.
+ *
+ */
+ISO_EXTERN(ISOErr) MJ2GetTrackVolume(ISOTrack theTrack, s16 *outVolume);
+/**
+ * @brief Sets the graphics mode for this track.
+ *
+ * The mode should be chosen from the following list. The default mode is ISOGraphicsModeSrcCopy.
+ *
+ * ISOGraphicsModeSrcCopy: This video image will be copied over the top of the layers below it.
+ * This is the default value, and should be used for the backmost track.
+ *
+ * ISOGraphicsModeTransparent: The color ISORGBColor in this video image will be treated as
+ * transparent, allowing layers behind to be seen.
+ *
+ * ISOGraphicsModeAlpha: This video image includes an alpha plane to define its transparency.
+ *
+ * ISOGraphicsModeWhiteAlpha: This video image includes an alpha plane, which has been
+ * premultiplied with white, to define its transparency.
+ *
+ * ISOGraphicsModeBlackAlpha: This video image includes an alpha plane, which has been
+ * premultiplied with black, to define its transparency.
+ *
+ */
+ISO_EXTERN(ISOErr) MJ2SetMediaGraphicsMode(ISOMedia theMedia, u32 mode, const ISORGBColor *opColor);
+/**
+ * @brief Returns the currently set graphics mode.
+ *
+ */
+ISO_EXTERN(ISOErr) MJ2GetMediaGraphicsMode(ISOMedia theMedia, u32 *outMode, 
+                                           ISORGBColor *outOpColor);
+/**
+ * @brief Sets the left-right balance of an audio track (normally a mono track).
+ *
+ * Balance values are represented as 16-bit, fixed-point numbers that range from -1.0 to +1.0. The
+ * high-order 8 bits contain the integer portion of the value; the low-order 8 bits contain the
+ * fractional part. Negative values weight the balance toward the left speaker; positive values
+ * emphasize the right channel. Setting the balance to 0 (the default) corresponds to a neutral
+ * setting.
+ *
+ */
+ISO_EXTERN(ISOErr) MJ2SetMediaSoundBalance(ISOMedia theMedia, s16 balance);
+/**
+ * @brief Returns the currently set balance value.
+ *
+ */
+ISO_EXTERN(ISOErr) MJ2GetMediaSoundBalance(ISOMedia theMedia, s16 *outBalance);
+/**
+ * @brief Creates a new empty Motion JPEG 2000 Movie in memory.
+ *
+ */
+ISO_EXTERN(ISOErr) MJ2NewMovie(ISOMovie *outMovie);
 
-  ISO_EXTERN(ISOErr)
-  MJ2SetMoviePreferredRate(ISOMovie theMovie, u32 rate);
+/***************************************************************************************************
+ * These functions are specific to 3GPP; they have only the "3GPP" names.
+ **************************************************************************************************/
 
-  ISO_EXTERN(ISOErr)
-  MJ2GetMoviePreferredRate(ISOMovie theMovie, u32 *outRate);
+/**
+ * @brief Creates a new empty 3GPP Movie in memory, and sets the brand to the indicated release
+ * (4, 5 or 6).
+ *
+ */
+ISO_EXTERN(ISOErr) New3GPPMovie(ISOMovie *outMovie, u16 release);
 
-  ISO_EXTERN(ISOErr)
-  MJ2SetMoviePreferredVolume(ISOMovie theMovie, s16 volume);
+/***************************************************************************************************
+ * These functions are specific to QuickTime; they have only the "QT" names.
+ **************************************************************************************************/
 
-  ISO_EXTERN(ISOErr)
-  MJ2GetMoviePreferredVolume(ISOMovie theMovie, s16 *outVolume);
+/**
+ * @brief Creaets a new empty QT Movie in memory.
+ *
+ */
+ISO_EXTERN(ISOErr) QTNewMovie(ISOMovie *outMovie);
 
-  ISO_EXTERN(ISOErr)
-  MJ2SetTrackMatrix(ISOTrack theTrack, u32 matrix[9]);
+/***************************************************************************************************
+ * These functions are general.
+ **************************************************************************************************/
 
-  ISO_EXTERN(ISOErr)
-  MJ2GetTrackMatrix(ISOTrack theTrack, u32 outMatrix[9]);
+/**
+ * @brief Writes the in-memory Movie to a file. The file given by filename is created, written,
+ * and closed.
+ *
+ */
+ISO_EXTERN(ISOErr) ISOWriteMovieToFile(ISOMovie theMovie, const char *filename);
+/**
+ * @brief Sets the Movie’s major brand.
+ *
+ * Also inserts the major brand into the compatible brands list. This function is not normally
+ * needed; the brand is set by the appropriate movie-creation function.
+ *
+ */
+ISO_EXTERN(ISOErr) ISOSetMovieBrand(ISOMovie theMovie, u32 brand, u32 minorversion);
+/**
+ * @brief Adds a minor brand into the compatible brands list of the Movie.
+ *
+ * The following brands have defined constants in the headers, though of course you may use
+ * MP4_FOUR_CHAR_CODE also.
+ *
+ * JP2JPEG2000Brand:  brand for JPEG-2000
+ * MJ2JPEG2000Brand:  brand for Motion JPEG-2000
+ * ISOQuickTimeBrand: brand for QuickTime
+ * ISOMpeg4V1Brand:   brand for MPEG-4 version 1
+ * ISOMpeg4V2Brand:   brand for MPEG-4 version 2
+ * ISOISOBrand:       conforming brand for all files
+ * ISOISO2Brand:      conforming brand for all files
+ * ISO3GP4Brand:      3GPP Release 4
+ * ISO3GP5Brand:      3GPP Release 5
+ * ISO3GP6Brand:      3GPP Release 6
+ * ISOMPEG21Brand:    MPEG-21
+ *
+ */
+ISO_EXTERN(ISOErr) ISOSetMovieCompatibleBrand(ISOMovie theMovie, u32 brand);
+/**
+ * @brief Returns the Movie’s major brand and minor version.
+ *
+ */
+ISO_EXTERN(ISOErr) ISOGetMovieBrand(ISOMovie theMovie, u32 *brand, u32 *minorversion);
+/**
+ * @brief If the brand is a compatible brand of the movie, this returns the compatible brand,
+ * otherwise it returns 0.
+ *
+ */
+ISO_EXTERN(ISOErr) ISOIsMovieCompatibleBrand(ISOMovie theMovie, u32 brand);
 
-  ISO_EXTERN(ISOErr)
-  MJ2SetTrackLayer(ISOTrack theTrack, s16 layer);
+/***************************************************************************************************
+ * AVC Sample descriptions
+ **************************************************************************************************/
 
-  ISO_EXTERN(ISOErr)
-  MJ2GetTrackLayer(ISOTrack theTrack, s16 *outLayer);
+ISO_EXTERN(ISOErr) ISONewAVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
+                                              u32 dataReferenceIndex, u32 length_size, 
+                                              MP4Handle first_sps, MP4Handle first_pps, 
+                                              MP4Handle first_spsext);
 
-  ISO_EXTERN(ISOErr)
-  MJ2SetTrackDimensions(ISOTrack theTrack, u32 width, u32 height);
+ISO_EXTERN(ISOErr) ISOAddVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where);
 
-  ISO_EXTERN(ISOErr)
-  MJ2GetTrackDimensions(ISOTrack theTrack, u32 *outWidth, u32 *outHeight);
+ISO_EXTERN(ISOErr) ISOGetAVCSampleDescription(MP4Handle sampleEntryH, u32 *dataReferenceIndex, 
+                                              u32 *length_size, u32 *sps_count, u32 *pss_count, 
+                                              u32 *spsext_count);
 
-  ISO_EXTERN(ISOErr)
-  MJ2SetTrackVolume(ISOTrack theTrack, s16 volume);
+ISO_EXTERN(ISOErr) ISOGetVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, 
+                                               u32 index);
+ISO_EXTERN(ISOErr) ISOGetHEVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, 
+                                                 u32 index);
+ISO_EXTERN(ISOErr) ISOGetRESVSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, 
+                                                 u32 index);
+ISO_EXTERN(ISOErr) ISOGetRESVLengthSizeMinusOne(MP4Handle sampleEntryH, u32 *out);
+ISO_EXTERN(ISOErr) ISOGetRESVOriginalFormat(MP4Handle sampleEntryH, u32 *outOrigFmt);
+ISO_EXTERN(ISOErr) ISONewHEVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
+                                               u32 dataReferenceIndex, u32 length_size, 
+                                               MP4Handle first_sps, MP4Handle first_pps, 
+                                               MP4Handle first_vps);
 
-  ISO_EXTERN(ISOErr)
-  MJ2GetTrackVolume(ISOTrack theTrack, s16 *outVolume);
+/***************************************************************************************************
+ * 3GPP media
+ **************************************************************************************************/
+MP4_EXTERN(MP4Err) ISOAddBitrateToSampleDescription(MP4Handle sampleEntryH, u8 is_3GPP, 
+                                                    u32 buffersizeDB, u32 maxBitrate, 
+                                                    u32 avgBitrate);
 
-  ISO_EXTERN(ISOErr)
-  MJ2SetMediaGraphicsMode(ISOMedia theMedia, u32 mode, const ISORGBColor *opColor);
+MP4_EXTERN(MP4Err) ISONewH263SampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
+                                               u32 dataReferenceIndex, u32 vendor, 
+                                               u8 decoder_version, u8 H263_level, u8 H263_profile);
 
-  ISO_EXTERN(ISOErr)
-  MJ2GetMediaGraphicsMode(ISOMedia theMedia, u32 *outMode, ISORGBColor *outOpColor);
+MP4_EXTERN(MP4Err) ISONewAMRSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
+                                              u32 dataReferenceIndex, u8 is_WB, u32 vendor, 
+                                              u8 decoder_version, u16 mode_set, 
+                                              u8 mode_change_period, u8 frames_per_sample);
 
-  ISO_EXTERN(ISOErr)
-  MJ2SetMediaSoundBalance(ISOMedia theMedia, s16 balance);
+MP4_EXTERN(MP4Err) ISONewAMRWPSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
+                                                u32 dataReferenceIndex, u32 vendor, 
+                                                u8 decoder_version);
 
-  ISO_EXTERN(ISOErr)
-  MJ2GetMediaSoundBalance(ISOMedia theMedia, s16 *outBalance);
+/***************************************************************************************************
+ * Meta Data
+ **************************************************************************************************/
 
-  ISO_EXTERN(ISOErr)
-  MJ2NewMovie(ISOMovie *outMovie);
+ISO_EXTERN(ISOErr) ISONewFileMeta(ISOMovie theMovie, u32 metaType, ISOMeta *meta);
+ISO_EXTERN(ISOErr) ISONewMovieMeta(ISOMovie theMovie, u32 metaType, ISOMeta *meta);
+ISO_EXTERN(ISOErr) ISONewTrackMeta(ISOTrack theTrack, u32 metaType, ISOMeta *meta);
 
-  /* These functions are specific to 3GPP; they have only the "3GPP" names. */
-  ISO_EXTERN(ISOErr)
-  New3GPPMovie(ISOMovie *outMovie, u16 release);
+ISO_EXTERN(ISOErr) ISOAddMetaBoxRelation(ISOMeta first_meta, ISOMeta second_meta, u8 relation_type);
+ISO_EXTERN(ISOErr) ISOGetMetaBoxRelation(ISOMeta first_meta, ISOMeta second_meta, 
+                                         u8 *relation_type);
 
-  /* These functions are specific to QuickTime; they have only the "QT" names. */
-  ISO_EXTERN(ISOErr)
-  QTNewMovie(ISOMovie *outMovie);
+ISO_EXTERN(ISOErr) ISOAddMetaDataReference(ISOMeta meta, u16 *out_ref, ISOHandle urlHandle, 
+                                           ISOHandle urnHandle);
 
-  /* These functions are general. */
-  ISO_EXTERN(ISOErr)
-  ISOWriteMovieToFile(ISOMovie theMovie, const char *filename);
+ISO_EXTERN(ISOErr) ISOAddMetaItem(ISOMeta meta, ISOMetaItem *outItem, u64 base_offset, 
+                                  u16 data_ref_index);
+ISO_EXTERN(ISOErr) ISOAddMetaItemWithID(ISOMeta meta, ISOMetaItem *outItem, u64 base_offset, 
+                                        u16 data_ref_index, u16 item_ID);
 
-  ISO_EXTERN(ISOErr)
-  ISOSetMovieBrand(ISOMovie theMovie, u32 brand, u32 minorversion);
+ISO_EXTERN(ISOErr) ISOAddItemExtent(ISOMetaItem item, MP4Handle data);
+ISO_EXTERN(ISOErr) ISOAddItemExtentReference(ISOMetaItem item, u64 offset, u64 length);
+ISO_EXTERN(ISOErr) ISOAddItemExtentUsingItemData(ISOMetaItem item, MP4Handle data);
+ISO_EXTERN(ISOErr) ISOAddItemExtentItem(ISOMetaItem item, ISOMetaItem extent_item, u32 offset, 
+                                        u32 length);
 
-  ISO_EXTERN(ISOErr)
-  ISOSetMovieCompatibleBrand(ISOMovie theMovie, u32 brand);
+ISO_EXTERN(ISOErr) ISOAddItemReference(ISOMetaItem item, u32 reference_type, u32 to_item_ID, 
+                                       u32 *outIndex);
+ISO_EXTERN(ISOErr) ISOAddItemReferences(ISOMetaItem item, u32 reference_type, u16 reference_count,
+                                        MP4Handle to_item_IDs);
+ISO_EXTERN(ISOErr) ISOGetItemReferences(ISOMetaItem item, u32 reference_type, u16 *reference_count,
+                                        MP4Handle to_item_IDs);
+ISO_EXTERN(ISOErr) ISOGetItemReference(ISOMetaItem item, u32 reference_type, u16 reference_index,
+                                       ISOMetaItem *outItem);
+ISO_EXTERN(ISOErr) ISOAddPrimaryData(ISOMeta meta, u32 box_type, MP4Handle data, u8 is_full_atom);
+ISO_EXTERN(ISOErr) ISOGetPrimaryData(ISOMeta meta, u32 box_type, MP4Handle data, u8 is_full_atom);
+ISO_EXTERN(ISOErr) ISOGetPrimaryItemData(ISOMeta meta, u32 box_type, MP4Handle data, 
+                                         u8 is_full_atom);
 
-  ISO_EXTERN(ISOErr)
-  ISOGetMovieBrand(ISOMovie theMovie, u32 *brand, u32 *minorversion);
+ISO_EXTERN(ISOErr) ISOSetPrimaryItem(ISOMeta meta, ISOMetaItem item);
+ISO_EXTERN(ISOErr) ISOGetPrimaryItemID(ISOMeta meta, u16 *ID);
 
-  ISO_EXTERN(ISOErr)
-  ISOIsMovieCompatibleBrand(ISOMovie theMovie, u32 brand);
+ISO_EXTERN(ISOErr) ISOGetItemID(ISOMetaItem item, u16 *ID);
 
-  /* AVC Sample descriptions */
+ISO_EXTERN(ISOErr) ISOSetItemInfo(ISOMetaItem item, u16 protection_index, char *name, 
+                                  char *content_type, char *content_encoding);
 
-  ISO_EXTERN(ISOErr)
-  ISONewAVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
-                             u32 dataReferenceIndex, u32 length_size, MP4Handle first_sps,
-                             MP4Handle first_pps, MP4Handle first_spsext);
+ISO_EXTERN(ISOErr) ISOSetItemInfoExtension(ISOMetaItem item, MP4Handle extension, 
+                                           u32 extension_type);
+ISO_EXTERN(ISOErr) ISOGetItemInfoExtension(ISOMetaItem item, MP4Handle extension, 
+                                           u32 *extension_type);
 
-  ISO_EXTERN(ISOErr) ISOAddVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where);
+ISO_EXTERN(ISOErr) ISOSetItemInfoItemType(ISOMetaItem item, u32 item_type, char *item_uri_type);
+ISO_EXTERN(ISOErr) ISOGetItemInfoItemType(ISOMetaItem item, u32 *item_type, char **item_uri_type);
 
-  ISO_EXTERN(ISOErr)
-  ISOGetAVCSampleDescription(MP4Handle sampleEntryH, u32 *dataReferenceIndex, u32 *length_size,
-                             u32 *sps_count, u32 *pss_count, u32 *spsext_count);
+ISO_EXTERN(ISOErr) ISOGetFileMeta(ISOMovie theMovie, ISOMeta *meta, u32 inMetaType, 
+                                  u32 *outMetaType);
+ISO_EXTERN(ISOErr) ISOGetMovieMeta(ISOMovie theMovie, ISOMeta *meta, u32 inMetaType, 
+                                   u32 *outMetaType);
+ISO_EXTERN(ISOErr) ISOGetTrackMeta(ISOTrack theTrack, ISOMeta *meta, u32 inMetaType, 
+                                   u32 *outMetaType);
 
-  ISO_EXTERN(ISOErr)
-  ISOGetVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, u32 index);
-  ISO_EXTERN(ISOErr)
-  ISOGetHEVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, u32 index);
-  ISO_EXTERN(ISOErr)
-  ISOGetRESVSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, u32 index);
-  ISO_EXTERN(ISOErr)
-  ISOGetRESVLengthSizeMinusOne(MP4Handle sampleEntryH, u32 *out);
-  ISO_EXTERN(ISOErr)
-  ISOGetRESVOriginalFormat(MP4Handle sampleEntryH, u32 *outOrigFmt);
-  ISO_EXTERN(ISOErr)
-  ISONewHEVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
-                              u32 dataReferenceIndex, u32 length_size, MP4Handle first_sps,
-                              MP4Handle first_pps, MP4Handle first_vps);
-  /* 3GPP media */
-  MP4_EXTERN(MP4Err)
-  ISOAddBitrateToSampleDescription(MP4Handle sampleEntryH, u8 is_3GPP, u32 buffersizeDB,
-                                   u32 maxBitrate, u32 avgBitrate);
+ISO_EXTERN(ISOErr) ISOGetAllItemsWithType(ISOMeta meta, u32 type, ISOMetaItem **items, 
+                                          u32 *numberOfItemsFound);
+ISO_EXTERN(ISOErr) ISOFindItemByName(ISOMeta meta, ISOMetaItem *item, char *name, u8 exact_case);
+ISO_EXTERN(ISOErr) ISOFindItemByID(ISOMeta meta, ISOMetaItem *item, u16 ID);
 
-  MP4_EXTERN(MP4Err)
-  ISONewH263SampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
-                              u32 dataReferenceIndex, u32 vendor, u8 decoder_version, u8 H263_level,
-                              u8 H263_profile);
+ISO_EXTERN(ISOErr) ISOGetItemData(ISOMetaItem item, MP4Handle data, u64 *base_offset);
 
-  MP4_EXTERN(MP4Err)
-  ISONewAMRSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
-                             u32 dataReferenceIndex, u8 is_WB, u32 vendor, u8 decoder_version,
-                             u16 mode_set, u8 mode_change_period, u8 frames_per_sample);
+ISO_EXTERN(ISOErr) ISOGetItemInfo(ISOMetaItem item, u16 *protection_index, char *name, 
+                                  char *content_type, char *content_encoding);
 
-  MP4_EXTERN(MP4Err)
-  ISONewAMRWPSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
-                               u32 dataReferenceIndex, u32 vendor, u8 decoder_version);
-  /* Meta Data */
+ISO_EXTERN(MP4Err) ISOCheckMetaDataReferences(ISOMeta meta);
 
-  ISO_EXTERN(ISOErr)
-  ISONewFileMeta(ISOMovie theMovie, u32 metaType, ISOMeta *meta);
-  ISO_EXTERN(ISOErr)
-  ISONewMovieMeta(ISOMovie theMovie, u32 metaType, ISOMeta *meta);
-  ISO_EXTERN(ISOErr)
-  ISONewTrackMeta(ISOTrack theTrack, u32 metaType, ISOMeta *meta);
+ISO_EXTERN(MP4Err) ISONewMetaProtection(ISOMeta meta, u32 sch_type, u32 sch_version, char *sch_url,
+                                        u16 *protection_index);
 
-  ISO_EXTERN(ISOErr)
-  ISOAddMetaBoxRelation(ISOMeta first_meta, ISOMeta second_meta, u8 relation_type);
-  ISO_EXTERN(ISOErr)
-  ISOGetMetaBoxRelation(ISOMeta first_meta, ISOMeta second_meta, u8 *relation_type);
+ISO_EXTERN(MP4Err) ISOAddMetaProtectionInfo(ISOMeta meta, u16 protection_index, 
+                                            MP4GenericAtom schi_atom);
 
-  ISO_EXTERN(ISOErr)
-  ISOAddMetaDataReference(ISOMeta meta, u16 *out_ref, ISOHandle urlHandle, ISOHandle urnHandle);
+ISO_EXTERN(MP4Err) ISOGetMetaProtection(ISOMeta meta, u16 protection_index, u32 *sch_type, 
+                                        u32 *sch_version, char *sch_url);
 
-  ISO_EXTERN(ISOErr)
-  ISOAddMetaItem(ISOMeta meta, ISOMetaItem *outItem, u64 base_offset, u16 data_ref_index);
-  ISO_EXTERN(ISOErr)
-  ISOAddMetaItemWithID(ISOMeta meta, ISOMetaItem *outItem, u64 base_offset, u16 data_ref_index,
-                       u16 item_ID);
+ISO_EXTERN(MP4Err) ISOGetMetaProtectionInfo(ISOMeta meta, u16 protection_index, u32 atom_type,
+                                            MP4GenericAtom *schi_atom);
 
-  ISO_EXTERN(ISOErr)
-  ISOAddItemExtent(ISOMetaItem item, MP4Handle data);
-  ISO_EXTERN(ISOErr)
-  ISOAddItemExtentReference(ISOMetaItem item, u64 offset, u64 length);
-  ISO_EXTERN(ISOErr)
-  ISOAddItemExtentUsingItemData(ISOMetaItem item, MP4Handle data);
-  ISO_EXTERN(ISOErr)
-  ISOAddItemExtentItem(ISOMetaItem item, ISOMetaItem extent_item, u32 offset, u32 length);
+ISO_EXTERN(MP4Err) ISOAddMetaItemProperty(ISOMetaItem item, MP4GenericAtom *itemProperty, 
+                                          u8 essential);
 
-  ISO_EXTERN(ISOErr)
-  ISOAddItemReference(ISOMetaItem item, u32 reference_type, u32 to_item_ID, u32 *outIndex);
-  ISO_EXTERN(ISOErr)
-  ISOAddItemReferences(ISOMetaItem item, u32 reference_type, u16 reference_count,
-                       MP4Handle to_item_IDs);
-  ISO_EXTERN(ISOErr)
-  ISOGetItemReferences(ISOMetaItem item, u32 reference_type, u16 *reference_count,
-                       MP4Handle to_item_IDs);
-  ISO_EXTERN(ISOErr)
-  ISOGetItemReference(ISOMetaItem item, u32 reference_type, u16 reference_index,
-                      ISOMetaItem *outItem);
-  ISO_EXTERN(ISOErr)
-  ISOAddPrimaryData(ISOMeta meta, u32 box_type, MP4Handle data, u8 is_full_atom);
-  ISO_EXTERN(ISOErr)
-  ISOGetPrimaryData(ISOMeta meta, u32 box_type, MP4Handle data, u8 is_full_atom);
-  ISO_EXTERN(ISOErr)
-  ISOGetPrimaryItemData(ISOMeta meta, u32 box_type, MP4Handle data, u8 is_full_atom);
-
-  ISO_EXTERN(ISOErr)
-  ISOSetPrimaryItem(ISOMeta meta, ISOMetaItem item);
-  ISO_EXTERN(ISOErr)
-  ISOGetPrimaryItemID(ISOMeta meta, u16 *ID);
-
-  ISO_EXTERN(ISOErr)
-  ISOGetItemID(ISOMetaItem item, u16 *ID);
-
-  ISO_EXTERN(ISOErr)
-  ISOSetItemInfo(ISOMetaItem item, u16 protection_index, char *name, char *content_type,
-                 char *content_encoding);
-
-  ISO_EXTERN(ISOErr)
-  ISOSetItemInfoExtension(ISOMetaItem item, MP4Handle extension, u32 extension_type);
-  ISO_EXTERN(ISOErr)
-  ISOGetItemInfoExtension(ISOMetaItem item, MP4Handle extension, u32 *extension_type);
-
-  ISO_EXTERN(ISOErr)
-  ISOSetItemInfoItemType(ISOMetaItem item, u32 item_type, char *item_uri_type);
-  ISO_EXTERN(ISOErr)
-  ISOGetItemInfoItemType(ISOMetaItem item, u32 *item_type, char **item_uri_type);
-
-  ISO_EXTERN(ISOErr)
-  ISOGetFileMeta(ISOMovie theMovie, ISOMeta *meta, u32 inMetaType, u32 *outMetaType);
-  ISO_EXTERN(ISOErr)
-  ISOGetMovieMeta(ISOMovie theMovie, ISOMeta *meta, u32 inMetaType, u32 *outMetaType);
-  ISO_EXTERN(ISOErr)
-  ISOGetTrackMeta(ISOTrack theTrack, ISOMeta *meta, u32 inMetaType, u32 *outMetaType);
-
-  ISO_EXTERN(ISOErr)
-  ISOGetAllItemsWithType(ISOMeta meta, u32 type, ISOMetaItem **items, u32 *numberOfItemsFound);
-  ISO_EXTERN(ISOErr)
-  ISOFindItemByName(ISOMeta meta, ISOMetaItem *item, char *name, u8 exact_case);
-  ISO_EXTERN(ISOErr)
-  ISOFindItemByID(ISOMeta meta, ISOMetaItem *item, u16 ID);
-
-  ISO_EXTERN(ISOErr)
-  ISOGetItemData(ISOMetaItem item, MP4Handle data, u64 *base_offset);
-
-  ISO_EXTERN(ISOErr)
-  ISOGetItemInfo(ISOMetaItem item, u16 *protection_index, char *name, char *content_type,
-                 char *content_encoding);
-
-  ISO_EXTERN(MP4Err)
-  ISOCheckMetaDataReferences(ISOMeta meta);
-
-  ISO_EXTERN(MP4Err)
-  ISONewMetaProtection(ISOMeta meta, u32 sch_type, u32 sch_version, char *sch_url,
-                       u16 *protection_index);
-
-  ISO_EXTERN(MP4Err)
-  ISOAddMetaProtectionInfo(ISOMeta meta, u16 protection_index, MP4GenericAtom schi_atom);
-
-  ISO_EXTERN(MP4Err)
-  ISOGetMetaProtection(ISOMeta meta, u16 protection_index, u32 *sch_type, u32 *sch_version,
-                       char *sch_url);
-
-  ISO_EXTERN(MP4Err)
-  ISOGetMetaProtectionInfo(ISOMeta meta, u16 protection_index, u32 atom_type,
-                           MP4GenericAtom *schi_atom);
-
-  ISO_EXTERN(MP4Err)
-  ISOAddMetaItemProperty(ISOMetaItem item, MP4GenericAtom *itemProperty, u8 essential);
-
-  ISO_EXTERN(MP4Err)
-  ISOGetProperitesOfMetaItem(ISOMetaItem item, MP4GenericAtom **properties, u32 *propertiesFound);
+ISO_EXTERN(MP4Err) ISOGetProperitesOfMetaItem(ISOMetaItem item, MP4GenericAtom **properties, 
+                                              u32 *propertiesFound);
 
 #ifdef PRAGMA_EXPORT
 #pragma export on
