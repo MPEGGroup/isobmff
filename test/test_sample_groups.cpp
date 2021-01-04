@@ -22,12 +22,7 @@
  */
 
 #include <catch.hpp>
-#include <ISOMovies.h>
-#include <string>
-#include <vector>
-#include <algorithm>
-#include <cstring>
-#include "test_data.h"
+#include "test_helpers.h"
 
 extern "C"
 {
@@ -36,9 +31,6 @@ extern "C"
                               u32 dataReferenceIndex, u32 length_size, MP4Handle first_sps,
                               MP4Handle first_pps, MP4Handle first_spsext);
 }
-
-const u32 TIMESCALE = 30000;
-const u32 FPS       = 30;
 
 const u32 FOURCC_COLOR = MP4_FOUR_CHAR_CODE('c', 'o', 'l', 'r');
 const u32 FOURCC_TEST  = MP4_FOUR_CHAR_CODE('t', 'e', 's', 't');
@@ -67,100 +59,10 @@ ISOErr addGroupDescription(MP4Media media, u32 fcc, std::string strDescription, 
 }
 
 /**
- * @brief Helper function to add samples given the color pattern
- *
- * @param media media to add the sample to
- * @param strPattern color pattern of samples (r,b,g,y,w,k)
- * @param repeatPattern number of times to repeat the pattern. No samples are added if this is 0
- * @param sampleEntryH sample entry handle (for the first call)
- * @return ISOErr error code
- */
-ISOErr addSamples(MP4Media media, std::string strPattern, u32 repeatPattern = 1,
-                  ISOHandle sampleEntryH = 0)
-{
-  ISOErr err;
-  u32 sampleCount = 0;
-  ISOHandle sampleDataH, durationsH, sizesH;
-  err = ISONewHandle(sizeof(u32), &durationsH);
-  CHECK(err == ISONoErr);
-
-  *((u32 *)*durationsH) = TIMESCALE / FPS;
-
-  std::vector<u8> bufferData;
-  std::vector<u32> bufferSizes;
-  for(std::string::const_iterator it = strPattern.cbegin(); it != strPattern.cend(); ++it)
-  {
-    switch(*it)
-    {
-    case 'r':
-      bufferData.insert(bufferData.end(), HEVC::auRed, HEVC::auRed + sizeof(HEVC::auRed));
-      bufferSizes.push_back(sizeof(HEVC::auRed));
-      break;
-    case 'b':
-      bufferData.insert(bufferData.end(), HEVC::auBlue, HEVC::auBlue + sizeof(HEVC::auBlue));
-      bufferSizes.push_back(sizeof(HEVC::auBlue));
-      break;
-    case 'g':
-      bufferData.insert(bufferData.end(), HEVC::auGreen, HEVC::auGreen + sizeof(HEVC::auGreen));
-      bufferSizes.push_back(sizeof(HEVC::auGreen));
-      break;
-    case 'y':
-      bufferData.insert(bufferData.end(), HEVC::auYellow, HEVC::auYellow + sizeof(HEVC::auYellow));
-      bufferSizes.push_back(sizeof(HEVC::auYellow));
-      break;
-    case 'w':
-      bufferData.insert(bufferData.end(), HEVC::auWhite, HEVC::auWhite + sizeof(HEVC::auWhite));
-      bufferSizes.push_back(sizeof(HEVC::auWhite));
-      break;
-    case 'k':
-      bufferData.insert(bufferData.end(), HEVC::auBlack, HEVC::auBlack + sizeof(HEVC::auBlack));
-      bufferSizes.push_back(sizeof(HEVC::auBlack));
-      break;
-    default:
-      break;
-    }
-  }
-
-  // repeat pattern
-  std::vector<u8> bufferDataPattern   = bufferData;
-  std::vector<u32> bufferSizesPattern = bufferSizes;
-  std::string fullPattern             = strPattern;
-  for(u32 n = 1; n < repeatPattern; ++n)
-  {
-    bufferData.insert(bufferData.end(), bufferDataPattern.begin(), bufferDataPattern.end());
-    bufferSizes.insert(bufferSizes.end(), bufferSizesPattern.begin(), bufferSizesPattern.end());
-    fullPattern += strPattern;
-  }
-
-  // create handles and copy data
-  err = ISONewHandle(bufferData.size() * sizeof(u8), &sampleDataH);
-  CHECK(err == ISONoErr);
-  std::memcpy((*sampleDataH), bufferData.data(), bufferData.size() * sizeof(u8));
-  err = ISONewHandle(sizeof(u32) * bufferSizes.size(), &sizesH);
-  CHECK(err == ISONoErr);
-  for(u32 n = 0; n < bufferSizes.size(); n++)
-  {
-    ((u32 *)*sizesH)[n] = bufferSizes[n];
-  }
-
-  err = ISOAddMediaSamples(media, sampleDataH, bufferSizesPattern.size() * repeatPattern,
-                           durationsH, sizesH, sampleEntryH, 0, 0);
-  CHECK(err == ISONoErr);
-
-  err = ISODisposeHandle(sampleDataH);
-  CHECK(err == ISONoErr);
-  err = ISODisposeHandle(durationsH);
-  CHECK(err == ISONoErr);
-  err = ISODisposeHandle(sizesH);
-  CHECK(err == ISONoErr);
-  return err;
-}
-
-/**
  * @brief Helper function to map samples to groups based on pattern
  *
  * @param media media to map sample in
- * @param strPattern color pattern same as used in addSamples
+ * @param strPattern color pattern same as used in addHEVCSamples
  * @param idRed The index of the Red entry in the COLOR group
  * @param idBlue The index of the Blue entry in the COLOR group
  * @param idGreen The index of the Green entry in the COLOR group
@@ -206,40 +108,6 @@ ISOErr mapSamplesToGroups(MP4Media media, std::string strPattern, u32 idRed, u32
       }
     }
   }
-  return err;
-}
-
-/**
- * @brief Helper function to check a single sample payload
- *
- * @param media media to take a sample from
- * @param sampleNr sample number in that media
- * @param comparePtr pointer to data to compare out payload to
- * @param compareSize size of the compare data
- * @return ISOErr error code
- */
-ISOErr checkSample(MP4Media media, u32 sampleNr, u8 *comparePtr, u32 compareSize)
-{
-  ISOErr err;
-  MP4Handle sampleH;
-  u32 outSize, outSampleFlags, outSampleDescIndex;
-  u64 outDTS, outDuration;
-  s32 outCTSOffset;
-
-  MP4NewHandle(0, &sampleH);
-  err = MP4GetIndMediaSample(media, sampleNr, sampleH, &outSize, &outDTS, &outCTSOffset,
-                             &outDuration, &outSampleFlags, &outSampleDescIndex);
-  CHECK(err == ISONoErr);
-
-  u32 handleSize;
-  MP4GetHandleSize(sampleH, &handleSize);
-  if(handleSize != outSize) return -1;
-  if(outSize != compareSize) return -1;
-
-  int compareVal = std::memcmp(comparePtr, *sampleH, compareSize);
-  if(compareVal != 0) return -1;
-
-  MP4DisposeHandle(sampleH);
   return err;
 }
 
@@ -450,8 +318,8 @@ TEST_CASE("Test sample groups")
     // this must fail because "Red frames" payload is already added with the same type
     CHECK(err != ISONoErr);
 
-    // just add sample entry, call addSamples with sample count = 0
-    err = addSamples(media, "r", 0, sampleEntryH);
+    // just add sample entry, call addHEVCSamples with sample count = 0
+    err = addHEVCSamples(media, "r", 0, sampleEntryH);
     CHECK(err == ISONoErr);
     err = MP4EndMediaEdits(media);
     CHECK(err == ISONoErr);
@@ -461,7 +329,7 @@ TEST_CASE("Test sample groups")
     CHECK(err == ISONoErr);
     err = ISOSetSamplestoGroupType(media, SAMPLE_GROUP_NORMAL);
     CHECK(err == ISONoErr);
-    err = addSamples(media, "rb", 3);
+    err = addHEVCSamples(media, "rb", 3);
     CHECK(err == ISONoErr);
     colorEntryCount = 0;
     err             = ISOGetGroupDescriptionEntryCount(media, FOURCC_COLOR, &colorEntryCount);
@@ -491,7 +359,7 @@ TEST_CASE("Test sample groups")
     CHECK(err == ISONoErr);
     err = addGroupDescription(media, FOURCC_COLOR, "Yellow frames", groupIdYellow);
     CHECK(err == ISONoErr);
-    err = addSamples(media, "gry", 2);
+    err = addHEVCSamples(media, "gry", 2);
     CHECK(err == ISONoErr);
     err = addGroupDescription(media, FOURCC_TEST, "Unique entry", temp);
     CHECK(err == ISONoErr);
@@ -504,7 +372,7 @@ TEST_CASE("Test sample groups")
     err = ISOStartMovieFragment(moov);
     CHECK(err == ISONoErr);
     ISOSetSamplestoGroupType(media, SAMPLE_GROUP_NORMAL);
-    err = addSamples(media, "wk", 3);
+    err = addHEVCSamples(media, "wk", 3);
     CHECK(err == ISONoErr);
 
     // Fragment 4
@@ -515,7 +383,7 @@ TEST_CASE("Test sample groups")
     CHECK(err == ISONoErr);
     err = addGroupDescription(media, FOURCC_COLOR, "Yellow frames", groupIdYellow);
     CHECK(err == ISONoErr);
-    err = addSamples(media, "bgy", 2);
+    err = addHEVCSamples(media, "bgy", 2);
     CHECK(err == ISONoErr);
     err = mapSamplesToGroups(media, "bgy", groupIdRed, groupIdBlue, groupIdGreen, groupIdYellow, 2);
     CHECK(err == ISONoErr);
@@ -524,7 +392,7 @@ TEST_CASE("Test sample groups")
     err = ISOStartMovieFragment(moov);
     CHECK(err == ISONoErr);
     ISOSetSamplestoGroupType(media, SAMPLE_GROUP_NORMAL);
-    err = addSamples(media, "wk", 3);
+    err = addHEVCSamples(media, "wk", 3);
     CHECK(err == ISONoErr);
     u32 groupIDBlack = 0;
     err = addGroupDescription(media, FOURCC_BLACK, "Single black frame", groupIDBlack);

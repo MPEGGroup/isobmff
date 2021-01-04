@@ -1413,8 +1413,8 @@ extern "C"
    */
   MP4_EXTERN(MP4Err) MP4GetMediaSampleCount(MP4Media theMedia, u32 *outCount);
   /**
-   * @brief This returns the sample description at the given index, with the data reference index t
-   * hat is associated with it
+   * @brief This returns the sample description at the given index, with the data reference index 
+   * that is associated with it
    * @ingroup SampleDescr
    * 
    * @param theMedia input media object

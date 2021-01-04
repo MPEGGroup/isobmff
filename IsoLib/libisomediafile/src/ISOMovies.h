@@ -645,7 +645,6 @@ ISO_EXTERN(ISOErr) ISOGetHEVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Hand
 /**
  * @brief Gets a restricted video parameter set (AVC or HEVC), placing it in the given handle
  * @ingroup SampleDescr
- * @todo get the AVC config record here
  * 
  * @param sampleEntryH input sample entry handle
  * @param ps output handle which is holding the parameter set.
@@ -655,17 +654,14 @@ ISO_EXTERN(ISOErr) ISOGetHEVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Hand
 ISO_EXTERN(ISOErr) ISOGetRESVSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, 
                                                  u32 index);
 /**
- * @brief Get the lengthSizeMinusOne of the restricted video sample entry
- * 
- * With original format avcC or hvcC
- * @todo add parsing of avcC sample entry length size - 1
- * 
+ * @brief Get the NALUnitLength size in bytes
+ * @ingroup SampleDescr
  */
-ISO_EXTERN(ISOErr) ISOGetRESVLengthSizeMinusOne(MP4Handle sampleEntryH, u32 *out);
+ISO_EXTERN(ISOErr) ISOGetNALUnitLength(MP4Handle sampleEntryH, u32 *out);
 /**
  * @brief Get the four character code of the original un-transformed sample entry
  * @ingroup SampleDescr
- * @todo rename the function and parse the cinf and sinf as well
+ * @todo rename the function to ISOGetOriginalFormat and parse the cinf and sinf as well
  */
 ISO_EXTERN(ISOErr) ISOGetRESVOriginalFormat(MP4Handle sampleEntryH, u32 *outOrigFmt);
 /**

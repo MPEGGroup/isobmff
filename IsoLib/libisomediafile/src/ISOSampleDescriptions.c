@@ -1182,37 +1182,41 @@ ISOGetRESVSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, u
 {
   MP4Err err                        = MP4NoErr;
   MP4VisualSampleEntryAtomPtr entry = NULL;
-  ISOHEVCConfigAtomPtr config;
+  ISOHEVCConfigAtomPtr configHEVC;
+  ISOVCConfigAtomPtr configAVC;
 
   err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType);
   if(err) goto bail;
 
   if(entry->type != MP4RestrictedVideoSampleEntryAtomType) BAILWITHERROR(MP4BadParamErr);
 
-  err = MP4GetListEntryAtom(entry->ExtensionAtomList, ISOHEVCConfigAtomType, (MP4AtomPtr *)&config);
+  err = MP4GetListEntryAtom(entry->ExtensionAtomList, ISOHEVCConfigAtomType, 
+                            (MP4AtomPtr *)&configHEVC);
   if(err == MP4NotFoundErr)
   {
-    BAILWITHERROR(MP4BadDataErr);
+    err = MP4GetListEntryAtom(entry->ExtensionAtomList, ISOVCConfigAtomType, 
+                              (MP4AtomPtr *)&configAVC);
+    if(err == MP4NotFoundErr) BAILWITHERROR(MP4BadDataErr);
+    err = configAVC->getParameterSet(configAVC, ps, where, index);
   }
-
-  err = config->getParameterSet(config, ps, where, index);
-  if(err) goto bail;
+  else
+  {
+    err = configHEVC->getParameterSet(configHEVC, ps, where, index);
+  }
 
 bail:
   if(entry) entry->destroy((MP4AtomPtr)entry);
   return err;
 }
 
-MP4_EXTERN(MP4Err) ISOGetRESVLengthSizeMinusOne(MP4Handle sampleEntryH, u32 *out)
+MP4_EXTERN(MP4Err) ISOGetNALUnitLength(MP4Handle sampleEntryH, u32 *out)
 {
   MP4Err err                        = MP4NoErr;
   MP4VisualSampleEntryAtomPtr entry = NULL;
-  ISOHEVCConfigAtomPtr config;
+  ISOHEVCConfigAtomPtr configHEVC;
+  ISOVCConfigAtomPtr configAVC;
 
-  if(!out)
-  {
-    goto bail;
-  }
+  if(!out) BAILWITHERROR(MP4BadParamErr);
 
   err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType);
   if(err)
@@ -1220,18 +1224,23 @@ MP4_EXTERN(MP4Err) ISOGetRESVLengthSizeMinusOne(MP4Handle sampleEntryH, u32 *out
     goto bail;
   }
 
-  if(entry->type != MP4RestrictedVideoSampleEntryAtomType)
-  {
-    BAILWITHERROR(MP4BadParamErr);
-  }
+  if(entry->type != MP4RestrictedVideoSampleEntryAtomType && 
+     entry->type != ISOHEVCSampleEntryAtomType && 
+     entry->type != ISOAVCSampleEntryAtomType) BAILWITHERROR(MP4BadParamErr);
 
-  err = MP4GetListEntryAtom(entry->ExtensionAtomList, ISOHEVCConfigAtomType, (MP4AtomPtr *)&config);
+  err = MP4GetListEntryAtom(entry->ExtensionAtomList, ISOHEVCConfigAtomType, 
+                            (MP4AtomPtr *)&configHEVC);
   if(err == MP4NotFoundErr)
   {
-    BAILWITHERROR(MP4BadDataErr);
+    err = MP4GetListEntryAtom(entry->ExtensionAtomList, ISOVCConfigAtomType, 
+                              (MP4AtomPtr *)&configAVC);
+    if(err == MP4NotFoundErr) BAILWITHERROR(MP4BadDataErr);
+    *out = configAVC->length_size;
   }
-
-  *out = config->lengthSizeMinusOne;
+  else
+  {
+    *out = configHEVC->lengthSizeMinusOne + 1;
+  }
 
 bail:
   if(entry)
@@ -1300,6 +1309,8 @@ ISONewHEVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32
   {
     BAILWITHERROR(MP4BadParamErr);
   }
+
+  if(length_size != 1 && length_size != 2 && length_size != 4) BAILWITHERROR(MP4BadParamErr);
 
   trak = (MP4TrackAtomPtr)theTrack;
   if(!(trak->newTrackFlags & MP4NewTrackIsVisual)) BAILWITHERROR(MP4BadParamErr);

@@ -81,7 +81,7 @@ TEST_CASE("Check Metadata functions")
     CHECK(MP4_FOUR_CHAR_CODE('t', 'k', 'h', 'd') == prop1->type);
     CHECK(MP4_FOUR_CHAR_CODE('m', 'd', 'h', 'd') == prop2->type);
   
-    err = MP4WriteMovieToFile(moov, "temp.mp4");
+    err = MP4WriteMovieToFile(moov, "test_metadata.mp4");
     CHECK(err==ISONoErr);
   }
 }

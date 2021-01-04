@@ -47,8 +47,8 @@ MP4_EXTERN(MP4Err) ISOGetHEVCSampleDescriptionPS(MP4Handle sampleEntryH,
                                                  MP4Handle ps,
                                                  u32 where,
                                                  u32 index);
-MP4_EXTERN(MP4Err) ISOGetRESVLengthSizeMinusOne(MP4Handle sampleEntryH,
-                                                u32* out);
+MP4_EXTERN(MP4Err) ISOGetNALUnitLength(MP4Handle sampleEntryH,
+                                       u32* out);
 }
 
 
@@ -127,7 +127,7 @@ int32_t HEVCExtractorReader::getLengthSizeMinusOneFlag(uint32_t uiTrackID, uint3
   err = MP4TrackReaderGetCurrentSampleDescription(*pTrackReader, sampleEntryH);
   if(MP4NoErr==err)
   {
-    err = ISOGetRESVLengthSizeMinusOne(sampleEntryH, &rUiFlag);
+    err = ISOGetNALUnitLength(sampleEntryH, &rUiFlag);
   }
 
   ISODisposeHandle(sampleEntryH);

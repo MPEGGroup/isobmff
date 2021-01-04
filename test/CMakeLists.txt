@@ -30,6 +30,7 @@ add_executable(
   test_01_simple.cpp
   test_sample_groups.cpp
   test_metadata.cpp
+  test_sample_description.cpp
   ${LIBMD5_FILES}
 )
 
