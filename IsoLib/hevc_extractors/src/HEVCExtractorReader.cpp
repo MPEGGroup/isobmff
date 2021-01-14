@@ -411,6 +411,7 @@ std::vector<char> HEVCExtractorReader::getNextAUResolveExtractors()
               uiDataLength = uiRefSampleSize - uiDataOffset;
               bNaluLengthRewrite = true;
             }
+            else { assert(0); }
           }
           // now get the right portion of the sample and write it to the output vector
           vRet.insert(vRet.end(), *sampleFromConstrH+uiDataOffset, *sampleFromConstrH+uiDataOffset+uiDataLength);
