@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.9.2)
 
 project(IsoLib)
 
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+
 find_package(Git QUIET)
 if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
   # Update submodules as needed
@@ -22,23 +26,15 @@ if(NOT EXISTS "${PROJECT_SOURCE_DIR}/IsoLib/HM/README")
 endif()
 
 # Build dependencies
-
 add_subdirectory(external)
 
 # Build isobmff tools
-
 add_subdirectory(IsoLib/libisomediafile)
-
 add_subdirectory(IsoLib/audio_example)
-
 add_subdirectory(IsoLib/drc_in_isom)
-
 add_subdirectory(IsoLib/favs_example)
-
 add_subdirectory(IsoLib/hevc_extractors)
-
 add_subdirectory(IsoLib/ipmp_example)
-
 add_subdirectory(IsoLib/isoiff_tool)
-
 add_subdirectory(IsoLib/pcm_audio_example)
+add_subdirectory(test)
