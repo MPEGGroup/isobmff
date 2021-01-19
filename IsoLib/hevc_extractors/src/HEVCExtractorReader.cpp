@@ -49,8 +49,8 @@ MP4_EXTERN(MP4Err) ISOGetHEVCSampleDescriptionPS(MP4Handle sampleEntryH,
                                                  u32 index);
 MP4_EXTERN(MP4Err) ISOGetNALUnitLength(MP4Handle sampleEntryH,
                                        u32* out);
+MP4_EXTERN ( MP4Err ) ISOGetSampleDescriptionType(MP4Handle sampleEntryH, u32 *type);
 }
-
 
 int32_t HEVCExtractorReader::getPSfromSampleEntry(ISOHandle sampleEntryH, ISOHandle vpsH, ISOHandle spsH, ISOHandle ppsH) const
 {
@@ -132,6 +132,33 @@ int32_t HEVCExtractorReader::getLengthSizeMinusOneFlag(uint32_t uiTrackID, uint3
 
   ISODisposeHandle(sampleEntryH);
   return err;
+}
+
+std::string HEVCExtractorReader::getSampleEntryType(uint32_t uiTrackID) const
+{
+  ISOErr err;
+  std::string strRet = std::string();
+  ISOTrackReader* pTrackReader = getTrackReader(uiTrackID);
+  if(!pTrackReader) { return strRet; }
+
+  ISOHandle sampleEntryH;
+  ISONewHandle(1, &sampleEntryH);
+  err = MP4TrackReaderGetCurrentSampleDescription(*pTrackReader, sampleEntryH);
+
+  if(MP4NoErr==err)
+  {
+    u32 type;
+    err = ISOGetSampleDescriptionType(sampleEntryH, &type);
+    if(MP4NoErr==err)
+    {
+      strRet += static_cast<char>((type >> 24) & 255);
+      strRet += static_cast<char>((type >> 16) & 255);
+      strRet += static_cast<char>((type >> 8) & 255);
+      strRet += static_cast<char>((type) & 255);
+    }
+  }
+  ISODisposeHandle(sampleEntryH);
+  return strRet;
 }
 
 std::string HEVCExtractorReader::getOriginalFormat(uint32_t uiTrackID) const
@@ -384,7 +411,7 @@ std::vector<char> HEVCExtractorReader::getNextAUResolveExtractors()
               uiDataLength = uiRefSampleSize - uiDataOffset;
               bNaluLengthRewrite = true;
             }
-            else { assert(0); } // this should not happen if the file is OMAF compliant
+            else { assert(0); }
           }
           // now get the right portion of the sample and write it to the output vector
           vRet.insert(vRet.end(), *sampleFromConstrH+uiDataOffset, *sampleFromConstrH+uiDataOffset+uiDataLength);
@@ -520,12 +547,17 @@ int32_t HEVCExtractorReader::init(std::string strFileName, bool bForce)
     setNextSampleNr(uiTrackID, getCurrentSampleNr(uiTrackID)+1);
 
     // get original format
-    std::string strOriginalFormat = getOriginalFormat(uiTrackID);
-    if(strOriginalFormat.find("hvc1")!=std::string::npos)
+    std::string strSampleEntryType = getSampleEntryType(uiTrackID);
+    if(strSampleEntryType.find("resv")!=std::string::npos)
+    {
+      strSampleEntryType = getOriginalFormat(uiTrackID);
+    }
+
+    if(strSampleEntryType.find("hvc1")!=std::string::npos)
     {
       m_vHvc1TrackIDs.push_back(uiTrackID);
     }
-    else if(strOriginalFormat.find("hvc2")!=std::string::npos)
+    else if(strSampleEntryType.find("hvc2")!=std::string::npos)
     {
       m_vHvc2TrackIDs.push_back(uiTrackID);
       m_mHvc2Dependencies[uiTrackID] = getRefTrackIDs(trak);
