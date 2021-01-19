@@ -51,6 +51,8 @@ public:
   int32_t           getPSwithStartCodesFromTrack(uint32_t uiTrackID,
                                                  std::vector<char>& rvOut)  const;
   ///
+  std::string       getSampleEntryType(uint32_t uiTrackID)            const;
+  ///
   /// \brief getOriginalFormat returns the original_format string
   /// \param uiTrackID which track to select
   /// \return original_format string

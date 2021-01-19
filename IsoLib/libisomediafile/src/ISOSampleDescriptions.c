@@ -1042,7 +1042,7 @@ MP4_EXTERN(MP4Err) ISOGetHEVCSampleDescriptionPS(MP4Handle sampleEntryH,
 
 	err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType); if (err) goto bail;
 
-	if (entry->type != ISOHEVCSampleEntryAtomType) BAILWITHERROR(MP4BadParamErr);
+	if (entry->type != ISOHEVCSampleEntryAtomType && entry->type != ISOLHEVCSampleEntryAtomType) BAILWITHERROR(MP4BadParamErr);
 	err = MP4GetListEntryAtom(entry->ExtensionAtomList, ISOHEVCConfigAtomType, (MP4AtomPtr*)&config);
 	if (err == MP4NotFoundErr) {
 		BAILWITHERROR(MP4BadDataErr);
