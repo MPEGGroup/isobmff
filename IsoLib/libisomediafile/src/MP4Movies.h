@@ -391,6 +391,9 @@ MP4_EXTERN( MP4Err )
 ISOGetGroupDescription( MP4Media media, u32 groupType, u32 index, MP4Handle description );
 
 MP4_EXTERN( MP4Err )
+ISOSetSamplestoGroupType( MP4Media media, u32 enableCompactSamples );
+
+MP4_EXTERN( MP4Err )
 ISOMapSamplestoGroup( MP4Media media, u32 groupType, u32 group_index, s32 sample_index, u32 count );
 
 MP4_EXTERN( MP4Err )

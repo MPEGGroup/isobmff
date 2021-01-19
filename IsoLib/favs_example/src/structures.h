@@ -135,6 +135,7 @@ struct ParamStruct {
 	struct TrackGroup **trackGroups;
 
 	u32 subsample_information;
+	u32 compactSampleToGroup;
 };
 
 

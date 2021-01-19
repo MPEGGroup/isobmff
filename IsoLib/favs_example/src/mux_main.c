@@ -32,7 +32,7 @@ derivative works. Copyright (c) 1999.
 #include "tools.h"
 
 MP4_EXTERN(MP4Err) ISOAddGroupDescription(MP4Media media, u32 groupType, MP4Handle description, u32* index);
-MP4_EXTERN(MP4Err) ISOMapSamplestoGroup(MP4Media media, u32 groupType, u32 group_index, s32 sample_index, u32 count);
+MP4_EXTERN(MP4Err) ISOMapSamplestoGroup(MP4Media media, u32 groupType, u32 group_index, s32 sample_index, u32 count );
 MP4_EXTERN(MP4Err) ISONewHEVCSampleDescription(MP4Track theTrack,
 	MP4Handle sampleDescriptionH,
 	u32 dataReferenceIndex,
@@ -157,7 +157,7 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
 			}
 			else {
 				printf("Unknown NAL: %d\r\n", naltype);
-				assert(0);
+				//assert(0);
 				free(data); data = NULL;
 			}
 		}
@@ -408,6 +408,7 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 
 		/* Create "rap " sample description and group */
 		ISOAddGroupDescription(media, MP4_FOUR_CHAR_CODE('r', 'a', 'p', ' '), rap_desc, &rap_desc_index);
+		ISOSetSamplestoGroupType( media, parameters->compactSampleToGroup );
 		for (frameCounter = 1; frameCounter < stream.used_count; frameCounter++) {
 			/* Mark RAP frames (CRA/BLA/IDR/IRAP) to the group */
 			if (stream.header[frameCounter]->first_slice_segment_in_pic_flag &&
@@ -456,7 +457,8 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 				PUT32(&(*alst_desc)[4], alst->sample_offset[0]); /* Push decoding time forward */
 				PUT32(&(*alst_desc)[8], alst->sample_offset[1]);
 				ISOAddGroupDescription(media, MP4_FOUR_CHAR_CODE('a', 'l', 's', 't'), alst_desc, &alst_desc_index);
-
+        ISOSetSamplestoGroupType( media, parameters->compactSampleToGroup );
+                
 				for (frameCounter = start_slice; frameCounter < stream.used_count-1; frameCounter++) {
 					if (!stream.header[frameCounter]->first_slice_segment_in_pic_flag) continue;
 					/* Mark RAP before RASL pics and one picture after them to this group */
@@ -468,7 +470,7 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 							((stream.header[frameCounter - 1]->nal_type >= 6 && stream.header[frameCounter - 1]->nal_type <= 9) &&
 							(stream.header[frameCounter]->nal_type < 6 || stream.header[frameCounter]->nal_type > 9))
 							) {
-						ISOMapSamplestoGroup(media, MP4_FOUR_CHAR_CODE('a', 'l', 's', 't'), alst_desc_index, stream.header[frameCounter]->sample_number, 1);
+						ISOMapSamplestoGroup(media, MP4_FOUR_CHAR_CODE('a', 'l', 's', 't'), alst_desc_index, stream.header[frameCounter]->sample_number, 1 );
 					}
 				}
 				MP4DisposeHandle(alst_temp);
@@ -529,21 +531,25 @@ int main(int argc, char* argv[])
 	memset(&parameters, 0, sizeof(struct ParamStruct));
 	/* Set default parameters */
 	parameters.framerate = 30.0;
+	parameters.compactSampleToGroup = 0;
 	parseInput(argc, argv, &parameters);
 	parameters.frameduration = (u32)((30000.0 / parameters.framerate)+0.5);
 
 	/* We need inputs */
 	if (!parameters.inputCount) {
-		fprintf(stderr, "Usage: hevc_muxer -i <inputFile> -g <TrackID>:<GroupID> -o <outputFile> -f <framerate(float)>\r\n");
-		fprintf(stderr, "            --input, -i <filename>: Input file, can be multiple\r\n");
-		fprintf(stderr, "            -g <TrackID>:<GroupID> :Add track group, can be multiple\r\n");
-		fprintf(stderr, "            --output, -o <filename> Output file (MP4)\r\n");
-		fprintf(stderr, "            --framerate, -f <framerate> set framerate, default 30\r\n");
-		fprintf(stderr, "            --subs <type> enable subsample information, 4 = slice, 2 = tile\r\n");
+		fprintf(stderr, "Usage:\r\n");
+		fprintf(stderr, "hevc_muxer -i <inputFile> -g <TrackID>:<GroupID> -o <outputFile> -f <framerate(float)>\r\n");
+		fprintf(stderr, "    --input, -i <filename>: Input file, can be multiple\r\n");
+		fprintf(stderr, "    -g <TrackID>:<GroupID> :Add track group, can be multiple\r\n");
+		fprintf(stderr, "    --output, -o <filename> Output file (MP4)\r\n");
+		fprintf(stderr, "    --framerate, -f <framerate> set framerate, default 30\r\n");
+		fprintf(stderr, "    --subs <type> enable subsample information, 4 = slice, 2 = tile\r\n");
+		fprintf(stderr, "    -c use compact sample to group box\r\n");
 		exit(1);
 	}
 
 	printf("Using framerate: %.2f\r\n", parameters.framerate);
+	if(parameters.compactSampleToGroup) printf("Using compact sample to group\r\n");
 
 	createMyMovie(&parameters);
 	

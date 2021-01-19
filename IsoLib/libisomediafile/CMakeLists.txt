@@ -41,6 +41,7 @@ add_library(
     src/ChunkOffsetAtom.c
     src/ClockReferenceMediaHeader.c
     src/CompatibleSchemeTypeAtom.c
+    src/CompactSampleToGroupAtom.c
     src/CompositionToDecodeAtom.c
     src/CopyrightAtom.c
     src/DataEntryURLAtom.c
