@@ -197,6 +197,27 @@ ISOGetGroupDescription( MP4Media media, u32 groupType, u32 index, MP4Handle desc
 }
 
 MP4_EXTERN( MP4Err )
+ISOSetSamplestoGroupType( MP4Media media, u32 enableCompactSamples )
+{
+   MP4Err err;
+   MP4MediaAtomPtr mdia;
+
+   err = MP4NoErr;
+   if ( media == NULL )
+   {
+      BAILWITHERROR( MP4BadParamErr );
+   }
+   mdia = (MP4MediaAtomPtr) media;
+   mdia->enableCompactSamples = enableCompactSamples;
+    
+  bail:
+   TEST_RETURN( err );
+
+   return err;
+}
+
+
+MP4_EXTERN( MP4Err )
 ISOMapSamplestoGroup( MP4Media media, u32 groupType, u32 group_index, s32 sample_index, u32 count )
 {
    MP4Err err;

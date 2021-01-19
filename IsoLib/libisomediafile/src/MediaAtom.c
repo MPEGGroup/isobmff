@@ -345,7 +345,7 @@ static MP4Err mapSamplestoGroup(struct MP4MediaAtom *self, u32 groupType, u32 gr
    minf = (MP4MediaInformationAtomPtr) self->information;
    assert( minf );
    assert( minf->mapSamplestoGroup );
-   err = minf->mapSamplestoGroup( minf, groupType, group_index, sample_index, count ); if (err) goto bail;
+   err = minf->mapSamplestoGroup( minf, groupType, group_index, sample_index, count, self->enableCompactSamples ); if (err) goto bail;
   bail:
    TEST_RETURN( err );
 

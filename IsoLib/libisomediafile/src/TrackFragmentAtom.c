@@ -37,6 +37,7 @@ static void destroy( MP4AtomPtr s )
 	if ( self == NULL ) BAILWITHERROR( MP4BadParamErr )
 	DESTROY_ATOM_LIST_F( atomList );
 	DESTROY_ATOM_LIST_F( groupList );
+	DESTROY_ATOM_LIST_F( compactSampleGroupList );
 	(self->tfhd)->destroy( (MP4AtomPtr) (self->tfhd) );
     (self->tfdt)->destroy( (MP4AtomPtr) (self->tfdt) );
 
@@ -63,6 +64,7 @@ static MP4Err addAtom( MP4TrackFragmentAtomPtr self, MP4AtomPtr atom )
         case MP4SampleAuxiliaryInformationOffsetsAtomType:      err = MP4AddListEntry( atom, self->saioList ); break;
 		case MP4TrackRunAtomType:                               err = MP4AddListEntry( atom, self->atomList ); break;
 		case MP4SampletoGroupAtomType:                          err = MP4AddListEntry( atom, self->groupList ); break;
+		case MP4CompactSampletoGroupAtomType:                   err = MP4AddListEntry( atom, self->compactSampleGroupList ); break;
 		/* default:                                 BAILWITHERROR( MP4BadDataErr ) */
 	}
 bail:
@@ -108,6 +110,18 @@ static MP4Err addSampleGroups( struct MP4TrackFragmentAtom *self, u32 sampleCoun
 			if (err) goto bail;
 		}
 	}
+	
+	err = MP4GetListEntryCount( self->compactSampleGroupList, &groupListSize ); if (err) goto bail;
+	for ( i = 0; i < groupListSize; i++ )
+	{
+		MP4CompactSampletoGroupAtomPtr compactSampleGroup;
+		err = MP4GetListEntry( self->compactSampleGroupList, i, (char **) &compactSampleGroup ); if (err) 	goto bail;
+		if ( compactSampleGroup ) {
+			err = compactSampleGroup->addSamples( compactSampleGroup, sampleCount );
+			if (err) goto bail;
+		}
+	}
+
 	
 bail:
 	TEST_RETURN( err );
@@ -509,6 +523,7 @@ static MP4Err mergeRuns( MP4TrackFragmentAtomPtr self, MP4MediaAtomPtr mdia )
 	
 	if (self->groupList) {
 		u32 groupListSize;
+        err = ISOSetSamplestoGroupType( (MP4Media) mdia, 0 ); if (err) goto bail;
 		err = MP4GetListEntryCount( self->groupList, &groupListSize ); if (err) goto bail;
 		for ( i = 0; i < groupListSize; i++ )
 		{
@@ -520,6 +535,26 @@ static MP4Err mergeRuns( MP4TrackFragmentAtomPtr self, MP4MediaAtomPtr mdia )
 					s32 position;
 					position = j - total_samples;
 					err = mdia->mapSamplestoGroup( mdia, theGroup->grouping_type, (theGroup->group_index)[j], position, 1 );
+					if (err) goto bail;
+				}
+			}
+		}
+	}
+	
+	if (self->compactSampleGroupList) {
+		u32 groupListSize;
+        err = ISOSetSamplestoGroupType( (MP4Media) mdia, 1 ); if (err) goto bail;
+        err = MP4GetListEntryCount( self->compactSampleGroupList, &groupListSize ); if (err) goto bail;
+		for ( i = 0; i < groupListSize; i++ )
+		{
+			MP4CompactSampletoGroupAtomPtr compactSampleGroup;
+			err = MP4GetListEntry( self->compactSampleGroupList, i, (char **) &compactSampleGroup ); if (err) goto bail;
+			if ( compactSampleGroup ) {
+				u32 j;
+				for (j=0; j<compactSampleGroup->sampleCount; j++) {
+					s32 position;
+					position = j - total_samples;
+					err = mdia->mapSamplestoGroup( mdia, compactSampleGroup->grouping_type, (compactSampleGroup->group_index)[j], position, 1 );
 					if (err) goto bail;
 				}
 			}
@@ -662,7 +697,7 @@ bail:
 	return err;
 }
 
-static MP4Err mapSamplestoGroup(struct MP4MediaInformationAtom *s, u32 groupType, u32 group_index, s32 sample_index, u32 count )
+static MP4Err mapSamplestoGroup(struct MP4MediaInformationAtom *s, u32 groupType, u32 group_index, s32 sample_index, u32 count, u32 compactSamples )
 {
 	MP4Err err;
 	MP4SampletoGroupAtomPtr theGroup;
@@ -671,26 +706,52 @@ static MP4Err mapSamplestoGroup(struct MP4MediaInformationAtom *s, u32 groupType
 		
 	self = (MP4TrackFragmentAtomPtr) s;
 
-	err = MP4FindGroupAtom( self->groupList, groupType, (MP4AtomPtr*) &theGroup );
-	if (!theGroup) {
-		err = MP4CreateSampletoGroupAtom( &theGroup ); if (err) goto bail;
-		theGroup->grouping_type = groupType;
-		err = addAtom( self, (MP4AtomPtr) theGroup ); if (err) goto bail;
+	if (compactSamples) {
+		MP4CompactSampletoGroupAtomPtr compactSampleGroup;
+		err = MP4FindGroupAtom( self->compactSampleGroupList, groupType, (MP4AtomPtr*) &compactSampleGroup );
+		if (!compactSampleGroup) {
+			err = MP4CreateCompactSampletoGroupAtom( &compactSampleGroup ); if (err) goto bail;
+			compactSampleGroup->fragmentLocalIndexPresent = 1;
+			compactSampleGroup->grouping_type = groupType;
+			err = addAtom( self, (MP4AtomPtr) compactSampleGroup ); if (err) goto bail;
 	
-		fragment_sample_count = 0;
-		err = MP4GetListEntryCount( self->atomList, &atomListSize ); if (err) goto bail;
-		for ( i = 0; i < atomListSize; i++ )
-		{
-			MP4TrackRunAtomPtr trun;
-			err = MP4GetListEntry( self->atomList, i, (char **) &trun ); if (err) goto bail;
-			if ( trun ) fragment_sample_count += trun->samplecount;
-		}
+			fragment_sample_count = 0;
+			err = MP4GetListEntryCount( self->atomList, &atomListSize ); if (err) goto bail;
+			for ( i = 0; i < atomListSize; i++ )
+			{
+				MP4TrackRunAtomPtr trun;
+				err = MP4GetListEntry( self->atomList, i, (char **) &trun ); if (err) goto bail;
+				if ( trun ) fragment_sample_count += trun->samplecount;
+			}
 
-		if (fragment_sample_count > 0) {
-			err = theGroup->addSamples( theGroup, fragment_sample_count );
+			if (fragment_sample_count > 0) {
+				err = compactSampleGroup->addSamples( compactSampleGroup, fragment_sample_count );
+			}
 		}
+		err = compactSampleGroup->mapSamplestoGroup( compactSampleGroup, group_index, sample_index, count ); if (err) goto bail;
 	}
-	err = theGroup->mapSamplestoGroup( theGroup, group_index, sample_index, count ); if (err) goto bail;
+	else {
+		err = MP4FindGroupAtom( self->groupList, groupType, (MP4AtomPtr*) &theGroup );
+		if (!theGroup) {
+			err = MP4CreateSampletoGroupAtom( &theGroup ); if (err) goto bail;
+			theGroup->grouping_type = groupType;
+			err = addAtom( self, (MP4AtomPtr) theGroup ); if (err) goto bail;
+	
+			fragment_sample_count = 0;
+			err = MP4GetListEntryCount( self->atomList, &atomListSize ); if (err) goto bail;
+			for ( i = 0; i < atomListSize; i++ )
+			{
+				MP4TrackRunAtomPtr trun;
+				err = MP4GetListEntry( self->atomList, i, (char **) &trun ); if (err) goto bail;
+				if ( trun ) fragment_sample_count += trun->samplecount;
+			}
+
+			if (fragment_sample_count > 0) {
+				err = theGroup->addSamples( theGroup, fragment_sample_count );
+			}
+		}
+		err = theGroup->mapSamplestoGroup( theGroup, group_index, sample_index, count ); if (err) goto bail;
+	}
 	
 bail:
 	TEST_RETURN( err );
