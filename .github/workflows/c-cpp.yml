@@ -16,7 +16,7 @@ jobs:
     - name: build
       run: cmake --build build
     - name: test
-      run: ./bin/unit_tests
+      run: ./bin/unit_tests --wait-for-keypress never -d yes
   
   macos:
     runs-on: macOS-latest
@@ -27,7 +27,7 @@ jobs:
     - name: build
       run: cmake --build build
     - name: test
-      run: ./bin/unit_tests
+      run: ./bin/unit_tests --wait-for-keypress never -d yes
 
   windows:
     runs-on: windows-latest
@@ -38,4 +38,4 @@ jobs:
     - name: build
       run: cmake --build build --config Debug
     - name: test
-      run: ./bin/Debug/unit_tests
+      run: ./bin/Debug/unit_tests --wait-for-keypress never -d yes
