@@ -1017,6 +1017,7 @@ MP4Err MP4CreateSampletoGroupAtom(MP4SampletoGroupAtomPtr *outAtom,
   self->flags                    = 0;
   self->groupIsInFragment        = 0;
   memset(&self->compressedGroup, 0, sizeof(CompressedGroupInfo));
+  self->compressedGroup. index_size_code = 4; /* Init value 4 means index_size_code flag is 0 */
 
   *outAtom = self;
 bail:
