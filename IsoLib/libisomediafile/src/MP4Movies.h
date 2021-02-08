@@ -101,6 +101,8 @@ extern "C"
     MP21HandlerType                = MP4_FOUR_CHAR_CODE('m', 'p', '2', '1'),
     MP4NullHandlerType             = MP4_FOUR_CHAR_CODE('n', 'u', 'l', 'l'),
     MP4MetaHandlerType             = MP4_FOUR_CHAR_CODE('m', 'e', 't', 'a'),
+    MP4VolumetricHandlerType       = MP4_FOUR_CHAR_CODE('v', 'o', 'l', 'v'),
+    MP4HapticHandlerType           = MP4_FOUR_CHAR_CODE('h', 'a', 'p', 't'),
 
     ISOXMLAtomType       = MP4_FOUR_CHAR_CODE('x', 'm', 'l', ' '),
     ISOBinaryXMLAtomType = MP4_FOUR_CHAR_CODE('b', 'x', 'm', 'l')

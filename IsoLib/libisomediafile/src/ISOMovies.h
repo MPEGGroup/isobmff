@@ -55,6 +55,8 @@ extern "C"
 #define ISOVisualHandlerType MP4VisualHandlerType
 #define ISOAudioHandlerType MP4AudioHandlerType
 #define ISOHintHandlerType MP4HintHandlerType
+#define ISOVolumetricHandlerType MP4VolumetricHandlerType
+#define ISOHapticHandlerType MP4HapticHandlerType
 
 #define ISOOpenMovieNormal MP4OpenMovieNormal
 #define ISOOpenMovieDebug MP4OpenMovieDebug

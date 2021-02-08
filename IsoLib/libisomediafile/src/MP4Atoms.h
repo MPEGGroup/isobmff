@@ -63,6 +63,7 @@ enum
   MP4GenericSampleEntryAtomType                = MP4_FOUR_CHAR_CODE('!', 'g', 'n', 'r'),
   MP4HandlerAtomType                           = MP4_FOUR_CHAR_CODE('h', 'd', 'l', 'r'),
   MP4HintMediaHeaderAtomType                   = MP4_FOUR_CHAR_CODE('h', 'm', 'h', 'd'),
+  MP4VolumetricVisualMediaHeader               = MP4_FOUR_CHAR_CODE('v', 'v', 'h', 'd'),
   MP4HintTrackReferenceAtomType                = MP4_FOUR_CHAR_CODE('h', 'i', 'n', 't'),
   MP4MPEGMediaHeaderAtomType                   = MP4_FOUR_CHAR_CODE('n', 'm', 'h', 'd'),
   MP4MPEGSampleEntryAtomType                   = MP4_FOUR_CHAR_CODE('m', 'p', '4', 's'),
@@ -2009,6 +2010,11 @@ typedef struct MP4ProducerReferenceTimeAtom
 
 } MP4ProducerReferenceTimeAtom, *MP4ProducerReferenceTimeAtomPtr;
 
+typedef struct MP4VolumetricVisualMediaHeaderAtom
+{
+  MP4_FULL_ATOM
+} MP4VolumetricVisualMediaHeaderAtom, *MP4VolumetricVisualMediaHeaderAtomPtr;
+
 MP4Err MP4GetListEntryAtom(MP4LinkedList list, u32 atomType, MP4AtomPtr *outItem);
 MP4Err MP4DeleteListEntryAtom(MP4LinkedList list, u32 atomType);
 
@@ -2147,5 +2153,7 @@ MP4Err MP4CreateAMRSpecificInfoAtom(MP4AMRSpecificInfoAtomPtr *outAtom);
 MP4Err MP4CreateAMRWPSpecificInfoAtom(MP4AMRWPSpecificInfoAtomPtr *outAtom);
 MP4Err MP4CreateH263SpecificInfoAtom(MP4H263SpecificInfoAtomPtr *outAtom);
 MP4Err MP4CreateBitRateAtom(MP4BitRateAtomPtr *outAtom);
+
+MP4Err MP4CreateVisualMediaHeaderAtom(MP4VolumetricVisualMediaHeaderAtomPtr *outAtom);
 
 #endif
