@@ -74,10 +74,12 @@ extern "C"
    */
   enum
   {
-    MP4NewTrackIsVisual   = (1 << 1), /**< track contains visual media */
-    MP4NewTrackIsAudio    = (1 << 2), /**< track contains audio media */
-    MP4NewTrackIsMetadata = (1 << 3), /**< track contains meta-data */
-    MP4NewTrackIsPrivate  = (1 << 8)  /**< track contains a media type unknown to MPEG-4 */
+    MP4NewTrackIsVisual     = (1 << 1), /**< track contains visual media */
+    MP4NewTrackIsAudio      = (1 << 2), /**< track contains audio media */
+    MP4NewTrackIsMetadata   = (1 << 3), /**< track contains meta-data */
+    MP4NewTrackIsVolumetric = (1 << 4), /**< track contains volumetric media */
+    MP4NewTrackIsHaptic     = (1 << 5), /**< track contains haptic media */
+    MP4NewTrackIsPrivate    = (1 << 8)  /**< track contains a media type unknown to MPEG-4 */
   };
 
   /**
