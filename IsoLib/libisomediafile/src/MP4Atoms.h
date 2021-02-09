@@ -845,6 +845,20 @@ typedef struct MP4VisualSampleEntryAtom
 
 } MP4VisualSampleEntryAtom, *MP4VisualSampleEntryAtomPtr;
 
+typedef struct MP4VolumetricVisualSampleEntryAtom
+{
+  MP4_BASE_ATOM
+  COMMON_SAMPLE_ENTRY_FIELDS
+  u32 nameLength;
+  char name31[31];
+} MP4VolumetricVisualSampleEntryAtom, *MP4VolumetricVisualSampleEntryAtomPtr;
+
+typedef struct MP4HapticSampleEntryAtom
+{
+  MP4_BASE_ATOM
+  COMMON_SAMPLE_ENTRY_FIELDS
+} MP4HapticSampleEntryAtom, *MP4HapticSampleEntryAtomPtr;
+
 typedef struct MP4AudioSampleEntryAtom
 {
   MP4_BASE_ATOM
@@ -2080,6 +2094,8 @@ MP4Err MP4CreateUnknownAtom(MP4UnknownAtomPtr *outAtom);
 MP4Err MP4CreateUserDataAtom(MP4UserDataAtomPtr *outAtom);
 MP4Err MP4CreateVideoMediaHeaderAtom(MP4VideoMediaHeaderAtomPtr *outAtom);
 MP4Err MP4CreateVisualSampleEntryAtom(MP4VisualSampleEntryAtomPtr *outAtom);
+MP4Err MP4CreateVolumetricVisualSampleEntryAtom(MP4VolumetricVisualSampleEntryAtomPtr *outAtom);
+MP4Err MP4CreateHapticSampleEntryAtom(MP4HapticSampleEntryAtomPtr *outAtom);
 
 MP4Err MP4CreateXMLMetaSampleEntryAtom(MP4XMLMetaSampleEntryAtomPtr *outAtom);
 MP4Err MP4CreateTextMetaSampleEntryAtom(MP4TextMetaSampleEntryAtomPtr *outAtom);

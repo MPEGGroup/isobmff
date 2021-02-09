@@ -203,6 +203,8 @@ add_library(
     src/VideoMediaHeaderAtom.c
     src/VisualSampleEntryAtom.c
     src/VolumetricVisualMediaHeaderAtom.c
+    src/VolumetricVisualSampleEntryAtom.c
+    src/HapticSampleEntryAtom.c
     src/XMLMetaSampleEntry.c
 
     #-----------------------------------------------------------------------------------------------
