@@ -21,7 +21,8 @@ static void destroy(MP4AtomPtr s)
   MP4Err err                                  = MP4NoErr;
   MP4VolumetricVisualMediaHeaderAtomPtr pSelf = (MP4VolumetricVisualMediaHeaderAtomPtr)s;
 
-  if(pSelf == NULL) BAILWITHERROR(MP4BadParamErr);
+  if(pSelf == NULL) { err = MP4BadParamErr; }
+  if(err) goto bail;
 
   if(pSelf->super) pSelf->super->destroy(s);
 
