@@ -176,8 +176,8 @@ static void SetMemoryCostForPattern(SampleGroupInfo *sampleGroup, u32 patternLen
   assert(startPatternSampleIndex + patternLength <= endPatternSampleIndex);
 
   memoryCost = startPatternSampleIndex <= 0
-                   ? sampleGroup->patternTracker[0].cumulativeMemoryCost
-                   : sampleGroup->patternTracker[startPatternSampleIndex - 1].cumulativeMemoryCost;
+                 ? sampleGroup->patternTracker[0].cumulativeMemoryCost
+                 : sampleGroup->patternTracker[startPatternSampleIndex - 1].cumulativeMemoryCost;
   memoryCost += (patternLength * sampleGroup->groupIndexFieldSize);
 
   if(memoryCost < sampleGroup->patternTracker[endPatternSampleIndex].cumulativeMemoryCost)
@@ -195,9 +195,9 @@ static void SetMemoryCostForPattern(SampleGroupInfo *sampleGroup, u32 patternLen
 static void SetMemoryCostForNonPattern(SampleGroupInfo *sampleGroup, s32 sampleIndex)
 {
   s32 memoryCost =
-      (sampleIndex < 1 ? sampleGroup->patternTracker[0].cumulativeMemoryCost
-                       : sampleGroup->patternTracker[sampleIndex - 1].cumulativeMemoryCost) +
-      sampleGroup->groupIndexFieldSize;
+    (sampleIndex < 1 ? sampleGroup->patternTracker[0].cumulativeMemoryCost
+                     : sampleGroup->patternTracker[sampleIndex - 1].cumulativeMemoryCost) +
+    sampleGroup->groupIndexFieldSize;
 
   if(memoryCost < sampleGroup->patternTracker[sampleIndex].cumulativeMemoryCost)
   {
@@ -217,8 +217,7 @@ static void CombineNonPatterns(SampleGroupInfo *sampleGroup, CompressedGroupInfo
   s32 nextIndex                  = sampleGroup->sampleCount;
   PatternTracker *patternTracker = sampleGroup->patternTracker;
 
-  /* Post-process output pattern tracker. Get Pattern Count, Populate the nextIndex to navigate
-   * easily*/
+  /* Postprocess output pattern tracker. Get Pattern cnt, Populate the nextIdx to navigate easily */
   while(prevIndex >= 0 && prevIndex < (s32)sampleGroup->sampleCount)
   {
     u32 consecutiveNonPatterns = 0;
@@ -285,7 +284,7 @@ static void InitializeSampleGroupInput(MP4SampletoGroupAtomPtr self, SampleGroup
   sampleGroup->sampleCount         = self->sampleCount;
   sampleGroup->groupIndexFieldSize = self->compressedGroup.index_size_code;
   sampleGroup->patternTracker =
-      (PatternTracker *)malloc(sizeof(PatternTracker) * self->sampleCount);
+    (PatternTracker *)malloc(sizeof(PatternTracker) * self->sampleCount);
 
   memset(sampleGroup->patternTracker, 0, sizeof(PatternTracker) * self->sampleCount);
 
@@ -343,12 +342,12 @@ static void CreateCompactSampleGroups(MP4SampletoGroupAtomPtr self)
   if(compressedGroup->patternEntries == NULL)
   {
     compressedGroup->patternEntries = (MP4CompactSampleToGroupPatternEntryPtr)malloc(
-        sizeof(MP4CompactSampleToGroupPatternEntry) * compressedGroup->patternCount);
+      sizeof(MP4CompactSampleToGroupPatternEntry) * compressedGroup->patternCount);
   }
   if(compressedGroup->indexDescriptionArray == NULL)
   {
     compressedGroup->indexDescriptionArray =
-        (u32 *)malloc(sizeof(u32) * compressedGroup->totalIndexDescriptionCount);
+      (u32 *)malloc(sizeof(u32) * compressedGroup->totalIndexDescriptionCount);
   }
 
   patternTracker = sampleGroup.patternTracker;
@@ -388,12 +387,11 @@ static void CreateCompactSampleGroups(MP4SampletoGroupAtomPtr self)
   }
 
   /* In case only patternLength or sampleCount field size is 4, ensure pattern entry is always byte
-   * aligned*/
+   * aligned */
   if((compressedGroup->pattern_size_code + compressedGroup->count_size_code) % 8)
   {
     if(compressedGroup->pattern_size_code == 4) compressedGroup->pattern_size_code = 8;
-    else
-      compressedGroup->count_size_code = 8;
+    else compressedGroup->count_size_code = 8;
   }
 
   assert(descIndex == compressedGroup->totalIndexDescriptionCount);
@@ -508,8 +506,8 @@ static MP4Err mapSamplestoGroup(struct MP4SampletoGroupAtom *self, u32 group_ind
 
   if(self->groupIsInFragment && group_index >= 0x10000)
     self->compressedGroup.index_msb_indicates_fragment_local_description = 1;
-  size_code = GetFieldSize(group_index,
-                           self->compressedGroup.index_msb_indicates_fragment_local_description);
+  size_code =
+    GetFieldSize(group_index, self->compressedGroup.index_msb_indicates_fragment_local_description);
   if(size_code > self->compressedGroup.index_size_code)
   {
     self->compressedGroup.index_size_code = size_code;
@@ -671,11 +669,11 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   if(self->type == MP4CompactSampletoGroupAtomType)
   {
     self->flags =
-        SetFieldSize(self->compressedGroup.index_size_code) |
-        (SetFieldSize(self->compressedGroup.count_size_code) << 2) |
-        (SetFieldSize(self->compressedGroup.pattern_size_code) << 4) |
-        (self->compressedGroup.index_msb_indicates_fragment_local_description ? 0x80 : 0) |
-        (self->compressedGroup.grouping_type_parameter_present ? 0x40 : 0);
+      SetFieldSize(self->compressedGroup.index_size_code) |
+      (SetFieldSize(self->compressedGroup.count_size_code) << 2) |
+      (SetFieldSize(self->compressedGroup.pattern_size_code) << 4) |
+      (self->compressedGroup.index_msb_indicates_fragment_local_description ? 0x80 : 0) |
+      (self->compressedGroup.grouping_type_parameter_present ? 0x40 : 0);
   }
 
   err = MP4SerializeCommonFullAtomFields((MP4FullAtomPtr)s, buffer);
@@ -683,12 +681,14 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   buffer += self->bytesWritten;
 
   PUT32(grouping_type);
-  /* Grouping type parameter is disabled. If enabled, will need to pack an additional byte to
-   * represent it*/
-  PUT32(entryCount);
 
   if(self->type == MP4SampletoGroupAtomType)
   {
+    if(self->version == 1)
+    {
+      PUT32(groupingTypeParameter);
+    }
+    PUT32(entryCount);
     cur_index  = (self->group_index)[0];
     cur_count  = 1;
     entryCount = 0;
@@ -715,6 +715,11 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   else
   {
     /* compact sample groups */
+    if(self->compressedGroup.grouping_type_parameter_present)
+    {
+      PUT32(groupingTypeParameter);
+    }
+    PUT32(compressedGroup.patternCount);
     for(i = 0; i < self->compressedGroup.patternCount; i++)
     {
       /* Pattern entry is ensured to start at a byte boundary*/
@@ -763,18 +768,25 @@ static MP4Err calculateSize(struct MP4Atom *s)
       }
       self->size += (entryCount * 8) + 8;
       self->entryCount = entryCount;
+      if(self->version == 1)
+      {
+        self->size += 4;
+      }
     }
     else if(self->type == MP4CompactSampletoGroupAtomType)
     {
       CreateCompactSampleGroups(self);
 
-      /* If grouping type parameter is enabled in flags, will need to add an additional byte*/
       self->size += 8;
+      if(self->compressedGroup.grouping_type_parameter_present)
+      {
+        self->size += 4;
+      }
 
       sizeInBits = (self->compressedGroup.patternCount * (self->compressedGroup.pattern_size_code +
                                                           self->compressedGroup.count_size_code));
-      sizeInBits += (self->compressedGroup.totalIndexDescriptionCount *
-                     self->compressedGroup.index_size_code);
+      sizeInBits +=
+        (self->compressedGroup.totalIndexDescriptionCount * self->compressedGroup.index_size_code);
       self->size = self->size + (sizeInBits + 4) / 8;
 
       self->entryCount = self->compressedGroup.patternCount;
@@ -796,7 +808,7 @@ static MP4Err calculateSize(struct MP4Atom *s)
     sizeInBits = (self->compressedGroup.patternCount * (self->compressedGroup.pattern_size_code +
                                                         self->compressedGroup.count_size_code));
     sizeInBits +=
-        (self->compressedGroup.totalIndexDescriptionCount * self->compressedGroup.index_size_code);
+      (self->compressedGroup.totalIndexDescriptionCount * self->compressedGroup.index_size_code);
     compactSize += (sizeInBits + 4) / 8;
 
     /* pick compact only if the size is smaller */
@@ -844,6 +856,11 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
     MP4TypeToString(self->grouping_type, typeString);
     sprintf(msgString, " grouping type is '%s'", typeString);
     inputStream->msg(inputStream, msgString);
+
+    if(self->version == 1)
+    {
+      GET32(groupingTypeParameter);
+    }
 
     GET32(entryCount);
     size = 0;
@@ -936,8 +953,8 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
     {
       u32 *patternStart = p;
       u32 mask          = self->compressedGroup.index_msb_indicates_fragment_local_description
-                     ? 0xFFFFFFFF >> (32 - index_size_code + 1)
-                     : 0xFFFFFFFF;
+                            ? 0xFFFFFFFF >> (32 - index_size_code + 1)
+                            : 0xFFFFFFFF;
       for(j = 0; j < patternEntries[i].sampleCount; j++)
       {
         if(j < patternEntries[i].patternLength)
@@ -1017,7 +1034,7 @@ MP4Err MP4CreateSampletoGroupAtom(MP4SampletoGroupAtomPtr *outAtom,
   self->flags                    = 0;
   self->groupIsInFragment        = 0;
   memset(&self->compressedGroup, 0, sizeof(CompressedGroupInfo));
-  self->compressedGroup. index_size_code = 4; /* Init value 4 means index_size_code flag is 0 */
+  self->compressedGroup.index_size_code = 4; /* Init value 4 means index_size_code flag is 0 */
 
   *outAtom = self;
 bail:
