@@ -220,7 +220,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
     for(j = 0; j < association_count; j++)
     {
       propertyIndex = (MP4ItemPropertyAssociationEntryPropertyIndexPtr)calloc(
-          1, sizeof(MP4ItemPropertyAssociationEntryPropertyIndex));
+        1, sizeof(MP4ItemPropertyAssociationEntryPropertyIndex));
       TESTMALLOC(propertyIndex);
       err = MP4AddListEntry(propertyIndex, entry->propertyIndexes);
       if(err) goto bail;

@@ -90,7 +90,7 @@ static MP4Err getNextSegment(MP4TrackReaderPtr self)
   if(err) goto bail;
 
   self->segmentEndTime =
-      self->mediaTimeScale * (self->segmentMovieTime + segmentDuration) / self->movieTimeScale;
+    self->mediaTimeScale * (self->segmentMovieTime + segmentDuration) / self->movieTimeScale;
 
   segmentMediaDuration = (self->mediaTimeScale * segmentDuration) / self->movieTimeScale;
 

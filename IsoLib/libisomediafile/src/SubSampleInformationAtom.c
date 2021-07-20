@@ -139,17 +139,17 @@ static MP4Err addEntry(MP4SubSampleInformationAtom *s, u32 sample_delta, u32 sub
   self->sample_delta = (u32 *)realloc(self->sample_delta, (self->entry_count + 1) * sizeof(u32));
   TESTMALLOC(self->sample_delta);
   self->subsample_count =
-      (u32 *)realloc(self->subsample_count, (self->entry_count + 1) * sizeof(u32));
+    (u32 *)realloc(self->subsample_count, (self->entry_count + 1) * sizeof(u32));
   TESTMALLOC(self->subsample_count);
 
   self->subsample_size =
-      (u32 **)realloc(self->subsample_size, (self->entry_count + 1) * sizeof(u32 *));
+    (u32 **)realloc(self->subsample_size, (self->entry_count + 1) * sizeof(u32 *));
   TESTMALLOC(self->subsample_size);
   self->subsample_size[current_entry] = (u32 *)calloc(subsample_count, sizeof(u32));
   TESTMALLOC(self->subsample_size[current_entry]);
 
   self->subsample_priority =
-      (u32 **)realloc(self->subsample_priority, (self->entry_count + 1) * sizeof(u32 *));
+    (u32 **)realloc(self->subsample_priority, (self->entry_count + 1) * sizeof(u32 *));
   TESTMALLOC(self->subsample_priority);
   self->subsample_priority[current_entry] = (u32 *)calloc(subsample_count, sizeof(u32));
   TESTMALLOC(self->subsample_priority[current_entry]);

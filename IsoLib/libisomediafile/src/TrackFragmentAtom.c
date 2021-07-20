@@ -283,7 +283,7 @@ static MP4Err addSampleReference(struct MP4MediaInformationAtom *s, u64 dataOffs
     entry->sample_flags = ((padsH == NULL) ? 0 : (((u8 *)padsH)[i]) << 13) +
                           ((syncSamplesH == NULL) ? 0 : fragment_difference_sample_flag);
     entry->sample_composition_time_offset =
-        ((decodingOffsetsH == NULL) ? 0 : ((u32 *)decodingOffsetsH)[i]);
+      ((decodingOffsetsH == NULL) ? 0 : ((u32 *)decodingOffsetsH)[i]);
   }
 
   entry = trun->entries;
@@ -551,10 +551,10 @@ static MP4Err mergeRuns(MP4TrackFragmentAtomPtr self, MP4MediaAtomPtr mdia)
         for(j = 0; j < count; j++, entry++, durations++, sizes++, decodingOffsets++, pads++, deps++)
         {
           *durations =
-              ((flags & trun_sample_duration_present) != 0 ? entry->sample_duration
-                                                           : tfhd->default_sample_duration);
+            ((flags & trun_sample_duration_present) != 0 ? entry->sample_duration
+                                                         : tfhd->default_sample_duration);
           *sizes           = ((flags & trun_sample_size_present) != 0 ? entry->sample_size
-                                                            : tfhd->default_sample_size);
+                                                                      : tfhd->default_sample_size);
           *decodingOffsets = entry->sample_composition_time_offset;
           if((j == 0) && ((flags & trun_first_sample_flags_present) != 0))
             entry->sample_flags = trun->first_sample_flags;
@@ -577,9 +577,9 @@ static MP4Err mergeRuns(MP4TrackFragmentAtomPtr self, MP4MediaAtomPtr mdia)
         stbl->setDefaultSampleEntry(stbl, tfhd->sample_description_index);
 
         err = mdia->addSampleReference(
-            mdia, tfhd->base_data_offset + trun->data_offset, count, durationsH, sizesH, NULL,
-            ((flags & trun_sample_composition_times_present) != 0 ? decodingOffsetsH : NULL),
-            (all_sync == 0 ? syncSamplesH : NULL), (havepads != 0 ? padsH : NULL));
+          mdia, tfhd->base_data_offset + trun->data_offset, count, durationsH, sizesH, NULL,
+          ((flags & trun_sample_composition_times_present) != 0 ? decodingOffsetsH : NULL),
+          (all_sync == 0 ? syncSamplesH : NULL), (havepads != 0 ? padsH : NULL));
         if(err) goto bail;
 
         if(havedeps)
@@ -699,8 +699,8 @@ static MP4Err mergeSampleAuxiliaryInformation(struct MP4TrackFragmentAtom *self,
     err = MP4GetListEntry(self->saioList, i, (char **)&saioOfTraf);
 
     err = stbl->getSampleAuxiliaryInformation(
-        stbl, (saizOfTraf->flags & 1), saizOfTraf->aux_info_type,
-        saizOfTraf->aux_info_type_parameter, &saizOfStbl, &saioOfStbl);
+      stbl, (saizOfTraf->flags & 1), saizOfTraf->aux_info_type, saizOfTraf->aux_info_type_parameter,
+      &saizOfStbl, &saioOfStbl);
     if(err) goto bail;
 
     err = saizOfStbl->mergeSizes((MP4AtomPtr)saizOfStbl, (MP4AtomPtr)saizOfTraf);
@@ -717,9 +717,9 @@ bail:
 }
 
 static MP4Err getSampleAuxiliaryInfoFromTrackFragment(
-    struct MP4TrackFragmentAtom *self, u8 isUsingAuxInfoPropertiesFlag, u32 aux_info_type,
-    u32 aux_info_type_parameter, MP4SampleAuxiliaryInformationSizesAtomPtr *saizOut,
-    MP4SampleAuxiliaryInformationOffsetsAtomPtr *saioOut)
+  struct MP4TrackFragmentAtom *self, u8 isUsingAuxInfoPropertiesFlag, u32 aux_info_type,
+  u32 aux_info_type_parameter, MP4SampleAuxiliaryInformationSizesAtomPtr *saizOut,
+  MP4SampleAuxiliaryInformationOffsetsAtomPtr *saioOut)
 {
   MP4Err err;
   u32 i;
@@ -958,7 +958,7 @@ static MP4Err setSampleDependency(struct MP4MediaInformationAtom *s, s32 sample_
         if((fragment_pos >= 0) && (dep_pos < count))
         {
           (trun->entries)[j].sample_flags =
-              ((trun->entries)[j].sample_flags & ~(0xFF << 20)) | (dependency[dep_pos++] << 20);
+            ((trun->entries)[j].sample_flags & ~(0xFF << 20)) | (dependency[dep_pos++] << 20);
         }
       }
     }

@@ -248,7 +248,7 @@ MP4Err MP4NewIPMPDescriptorPointer(MP4Handle ipmpDescPtrH, u8 ipmpDescriptorId, 
 
   /* create the descriptor */
   err =
-      MP4CreateIPMPDescriptorPointer(MP4IPMP_DescriptorPointerTag, 0, 0, (MP4DescriptorPtr *)&desc);
+    MP4CreateIPMPDescriptorPointer(MP4IPMP_DescriptorPointerTag, 0, 0, (MP4DescriptorPtr *)&desc);
   if(err) goto bail;
   desc->ipmpDescriptorId     = ipmpDescriptorId;
   desc->ipmpToolDescriptorId = ipmpToolDescrId;

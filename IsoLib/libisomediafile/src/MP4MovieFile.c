@@ -480,8 +480,8 @@ ISOSetCompositonToDecodePropertiesForFragments(MP4Movie theMovie, u32 trackID,
   if(mvex == NULL) BAILWITHERROR(MP4BadParamErr)
 
   err = mvex->setCompositionToDecodeProperties(
-      mvex, trackID, compositionToDTSShift, leastDecodeToDisplayDelta, greatestDecodeToDisplayDelta,
-      compositionStartTime, compositionEndTime);
+    mvex, trackID, compositionToDTSShift, leastDecodeToDisplayDelta, greatestDecodeToDisplayDelta,
+    compositionStartTime, compositionEndTime);
 bail:
   TEST_RETURN(err);
 

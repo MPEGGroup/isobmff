@@ -403,7 +403,7 @@ static MP4Err addSampleReference(struct MP4MediaInformationAtom *self, u64 dataO
     is->debugging = 0;
     /*		err = MP4ParseAtom( is, &entry ); if (err) goto bail; */
     err =
-        MP4ParseAtomUsingProtoList(is, MP4SampleEntryProtos, MP4GenericSampleEntryAtomType, &entry);
+      MP4ParseAtomUsingProtoList(is, MP4SampleEntryProtos, MP4GenericSampleEntryAtomType, &entry);
     if(err) goto bail;
 
     err = stbl->setSampleEntry(stbl, entry);
@@ -495,7 +495,7 @@ static MP4Err addSamples(struct MP4MediaInformationAtom *self, MP4Handle sampleH
     if(err) goto bail;
     is->debugging = 0;
     err =
-        MP4ParseAtomUsingProtoList(is, MP4SampleEntryProtos, MP4GenericSampleEntryAtomType, &entry);
+      MP4ParseAtomUsingProtoList(is, MP4SampleEntryProtos, MP4GenericSampleEntryAtomType, &entry);
     if(err) goto bail;
     err = stbl->setSampleEntry(stbl, entry);
     if(err) goto bail;
@@ -594,7 +594,7 @@ static MP4Err mapSamplestoGroup(struct MP4MediaInformationAtom *self, u32 groupT
   assert(stbl);
   assert(stbl->mapSamplestoGroup);
   err =
-      stbl->mapSamplestoGroup(stbl, groupType, group_index, sample_index, count, sampleToGroupType);
+    stbl->mapSamplestoGroup(stbl, groupType, group_index, sample_index, count, sampleToGroupType);
   if(err) goto bail;
 bail:
   TEST_RETURN(err);
@@ -632,8 +632,8 @@ static MP4Err getSampleGroupSampleNumbers(struct MP4MediaInformationAtom *self, 
   stbl = (MP4SampleTableAtomPtr)self->sampleTable;
   assert(stbl);
   assert(stbl->getSampleGroupSampleNumbers);
-  err = stbl->getSampleGroupSampleNumbers(stbl, groupType, groupIndex, outSampleNumbers,
-                                          outSampleCnt);
+  err =
+    stbl->getSampleGroupSampleNumbers(stbl, groupType, groupIndex, outSampleNumbers, outSampleCnt);
   if(err) goto bail;
 bail:
   TEST_RETURN(err);

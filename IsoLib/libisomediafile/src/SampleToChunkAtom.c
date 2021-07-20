@@ -225,7 +225,7 @@ static MP4Err lookupSample(MP4AtomPtr s, u32 sampleNumber, u32 *outChunkNumber,
       *outChunkNumber            = firstChunkInRun + (sampleOffsetInThisChunk / p->samplesPerChunk);
       *outSampleDescriptionIndex = p->sampleDescriptionIndex;
       *outFirstSampleNumberInChunk =
-          ((*outChunkNumber - firstChunkInRun) * p->samplesPerChunk) + firstSampleThisChunkRun;
+        ((*outChunkNumber - firstChunkInRun) * p->samplesPerChunk) + firstSampleThisChunkRun;
       self->foundEntryNumber = i;
     }
     else
@@ -244,7 +244,7 @@ static MP4Err lookupSample(MP4AtomPtr s, u32 sampleNumber, u32 *outChunkNumber,
         *outChunkNumber         = firstChunkInRun + (sampleOffsetInThisChunk / p->samplesPerChunk);
         *outSampleDescriptionIndex = p->sampleDescriptionIndex;
         *outFirstSampleNumberInChunk =
-            ((*outChunkNumber - firstChunkInRun) * p->samplesPerChunk) + firstSampleThisChunkRun;
+          ((*outChunkNumber - firstChunkInRun) * p->samplesPerChunk) + firstSampleThisChunkRun;
         self->foundEntryNumber = i;
         break;
       }

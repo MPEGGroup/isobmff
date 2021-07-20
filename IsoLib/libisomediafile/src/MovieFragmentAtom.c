@@ -127,7 +127,7 @@ static MP4Err mergeFragments(struct MP4MovieFragmentAtom *self, MP4MovieAtomPtr 
       tfhd->default_sample_flags = trex->default_sample_flags;
     if((tfhd_flags & tfhd_base_data_offset_present) == 0)
       tfhd->base_data_offset =
-          (tfhd_flags & tfhd_default_base_is_moof ? self->streamOffset : base_offset);
+        (tfhd_flags & tfhd_default_base_is_moof ? self->streamOffset : base_offset);
 
     err = traf->calculateDataEnd(traf, &traf_data_end);
     if(err) goto bail;

@@ -391,7 +391,8 @@ static void CreateCompactSampleGroups(MP4SampletoGroupAtomPtr self)
   if((compressedGroup->pattern_size_code + compressedGroup->count_size_code) % 8)
   {
     if(compressedGroup->pattern_size_code == 4) compressedGroup->pattern_size_code = 8;
-    else compressedGroup->count_size_code = 8;
+    else
+      compressedGroup->count_size_code = 8;
   }
 
   assert(descIndex == compressedGroup->totalIndexDescriptionCount);

@@ -84,7 +84,7 @@ MP4Err MP4CreateSceneDescriptionMediaHeaderAtom(MP4SceneDescriptionMediaHeaderAt
   MP4SceneDescriptionMediaHeaderAtomPtr self;
 
   self =
-      (MP4SceneDescriptionMediaHeaderAtomPtr)calloc(1, sizeof(MP4SceneDescriptionMediaHeaderAtom));
+    (MP4SceneDescriptionMediaHeaderAtomPtr)calloc(1, sizeof(MP4SceneDescriptionMediaHeaderAtom));
   TESTMALLOC(self)
 
   err = MP4CreateFullAtom((MP4AtomPtr)self);
