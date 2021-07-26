@@ -139,24 +139,34 @@ inline ISOErr addHEVCSamples(MP4Media media, std::string strPattern, u32 repeatP
 }
 
 
-inline ISOErr checkData(MP4Handle dataH, const u8 *comparePtr, u32 compareSize)
+/**
+ * @brief Compare data in a MP4Handle with a data from a buffer
+ * 
+ * @param dataH MP4handle holding some data
+ * @param comparePtr Pointer to a buffer holding data
+ * @param compareSize Size of the buffer
+ * @return ISOErr MP4NoErr if data is the same
+ */
+inline ISOErr compareData(MP4Handle dataH, const u8 *comparePtr, u32 compareSize)
 {
   ISOErr err = MP4NoErr;
   u32 handleSize;
   MP4GetHandleSize(dataH, &handleSize);
-  if(handleSize != compareSize) return -1;
+  if(handleSize != compareSize) return MP4BadDataErr;
 
   int compareVal = std::memcmp(comparePtr, *dataH, compareSize);
-  if(compareVal != 0) return -1;
+  if(compareVal != 0) return MP4BadDataErr;
   return err;
 }
 
 /**
- * @brief Helper function to check a single sample payload
+ * @brief Compare the payload of a sample with the data in a buffer.
+ * 
+ * lengthSize bytes of the sample payload are skipped for comparison. Single NALU in a sample only.
  *
  * @param media media to take a sample from
  * @param sampleNr sample number in that media
- * @param comparePtr pointer to data to compare out payload to
+ * @param comparePtr pointer to data to compare the sample payload to
  * @param compareSize size of the compare data
  * @param lengthSize the length in bytes of the NALUnitLength field
  * @return ISOErr error code
@@ -177,11 +187,11 @@ inline ISOErr checkSample(MP4Media media, u32 sampleNr, const u8 *comparePtr, u3
 
   u32 handleSize;
   MP4GetHandleSize(sampleH, &handleSize);
-  if(handleSize != outSize) return -1;
-  if(outSize != compareSize+lengthSize) return -1;
+  if(handleSize != outSize) return MP4BadDataErr;
+  if(outSize != compareSize+lengthSize) return MP4BadDataErr;
 
   int compareVal = std::memcmp(comparePtr, *sampleH + lengthSize, compareSize);
-  if(compareVal != 0) return -1;
+  if(compareVal != 0) return MP4BadDataErr;
 
   MP4DisposeHandle(sampleH);
   return err;

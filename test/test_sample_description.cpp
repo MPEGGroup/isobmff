@@ -78,15 +78,15 @@ TEST_CASE("Check Sample Description functions")
     ISONewHandle(0, &vpsHandleOut);
     err = ISOGetHEVCSampleDescriptionPS(sampleEntryH, vpsHandleOut, HEVCvps, 1);
     CHECK(err == ISONoErr);
-    err = checkData(vpsHandleOut, HEVC::VPS, sizeof(HEVC::VPS));
+    err = compareData(vpsHandleOut, HEVC::VPS, sizeof(HEVC::VPS));
     CHECK(err == ISONoErr);
     err = ISOGetHEVCSampleDescriptionPS(sampleEntryH, spsHandleOut, HEVCsps, 1);
     CHECK(err == ISONoErr);
-    err = checkData(spsHandleOut, HEVC::SPS, sizeof(HEVC::SPS));
+    err = compareData(spsHandleOut, HEVC::SPS, sizeof(HEVC::SPS));
     CHECK(err == ISONoErr);
     err = ISOGetHEVCSampleDescriptionPS(sampleEntryH, ppsHandleOut, HEVCpps, 1);
     CHECK(err == ISONoErr);
-    err = checkData(ppsHandleOut, HEVC::PPS, sizeof(HEVC::PPS));
+    err = compareData(ppsHandleOut, HEVC::PPS, sizeof(HEVC::PPS));
     CHECK(err == ISONoErr);
     // no such parameter set
     err = ISOGetHEVCSampleDescriptionPS(sampleEntryH, ppsHandleOut, 35, 1);
