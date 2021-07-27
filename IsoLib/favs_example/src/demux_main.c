@@ -70,7 +70,7 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 	err = ISONewHandle(1, &sampleEntryH); if (err) goto bail;
 	err = ISONewHandle(1, &alst_desc); if (err) goto bail;
 
-	err = ISOOpenMovieFile(&moov, filename, MP4OpenMovieNormal); if (err) goto bail;
+	err = ISOOpenMovieFile(&moov, filename, MP4OpenMovieDebug); if (err) goto bail;
 	err = MP4GetMovieTrackCount(moov, &trackCount); if (err) goto bail;
 
 	printf("trackCount: %d\r\n", trackCount);

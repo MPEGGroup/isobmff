@@ -1,10 +1,10 @@
 /*
 This software module was originally developed by Apple Computer, Inc.
-in the course of development of MPEG-4. 
-This software module is an implementation of a part of one or 
-more MPEG-4 tools as specified by MPEG-4. 
+in the course of development of MPEG-4.
+This software module is an implementation of a part of one or
+more MPEG-4 tools as specified by MPEG-4.
 ISO/IEC gives users of MPEG-4 free license to this
-software module or modifications thereof for use in hardware 
+software module or modifications thereof for use in hardware
 or software products claiming conformance to MPEG-4.
 Those intending to use this software module in hardware or software
 products are advised that its use may infringe existing patents.
@@ -15,96 +15,94 @@ in an implementation.
 Copyright is not released for non MPEG-4 conforming
 products. Apple Computer, Inc. retains full right to use the code for its own
 purpose, assign or donate the code to a third party and to
-inhibit third parties from using the code for non 
+inhibit third parties from using the code for non
 MPEG-4 conforming products.
 This copyright notice must be included in all copies or
 derivative works. Copyright (c) 1999.
 */
 /*
-	$Id: MP4SchemeInfoAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
+        $Id: MP4SchemeInfoAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
 */
 
 #include "MP4Atoms.h"
 #include <stdlib.h>
 #include <string.h>
 
-
-
-static void destroy( MP4AtomPtr s )
+static void destroy(MP4AtomPtr s)
 {
-	MP4Err err;
-	u32 i;
-	
-	MP4SchemeInfoAtomPtr self = (MP4SchemeInfoAtomPtr) s;
-    err = MP4NoErr;
+  MP4Err err;
+  u32 i;
 
-	if (self == NULL)
-		BAILWITHERROR(MP4BadParamErr);
+  MP4SchemeInfoAtomPtr self = (MP4SchemeInfoAtomPtr)s;
+  err                       = MP4NoErr;
 
-	DESTROY_ATOM_LIST
+  if(self == NULL) BAILWITHERROR(MP4BadParamErr);
 
-	if ( self->super )
-		self->super->destroy( s );
+  DESTROY_ATOM_LIST
+
+  if(self->super) self->super->destroy(s);
 bail:
-	TEST_RETURN( err );
+  TEST_RETURN(err);
 
-	return;
+  return;
 }
 
-static MP4Err serialize( struct MP4Atom* s, char* buffer )
+static MP4Err serialize(struct MP4Atom *s, char *buffer)
 {
-	MP4Err err;
-	MP4SchemeInfoAtomPtr self = (MP4SchemeInfoAtomPtr) s;
-	err = MP4NoErr;
-	
-	err = MP4SerializeCommonBaseAtomFields( (MP4AtomPtr) s, buffer ); if (err) goto bail;
-    buffer += self->bytesWritten;
-    
-    /* PUT32_V( 0 );		*/	/* version/flags */
+  MP4Err err;
+  MP4SchemeInfoAtomPtr self = (MP4SchemeInfoAtomPtr)s;
+  err                       = MP4NoErr;
 
-    SERIALIZE_ATOM_LIST( atomList );
-	assert( self->bytesWritten == self->size );
+  err = MP4SerializeCommonBaseAtomFields((MP4AtomPtr)s, buffer);
+  if(err) goto bail;
+  buffer += self->bytesWritten;
+
+  /* PUT32_V( 0 );		*/ /* version/flags */
+
+  SERIALIZE_ATOM_LIST(atomList);
+  assert(self->bytesWritten == self->size);
 bail:
-	TEST_RETURN( err );
+  TEST_RETURN(err);
 
-	return err;
+  return err;
 }
 
-static MP4Err calculateSize( struct MP4Atom* s )
+static MP4Err calculateSize(struct MP4Atom *s)
 {
-	MP4Err err;
-	MP4SchemeInfoAtomPtr self = (MP4SchemeInfoAtomPtr) s;
-	err = MP4NoErr;
-	
-	err = MP4CalculateBaseAtomFieldSize( (MP4AtomPtr) s ); if (err) goto bail;
-	
-	self->size+= 0;				/* version/flags */
-	
-	ADD_ATOM_LIST_SIZE( atomList );
-bail:
-	TEST_RETURN( err );
+  MP4Err err;
+  MP4SchemeInfoAtomPtr self = (MP4SchemeInfoAtomPtr)s;
+  err                       = MP4NoErr;
 
-	return err;
+  err = MP4CalculateBaseAtomFieldSize((MP4AtomPtr)s);
+  if(err) goto bail;
+
+  self->size += 0; /* version/flags */
+
+  ADD_ATOM_LIST_SIZE(atomList);
+bail:
+  TEST_RETURN(err);
+
+  return err;
 }
 
-static MP4Err addAtom( MP4SchemeInfoAtomPtr self, MP4AtomPtr atom )
+static MP4Err addAtom(MP4SchemeInfoAtomPtr self, MP4AtomPtr atom)
 {
-	MP4Err err;
-	err = MP4NoErr;
-	err = MP4AddListEntry( atom, self->atomList ); if (err) goto bail;
+  MP4Err err;
+  err = MP4NoErr;
+  err = MP4AddListEntry(atom, self->atomList);
+  if(err) goto bail;
 
 bail:
-	TEST_RETURN( err );
+  TEST_RETURN(err);
 
-	return err;
+  return err;
 }
 
-
-static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream )
+static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream)
 {
-	
-	PARSE_ATOM_LIST(MP4SchemeInfoAtom)
-	
+
+  PARSE_ATOM_LIST(MP4SchemeInfoAtom)
+
 #if 0	
 	u32 junk;
 	MP4Err err; \
@@ -128,44 +126,43 @@ static MP4Err createFromInputStream( MP4AtomPtr s, MP4AtomPtr proto, MP4InputStr
 		} \
 	} \
 	if ( self->bytesRead != self->size ) \
-		BAILWITHERROR( MP4BadDataErr ) \
-		
+		BAILWITHERROR( MP4BadDataErr )
+
 #endif
 
-	assert( self->bytesRead == self->size );
+  assert(self->bytesRead == self->size);
 
 bail:
-	TEST_RETURN( err );
+  TEST_RETURN(err);
 
-	return err;
+  return err;
 }
 
-MP4Err MP4CreateSchemeInfoAtom( MP4SchemeInfoAtomPtr *outAtom )
+MP4Err MP4CreateSchemeInfoAtom(MP4SchemeInfoAtomPtr *outAtom)
 {
-	MP4Err err;
-	MP4SchemeInfoAtomPtr self;
-	
-	self = (MP4SchemeInfoAtomPtr) calloc( 1, sizeof(MP4SchemeInfoAtom) );
-	TESTMALLOC( self );
+  MP4Err err;
+  MP4SchemeInfoAtomPtr self;
 
-	err = MP4CreateBaseAtom( (MP4AtomPtr) self ); if ( err ) goto bail;
+  self = (MP4SchemeInfoAtomPtr)calloc(1, sizeof(MP4SchemeInfoAtom));
+  TESTMALLOC(self);
 
-	self->type						= MP4SchemeInfoAtomType;
-	self->name						= "SchemeInformationBox";
-	self->createFromInputStream		= (cisfunc) createFromInputStream;
-	self->destroy					= destroy;
-	self->calculateSize				= calculateSize;
-	self->serialize					= serialize;
-	self->addAtom					= addAtom;
+  err = MP4CreateBaseAtom((MP4AtomPtr)self);
+  if(err) goto bail;
 
-	err = MP4MakeLinkedList(&self->atomList); if (err) goto bail;
+  self->type                  = MP4SchemeInfoAtomType;
+  self->name                  = "SchemeInformationBox";
+  self->createFromInputStream = (cisfunc)createFromInputStream;
+  self->destroy               = destroy;
+  self->calculateSize         = calculateSize;
+  self->serialize             = serialize;
+  self->addAtom               = addAtom;
 
-	*outAtom = self;
+  err = MP4MakeLinkedList(&self->atomList);
+  if(err) goto bail;
+
+  *outAtom = self;
 bail:
-	TEST_RETURN( err );
+  TEST_RETURN(err);
 
-	return err;
+  return err;
 }
-
-
-

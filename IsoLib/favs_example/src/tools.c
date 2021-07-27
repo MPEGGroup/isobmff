@@ -238,6 +238,11 @@ int parseInput(int argc, char* argv[], struct ParamStruct *parameters) {
 				if (tempGroups) free(tempGroups);
 			}
 				break;
+				/* Compact sample to group flag */
+			case 'c': {
+				parameters->compactSampleToGroup = 1;
+			}
+				break;
 				/* Long parameter name */
 			case '-': {
 #define LONG_PARAM_I(NAME, LEN, OUTPUT) if (strncmp(&argv[param][2], NAME, LEN) == 0) { \
@@ -278,7 +283,6 @@ int parseInput(int argc, char* argv[], struct ParamStruct *parameters) {
 				break;
 			}
 		}
-
 	}
 	return 1;
 }
