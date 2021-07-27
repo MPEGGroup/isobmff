@@ -21,7 +21,10 @@ static void destroy(MP4AtomPtr s)
   MP4Err err                                  = MP4NoErr;
   MP4VolumetricVisualMediaHeaderAtomPtr pSelf = (MP4VolumetricVisualMediaHeaderAtomPtr)s;
 
-  if(pSelf == NULL) { err = MP4BadParamErr; }
+  if(pSelf == NULL)
+  {
+    err = MP4BadParamErr;
+  }
   if(err) goto bail;
 
   if(pSelf->super) pSelf->super->destroy(s);
@@ -87,7 +90,7 @@ MP4Err MP4CreateVisualMediaHeaderAtom(MP4VolumetricVisualMediaHeaderAtomPtr *pOu
   MP4VolumetricVisualMediaHeaderAtomPtr pSelf;
 
   pSelf =
-      (MP4VolumetricVisualMediaHeaderAtomPtr)calloc(1, sizeof(MP4VolumetricVisualMediaHeaderAtom));
+    (MP4VolumetricVisualMediaHeaderAtomPtr)calloc(1, sizeof(MP4VolumetricVisualMediaHeaderAtom));
   TESTMALLOC(pSelf);
 
   err = MP4CreateFullAtom((MP4AtomPtr)pSelf);

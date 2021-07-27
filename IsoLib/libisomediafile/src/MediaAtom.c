@@ -163,8 +163,10 @@ static MP4Err setupNew(struct MP4MediaAtom *self, MP4AtomPtr track, u32 mediaTyp
 
   if(mediaType == MP4VolumetricHandlerType)
   {
-    err = MP4CreateVisualMediaHeaderAtom(&vvhd); if(err) goto bail;
-    err = addAtom(self, (MP4AtomPtr)vvhd); if(err) goto bail;
+    err = MP4CreateVisualMediaHeaderAtom(&vvhd);
+    if(err) goto bail;
+    err = addAtom(self, (MP4AtomPtr)vvhd);
+    if(err) goto bail;
   }
 
   err = addAtom(self, (MP4AtomPtr)mdhd);
