@@ -203,7 +203,7 @@ MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom)
 
   case MP4ObjectDescriptorMediaHeaderAtomType:
     err =
-        MP4CreateObjectDescriptorMediaHeaderAtom((MP4ObjectDescriptorMediaHeaderAtomPtr *)&newAtom);
+      MP4CreateObjectDescriptorMediaHeaderAtom((MP4ObjectDescriptorMediaHeaderAtomPtr *)&newAtom);
     break;
 
   case MP4ClockReferenceMediaHeaderAtomType:
@@ -212,7 +212,7 @@ MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom)
 
   case MP4SceneDescriptionMediaHeaderAtomType:
     err =
-        MP4CreateSceneDescriptionMediaHeaderAtom((MP4SceneDescriptionMediaHeaderAtomPtr *)&newAtom);
+      MP4CreateSceneDescriptionMediaHeaderAtom((MP4SceneDescriptionMediaHeaderAtomPtr *)&newAtom);
     break;
 
   case MP4HintMediaHeaderAtomType:
@@ -344,12 +344,12 @@ MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom)
 
   case MP4SampleAuxiliaryInformationSizesAtomType:
     err = MP4CreateSampleAuxiliaryInformationSizesAtom(
-        (MP4SampleAuxiliaryInformationSizesAtomPtr *)&newAtom);
+      (MP4SampleAuxiliaryInformationSizesAtomPtr *)&newAtom);
     break;
 
   case MP4SampleAuxiliaryInformationOffsetsAtomType:
     err = MP4CreateSampleAuxiliaryInformationOffsetsAtom(
-        (MP4SampleAuxiliaryInformationOffsetsAtomPtr *)&newAtom);
+      (MP4SampleAuxiliaryInformationOffsetsAtomPtr *)&newAtom);
     break;
 
   case MP4ShadowSyncAtomType:
@@ -581,7 +581,7 @@ MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom)
 
   case ISOAdditionalMetaDataContainerAtomType: /* Deprecated */
     err =
-        ISOCreateAdditionalMetaDataContainerAtom((ISOAdditionalMetaDataContainerAtomPtr *)&newAtom);
+      ISOCreateAdditionalMetaDataContainerAtom((ISOAdditionalMetaDataContainerAtomPtr *)&newAtom);
     break;
 
   case ISOMetaboxRelationAtomType: /* Deprecated */

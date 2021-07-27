@@ -306,7 +306,7 @@ static MP4Err setSampleDescriptionIndexes(struct MP4MovieExtendsAtom *self, MP4A
     if(err) goto bail;
 
     err = ((MP4MovieAtomPtr)moov)
-              ->getSampleDescriptionIndex((MP4MovieAtom *)moov, trex->trackID, &sd_index);
+            ->getSampleDescriptionIndex((MP4MovieAtom *)moov, trex->trackID, &sd_index);
     if(err) goto bail;
     trex->default_sample_description_index = sd_index;
   }

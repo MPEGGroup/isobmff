@@ -125,7 +125,7 @@ static ISOErr addStandard(struct MP4SegmentTypeAtom *self, u32 standard)
   {
     self->itemCount++;
     self->compatibilityList =
-        (u32 *)realloc(self->compatibilityList, self->itemCount * sizeof(u32));
+      (u32 *)realloc(self->compatibilityList, self->itemCount * sizeof(u32));
     TESTMALLOC(self->compatibilityList);
     self->compatibilityList[self->itemCount - 1] = (u32)standard;
   }

@@ -558,8 +558,8 @@ MP4Err makeESD(MP4Movie theMovie, u32 trackNumber, u64 cts, MP4SLConfig inSLConf
       if(err) goto bail;
       err = MP4GetMediaTimeScale(theMedia, &mediaTimeScale);
       if(err) goto bail;
-      err = MP4CreateSLConfigDescriptor(MP4SLConfigDescriptorTag, 0, 0,
-                                        (MP4DescriptorPtr *)&slconfig);
+      err =
+        MP4CreateSLConfigDescriptor(MP4SLConfigDescriptorTag, 0, 0, (MP4DescriptorPtr *)&slconfig);
       if(err) goto bail;
       slconfig->predefined                   = 0;
       slconfig->useAccessUnitStartFlag       = 0;
@@ -1059,8 +1059,8 @@ MP4NewMovie(MP4Movie *outMovie, u32 initialODID, u8 OD_profileAndLevel, u8 scene
                         (u8)(((OD_profileAndLevel == 0) && (scene_profileAndLevel == 0) &&
                               (audio_profileAndLevel == 0) && (visual_profileAndLevel == 0) &&
                               (graphics_profileAndLevel == 0))
-                                 ? 1
-                                 : 0));
+                               ? 1
+                               : 0));
 
 #if 0	
 	MP4Err MP4CreateInitialObjectDescriptor( u32 tag, u32 size, u32 bytesRead, MP4DescriptorPtr *outDesc );

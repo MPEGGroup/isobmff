@@ -581,7 +581,7 @@ static MP4Err mergeSampleGroupDescriptions(struct MP4SampleTableAtom *self,
   idx           = 1;
 
   err =
-      MP4FindGroupAtom(self->groupDescriptionList, other->grouping_type, (MP4AtomPtr *)&stblGroup);
+    MP4FindGroupAtom(self->groupDescriptionList, other->grouping_type, (MP4AtomPtr *)&stblGroup);
 
   if(err == MP4NoErr && stblGroup != NULL)
   {

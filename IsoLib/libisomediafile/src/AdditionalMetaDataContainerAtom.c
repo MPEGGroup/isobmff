@@ -230,7 +230,7 @@ MP4Err ISOCreateAdditionalMetaDataContainerAtom(ISOAdditionalMetaDataContainerAt
   ISOAdditionalMetaDataContainerAtomPtr self;
 
   self =
-      (ISOAdditionalMetaDataContainerAtomPtr)calloc(1, sizeof(ISOAdditionalMetaDataContainerAtom));
+    (ISOAdditionalMetaDataContainerAtomPtr)calloc(1, sizeof(ISOAdditionalMetaDataContainerAtom));
   TESTMALLOC(self)
 
   err = MP4CreateBaseAtom((MP4AtomPtr)self);

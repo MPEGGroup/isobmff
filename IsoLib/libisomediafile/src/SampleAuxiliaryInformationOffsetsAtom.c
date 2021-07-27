@@ -239,7 +239,7 @@ MP4CreateSampleAuxiliaryInformationOffsetsAtom(MP4SampleAuxiliaryInformationOffs
   MP4SampleAuxiliaryInformationOffsetsAtomPtr self;
 
   self = (MP4SampleAuxiliaryInformationOffsetsAtomPtr)calloc(
-      1, sizeof(MP4SampleAuxiliaryInformationOffsetsAtom));
+    1, sizeof(MP4SampleAuxiliaryInformationOffsetsAtom));
   TESTMALLOC(self);
 
   err = MP4CreateFullAtom((MP4AtomPtr)self);

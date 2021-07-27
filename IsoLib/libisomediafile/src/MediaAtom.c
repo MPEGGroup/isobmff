@@ -430,8 +430,8 @@ static MP4Err getSampleGroupSampleNumbers(struct MP4MediaAtom *self, u32 groupTy
   minf = (MP4MediaInformationAtomPtr)self->information;
   assert(minf);
   assert(minf->getSampleGroupSampleNumbers);
-  err = minf->getSampleGroupSampleNumbers(minf, groupType, groupIndex, outSampleNumbers,
-                                          outSampleCnt);
+  err =
+    minf->getSampleGroupSampleNumbers(minf, groupType, groupIndex, outSampleNumbers, outSampleCnt);
   if(err) goto bail;
 bail:
   TEST_RETURN(err);
@@ -722,8 +722,8 @@ MP4Err MP4ParseODFrame(struct MP4MediaAtom *self, MP4Handle sampleH, MP4Handle s
           if(err) goto bail;
 
           /* The ref_index == mpod->TrackIdCount after adding the ref (NON NULL) */
-          err = MP4CreateES_ID_RefDescriptor(MP4ES_ID_RefDescriptorTag, 0, 0,
-                                             (MP4DescriptorPtr *)&ref);
+          err =
+            MP4CreateES_ID_RefDescriptor(MP4ES_ID_RefDescriptorTag, 0, 0, (MP4DescriptorPtr *)&ref);
           if(err) goto bail;
           assert(ref);
           ref->refIndex = mpod->trackIDCount;
@@ -776,7 +776,7 @@ MP4Err MP4ParseODFrame(struct MP4MediaAtom *self, MP4Handle sampleH, MP4Handle s
         if(err) goto bail;
 
         err =
-            MP4CreateES_ID_RefDescriptor(MP4ES_ID_RefDescriptorTag, 0, 0, (MP4DescriptorPtr *)&ref);
+          MP4CreateES_ID_RefDescriptor(MP4ES_ID_RefDescriptorTag, 0, 0, (MP4DescriptorPtr *)&ref);
         if(err) goto bail;
         assert(ref);
         ref->refIndex = mpod->trackIDCount;

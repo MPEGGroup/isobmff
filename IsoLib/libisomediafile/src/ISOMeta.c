@@ -83,7 +83,7 @@ ISO_EXTERN(ISOErr) ISONewFileMeta(ISOMovie theMovie, u32 metaType, ISOMeta *outM
     if(moov->meco == NULL)
     {
       err = ISOCreateAdditionalMetaDataContainerAtom(
-          (ISOAdditionalMetaDataContainerAtomPtr *)&moov->meco);
+        (ISOAdditionalMetaDataContainerAtomPtr *)&moov->meco);
       if(err) goto bail;
     }
 
@@ -124,7 +124,7 @@ ISO_EXTERN(ISOErr) ISONewMovieMeta(ISOMovie theMovie, u32 metaType, ISOMeta *out
     {
       MP4AtomPtr tempMeco;
       err = ISOCreateAdditionalMetaDataContainerAtom(
-          (ISOAdditionalMetaDataContainerAtomPtr *)&tempMeco);
+        (ISOAdditionalMetaDataContainerAtomPtr *)&tempMeco);
       if(err) goto bail;
       err = movieAtom->addAtom(movieAtom, tempMeco);
       if(err) goto bail;
@@ -172,7 +172,7 @@ ISO_EXTERN(ISOErr) ISONewTrackMeta(ISOTrack theTrack, u32 metaType, ISOMeta *out
     {
       MP4AtomPtr tempMeco;
       err = ISOCreateAdditionalMetaDataContainerAtom(
-          (ISOAdditionalMetaDataContainerAtomPtr *)&tempMeco);
+        (ISOAdditionalMetaDataContainerAtomPtr *)&tempMeco);
       if(err) goto bail;
       err = trak->addAtom(trak, tempMeco);
       if(err) goto bail;
@@ -638,8 +638,8 @@ ISOAddItemExtentItem(ISOMetaItem item, ISOMetaItem extent_item, u32 offset, u32 
   extent->extent_length = length;
   extent->extent_offset = offset;
 
-  err = ISOAddItemReference(item, MP4_FOUR_CHAR_CODE('i', 'l', 'o', 'c'), extentItem->item_ID,
-                            &index);
+  err =
+    ISOAddItemReference(item, MP4_FOUR_CHAR_CODE('i', 'l', 'o', 'c'), extentItem->item_ID, &index);
   if(err) goto bail;
 
   extent->extent_index = index;
@@ -816,8 +816,8 @@ ISOAddItemReference(ISOMetaItem item, u32 reference_type, u32 to_item_ID, u32 *o
          (singleIrefPtr->type == reference_type))
       {
         singleIrefPtr->reference_count++;
-        singleIrefPtr->to_item_IDs = (u32 *)realloc(singleIrefPtr->to_item_IDs,
-                                                    singleIrefPtr->reference_count * sizeof(u32));
+        singleIrefPtr->to_item_IDs =
+          (u32 *)realloc(singleIrefPtr->to_item_IDs, singleIrefPtr->reference_count * sizeof(u32));
         singleIrefPtr->to_item_IDs[singleIrefPtr->reference_count - 1] = to_item_ID;
         *outIndex = singleIrefPtr->reference_count;
         break;

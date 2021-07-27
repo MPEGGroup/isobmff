@@ -204,7 +204,7 @@ static MP4Err mergeSizes(MP4AtomPtr s, MP4AtomPtr otherSaiz)
   }
 
   self->sample_info_sizes =
-      realloc(self->sample_info_sizes, self->sample_count + other->sample_count);
+    realloc(self->sample_info_sizes, self->sample_count + other->sample_count);
   for(i = 0; i < other->sample_count; i++)
   {
     if(other->default_sample_info_size != 0)
@@ -226,7 +226,7 @@ MP4CreateSampleAuxiliaryInformationSizesAtom(MP4SampleAuxiliaryInformationSizesA
   MP4SampleAuxiliaryInformationSizesAtomPtr self;
 
   self = (MP4SampleAuxiliaryInformationSizesAtomPtr)calloc(
-      1, sizeof(MP4SampleAuxiliaryInformationSizesAtom));
+    1, sizeof(MP4SampleAuxiliaryInformationSizesAtom));
   TESTMALLOC(self);
 
   err = MP4CreateFullAtom((MP4AtomPtr)self);

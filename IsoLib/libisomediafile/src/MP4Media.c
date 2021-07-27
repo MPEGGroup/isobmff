@@ -211,7 +211,7 @@ ISOGetGroupDescriptionEntryCount(MP4Media media, u32 groupType, u32 *outEntryCou
   MP4TrackFragmentAtomPtr traf;
   MP4SampleGroupDescriptionAtomPtr theGroup;
 
-  err = MP4NoErr;
+  err  = MP4NoErr;
   mdia = (MP4MediaAtomPtr)media;
   if(mdia == NULL) BAILWITHERROR(MP4BadParamErr);
 
@@ -233,7 +233,8 @@ ISOGetGroupDescriptionEntryCount(MP4Media media, u32 groupType, u32 *outEntryCou
     if(!theGroup) BAILWITHERROR(MP4NotFoundErr);
     *outEntryCount = theGroup->groupCount;
   }
-  else BAILWITHERROR(MP4InvalidMediaErr);
+  else
+    BAILWITHERROR(MP4InvalidMediaErr);
 
 bail:
   TEST_RETURN(err);
@@ -317,8 +318,8 @@ ISOGetSampleGroupSampleNumbers(MP4Media media, u32 groupType, u32 groupIndex,
     BAILWITHERROR(MP4BadParamErr);
   }
   mdia = (MP4MediaAtomPtr)media;
-  err  = mdia->getSampleGroupSampleNumbers(mdia, groupType, groupIndex, outSampleNumbers,
-                                          outSampleCnt);
+  err =
+    mdia->getSampleGroupSampleNumbers(mdia, groupType, groupIndex, outSampleNumbers, outSampleCnt);
 
 bail:
   TEST_RETURN(err);
@@ -1533,8 +1534,8 @@ MP4GetMediaSample(MP4Media theMedia, MP4Handle outSample, u32 *outSize, u64 desi
                   u32 *outSampleFlags)
 {
   return MP4GetMediaSampleWithPad(
-      theMedia, outSample, outSize, desiredDecodingTime, outDecodingTime, outCompositionTime,
-      outDuration, outSampleDescription, outSampleDescriptionIndex, outSampleFlags, NULL);
+    theMedia, outSample, outSize, desiredDecodingTime, outDecodingTime, outCompositionTime,
+    outDuration, outSampleDescription, outSampleDescriptionIndex, outSampleFlags, NULL);
 }
 
 MP4_EXTERN(MP4Err)
@@ -1977,8 +1978,8 @@ MP4GetIndMediaSampleReference(MP4Media theMedia, u32 sampleNumber, u32 *outOffse
   if(err) goto bail;
 
   /* get the sample description */
-  err = MP4GetMediaSampleDescription(theMedia, sampleDescriptionIndex, sampleDesc,
-                                     &dataReferenceIndex);
+  err =
+    MP4GetMediaSampleDescription(theMedia, sampleDescriptionIndex, sampleDesc, &dataReferenceIndex);
   if(err) goto bail;
 
   if(outOffset)
@@ -2296,7 +2297,7 @@ MP4AddSampleAuxiliaryInformation(MP4Media theMedia, u8 isUsingAuxInfoPropertiesF
     if(traf == NULL) BAILWITHERROR(MP4BadParamErr);
 
     err = traf->getSampleAuxiliaryInfoFromTrackFragment(
-        traf, isUsingAuxInfoPropertiesFlag, aux_info_type, aux_info_type_parameter, &saiz, &saio);
+      traf, isUsingAuxInfoPropertiesFlag, aux_info_type, aux_info_type_parameter, &saiz, &saio);
     if(err) goto bail;
   }
 

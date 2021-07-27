@@ -1350,9 +1350,9 @@ typedef struct MP4TrackFragmentAtom
   MP4Err (*mergeSampleAuxiliaryInformation)(struct MP4TrackFragmentAtom *self,
                                             MP4MediaAtomPtr mdia);
   MP4Err (*getSampleAuxiliaryInfoFromTrackFragment)(
-      struct MP4TrackFragmentAtom *self, u8 isUsingAuxInfoPropertiesFlag, u32 aux_info_type,
-      u32 aux_info_type_parameter, MP4SampleAuxiliaryInformationSizesAtomPtr *saizOut,
-      MP4SampleAuxiliaryInformationOffsetsAtomPtr *saioOut);
+    struct MP4TrackFragmentAtom *self, u8 isUsingAuxInfoPropertiesFlag, u32 aux_info_type,
+    u32 aux_info_type_parameter, MP4SampleAuxiliaryInformationSizesAtomPtr *saizOut,
+    MP4SampleAuxiliaryInformationOffsetsAtomPtr *saioOut);
 
   MP4Err (*addGroupDescription)(struct MP4TrackFragmentAtom *self, u32 groupType,
                                 MP4Handle description, u32 *index);
@@ -2077,7 +2077,7 @@ MP4Err MP4CreateSampleToChunkAtom(MP4SampleToChunkAtomPtr *outAtom);
 MP4Err
 MP4CreateSampleAuxiliaryInformationSizesAtom(MP4SampleAuxiliaryInformationSizesAtomPtr *outAtom);
 MP4Err MP4CreateSampleAuxiliaryInformationOffsetsAtom(
-    MP4SampleAuxiliaryInformationOffsetsAtomPtr *outAtom);
+  MP4SampleAuxiliaryInformationOffsetsAtomPtr *outAtom);
 MP4Err MP4CreateSceneDescriptionMediaHeaderAtom(MP4SceneDescriptionMediaHeaderAtomPtr *outAtom);
 MP4Err MP4CreateShadowSyncAtom(MP4ShadowSyncAtomPtr *outAtom);
 MP4Err MP4CreateSoundMediaHeaderAtom(MP4SoundMediaHeaderAtomPtr *outAtom);

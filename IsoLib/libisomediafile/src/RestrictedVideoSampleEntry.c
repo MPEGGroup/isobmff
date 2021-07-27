@@ -100,8 +100,8 @@ static MP4Err calculateSize(struct MP4Atom *s)
 
   err = MP4CalculateBaseAtomFieldSize(s);
   if(err) goto bail;
-  self->size += (6 + 16 + 31 + (4 * 2) + (1 * 1) +
-                 (4 * 4)); /* TODO this probably includes restriction_type */
+  self->size +=
+    (6 + 16 + 31 + (4 * 2) + (1 * 1) + (4 * 4)); /* TODO this probably includes restriction_type */
   ADD_ATOM_SIZE(MP4RestrictedSchemeInfo);
   ADD_ATOM_LIST_SIZE(ExtensionAtomList);
 bail:

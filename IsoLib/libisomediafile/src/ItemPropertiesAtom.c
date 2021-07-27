@@ -106,7 +106,7 @@ static MP4Err addItemProperty(struct MP4ItemPropertiesAtom *self, MP4AtomPtr ite
   if(targetEntry == NULL)
   {
     targetEntry =
-        (MP4ItemPropertyAssociationEntryPtr)calloc(1, sizeof(MP4ItemPropertyAssociationEntry));
+      (MP4ItemPropertyAssociationEntryPtr)calloc(1, sizeof(MP4ItemPropertyAssociationEntry));
     TESTMALLOC(targetEntry);
     targetEntry->item_ID = itemID;
     err                  = MP4AddListEntry(targetEntry, self->ipma->entries);
@@ -116,7 +116,7 @@ static MP4Err addItemProperty(struct MP4ItemPropertiesAtom *self, MP4AtomPtr ite
   }
 
   propertyIndex = (MP4ItemPropertyAssociationEntryPropertyIndexPtr)calloc(
-      1, sizeof(MP4ItemPropertyAssociationEntryPropertyIndex));
+    1, sizeof(MP4ItemPropertyAssociationEntryPropertyIndex));
   TESTMALLOC(propertyIndex);
   propertyIndex->essential      = essential;
   propertyIndex->property_index = (u16)(property_index + 1);
