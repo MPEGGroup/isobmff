@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file MP4Movies.h
  * @brief API
  * @version 0.1
@@ -15,6 +15,10 @@
 #ifdef __cplusplus
 extern "C"
 {
+#endif
+
+#ifndef VVCC
+#define VVCC      1 //VVC configuration box?
 #endif
 
 #define ISMACrypt

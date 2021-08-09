@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file ISOMovies.h
  * @brief A wrapper for the code defined in the MPEG-4 library.
  * @version 0.1
@@ -700,6 +700,13 @@ extern "C"
   ISONewHEVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
                               u32 dataReferenceIndex, u32 length_size, MP4Handle first_sps,
                               MP4Handle first_pps, MP4Handle first_vps);
+
+  #if VVCC
+  ISO_EXTERN(ISOErr)
+  ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
+                             u32 dataReferenceIndex, MP4Handle test);
+
+  #endif
 
   /*************************************************************************************************
    * 3GPP media

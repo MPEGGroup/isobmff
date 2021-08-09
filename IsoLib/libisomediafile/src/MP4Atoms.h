@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file MP4Atoms.h
  * @brief MP4 Atoms (Boxes) definitions
  * @version 0.1
@@ -157,6 +157,15 @@ enum
   MP4ProducerReferenceTimeAtomType             = MP4_FOUR_CHAR_CODE('p', 'r', 'f', 't')
 
 };
+
+#if VVCC
+enum
+{
+  ISOVVCConfigAtomType            = MP4_FOUR_CHAR_CODE('v', 'v', 'c', 'C'),
+  ISOVVCSampleEntryAtomType       = MP4_FOUR_CHAR_CODE('v', 'v', 'c', '1'),
+};
+#endif
+
 
 #ifdef ISMACrypt
 enum
@@ -1050,6 +1059,58 @@ typedef struct ISOHEVCConfigAtom
   u32 bitDepthLumaMinus8;
   u32 bitDepthChromaMinus8;
 } ISOHEVCConfigAtom, *ISOHEVCConfigAtomPtr;
+
+#if VVCC
+typedef struct ISOVVCConfigAtom
+{
+  MP4_FULL_ATOM
+  MP4Err (*addParameterSet)(struct ISOVVCConfigAtom *self, MP4Handle ps, u32 where);
+  MP4Err (*getParameterSet)(struct ISOVVCConfigAtom *self, MP4Handle ps, u32 where, u32 index);
+
+  u32 LengthSizeMinusOne;
+  u32 ptl_present_flag;
+
+  u32 ols_idx;
+  u32 num_sublayers;
+  u32 constant_frame_rate;
+  u32 chroma_format_idc;
+  u32 bit_depth_minus8;
+
+  // Profile Tile Level
+  struct PTL
+  {
+    u32 num_bytes_constraint_info;
+    u32 general_profile_idc;
+    u32 general_tier_flag;
+    u32 general_level_idc;
+    u32 ptl_frame_only_constraint_flag;
+    u32 ptl_multi_layer_enabled_flag;
+    u32 general_constraint_info;
+
+    u32 ptl_num_sub_profiles;
+    struct SubPTL
+    {
+      // if use LinkList pj??
+      u32 ptl_sublayer_level_present_flag;
+      u32 sublayer_level_idc;
+      u32 general_sub_profile_idc;
+    }subPTL[8];
+  } native_ptl;
+
+  u32 max_picture_width;
+  u32 max_picture_height;
+  u32 avg_frame_rate;
+
+  u32 num_of_arrays;
+  struct
+  {
+    u32 array_completeness;
+    u32 NALtype;
+    MP4LinkedList nalList;
+  } arrays[8];//??
+
+} ISOVVCConfigAtom, *ISOVVCConfigAtomPtr;
+#endif
 
 typedef struct MP4SampleSizeAtom
 {
@@ -2094,6 +2155,10 @@ MP4Err MP4CreateItemPropertyContainerAtom(MP4ItemPropertyContainerAtomPtr *outAt
 MP4Err MP4CreateItemPropertyAssociationAtom(MP4ItemPropertyAssociationAtomPtr *outAtom);
 
 MP4Err MP4CreateHEVCConfigAtom(ISOHEVCConfigAtomPtr *outAtom);
+
+#if VVCC
+MP4Err MP4CreateVVCConfigAtom(ISOVVCConfigAtomPtr *outAtom);
+#endif 
 
 MP4Err MP4CreateOriginalFormatAtom(MP4OriginalFormatAtomPtr *outAtom);
 MP4Err MP4CreateSchemeInfoAtom(MP4SchemeInfoAtomPtr *outAtom);

@@ -1489,3 +1489,80 @@ bail:
 
   return err;
 }
+
+#if VVCC
+//pjtodo
+MP4_EXTERN(MP4Err)
+ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 dataReferenceIndex, MP4Handle test)
+{
+  MP4Err MP4CreateVisualSampleEntryAtom(MP4VisualSampleEntryAtomPtr * outAtom);
+  MP4Err MP4CreateVVCConfigAtom(ISOVVCConfigAtomPtr * outAtom);
+
+  MP4Err err = MP4NoErr;
+  GenericSampleEntryAtomPtr entry;
+  ISOVVCConfigAtomPtr config;
+  MP4TrackAtomPtr trak;
+  BitBuffer mybb;
+  BitBuffer *bb;
+
+ if((theTrack == NULL) || (sampleDescriptionH == NULL))
+  {
+    BAILWITHERROR(MP4BadParamErr);
+  }
+
+   trak = (MP4TrackAtomPtr)theTrack;
+  if(!(trak->newTrackFlags & MP4NewTrackIsVisual)) BAILWITHERROR(MP4BadParamErr);
+  err = MP4CreateVisualSampleEntryAtom((MP4VisualSampleEntryAtomPtr *)&entry);
+  if(err) goto bail;
+  entry->super = NULL;
+  entry->dataReferenceIndex = dataReferenceIndex;
+  entry->type               = ISOVVCSampleEntryAtomType;
+  
+  // list vvcC to vvc1
+  err = MP4CreateVVCConfigAtom(&config);
+  err = MP4AddListEntry((void *)config, entry->ExtensionAtomList);
+  if(err) goto bail;
+
+  if(!test) BAILWITHERROR(MP4BadParamErr);
+
+  u32 the_size;
+  err = MP4GetHandleSize(test, &the_size);
+  if(err) goto bail;
+
+  bb  = &mybb;
+  err = BitBuffer_Init(bb, (u8 *)*test, 8 * the_size);
+  if(err) goto bail;
+  bb->prevent_emulation = 1;
+
+  u8 x;
+  err = GetBytes(bb, 1, &x);
+  if(err) goto bail;
+
+  config->LengthSizeMinusOne = x & 0x06;
+  if(config->LengthSizeMinusOne != 1 && config->LengthSizeMinusOne != 2 &&
+     config->LengthSizeMinusOne != 4)
+  {
+    BAILWITHERROR(MP4BadParamErr);
+  }
+  config->ptl_present_flag   = x & 0x01;
+
+  if(config->ptl_present_flag)
+  {
+    //todo
+  }
+  err = GetBytes(bb, 1, &x);
+  if(err) goto bail;
+  config->num_of_arrays = x & 0xff;
+  //for()
+
+
+  err = atomPtrToSampleEntryH(sampleDescriptionH, (MP4AtomPtr)entry);
+  if(err) goto bail;
+
+bail:
+
+  TEST_RETURN(err);
+
+  return err;
+}
+#endif 
