@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file MP4Movies.h
  * @brief API
  * @version 0.1
