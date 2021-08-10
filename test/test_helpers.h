@@ -28,6 +28,26 @@
 #include "test_data.h"
 
 /**
+ * @brief Create a Handle from a buffer
+ *
+ * @param dataH Output Handle with the data from buffer of provided size
+ * @param data Pointer to a buffer with the data which should be copied to handle
+ * @param size Size of data in buffer to copy
+ * @return MP4Err MP4NoErr on success.
+ */
+inline MP4Err createHandleFromBuffer(MP4Handle *dataH, const u8 *data, u32 size)
+{
+  MP4Err err = MP4NoErr;
+
+  if(!data || size == 0) return MP4BadParamErr;
+  err = MP4NewHandle(size, dataH);
+  if(err) return err;
+
+  std::memcpy((**dataH), data, size);
+  return err;
+}
+
+/**
  * @brief Append data to buffer with the preceding length field of lengthSize bytes.
  * 
  * @param rBuffer Buffer to add data to
