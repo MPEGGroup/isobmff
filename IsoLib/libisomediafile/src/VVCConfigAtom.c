@@ -46,18 +46,18 @@ bail:
   return;
 }
 
-static MP4Err serialize(struct MP4Atom* s, char* buffer) 
+static MP4Err serialize(struct MP4Atom *s, char *buffer)
 {
   MP4Err err;
   u32 x, array_index;
   ISOVVCConfigAtomPtr self = (ISOVVCConfigAtomPtr)s;
-  err = MP4NoErr;
+  err                      = MP4NoErr;
 
   err = MP4SerializeCommonFullAtomFields((MP4FullAtomPtr)s, buffer);
   if(err) goto bail;
   buffer += self->bytesWritten;
 
-  /* reserver '11111' b + LengthSizeMinusOne(2) + ptl_present_flag(1) */ 
+  /* reserver '11111' b + LengthSizeMinusOne(2) + ptl_present_flag(1) */
   x = (0x1f << 3) | (self->LengthSizeMinusOne << 1) | self->ptl_present_flag;
   PUT8_V(x);
 
@@ -79,12 +79,12 @@ static MP4Err serialize(struct MP4Atom* s, char* buffer)
 
       x = (self->native_ptl.general_profile_idc << 1) | self->native_ptl.general_tier_flag;
       PUT8_V(x);
-      
+
       PUT8(native_ptl.general_level_idc);
 
       x = (self->native_ptl.ptl_frame_only_constraint_flag << 7) |
           (self->native_ptl.ptl_multi_layer_enabled_flag << 6);
-      int gciNum = 8*self->native_ptl.num_bytes_constraint_info - 2;
+      int gciNum = 8 * self->native_ptl.num_bytes_constraint_info - 2;
       gciNum -= 6;
       u32 h1 = (self->native_ptl.general_constraint_info >> gciNum) & 0xff;
       x |= h1;
@@ -138,7 +138,8 @@ static MP4Err serialize(struct MP4Atom* s, char* buffer)
     if(err) goto bail;
     x = (self->arrays[array_index].array_completeness << 7) | self->arrays[array_index].NALtype;
     PUT8_V(x);
-    if(self->arrays[array_index].NALtype != 13 /*DCI_NUT*/ && self->arrays[array_index].NALtype != 12 /*OPI_NUT*/)
+    if(self->arrays[array_index].NALtype != 13 /*DCI_NUT*/ &&
+       self->arrays[array_index].NALtype != 12 /*OPI_NUT*/)
     {
       /* num_nalus */
       PUT16_V(count);
@@ -195,7 +196,7 @@ static MP4Err calculateSize(struct MP4Atom *s)
         self->size += 4;
       }
     }
-    self->size += 6; 
+    self->size += 6;
   }
 
   if(self->num_of_arrays)
@@ -254,8 +255,8 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   if(self->ptl_present_flag)
   {
     GET16_V(x);
-    self->ols_idx = (x & 0xffff) >> 7;
-    self->num_sublayers = (x & 0x007f) >> 4;
+    self->ols_idx             = (x & 0xffff) >> 7;
+    self->num_sublayers       = (x & 0x007f) >> 4;
     self->constant_frame_rate = (x & 0x000f) >> 2;
     self->chroma_format_idc   = x & 0x0003;
 
@@ -298,7 +299,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
         u8 helper = 0x01;
         helper <<= cnt;
         cnt--;
-        self->native_ptl.subPTL[i].ptl_sublayer_level_present_flag = x & helper; 
+        self->native_ptl.subPTL[i].ptl_sublayer_level_present_flag = x & helper;
       }
 
       for(int i = self->num_sublayers - 2; i >= 0; i--)
@@ -313,7 +314,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
       for(u32 j = 0; j < self->native_ptl.ptl_num_sub_profiles; j++)
       {
         GET32(native_ptl.subPTL[j].general_sub_profile_idc);
-      }   
+      }
     }
 
     GET8_V(x);
@@ -323,7 +324,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
     GET16(max_picture_height);
     GET16(avg_frame_rate);
   }
-    
+
   GET8(num_of_arrays);
 
   for(array_index = 0; array_index < self->num_of_arrays; array_index++)
@@ -334,7 +335,8 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
     err = MP4MakeLinkedList(&self->arrays[array_index].nalList);
     if(err) goto bail;
 
-    if(self->arrays[array_index].NALtype != 13 /*DCI_NUT*/ && self->arrays[array_index].NALtype != 12 /*OPI_NUT*/)
+    if(self->arrays[array_index].NALtype != 13 /*DCI_NUT*/ &&
+       self->arrays[array_index].NALtype != 12 /*OPI_NUT*/)
     {
       GET16_V(count);
     }

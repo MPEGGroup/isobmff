@@ -1052,7 +1052,6 @@ typedef struct ISOHEVCConfigAtom
   u32 bitDepthChromaMinus8;
 } ISOHEVCConfigAtom, *ISOHEVCConfigAtomPtr;
 
-
 typedef struct ISOVVCConfigAtom
 {
   MP4_FULL_ATOM
@@ -1086,7 +1085,7 @@ typedef struct ISOVVCConfigAtom
       u32 ptl_sublayer_level_present_flag;
       u32 sublayer_level_idc;
       u32 general_sub_profile_idc;
-    }subPTL[8];
+    } subPTL[8];
   } native_ptl;
 
   u32 max_picture_width;
@@ -2146,7 +2145,7 @@ MP4Err MP4CreateItemPropertyContainerAtom(MP4ItemPropertyContainerAtomPtr *outAt
 MP4Err MP4CreateItemPropertyAssociationAtom(MP4ItemPropertyAssociationAtomPtr *outAtom);
 
 MP4Err MP4CreateHEVCConfigAtom(ISOHEVCConfigAtomPtr *outAtom);
-MP4Err MP4CreateVVCConfigAtom(ISOVVCConfigAtomPtr *outAtom); 
+MP4Err MP4CreateVVCConfigAtom(ISOVVCConfigAtomPtr *outAtom);
 
 MP4Err MP4CreateOriginalFormatAtom(MP4OriginalFormatAtomPtr *outAtom);
 MP4Err MP4CreateSchemeInfoAtom(MP4SchemeInfoAtomPtr *outAtom);

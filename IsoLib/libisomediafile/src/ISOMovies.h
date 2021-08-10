@@ -703,18 +703,17 @@ extern "C"
 
   /**
    * @brief Create new VVC sample entry
-   * 
+   *
    * @todo Implement me
-   * 
-   * @param theTrack 
-   * @param sampleDescriptionH 
-   * @param dataReferenceIndex 
-   * @param test 
+   *
+   * @param theTrack
+   * @param sampleDescriptionH
+   * @param dataReferenceIndex
+   * @param test
    */
   ISO_EXTERN(ISOErr)
   ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
                              u32 dataReferenceIndex, MP4Handle test);
-
 
   /*************************************************************************************************
    * 3GPP media
