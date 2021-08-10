@@ -230,7 +230,18 @@ typedef struct MP4PrivateMovieRecord
   MP4LinkedList movieFragments;
 } MP4PrivateMovieRecord, *MP4PrivateMovieRecordPtr;
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom);
+MP4Err MP4ParseAtomFromHandle(MP4Handle inputHandle, MP4AtomPtr *outAtom);
+
+#ifdef __cplusplus
+}
+#endif
+
 MP4Err MP4CreateBaseAtom(MP4AtomPtr self);
 MP4Err MP4CreateFullAtom(MP4AtomPtr s);
 MP4Err MP4ParseAtom(struct MP4InputStreamRecord *inputStream, MP4AtomPtr *outAtom);
