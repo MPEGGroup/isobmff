@@ -235,8 +235,8 @@ extern "C"
 {
 #endif
 
-MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom);
-MP4Err MP4ParseAtomFromHandle(MP4Handle inputHandle, MP4AtomPtr *outAtom);
+  MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom);
+  MP4Err MP4ParseAtomFromHandle(MP4Handle inputHandle, MP4AtomPtr *outAtom);
 
 #ifdef __cplusplus
 }
