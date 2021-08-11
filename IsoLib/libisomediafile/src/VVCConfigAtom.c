@@ -249,7 +249,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   if(err) goto bail;
 
   GET8_V(x);
-  self->LengthSizeMinusOne = (x & 0x07) >> 1;
+  self->LengthSizeMinusOne = (x & 0x06) >> 1;
   self->ptl_present_flag   = x & 0x01;
 
   if(self->ptl_present_flag)
@@ -259,6 +259,9 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
     self->num_sublayers       = (x & 0x007f) >> 4;
     self->constant_frame_rate = (x & 0x000f) >> 2;
     self->chroma_format_idc   = x & 0x0003;
+
+    GET8_V(x);
+    self->bit_depth_minus8 = (x & 0xff) >> 5;
 
     /* PTL recoder */
     {
@@ -293,13 +296,11 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
       }
 
       GET8_V(x);
-      int cnt = 7;
+      u8 helper = 0x80;
       for(int i = self->num_sublayers - 2; i >= 0; i--)
-      {
-        u8 helper = 0x01;
-        helper <<= cnt;
-        cnt--;
-        self->native_ptl.subPTL[i].ptl_sublayer_level_present_flag = x & helper;
+      {     
+        self->native_ptl.subPTL[i].ptl_sublayer_level_present_flag = (x & helper) ? 1 : 0;
+        helper >>= 1;
       }
 
       for(int i = self->num_sublayers - 2; i >= 0; i--)
@@ -317,8 +318,6 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
       }
     }
 
-    GET8_V(x);
-    self->bit_depth_minus8 = (x & 0xff) >> 5;
 
     GET16(max_picture_width);
     GET16(max_picture_height);
@@ -453,11 +452,29 @@ MP4Err MP4CreateVVCConfigAtom(ISOVVCConfigAtomPtr *outAtom)
   self->addParameterSet       = addParameterSet;
   self->getParameterSet       = getParameterSet;
 
+/*
+  12 OPI Operating point information
+
+  13 DCI Decoding capability information
+  14 VPS
+  15 SPS
+  16 PPS
+
+  19 PH Picture header
+  20 AUD
+  21 EOS
+  22 EOB
+
+  17 PREFIX_APS Adaptation parameter set
+  23 PREFIX_SEI
+*/
+
+  u32 nalType[] = {12, 13, 14, 15, 16, 17, 19, 20};
   for(i = 0; i < 8; i++)
   {
     err = MP4MakeLinkedList(&self->arrays[i].nalList);
     if(err) goto bail;
-    self->arrays[i].NALtype            = 14 + i;
+    self->arrays[i].NALtype            = nalType[i];
     self->arrays[i].array_completeness = 1;
   }
 
