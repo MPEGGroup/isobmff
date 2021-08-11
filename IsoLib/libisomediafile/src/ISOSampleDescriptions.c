@@ -1490,10 +1490,13 @@ bail:
   return err;
 }
 
-#if VVCC
-//pjtodo
+/**
+ * @todo pjtodo Implement me
+ *
+ */
 MP4_EXTERN(MP4Err)
-ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 dataReferenceIndex, MP4Handle test)
+ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 dataReferenceIndex,
+                           MP4Handle test)
 {
   MP4Err MP4CreateVisualSampleEntryAtom(MP4VisualSampleEntryAtomPtr * outAtom);
   MP4Err MP4CreateVVCConfigAtom(ISOVVCConfigAtomPtr * outAtom);
@@ -1505,20 +1508,20 @@ ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 
   BitBuffer mybb;
   BitBuffer *bb;
 
- if((theTrack == NULL) || (sampleDescriptionH == NULL))
+  if((theTrack == NULL) || (sampleDescriptionH == NULL))
   {
     BAILWITHERROR(MP4BadParamErr);
   }
 
-   trak = (MP4TrackAtomPtr)theTrack;
+  trak = (MP4TrackAtomPtr)theTrack;
   if(!(trak->newTrackFlags & MP4NewTrackIsVisual)) BAILWITHERROR(MP4BadParamErr);
   err = MP4CreateVisualSampleEntryAtom((MP4VisualSampleEntryAtomPtr *)&entry);
   if(err) goto bail;
-  entry->super = NULL;
+  entry->super              = NULL;
   entry->dataReferenceIndex = dataReferenceIndex;
   entry->type               = ISOVVCSampleEntryAtomType;
-  
-  // list vvcC to vvc1
+
+  /* list vvcC to vvc1 */
   err = MP4CreateVVCConfigAtom(&config);
   err = MP4AddListEntry((void *)config, entry->ExtensionAtomList);
   if(err) goto bail;
@@ -1544,25 +1547,20 @@ ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 
   {
     BAILWITHERROR(MP4BadParamErr);
   }
-  config->ptl_present_flag   = x & 0x01;
+  config->ptl_present_flag = x & 0x01;
 
   if(config->ptl_present_flag)
   {
-    //todo
+    /* TODO: implement me*/
   }
   err = GetBytes(bb, 1, &x);
   if(err) goto bail;
   config->num_of_arrays = x & 0xff;
-  //for()
-
 
   err = atomPtrToSampleEntryH(sampleDescriptionH, (MP4AtomPtr)entry);
   if(err) goto bail;
 
 bail:
-
   TEST_RETURN(err);
-
   return err;
 }
-#endif 

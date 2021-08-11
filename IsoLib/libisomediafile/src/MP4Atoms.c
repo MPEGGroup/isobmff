@@ -629,10 +629,9 @@ MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom)
     err = MP4CreateHEVCConfigAtom((ISOHEVCConfigAtomPtr *)&newAtom);
     break;
 
-#if VVCC
   case ISOVVCConfigAtomType:
     err = MP4CreateVVCConfigAtom((ISOVVCConfigAtomPtr *)&newAtom);
-#endif
+    break;
 
   default:
     err           = MP4CreateUnknownAtom((MP4UnknownAtomPtr *)&newAtom);
@@ -851,13 +850,33 @@ MP4Err MP4ParseAtomUsingProtoList(MP4InputStreamPtr inputStream, u32 *protoList,
   inputStream->msg(inputStream, "}");
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 
 MP4Err MP4ParseAtom(MP4InputStreamPtr inputStream, MP4AtomPtr *outAtom)
 {
   return MP4ParseAtomUsingProtoList(inputStream, NULL, 0, outAtom);
+}
+
+MP4Err MP4ParseAtomFromHandle(MP4Handle inputHandle, MP4AtomPtr *outAtom)
+{
+  MP4Err err;
+  MP4InputStreamPtr is = NULL;
+  u32 size             = 0;
+  if(inputHandle == NULL) BAILWITHERROR(MP4BadParamErr);
+
+  err = MP4GetHandleSize(inputHandle, &size);
+  if(err) goto bail;
+  err = MP4CreateMemoryInputStream(*inputHandle, size, &is);
+  if(err) goto bail;
+  is->debugging = 0;
+  err           = MP4ParseAtom(is, outAtom);
+  if(err) goto bail;
+
+bail:
+  if(is) is->destroy(is);
+  TEST_RETURN(err);
+  return err;
 }
 
 MP4Err MP4CalculateBaseAtomFieldSize(struct MP4Atom *self)

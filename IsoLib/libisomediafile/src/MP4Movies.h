@@ -17,10 +17,6 @@ extern "C"
 {
 #endif
 
-#ifndef VVCC
-#define VVCC      1 //VVC configuration box?
-#endif
-
 #define ISMACrypt
 
   /**
