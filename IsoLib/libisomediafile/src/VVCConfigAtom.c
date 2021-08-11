@@ -290,7 +290,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
       GET8_V(x);
       u8 helper = 0x80;
       for(int i = self->num_sublayers - 2; i >= 0; i--)
-      {     
+      {
         self->native_ptl.subPTL[i].ptl_sublayer_level_present_flag = (x & helper) ? 1 : 0;
         helper >>= 1;
       }
@@ -309,7 +309,6 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
         GET32(native_ptl.subPTL[j].general_sub_profile_idc);
       }
     }
-
 
     GET16(max_picture_width);
     GET16(max_picture_height);
@@ -444,22 +443,22 @@ MP4Err MP4CreateVVCConfigAtom(ISOVVCConfigAtomPtr *outAtom)
   self->addParameterSet       = addParameterSet;
   self->getParameterSet       = getParameterSet;
 
-/*
-  12 OPI Operating point information
+  /*
+    12 OPI Operating point information
 
-  13 DCI Decoding capability information
-  14 VPS
-  15 SPS
-  16 PPS
+    13 DCI Decoding capability information
+    14 VPS
+    15 SPS
+    16 PPS
 
-  19 PH Picture header
-  20 AUD
-  21 EOS
-  22 EOB
+    19 PH Picture header
+    20 AUD
+    21 EOS
+    22 EOB
 
-  17 PREFIX_APS Adaptation parameter set
-  23 PREFIX_SEI
-*/
+    17 PREFIX_APS Adaptation parameter set
+    23 PREFIX_SEI
+  */
 
   u32 nalType[] = {12, 13, 14, 15, 16, 17, 19, 20};
   for(i = 0; i < 8; i++)
