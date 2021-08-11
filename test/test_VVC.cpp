@@ -71,6 +71,39 @@ TEST_CASE("Test VVC related stuff")
     CHECK(box->num_sublayers == 5);
     CHECK(box->constant_frame_rate == 0);
     CHECK(box->chroma_format_idc == 1);
+    CHECK(box->bit_depth_minus8 == 7);
+    CHECK(box->native_ptl.num_bytes_constraint_info == 1);
+    CHECK(box->native_ptl.general_profile_idc == 1);
+    CHECK(box->native_ptl.general_tier_flag == 0);
+    CHECK(box->native_ptl.general_level_idc == 35);
+    CHECK(box->native_ptl.ptl_frame_only_constraint_flag == 1);
+    CHECK(box->native_ptl.ptl_multi_layer_enabled_flag == 0);
+
+    // TODO: add more checks based on what supposed to be in vvcC from vvc_basic_track.mp4
+
+    CHECK(box->max_picture_width == 416);
+    CHECK(box->max_picture_height == 240);
+    CHECK(box->avg_frame_rate == 0);
+    CHECK(box->num_of_arrays == 2);
+
+    for(int i=0; i<box->num_of_arrays; i++)
+    {
+      CHECK(box->arrays[i].array_completeness == 1);
+      CHECK(box->arrays[i].nalList->entryCount == 1);
+      switch (i)
+      {
+      case 0:
+        CHECK(box->arrays[i].NALtype == 15); // SPS
+        // TODO: check nalu length and nalu data after implementing functions to get them
+        break;
+      case 1:
+        CHECK(box->arrays[i].NALtype == 16); // PPS
+        // TODO: check nalu length and nalu data after implementing functions to get them
+        break;
+      default:
+        break;
+      }
+    }
 
     // TODO: add more checks based on what supposed to be in vvcC from vvc_basic_track.mp4
 

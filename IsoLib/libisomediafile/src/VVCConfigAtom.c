@@ -249,16 +249,19 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   if(err) goto bail;
 
   GET8_V(x);
-  self->LengthSizeMinusOne = (x & 0x07) >> 1;
+  self->LengthSizeMinusOne = (x & 0x06) >> 1;
   self->ptl_present_flag   = x & 0x01;
 
   if(self->ptl_present_flag)
   {
     GET16_V(x);
-    self->ols_idx             = (x & 0xffff) >> 7;
-    self->num_sublayers       = (x & 0x007f) >> 4;
-    self->constant_frame_rate = (x & 0x000f) >> 2;
+    self->ols_idx             = (x & 0xff80) >> 7;
+    self->num_sublayers       = (x & 0x0070) >> 4;
+    self->constant_frame_rate = (x & 0x000c) >> 2;
     self->chroma_format_idc   = x & 0x0003;
+
+    GET8_V(x);
+    self->bit_depth_minus8 = (x & 0xe0) >> 5;
 
     /* PTL recoder */
     {
@@ -266,22 +269,14 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
       self->native_ptl.num_bytes_constraint_info = x & 0x3f;
 
       GET8_V(x);
-      self->native_ptl.general_profile_idc = (x & 0xff) >> 1;
+      self->native_ptl.general_profile_idc = (x & 0xfe) >> 1;
       self->native_ptl.general_tier_flag   = x & 0x01;
 
-      GET8_V(x);
-      self->native_ptl.general_level_idc = x;
+      GET8(native_ptl.general_level_idc);
 
       GET8_V(x);
-      self->native_ptl.ptl_frame_only_constraint_flag = (x & 0xff) >> 7;
-      self->native_ptl.ptl_multi_layer_enabled_flag   = (x & 0x7f) >> 6;
-
-      /*
-      if(self->native_ptl.num_bytes_constraint_info == 1)
-      {
-       self->native_ptl.general_constraint_info = 0;
-      }
-      */
+      self->native_ptl.ptl_frame_only_constraint_flag = (x & 0x80) >> 7;
+      self->native_ptl.ptl_multi_layer_enabled_flag   = (x & 0x40) >> 6;
 
       self->native_ptl.general_constraint_info = x & 0x3f;
       for(u32 i = 1; i < self->native_ptl.num_bytes_constraint_info; i++)
@@ -293,13 +288,11 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
       }
 
       GET8_V(x);
-      int cnt = 7;
+      u8 helper = 0x80;
       for(int i = self->num_sublayers - 2; i >= 0; i--)
-      {
-        u8 helper = 0x01;
-        helper <<= cnt;
-        cnt--;
-        self->native_ptl.subPTL[i].ptl_sublayer_level_present_flag = x & helper;
+      {     
+        self->native_ptl.subPTL[i].ptl_sublayer_level_present_flag = (x & helper) ? 1 : 0;
+        helper >>= 1;
       }
 
       for(int i = self->num_sublayers - 2; i >= 0; i--)
@@ -317,8 +310,6 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
       }
     }
 
-    GET8_V(x);
-    self->bit_depth_minus8 = (x & 0xff) >> 5;
 
     GET16(max_picture_width);
     GET16(max_picture_height);
@@ -453,11 +444,29 @@ MP4Err MP4CreateVVCConfigAtom(ISOVVCConfigAtomPtr *outAtom)
   self->addParameterSet       = addParameterSet;
   self->getParameterSet       = getParameterSet;
 
+/*
+  12 OPI Operating point information
+
+  13 DCI Decoding capability information
+  14 VPS
+  15 SPS
+  16 PPS
+
+  19 PH Picture header
+  20 AUD
+  21 EOS
+  22 EOB
+
+  17 PREFIX_APS Adaptation parameter set
+  23 PREFIX_SEI
+*/
+
+  u32 nalType[] = {12, 13, 14, 15, 16, 17, 19, 20};
   for(i = 0; i < 8; i++)
   {
     err = MP4MakeLinkedList(&self->arrays[i].nalList);
     if(err) goto bail;
-    self->arrays[i].NALtype            = 14 + i;
+    self->arrays[i].NALtype            = nalType[i];
     self->arrays[i].array_completeness = 1;
   }
 
