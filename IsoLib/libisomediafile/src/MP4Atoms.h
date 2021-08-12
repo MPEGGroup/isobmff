@@ -1088,8 +1088,8 @@ typedef struct ISOVVCConfigAtom
     u32 ptl_frame_only_constraint_flag;
     u32 ptl_multi_layer_enabled_flag;
 
-    u32       general_constraint_info_upper; 
-    MP4Handle general_constraint_info_lower; /* DP: This can be max 502 bits, we could use MP4Handle here */
+    u32 general_constraint_info_upper;
+    MP4Handle general_constraint_info_lower;
 
     struct SubPTL
     {
@@ -1112,14 +1112,6 @@ typedef struct ISOVVCConfigAtom
     u32 NAL_unit_type;
     MP4LinkedList nalList;
   } arrays[7];
-
-  //struct
-  //{
-  //  u32 array_completeness;
-  //  u32 NAL_unit_type;
-  //  u32 num_nalus;
-  //  MP4Handle *nal_unit;
-  //};
 
 } ISOVVCConfigAtom, *ISOVVCConfigAtomPtr;
 

@@ -56,7 +56,6 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   int i;
   u32 cnt, helper;
 
-
   err = MP4SerializeCommonFullAtomFields((MP4FullAtomPtr)s, buffer);
   if(err) goto bail;
   buffer += self->bytesWritten;
@@ -89,11 +88,11 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
       x = (self->native_ptl.ptl_frame_only_constraint_flag << 7) |
           (self->native_ptl.ptl_multi_layer_enabled_flag << 6) |
           (self->native_ptl.general_constraint_info_upper);
-      
+
       if(self->native_ptl.num_bytes_constraint_info > 1)
       {
         u32 numByteGciLower = self->native_ptl.num_bytes_constraint_info - 1;
-        PUTBYTES(*self->native_ptl.general_constraint_info_lower, numByteGciLower);    
+        PUTBYTES(*self->native_ptl.general_constraint_info_lower, numByteGciLower);
       }
 
       cnt = 7;
@@ -136,7 +135,8 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
     u32 num_nalus;
     err = MP4GetListEntryCount(self->arrays[array_index].nalList, &num_nalus);
     if(err) goto bail;
-    x = (self->arrays[array_index].array_completeness << 7) | self->arrays[array_index].NAL_unit_type;
+    x =
+      (self->arrays[array_index].array_completeness << 7) | self->arrays[array_index].NAL_unit_type;
     PUT8_V(x);
     if(self->arrays[array_index].NAL_unit_type != 13 /*DCI_NUT*/ &&
        self->arrays[array_index].NAL_unit_type != 12 /*OPI_NUT*/)
@@ -207,7 +207,8 @@ static MP4Err calculateSize(struct MP4Atom *s)
       u32 num_nalus;
       err = MP4GetListEntryCount(self->arrays[j].nalList, &num_nalus);
       if(err) goto bail;
-      if(self->arrays[j].NAL_unit_type != 13 /*DCI_NUT*/ && self->arrays[j].NAL_unit_type != 12 /*OPI_NUT*/)
+      if(self->arrays[j].NAL_unit_type != 13 /*DCI_NUT*/ &&
+         self->arrays[j].NAL_unit_type != 12 /*OPI_NUT*/)
       {
         self->size += 2;
       }
@@ -286,7 +287,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
         if(err) goto bail;
         /* byte_aligned()?? */
         GETBYTES_V_MSG(numBytesGciLower, *self->native_ptl.general_constraint_info_lower,
-                       "general_constraint_info_lower"); 
+                       "general_constraint_info_lower");
       }
 
       GET8_V(x);
@@ -323,7 +324,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   {
     GET8_V(x);
     self->arrays[array_index].array_completeness = (x & 0x80) ? 1 : 0;
-    self->arrays[array_index].NAL_unit_type            = x & 0x1f;
+    self->arrays[array_index].NAL_unit_type      = x & 0x1f;
     err = MP4MakeLinkedList(&self->arrays[array_index].nalList);
     if(err) goto bail;
 
@@ -437,7 +438,7 @@ MP4Err MP4CreateVVCConfigAtom(ISOVVCConfigAtomPtr *outAtom)
     arrays with reserved or unpermitted values of NAL unit type.
   */
   u32 nalType[7] = {13, 12, 14, 15, 16, 17, 23};
-  self = (ISOVVCConfigAtomPtr)calloc(1, sizeof(ISOVVCConfigAtom));
+  self           = (ISOVVCConfigAtomPtr)calloc(1, sizeof(ISOVVCConfigAtom));
   TESTMALLOC(self);
 
   err = MP4CreateFullAtom((MP4AtomPtr)self);
@@ -455,7 +456,7 @@ MP4Err MP4CreateVVCConfigAtom(ISOVVCConfigAtomPtr *outAtom)
   {
     err = MP4MakeLinkedList(&self->arrays[i].nalList);
     if(err) goto bail;
-    self->arrays[i].NAL_unit_type            = nalType[i];
+    self->arrays[i].NAL_unit_type      = nalType[i];
     self->arrays[i].array_completeness = 1;
   }
 
