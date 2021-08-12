@@ -1109,7 +1109,7 @@ typedef struct ISOVVCConfigAtom
   struct
   {
     u32 array_completeness;
-    u32 NALtype;
+    u32 NAL_unit_type;
     MP4LinkedList nalList;
   } arrays[7];
 
