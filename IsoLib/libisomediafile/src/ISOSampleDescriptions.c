@@ -1541,7 +1541,7 @@ ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 
   err = GetBytes(bb, 1, &x);
   if(err) goto bail;
 
-  config->LengthSizeMinusOne = x & 0x06;
+  config->LengthSizeMinusOne = (x & 0x07) >> 1;
   if(config->LengthSizeMinusOne != 1 && config->LengthSizeMinusOne != 2 &&
      config->LengthSizeMinusOne != 4)
   {
