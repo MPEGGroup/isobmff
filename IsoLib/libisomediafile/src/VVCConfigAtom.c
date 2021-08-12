@@ -49,12 +49,10 @@ bail:
 static MP4Err serialize(struct MP4Atom *s, char *buffer)
 {
   MP4Err err;
-  u32 x, array_index, ui, j;
+  u32 x, array_index, ui, j, cnt, helper;
+  s32 i;
   ISOVVCConfigAtomPtr self = (ISOVVCConfigAtomPtr)s;
   err                      = MP4NoErr;
-
-  int i;
-  u32 cnt, helper;
 
   err = MP4SerializeCommonFullAtomFields((MP4FullAtomPtr)s, buffer);
   if(err) goto bail;
@@ -203,8 +201,8 @@ static MP4Err calculateSize(struct MP4Atom *s)
   {
     for(j = 0; j < self->num_of_arrays; j++)
     {
-      self->size += 1;
       u32 num_nalus;
+      self->size += 1;
       err = MP4GetListEntryCount(self->arrays[j].nalList, &num_nalus);
       if(err) goto bail;
       if(self->arrays[j].NAL_unit_type != 13 /*DCI_NUT*/ &&
