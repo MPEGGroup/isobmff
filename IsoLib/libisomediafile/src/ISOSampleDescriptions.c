@@ -46,22 +46,15 @@ MP4Err MP4ParseAtomUsingProtoList(MP4InputStreamPtr inputStream, u32 *protoList,
                                   MP4AtomPtr *outAtom);
 
 #ifdef ISMACrypt
-u32 MP4SampleEntryProtos[] = {MP4MPEGSampleEntryAtomType,
-                              MP4VisualSampleEntryAtomType,
-                              MP4AudioSampleEntryAtomType,
-                              MP4EncAudioSampleEntryAtomType,
-                              MP4EncVisualSampleEntryAtomType,
-                              MP4XMLMetaSampleEntryAtomType,
-                              MP4TextMetaSampleEntryAtomType,
-                              MP4AMRSampleEntryAtomType,
-                              MP4AWBSampleEntryAtomType,
-                              MP4AMRWPSampleEntryAtomType,
-                              MP4H263SampleEntryAtomType,
-                              MP4RestrictedVideoSampleEntryAtomType,
-                              ISOAVCSampleEntryAtomType,
-                              ISOHEVCSampleEntryAtomType,
-                              ISOVVCSampleEntryAtomType,
-                              0};
+u32 MP4SampleEntryProtos[] = {
+  MP4MPEGSampleEntryAtomType,      MP4VisualSampleEntryAtomType,
+  MP4AudioSampleEntryAtomType,     MP4EncAudioSampleEntryAtomType,
+  MP4EncVisualSampleEntryAtomType, MP4XMLMetaSampleEntryAtomType,
+  MP4TextMetaSampleEntryAtomType,  MP4AMRSampleEntryAtomType,
+  MP4AWBSampleEntryAtomType,       MP4AMRWPSampleEntryAtomType,
+  MP4H263SampleEntryAtomType,      MP4RestrictedVideoSampleEntryAtomType,
+  ISOAVCSampleEntryAtomType,       ISOHEVCSampleEntryAtomType,
+  ISOVVCSampleEntryAtomType,       0};
 #else
 u32 MP4SampleEntryProtos[] = {MP4MPEGSampleEntryAtomType,
                               MP4VisualSampleEntryAtomType,

@@ -284,8 +284,10 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
       GET8_V(x);
       self->native_ptl.ptl_frame_only_constraint_flag = (x & 0x80) >> 7;
       self->native_ptl.ptl_multi_layer_enabled_flag   = (x & 0x40) >> 6;
-      DEBUG_SPRINTF("ptl_frame_only_constraint_flag = %u", self->native_ptl.ptl_frame_only_constraint_flag);
-      DEBUG_SPRINTF("ptl_multi_layer_enabled_flag = %u", self->native_ptl.ptl_multi_layer_enabled_flag);
+      DEBUG_SPRINTF("ptl_frame_only_constraint_flag = %u",
+                    self->native_ptl.ptl_frame_only_constraint_flag);
+      DEBUG_SPRINTF("ptl_multi_layer_enabled_flag = %u",
+                    self->native_ptl.ptl_multi_layer_enabled_flag);
 
       self->native_ptl.general_constraint_info_upper = x & 0x3f;
       if(self->native_ptl.num_bytes_constraint_info > 1)
