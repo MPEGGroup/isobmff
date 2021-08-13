@@ -93,11 +93,11 @@ TEST_CASE("Test VVC related stuff")
       switch (i)
       {
       case 0:
-        CHECK(box->arrays[i].NALtype == 15); // SPS
+        CHECK(box->arrays[i].NAL_unit_type == 15); // SPS
         // TODO: check nalu length and nalu data after implementing functions to get them
         break;
       case 1:
-        CHECK(box->arrays[i].NALtype == 16); // PPS
+        CHECK(box->arrays[i].NAL_unit_type == 16); // PPS
         // TODO: check nalu length and nalu data after implementing functions to get them
         break;
       default:

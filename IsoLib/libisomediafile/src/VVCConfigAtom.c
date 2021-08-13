@@ -49,7 +49,8 @@ bail:
 static MP4Err serialize(struct MP4Atom *s, char *buffer)
 {
   MP4Err err;
-  u32 x, array_index;
+  u32 x, array_index, ui, j, cnt, helper;
+  s32 i;
   ISOVVCConfigAtomPtr self = (ISOVVCConfigAtomPtr)s;
   err                      = MP4NoErr;
 
@@ -83,30 +84,26 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
       PUT8(native_ptl.general_level_idc);
 
       x = (self->native_ptl.ptl_frame_only_constraint_flag << 7) |
-          (self->native_ptl.ptl_multi_layer_enabled_flag << 6);
-      int gciNum = 8 * self->native_ptl.num_bytes_constraint_info - 2;
-      gciNum -= 6;
-      u32 h1 = (self->native_ptl.general_constraint_info >> gciNum) & 0xff;
-      x |= h1;
-      PUT8_V(x);
-      while(gciNum > 0)
+          (self->native_ptl.ptl_multi_layer_enabled_flag << 6) |
+          (self->native_ptl.general_constraint_info_upper);
+
+      if(self->native_ptl.num_bytes_constraint_info > 1)
       {
-        x = (self->native_ptl.general_constraint_info >> gciNum) & 0xff;
-        PUT8_V(x);
-        gciNum -= 8;
+        u32 numByteGciLower = self->native_ptl.num_bytes_constraint_info - 1;
+        PUTBYTES(*self->native_ptl.general_constraint_info_lower, numByteGciLower);
       }
 
-      int cnt = 7;
-      x       = 0;
-      for(int i = self->num_sublayers - 2; i >= 0; i--) /* int with u32 ? */
+      cnt = 7;
+      x   = 0;
+      for(i = self->num_sublayers - 2; i >= 0; i--) /* int with u32 ? */
       {
-        u32 helper = (self->native_ptl.subPTL[i].ptl_sublayer_level_present_flag << cnt) & 0xff;
+        helper = (self->native_ptl.subPTL[i].ptl_sublayer_level_present_flag << cnt) & 0xff;
         cnt--;
         x |= helper;
       }
       PUT8_V(x);
 
-      for(int i = self->num_sublayers - 2; i >= 0; i--)
+      for(i = self->num_sublayers - 2; i >= 0; i--)
       {
         if(self->native_ptl.subPTL[i].ptl_sublayer_level_present_flag)
         {
@@ -116,9 +113,9 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
 
       PUT8(native_ptl.ptl_num_sub_profiles);
 
-      for(u32 j = 0; j < self->native_ptl.ptl_num_sub_profiles; j++)
+      for(j = 0; j < self->native_ptl.ptl_num_sub_profiles; j++)
       {
-        PUT32(native_ptl.subPTL[j].general_sub_profile_idc);
+        PUT32(native_ptl.general_sub_profile_idc[j]);
       }
     }
 
@@ -133,29 +130,29 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
 
   for(array_index = 0; array_index < self->num_of_arrays; array_index++)
   {
-    u32 count;
-    err = MP4GetListEntryCount(self->arrays[array_index].nalList, &count);
+    u32 num_nalus;
+    err = MP4GetListEntryCount(self->arrays[array_index].nalList, &num_nalus);
     if(err) goto bail;
-    x = (self->arrays[array_index].array_completeness << 7) | self->arrays[array_index].NALtype;
+    x =
+      (self->arrays[array_index].array_completeness << 7) | self->arrays[array_index].NAL_unit_type;
     PUT8_V(x);
-    if(self->arrays[array_index].NALtype != 13 /*DCI_NUT*/ &&
-       self->arrays[array_index].NALtype != 12 /*OPI_NUT*/)
+    if(self->arrays[array_index].NAL_unit_type != 13 /*DCI_NUT*/ &&
+       self->arrays[array_index].NAL_unit_type != 12 /*OPI_NUT*/)
     {
       /* num_nalus */
-      PUT16_V(count);
+      PUT16_V(num_nalus);
     }
     else
     {
       /* When not present, the value of numNalus is inferred to be equal to 1 */
-      assert(count == 1);
-      count = 1;
+      assert(num_nalus == 1);
+      num_nalus = 1;
     }
-    u32 i;
-    for(i = 0; i < count; i++)
+    for(ui = 0; ui < num_nalus; ui++)
     {
       MP4Handle b;
       u32 the_size;
-      err = MP4GetListEntry(self->arrays[array_index].nalList, i, (char **)&b);
+      err = MP4GetListEntry(self->arrays[array_index].nalList, ui, (char **)&b);
       if(err) goto bail;
       err = MP4GetHandleSize(b, &the_size);
       if(err) goto bail;
@@ -173,7 +170,8 @@ static MP4Err calculateSize(struct MP4Atom *s)
 {
   MP4Err err;
   ISOVVCConfigAtomPtr self = (ISOVVCConfigAtomPtr)s;
-  u32 i, ii;
+  u32 j, i, y;
+  int x;
   err = MP4NoErr;
 
   err = MP4CalculateFullAtomFieldSize((MP4FullAtomPtr)s);
@@ -187,11 +185,11 @@ static MP4Err calculateSize(struct MP4Atom *s)
     self->size += self->native_ptl.num_bytes_constraint_info;
     {
       self->size += 1;
-      for(int x = self->num_sublayers - 2; x >= 0; x--)
+      for(x = self->num_sublayers - 2; x >= 0; x--)
       {
         if(self->native_ptl.subPTL->ptl_sublayer_level_present_flag) self->size += 1;
       }
-      for(u32 y = 0; y < self->native_ptl.ptl_num_sub_profiles; y++)
+      for(y = 0; y < self->native_ptl.ptl_num_sub_profiles; y++)
       {
         self->size += 4;
       }
@@ -201,29 +199,28 @@ static MP4Err calculateSize(struct MP4Atom *s)
 
   if(self->num_of_arrays)
   {
-    for(i = 0; i < self->num_of_arrays; i++)
+    for(j = 0; j < self->num_of_arrays; j++)
     {
+      u32 num_nalus;
       self->size += 1;
-
-      u32 count;
-      err = MP4GetListEntryCount(self->arrays[i].nalList, &count);
+      err = MP4GetListEntryCount(self->arrays[j].nalList, &num_nalus);
       if(err) goto bail;
-
-      if(self->arrays[i].NALtype != 13 /*DCI_NUT*/ && self->arrays[i].NALtype != 12 /*OPI_NUT*/)
+      if(self->arrays[j].NAL_unit_type != 13 /*DCI_NUT*/ &&
+         self->arrays[j].NAL_unit_type != 12 /*OPI_NUT*/)
       {
         self->size += 2;
       }
       else
       {
-        assert(count == 1);
-        count = 1;
+        assert(num_nalus == 1);
+        num_nalus = 1;
       }
 
-      for(ii = 0; ii < count; ii++)
+      for(i = 0; i < num_nalus; i++)
       {
         MP4Handle b;
         u32 the_size;
-        err = MP4GetListEntry(self->arrays[i].nalList, ii, (char **)&b);
+        err = MP4GetListEntry(self->arrays[j].nalList, i, (char **)&b);
         if(err) goto bail;
         err = MP4GetHandleSize(b, &the_size);
         if(err) goto bail;
@@ -241,7 +238,9 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
 {
   MP4Err err;
   ISOVVCConfigAtomPtr self = (ISOVVCConfigAtomPtr)s;
-  u32 x, count, array_index;
+  u32 x, num_nalus, array_index, j, numBytesGciLower, ui;
+  int i;
+  u8 helper;
 
   err = MP4NoErr;
   if(self == NULL) BAILWITHERROR(MP4BadParamErr)
@@ -288,24 +287,26 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
       DEBUG_SPRINTF("ptl_frame_only_constraint_flag = %u", self->native_ptl.ptl_frame_only_constraint_flag);
       DEBUG_SPRINTF("ptl_multi_layer_enabled_flag = %u", self->native_ptl.ptl_multi_layer_enabled_flag);
 
-      self->native_ptl.general_constraint_info = x & 0x3f;
-      for(u32 i = 1; i < self->native_ptl.num_bytes_constraint_info; i++)
+      self->native_ptl.general_constraint_info_upper = x & 0x3f;
+      if(self->native_ptl.num_bytes_constraint_info > 1)
       {
-        self->native_ptl.general_constraint_info <<= 8;
-        GET8_V(x);
-        /* out of range pj?? */
-        self->native_ptl.general_constraint_info |= x;
+        numBytesGciLower = self->native_ptl.num_bytes_constraint_info;
+        err = MP4NewHandle(numBytesGciLower, &self->native_ptl.general_constraint_info_lower);
+        if(err) goto bail;
+        /* byte_aligned()?? */
+        GETBYTES_V_MSG(numBytesGciLower, *self->native_ptl.general_constraint_info_lower,
+                       "general_constraint_info_lower");
       }
 
       GET8_V(x);
-      u8 helper = 0x80;
-      for(int i = self->num_sublayers - 2; i >= 0; i--)
+      helper = 0x80;
+      for(i = self->num_sublayers - 2; i >= 0; i--)
       {
         self->native_ptl.subPTL[i].ptl_sublayer_level_present_flag = (x & helper) ? 1 : 0;
         helper >>= 1;
       }
 
-      for(int i = self->num_sublayers - 2; i >= 0; i--)
+      for(i = self->num_sublayers - 2; i >= 0; i--)
       {
         if(self->native_ptl.subPTL[i].ptl_sublayer_level_present_flag)
         {
@@ -314,9 +315,9 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
       }
 
       GET8(native_ptl.ptl_num_sub_profiles);
-      for(u32 j = 0; j < self->native_ptl.ptl_num_sub_profiles; j++)
+      for(j = 0; j < self->native_ptl.ptl_num_sub_profiles; j++)
       {
-        GET32(native_ptl.subPTL[j].general_sub_profile_idc);
+        GET32(native_ptl.general_sub_profile_idc[j]);
       }
     }
 
@@ -331,32 +332,31 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   {
     GET8_V(x);
     self->arrays[array_index].array_completeness = (x & 0x80) ? 1 : 0;
-    self->arrays[array_index].NALtype            = x & 0x1f;
-    DEBUG_SPRINTF("NALtype = %u", self->arrays[array_index].NALtype);
+    self->arrays[array_index].NAL_unit_type      = x & 0x1f;
+    DEBUG_SPRINTF("NAL_unit_type = %u", self->arrays[array_index].NAL_unit_type);
     err = MP4MakeLinkedList(&self->arrays[array_index].nalList);
     if(err) goto bail;
 
-    if(self->arrays[array_index].NALtype != 13 /*DCI_NUT*/ &&
-       self->arrays[array_index].NALtype != 12 /*OPI_NUT*/)
+    if(self->arrays[array_index].NAL_unit_type != 13 /*DCI_NUT*/ &&
+       self->arrays[array_index].NAL_unit_type != 12 /*OPI_NUT*/)
     {
-      GET16_V(count);
+      GET16_V(num_nalus);
     }
     else
     {
-      count = 1;
+      num_nalus = 1;
     }
-    u32 i;
-    for(i = 0; i < count; i++)
+
+    for(ui = 0; ui < num_nalus; ui++)
     {
-      MP4Handle b;
-      u32 the_size;
+      MP4Handle nal_unit;
+      u32 nal_unit_length;
 
-      GET16_V(the_size);
-      err = MP4NewHandle(the_size, &b);
+      GET16_V(nal_unit_length);
+      err = MP4NewHandle(nal_unit_length, &nal_unit);
       if(err) goto bail;
-
-      GETBYTES_V_MSG(the_size, *b, "NAL");
-      err = MP4AddListEntry((void *)b, self->arrays[array_index].nalList);
+      GETBYTES_V_MSG(nal_unit_length, *nal_unit, "NAL");
+      err = MP4AddListEntry((void *)nal_unit, self->arrays[array_index].nalList);
       if(err) goto bail;
     }
   }
@@ -380,9 +380,9 @@ static MP4Err addParameterSet(struct ISOVVCConfigAtom *self, MP4Handle ps, u32 n
   if(err) goto bail;
   memcpy(*b, *ps, the_size);
 
-  for(i = 0; i < 8; i++) /* pj?? */
+  for(i = 0; i < 7; i++)
   {
-    if(self->arrays[i].NALtype == nalu)
+    if(self->arrays[i].NAL_unit_type == nalu)
     {
       u32 nalCount = 0;
       err          = MP4GetListEntryCount(self->arrays[i].nalList, &nalCount);
@@ -414,7 +414,7 @@ static MP4Err getParameterSet(struct ISOVVCConfigAtom *self, MP4Handle ps, u32 n
 
   for(i = 0; i < self->num_of_arrays; i++)
   {
-    if(self->arrays[i].NALtype == nalu)
+    if(self->arrays[i].NAL_unit_type == nalu)
     {
       err = MP4GetListEntry(self->arrays[i].nalList, index - 1, (char **)&b);
       if(err) goto bail;
@@ -439,8 +439,15 @@ MP4Err MP4CreateVVCConfigAtom(ISOVVCConfigAtomPtr *outAtom)
   MP4Err err;
   ISOVVCConfigAtomPtr self;
   u32 i;
-
-  self = (ISOVVCConfigAtomPtr)calloc(1, sizeof(ISOVVCConfigAtom));
+  /*
+    There is a set of arrays to carry initialization non-VCL NAL units. The NAL unit types are
+    restricted to indicate DCI(13), OPI(12), VPS(14), SPS(15), PPS(16), prefix APS(17), and prefix
+    SEI(23) NAL units only. NAL unit types that are reserved in ISO/IEC 23090-3 and in this
+    specification may acquire a definition in the future specification, and readers should ignore
+    arrays with reserved or unpermitted values of NAL unit type.
+  */
+  u32 nalType[7] = {13, 12, 14, 15, 16, 17, 23};
+  self           = (ISOVVCConfigAtomPtr)calloc(1, sizeof(ISOVVCConfigAtom));
   TESTMALLOC(self);
 
   err = MP4CreateFullAtom((MP4AtomPtr)self);
@@ -454,29 +461,11 @@ MP4Err MP4CreateVVCConfigAtom(ISOVVCConfigAtomPtr *outAtom)
   self->addParameterSet       = addParameterSet;
   self->getParameterSet       = getParameterSet;
 
-  /*
-    12 OPI Operating point information
-
-    13 DCI Decoding capability information
-    14 VPS
-    15 SPS
-    16 PPS
-
-    19 PH Picture header
-    20 AUD
-    21 EOS
-    22 EOB
-
-    17 PREFIX_APS Adaptation parameter set
-    23 PREFIX_SEI
-  */
-
-  u32 nalType[] = {12, 13, 14, 15, 16, 17, 19, 20};
-  for(i = 0; i < 8; i++)
+  for(i = 0; i < 7; i++)
   {
     err = MP4MakeLinkedList(&self->arrays[i].nalList);
     if(err) goto bail;
-    self->arrays[i].NALtype            = nalType[i];
+    self->arrays[i].NAL_unit_type      = nalType[i];
     self->arrays[i].array_completeness = 1;
   }
 

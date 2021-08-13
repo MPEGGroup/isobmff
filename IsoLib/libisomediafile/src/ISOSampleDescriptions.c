@@ -1510,6 +1510,8 @@ ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 
   MP4TrackAtomPtr trak;
   BitBuffer mybb;
   BitBuffer *bb;
+  u32 the_size;
+  u8 x;
 
   if((theTrack == NULL) || (sampleDescriptionH == NULL))
   {
@@ -1531,7 +1533,6 @@ ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 
 
   if(!test) BAILWITHERROR(MP4BadParamErr);
 
-  u32 the_size;
   err = MP4GetHandleSize(test, &the_size);
   if(err) goto bail;
 
@@ -1540,11 +1541,10 @@ ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 
   if(err) goto bail;
   bb->prevent_emulation = 1;
 
-  u8 x;
   err = GetBytes(bb, 1, &x);
   if(err) goto bail;
 
-  config->LengthSizeMinusOne = x & 0x06;
+  config->LengthSizeMinusOne = (x & 0x07) >> 1;
   if(config->LengthSizeMinusOne != 1 && config->LengthSizeMinusOne != 2 &&
      config->LengthSizeMinusOne != 4)
   {
