@@ -261,6 +261,8 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   GET8_V(x);
   self->LengthSizeMinusOne = (x & 0x06) >> 1;
   self->ptl_present_flag   = x & 0x01;
+  DEBUG_SPRINTF("LengthSizeMinusOne = %u", self->LengthSizeMinusOne);
+  DEBUG_SPRINTF("ptl_present_flag = %u", self->ptl_present_flag);
 
   if(self->ptl_present_flag)
   {
@@ -273,6 +275,10 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
     GET8_V(x);
     self->bit_depth_minus8 = (x & 0xe0) >> 5;
 
+    DEBUG_SPRINTF("num_sublayers = %u", self->num_sublayers);
+    DEBUG_SPRINTF("chroma_format_idc = %u", self->chroma_format_idc);
+    DEBUG_SPRINTF("bit_depth_minus8 = %u", self->bit_depth_minus8);
+
     /* PTL recoder */
     {
       GET8_V(x);
@@ -281,12 +287,18 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
       GET8_V(x);
       self->native_ptl.general_profile_idc = (x & 0xfe) >> 1;
       self->native_ptl.general_tier_flag   = x & 0x01;
+      DEBUG_SPRINTF("general_profile_idc = %u", self->native_ptl.general_profile_idc);
+      DEBUG_SPRINTF("general_tier_flag = %u", self->native_ptl.general_tier_flag);
 
       GET8(native_ptl.general_level_idc);
 
       GET8_V(x);
       self->native_ptl.ptl_frame_only_constraint_flag = (x & 0x80) >> 7;
       self->native_ptl.ptl_multi_layer_enabled_flag   = (x & 0x40) >> 6;
+      DEBUG_SPRINTF("ptl_frame_only_constraint_flag = %u",
+                    self->native_ptl.ptl_frame_only_constraint_flag);
+      DEBUG_SPRINTF("ptl_multi_layer_enabled_flag = %u",
+                    self->native_ptl.ptl_multi_layer_enabled_flag);
 
       self->native_ptl.general_constraint_info_upper = x & 0x3f;
       if(self->native_ptl.num_bytes_constraint_info > 1)
@@ -334,6 +346,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
     GET8_V(x);
     self->arrays[array_index].array_completeness = (x & 0x80) ? 1 : 0;
     self->arrays[array_index].NAL_unit_type      = x & 0x1f;
+    DEBUG_SPRINTF("NAL_unit_type = %u", self->arrays[array_index].NAL_unit_type);
     err = MP4MakeLinkedList(&self->arrays[array_index].nalList);
     if(err) goto bail;
 
