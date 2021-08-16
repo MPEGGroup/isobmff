@@ -1839,7 +1839,7 @@ ISOGetVVCSampleDescription(MP4Handle sampleEntryH, u32 *dataReferenceIndex, u32 
   }
 
   *dataReferenceIndex = entry->dataReferenceIndex;
-  *length_size = config->LengthSizeMinusOne + 1;
+  *length_size        = config->LengthSizeMinusOne + 1;
 
   for(i = 0; i < 7; i++)
   {
