@@ -673,6 +673,17 @@ extern "C"
    * @param index the indexes start at 1 (1 is the first parameter set in the indicated array).
    */
   ISO_EXTERN(ISOErr)
+  ISOGetVVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, u32 index);
+  /**
+   * @brief Gets a VVC parameter set, placing it in the given handle
+   * @ingroup SampleDescr
+   *
+   * @param sampleEntryH input sample entry handle
+   * @param ps output handle which is holding the parameter set.
+   * @param where can be VVC vps, sps, pps, dci, opi, prefix APS, prefix SEI.
+   * @param index the indexes start at 1 (1 is the first parameter set in the indicated array).
+   */
+  ISO_EXTERN(ISOErr)
   ISOGetRESVSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, u32 index);
   /**
    * @brief Get the NALUnitLength size in bytes
@@ -713,7 +724,11 @@ extern "C"
    */
   ISO_EXTERN(ISOErr)
   ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
-                             u32 dataReferenceIndex, MP4Handle test);
+                             u32 dataReferenceIndex, u32 length_size, MP4Handle first_sps);
+
+  MP4_EXTERN(MP4Err)
+  ISOGetVVCSampleDescription(MP4Handle sampleEntryH, u32 *dataReferenceIndex, u32 *length_size,
+                             u32 naluType, u32 *count);
 
   /*************************************************************************************************
    * 3GPP media

@@ -5,7 +5,7 @@
  * @brief Testing of VVC related functions
  * @version 0.1
  * @date 2020-11-20
- * 
+ *
  * @copyright This software module was originally developed by Apple Computer, Inc. in the course of
  * development of MPEG-4. This software module is an implementation of a part of one or more MPEG-4
  * tools as specified by MPEG-4. ISO/IEC gives users of MPEG-4 free license to this software module
@@ -25,13 +25,14 @@
 #include <ISOMovies.h>
 #include <MP4Atoms.h>
 #include "test_helpers.h"
+#include <MP4LinkedList.c>
 
 TEST_CASE("Test VVC related stuff")
 {
   MP4Err err = MP4NoErr;
 
   SECTION("Parsing simple vvcC")
-  { 
+  {
     MP4Handle w_handle1;
     ISOVVCConfigAtomPtr box;
 
@@ -52,7 +53,7 @@ TEST_CASE("Test VVC related stuff")
   }
 
   SECTION("Parsing vvcC from vvc_basic_track.mp4")
-  { 
+  {
     MP4Handle w_handle1;
     ISOVVCConfigAtomPtr box;
 
@@ -86,19 +87,39 @@ TEST_CASE("Test VVC related stuff")
     CHECK(box->avg_frame_rate == 0);
     CHECK(box->num_of_arrays == 2);
 
-    for(int i=0; i<box->num_of_arrays; i++)
+    for(int i = 0; i < box->num_of_arrays; i++)
     {
       CHECK(box->arrays[i].array_completeness == 1);
       CHECK(box->arrays[i].nalList->entryCount == 1);
-      switch (i)
+      switch(i)
       {
       case 0:
         CHECK(box->arrays[i].NAL_unit_type == 15); // SPS
         // TODO: check nalu length and nalu data after implementing functions to get them
+        MP4Handle sps;
+        u32 sps_length, sps_cnt;
+        err = MP4GetListEntryCount(box->arrays[i].nalList, &sps_cnt);
+        CHECK(err == MP4NoErr);
+        CHECK(sps_cnt == 1);
+        err = MP4GetListEntry(box->arrays[i].nalList, 0, (char **)&sps);
+        err = MP4GetHandleSize(sps, &sps_length);
+        CHECK(err == MP4NoErr);
+        // 0x00C5
+        CHECK(sps_length == 197);
         break;
       case 1:
         CHECK(box->arrays[i].NAL_unit_type == 16); // PPS
         // TODO: check nalu length and nalu data after implementing functions to get them
+        MP4Handle pps;
+        u32 pps_length, pps_cnt;
+        err = MP4GetListEntryCount(box->arrays[i].nalList, &pps_cnt);
+        CHECK(err == MP4NoErr);
+        CHECK(pps_cnt == 1);
+        err = MP4GetListEntry(box->arrays[i].nalList, 0, (char **)&pps);
+        err = MP4GetHandleSize(pps, &pps_length);
+        CHECK(err == MP4NoErr);
+        // 0x000D
+        CHECK(pps_length == 13);
         break;
       default:
         break;
@@ -111,4 +132,47 @@ TEST_CASE("Test VVC related stuff")
     MP4DisposeHandle(w_handle1);
   }
 
+  SECTION("creat vvcC from SPS") {
+    MP4Handle sps, sampleEntryH;
+    ISOVVCConfigAtomPtr box;
+
+    ISOMovie moov;
+    ISOMedia media;
+    ISOTrack trak;
+    err = MP4NewMovie(&moov, 0, 0, 0, 0, 0, 0);
+    REQUIRE(err == ISONoErr);
+    err = ISONewMovieTrack(moov, MP4NewTrackIsVisual, &trak);
+    REQUIRE(err == ISONoErr);
+    err = ISONewTrackMedia(trak, &media, ISOVisualHandlerType, TIMESCALE, NULL);
+    REQUIRE(err == ISONoErr);
+
+    err = createHandleFromBuffer(&sps, VVC::SPS, sizeof(VVC::SPS));
+    REQUIRE(err == MP4NoErr);
+
+    u32 lengthSize = 4;
+    err            = MP4NewHandle(0, &sampleEntryH);
+    err            = ISONewVVCSampleDescription(trak, sampleEntryH, 1, lengthSize, sps);
+    CHECK(err == ISONoErr);
+
+    // get sampledescription type
+    u32 typeOut = 0;
+    err         = ISOGetSampleDescriptionType(sampleEntryH, &typeOut);
+    CHECK(err == ISONoErr);
+    CHECK(typeOut == MP4_FOUR_CHAR_CODE('v', 'v', 'c', '1'));
+
+    u32 dataReferenceIndex, length_size, count;
+    err = ISOGetVVCSampleDescription(sampleEntryH, &dataReferenceIndex, &length_size, 15, &count);
+    CHECK(dataReferenceIndex == 1);
+    CHECK(length_size == 4);
+    CHECK(count == 1);
+
+    // test get parameter sets
+    ISOHandle spsHandleOut;
+    ISONewHandle(0, &spsHandleOut);
+    err = ISOGetVVCSampleDescriptionPS(sampleEntryH, spsHandleOut, 15, 1);
+    CHECK(err == ISONoErr);
+    err = compareData(spsHandleOut, VVC::SPS, sizeof(VVC::SPS));
+    CHECK(err == ISONoErr);
+
+  }
 }

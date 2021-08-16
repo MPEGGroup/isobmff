@@ -1,4 +1,4 @@
-/* This software module was originally developed by Apple Computer, Inc.
+﻿/* This software module was originally developed by Apple Computer, Inc.
  * in the course of development of MPEG-4.
  * This software module is an implementation of a part of one or
  * more MPEG-4 tools as specified by MPEG-4.
@@ -35,6 +35,7 @@
 #include "MP4DataHandler.h"
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 MP4Err MP4GetMediaESD(MP4Media theMedia, u32 index, MP4ES_DescriptorPtr *outESD,
                       u32 *outDataReferenceIndex);
@@ -1179,6 +1180,31 @@ bail:
 }
 
 MP4_EXTERN(MP4Err)
+ISOGetVVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, u32 index)
+{
+  MP4Err err                        = MP4NoErr;
+  MP4VisualSampleEntryAtomPtr entry = NULL;
+  ISOVVCConfigAtomPtr config;
+
+  err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType);
+  if(err) goto bail;
+
+  if(entry->type != ISOVVCSampleEntryAtomType) BAILWITHERROR(MP4BadParamErr);
+  err = MP4GetListEntryAtom(entry->ExtensionAtomList, ISOVVCConfigAtomType, (MP4AtomPtr *)&config);
+  if(err == MP4NotFoundErr)
+  {
+    BAILWITHERROR(MP4BadDataErr);
+  }
+
+  err = config->getParameterSet(config, ps, where, index);
+  if(err) goto bail;
+
+bail:
+  if(entry) entry->destroy((MP4AtomPtr)entry);
+  return err;
+}
+
+MP4_EXTERN(MP4Err)
 ISOGetRESVSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, u32 index)
 {
   MP4Err err                        = MP4NoErr;
@@ -1490,13 +1516,9 @@ bail:
   return err;
 }
 
-/**
- * @todo pjtodo Implement me
- *
- */
 MP4_EXTERN(MP4Err)
 ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 dataReferenceIndex,
-                           MP4Handle test)
+                           u32 length_size, MP4Handle first_sps)
 {
   MP4Err MP4CreateVisualSampleEntryAtom(MP4VisualSampleEntryAtomPtr * outAtom);
   MP4Err MP4CreateVVCConfigAtom(ISOVVCConfigAtomPtr * outAtom);
@@ -1507,13 +1529,17 @@ ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 
   MP4TrackAtomPtr trak;
   BitBuffer mybb;
   BitBuffer *bb;
-  u32 the_size;
+  u32 the_size, ue, ui, y, uvBits, tmpWidthVal, tmpHeightVal;
+  s32 i;
   u8 x;
+  u8 gciBuffer[10];
 
-  if((theTrack == NULL) || (sampleDescriptionH == NULL))
-  {
-    BAILWITHERROR(MP4BadParamErr);
-  }
+  u32 CtbSize, sps_num_subpics_minus1, sps_independent_subpics_flag, sps_subpic_same_size_flag,
+    sps_subpic_id_len_minus1, gci_present_flag, gci_num_reserved_bits;
+
+  if((theTrack == NULL) || (sampleDescriptionH == NULL)) BAILWITHERROR(MP4BadParamErr);
+  if(length_size != 1 && length_size != 2 && length_size != 4) BAILWITHERROR(MP4BadParamErr);
+  if(!first_sps) BAILWITHERROR(MP4BadParamErr);
 
   trak = (MP4TrackAtomPtr)theTrack;
   if(!(trak->newTrackFlags & MP4NewTrackIsVisual)) BAILWITHERROR(MP4BadParamErr);
@@ -1528,39 +1554,308 @@ ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 
   err = MP4AddListEntry((void *)config, entry->ExtensionAtomList);
   if(err) goto bail;
 
-  if(!test) BAILWITHERROR(MP4BadParamErr);
+  config->LengthSizeMinusOne = length_size - 1;
 
-  err = MP4GetHandleSize(test, &the_size);
+  err = MP4GetHandleSize(first_sps, &the_size);
   if(err) goto bail;
 
   bb  = &mybb;
-  err = BitBuffer_Init(bb, (u8 *)*test, 8 * the_size);
+  err = BitBuffer_Init(bb, (u8 *)*first_sps, 8 * the_size);
   if(err) goto bail;
   bb->prevent_emulation = 1;
 
+  /* Get first two bytes for nal_unit_type */
+  err = GetBytes(bb, 1, &x);
   err = GetBytes(bb, 1, &x);
   if(err) goto bail;
+  /* SPS == 15 */
+  if((x >> 3) != 15) BAILWITHERROR(MP4BadParamErr);
 
-  config->LengthSizeMinusOne = (x & 0x07) >> 1;
-  if(config->LengthSizeMinusOne != 1 && config->LengthSizeMinusOne != 2 &&
-     config->LengthSizeMinusOne != 4)
-  {
-    BAILWITHERROR(MP4BadParamErr);
-  }
-  config->ptl_present_flag = x & 0x01;
+  err = GetBytes(bb, 1, &x);
+  if(err) goto bail;
+  err = GetBytes(bb, 1, &x);
+  if(err) goto bail;
+  /* sps_max_sublayers_minus1 */
+  config->num_sublayers     = ((x & 0xff) >> 5) + 1;
+  config->chroma_format_idc = (x & 0x1f) >> 3;
+  CtbSize                   = ((x & 0x60) >> 1) + 5;
+  CtbSize                   = (u32)pow(2, CtbSize);
+  config->ptl_present_flag  = x & 0x01;
 
   if(config->ptl_present_flag)
   {
-    /* TODO: implement me*/
+    err = GetBytes(bb, 1, &x);
+    if(err) goto bail;
+    config->native_ptl.general_profile_idc = (x & 0xff) >> 1;
+    config->native_ptl.general_tier_flag   = x & 0x01;
+
+    err = GetBytes(bb, 1, &x);
+    if(err) goto bail;
+    config->native_ptl.general_level_idc = x;
+
+    x = (u8)GetBits(bb, 1, &err);
+    if(err) goto bail;
+    config->native_ptl.ptl_frame_only_constraint_flag = x;
+
+    x = (u8)GetBits(bb, 1, &err);
+    if(err) goto bail;
+    config->native_ptl.ptl_multi_layer_enabled_flag = x;
+
+    /* general_constraints_info */
+    {
+      /* gci_present_flag */
+      x = (u8)GetBits(bb, 1, &err);
+      if(err) goto bail;
+      gci_present_flag = x;
+      if(!gci_present_flag)
+      {
+        config->native_ptl.general_constraint_info_upper = 0;
+        config->native_ptl.num_bytes_constraint_info     = 1;
+      }
+      else
+      {
+        x = (u8)GetBits(bb, 5, &err);
+        if(err) goto bail;
+        config->native_ptl.general_constraint_info_upper = x | (gci_present_flag << 5);
+        config->native_ptl.num_bytes_constraint_info     = 1;
+        for(ui = 0; ui < 9; ui++)
+        {
+          err = GetBytes(bb, 1, &x);
+          if(err) goto bail;
+          gciBuffer[ui] = x;
+          config->native_ptl.num_bytes_constraint_info += 1;
+        }
+        gci_num_reserved_bits = (x & 0x1f) << 3;
+        x                     = (u8)GetBits(bb, 3, &err);
+        gci_num_reserved_bits |= x;
+        gciBuffer[config->native_ptl.num_bytes_constraint_info - 1] = (u8)x << 5;
+        config->native_ptl.num_bytes_constraint_info += ((gci_num_reserved_bits + 3) / 8);
+
+        assert(config->native_ptl.num_bytes_constraint_info == 11);
+
+        err = MP4NewHandle(config->native_ptl.num_bytes_constraint_info,
+                           &config->native_ptl.general_constraint_info_lower);
+        memcpy((**&config->native_ptl.general_constraint_info_lower), gciBuffer,
+               config->native_ptl.num_bytes_constraint_info);
+      }
+    }
+    /* byte_alligned */
+    while(bb->curbits % 8 != 0)
+    {
+      x = (u8)GetBits(bb, 1, &err);
+      if(err) goto bail;
+    }
+    assert(bb->curbits % 8 == 0);
+
+    for(i = config->num_sublayers - 2; i >= 0; i--)
+    {
+      x = (u8)GetBits(bb, 1, &err);
+      if(err) goto bail;
+      config->native_ptl.subPTL[i].ptl_sublayer_level_present_flag = x;
+    }
+    for(ui = config->num_sublayers; ui <= 8 && config->num_sublayers > 1; ui++)
+    {
+      /* ptl_reserved_zero_bit, for byte aligned */
+      x = (u8)GetBits(bb, 1, &err);
+      if(err) goto bail;
+    }
+    assert(bb->curbits % 8 == 0);
+
+    for(i = config->num_sublayers - 2; i >= 0; i--)
+    {
+      if(config->native_ptl.subPTL[i].ptl_sublayer_level_present_flag)
+      {
+        err = GetBytes(bb, 1, &x);
+        if(err) goto bail;
+        config->native_ptl.subPTL[i].sublayer_level_idc = x;
+      }
+    }
+
+    err = GetBytes(bb, 1, &x);
+    if(err) goto bail;
+    config->native_ptl.ptl_num_sub_profiles = x;
+
+    for(ui = 0; ui < config->native_ptl.ptl_num_sub_profiles; ui++)
+    {
+      y = (u32)GetBits(bb, 32, &err);
+      if(err) goto bail;
+      config->native_ptl.general_sub_profile_idc[ui] = y;
+    }
   }
-  err = GetBytes(bb, 1, &x);
+
+  /* sps_gdr_enabled_flag */
+  x = (u8)GetBits(bb, 1, &err);
   if(err) goto bail;
-  config->num_of_arrays = x & 0xff;
+  /* sps_ref_pic_resampling_enabled_flag */
+  x = (u8)GetBits(bb, 1, &err);
+  if(err) goto bail;
+  if(x)
+  {
+    /* sps_res_change_in_clvs_allowed_flag */
+    x = (u8)GetBits(bb, 1, &err);
+    if(err) goto bail;
+  }
+
+  /* sps_pic_width_max_in_luma_samples */
+  ue = read_golomb_uev(bb, &err);
+  if(err) goto bail;
+  config->max_picture_width = ue;
+
+  /* sps_pic_height_max_in_luma_samples */
+  ue = read_golomb_uev(bb, &err);
+  if(err) goto bail;
+  config->max_picture_height = ue;
+
+  /* sps_conformance_window_flag */
+  x = (u8)GetBits(bb, 1, &err);
+  if(err) goto bail;
+  if(x)
+  {
+    for(ui = 0; ui < 4; ui++)
+    {
+      /* win_offset */
+      ue = read_golomb_uev(bb, &err);
+      if(err) goto bail;
+    }
+  }
+
+  /* sps_subpic_info_present_flag */
+  x = (u8)GetBits(bb, 1, &err);
+  if(err) goto bail;
+  if(x)
+  {
+    sps_num_subpics_minus1       = 0;
+    sps_independent_subpics_flag = 0;
+    sps_subpic_same_size_flag    = 0;
+
+    /* sps_num_subpics_minus1 */
+    ue = read_golomb_uev(bb, &err);
+    if(err) goto bail;
+    sps_num_subpics_minus1 = ue;
+    if(sps_num_subpics_minus1 > 0)
+    {
+      /* sps_independent_subpics_flag & sps_subpic_same_size_flag */
+      x = (u8)GetBits(bb, 1, &err);
+      if(err) goto bail;
+      sps_independent_subpics_flag = x;
+      x                            = (u8)GetBits(bb, 1, &err);
+      if(err) goto bail;
+      sps_subpic_same_size_flag = x;
+    }
+
+    for(ui = 0; sps_num_subpics_minus1 > 0 && ui <= sps_num_subpics_minus1; ui++)
+    {
+      if(!sps_subpic_same_size_flag || ui == 0)
+      {
+        if(ui > 0 && config->max_picture_width > CtbSize)
+        {
+          tmpWidthVal = (config->max_picture_width + CtbSize - 1) / CtbSize;
+          uvBits      = (u32)ceil(log2(tmpWidthVal));
+          y           = GetBits(bb, uvBits, &err);
+          if(err) goto bail;
+        }
+        if(ui > 0 && config->max_picture_height > CtbSize)
+        {
+          tmpHeightVal = (config->max_picture_height + CtbSize - 1) / CtbSize;
+          uvBits       = (u32)ceil(log2(tmpHeightVal));
+          y            = GetBits(bb, uvBits, &err);
+          if(err) goto bail;
+        }
+        if(ui < sps_num_subpics_minus1 && config->max_picture_width > CtbSize)
+        {
+          tmpWidthVal = (config->max_picture_width + CtbSize - 1) / CtbSize;
+          uvBits      = (u32)ceil(log2(tmpWidthVal));
+          y           = GetBits(bb, uvBits, &err);
+          if(err) goto bail;
+        }
+        if(ui < sps_num_subpics_minus1 && config->max_picture_height > CtbSize)
+        {
+          tmpHeightVal = (config->max_picture_height + CtbSize - 1) / CtbSize;
+          uvBits       = (u32)ceil(log2(tmpHeightVal));
+          y            = GetBits(bb, uvBits, &err);
+          if(err) goto bail;
+        }
+      }
+      if(!sps_independent_subpics_flag)
+      {
+        x = (u8)GetBits(bb, 2, &err);
+        if(err) goto bail;
+      }
+    }
+    /* sps_subpic_id_len_minus1 */
+    ue = read_golomb_uev(bb, &err);
+    if(err) goto bail;
+    sps_subpic_id_len_minus1 = ue;
+    /* sps_subpic_id_mapping_explicitly_signalled_flag */
+    x = (u8)GetBits(bb, 1, &err);
+    if(err) goto bail;
+    if(x)
+    {
+      /* sps_subpic_id_mapping_present_flag */
+      x = (u8)GetBits(bb, 1, &err);
+      if(err) goto bail;
+      if(x)
+      {
+        for(ui = 0; ui <= sps_num_subpics_minus1; ui++)
+        {
+          /* sps_subpic_id */
+          y = GetBits(bb, sps_subpic_id_len_minus1 + 1, &err);
+          if(err) goto bail;
+        }
+      }
+    }
+  }
+
+  /* sps_bitdepth_minus8 */
+  ue = read_golomb_uev(bb, &err);
+  if(err) goto bail;
+  config->bit_depth_minus8 = ue;
+
+  /* add sps*/
+  err = config->addParameterSet(config, first_sps, 15);
+  if(err) goto bail;
 
   err = atomPtrToSampleEntryH(sampleDescriptionH, (MP4AtomPtr)entry);
   if(err) goto bail;
 
 bail:
   TEST_RETURN(err);
+  return err;
+}
+
+MP4_EXTERN(MP4Err)
+ISOGetVVCSampleDescription(MP4Handle sampleEntryH, u32 *dataReferenceIndex, u32 *length_size,
+                           u32 naluType, u32 *count)
+{
+  MP4Err err                        = MP4NoErr;
+  MP4VisualSampleEntryAtomPtr entry = NULL;
+  ISOVVCConfigAtomPtr config;
+  u32 i;
+
+  err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType);
+  if(err) goto bail;
+
+  if(entry->type != ISOVVCSampleEntryAtomType) BAILWITHERROR(MP4BadParamErr);
+  err = MP4GetListEntryAtom(entry->ExtensionAtomList, ISOVVCConfigAtomType, (MP4AtomPtr *)&config);
+  if(err == MP4NotFoundErr)
+  {
+    BAILWITHERROR(MP4BadDataErr);
+  }
+
+  *dataReferenceIndex = entry->dataReferenceIndex;
+  *length_size = config->LengthSizeMinusOne + 1;
+
+  for(i = 0; i < 7; i++)
+  {
+    if(config->arrays[i].NAL_unit_type == naluType)
+    {
+      err = MP4GetListEntryCount(config->arrays[i].nalList, count);
+      if(err) goto bail;
+      break;
+    }
+  }
+
+bail:
+  if(entry) entry->destroy((MP4AtomPtr)entry);
   return err;
 }

@@ -86,6 +86,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
       x = (self->native_ptl.ptl_frame_only_constraint_flag << 7) |
           (self->native_ptl.ptl_multi_layer_enabled_flag << 6) |
           (self->native_ptl.general_constraint_info_upper);
+      PUT8_V(x);
 
       if(self->native_ptl.num_bytes_constraint_info > 1)
       {
@@ -97,7 +98,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
       x   = 0;
       for(i = self->num_sublayers - 2; i >= 0; i--) /* int with u32 ? */
       {
-        helper = (self->native_ptl.subPTL[i].ptl_sublayer_level_present_flag << cnt) & 0xff;
+        helper = self->native_ptl.subPTL[i].ptl_sublayer_level_present_flag << cnt;
         cnt--;
         x |= helper;
       }
@@ -128,8 +129,9 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
 
   PUT8(num_of_arrays);
 
-  for(array_index = 0; array_index < self->num_of_arrays; array_index++)
+  for(array_index = 0; array_index < 7; array_index++)
   {
+    if(!self->arrays[array_index].array_completeness) continue;
     u32 num_nalus;
     err = MP4GetListEntryCount(self->arrays[array_index].nalList, &num_nalus);
     if(err) goto bail;
@@ -171,23 +173,26 @@ static MP4Err calculateSize(struct MP4Atom *s)
   MP4Err err;
   ISOVVCConfigAtomPtr self = (ISOVVCConfigAtomPtr)s;
   u32 j, i, y;
-  int x;
+  s32 x;
   err = MP4NoErr;
 
   err = MP4CalculateFullAtomFieldSize((MP4FullAtomPtr)s);
   if(err) goto bail;
-  /* 5 + 2 + 1 + num_of_arrays(8) */
-  self->size += 2;
+
+  self->size += 1;
 
   if(self->ptl_present_flag)
   {
     self->size += 3;
-    self->size += self->native_ptl.num_bytes_constraint_info;
+    /* PTL */
     {
+      self->size += 4;
+      self->size += self->native_ptl.num_bytes_constraint_info;
+      /* ptl_sublayer_level_present_flag */
       self->size += 1;
       for(x = self->num_sublayers - 2; x >= 0; x--)
       {
-        if(self->native_ptl.subPTL->ptl_sublayer_level_present_flag) self->size += 1;
+        if(self->native_ptl.subPTL[x].ptl_sublayer_level_present_flag) self->size += 1;
       }
       for(y = 0; y < self->native_ptl.ptl_num_sub_profiles; y++)
       {
@@ -197,10 +202,14 @@ static MP4Err calculateSize(struct MP4Atom *s)
     self->size += 6;
   }
 
+  /* num_of_arrays */
+  self->size += 1;
+
   if(self->num_of_arrays)
   {
-    for(j = 0; j < self->num_of_arrays; j++)
+    for(j = 0; j < 7; j++)
     {
+      if(!self->arrays[j].array_completeness) continue;
       u32 num_nalus;
       self->size += 1;
       err = MP4GetListEntryCount(self->arrays[j].nalList, &num_nalus);
@@ -218,13 +227,15 @@ static MP4Err calculateSize(struct MP4Atom *s)
 
       for(i = 0; i < num_nalus; i++)
       {
+        /* nal_unit_length */
+        self->size += 2;
         MP4Handle b;
         u32 the_size;
         err = MP4GetListEntry(self->arrays[j].nalList, i, (char **)&b);
         if(err) goto bail;
         err = MP4GetHandleSize(b, &the_size);
         if(err) goto bail;
-        self->size += 2 + the_size;
+        self->size += the_size;
       }
     }
   }
@@ -373,8 +384,9 @@ static MP4Err addParameterSet(struct ISOVVCConfigAtom *self, MP4Handle ps, u32 n
   {
     if(self->arrays[i].NAL_unit_type == nalu)
     {
-      u32 nalCount = 0;
-      err          = MP4GetListEntryCount(self->arrays[i].nalList, &nalCount);
+      self->arrays[i].array_completeness = 1;
+      u32 nalCount                       = 0;
+      err                                = MP4GetListEntryCount(self->arrays[i].nalList, &nalCount);
       if(err) goto bail;
       if(!nalCount)
       {
@@ -401,7 +413,7 @@ static MP4Err getParameterSet(struct ISOVVCConfigAtom *self, MP4Handle ps, u32 n
 
   err = MP4NoErr;
 
-  for(i = 0; i < self->num_of_arrays; i++)
+  for(i = 0; i < 7; i++)
   {
     if(self->arrays[i].NAL_unit_type == nalu)
     {
@@ -455,7 +467,7 @@ MP4Err MP4CreateVVCConfigAtom(ISOVVCConfigAtomPtr *outAtom)
     err = MP4MakeLinkedList(&self->arrays[i].nalList);
     if(err) goto bail;
     self->arrays[i].NAL_unit_type      = nalType[i];
-    self->arrays[i].array_completeness = 1;
+    self->arrays[i].array_completeness = 0;
   }
 
   *outAtom = self;
