@@ -35,7 +35,6 @@
 #include "MP4DataHandler.h"
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
 
 MP4Err MP4GetMediaESD(MP4Media theMedia, u32 index, MP4ES_DescriptorPtr *outESD,
                       u32 *outDataReferenceIndex);
@@ -1594,6 +1593,14 @@ bail:
   return err;
 }
 
+u32 ceil_log2(u32 x)
+{
+  u32 ret = 0;
+  while(x > ((u32)1 << ret))
+    ret++;
+  return ret;
+}
+
 MP4_EXTERN(MP4Err)
 ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 dataReferenceIndex,
                            u32 length_size, MP4Handle first_sps)
@@ -1656,8 +1663,7 @@ ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 
   /* sps_max_sublayers_minus1 */
   config->num_sublayers     = ((x & 0xff) >> 5) + 1;
   config->chroma_format_idc = (x & 0x1f) >> 3;
-  CtbSize                   = ((x & 0x60) >> 1) + 5;
-  CtbSize                   = (u32)pow(2, CtbSize);
+  CtbSize                   = 1 << (((x & 0x60) >> 1) + 5);
   config->ptl_present_flag  = x & 0x01;
 
   if(config->ptl_present_flag)
@@ -1828,28 +1834,28 @@ ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 
         if(ui > 0 && config->max_picture_width > CtbSize)
         {
           tmpWidthVal = (config->max_picture_width + CtbSize - 1) / CtbSize;
-          uvBits      = (u32)ceil(log2(tmpWidthVal));
+          uvBits      = ceil_log2(tmpWidthVal);
           y           = GetBits(bb, uvBits, &err);
           if(err) goto bail;
         }
         if(ui > 0 && config->max_picture_height > CtbSize)
         {
           tmpHeightVal = (config->max_picture_height + CtbSize - 1) / CtbSize;
-          uvBits       = (u32)ceil(log2(tmpHeightVal));
+          uvBits       = ceil_log2(tmpHeightVal);
           y            = GetBits(bb, uvBits, &err);
           if(err) goto bail;
         }
         if(ui < sps_num_subpics_minus1 && config->max_picture_width > CtbSize)
         {
           tmpWidthVal = (config->max_picture_width + CtbSize - 1) / CtbSize;
-          uvBits      = (u32)ceil(log2(tmpWidthVal));
+          uvBits      = ceil_log2(tmpWidthVal);
           y           = GetBits(bb, uvBits, &err);
           if(err) goto bail;
         }
         if(ui < sps_num_subpics_minus1 && config->max_picture_height > CtbSize)
         {
           tmpHeightVal = (config->max_picture_height + CtbSize - 1) / CtbSize;
-          uvBits       = (u32)ceil(log2(tmpHeightVal));
+          uvBits       = ceil_log2(tmpHeightVal);
           y            = GetBits(bb, uvBits, &err);
           if(err) goto bail;
         }

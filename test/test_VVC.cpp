@@ -166,7 +166,7 @@ TEST_CASE("Test VVC related stuff")
     CHECK(typeOut == MP4_FOUR_CHAR_CODE('v', 'v', 'c', '1'));
 
     u32 dataReferenceIndex, length_size, count;
-    err = ISOGetVVCSampleDescription(sampleEntryH, &dataReferenceIndex, &length_size, 15, &count);
+    err = ISOGetVVCSampleDescription(sampleEntryH, &dataReferenceIndex, &length_size, VVCsps, &count);
     CHECK(dataReferenceIndex == 1);
     CHECK(length_size == 4);
     CHECK(count == 1);

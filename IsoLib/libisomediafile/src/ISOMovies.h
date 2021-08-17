@@ -688,38 +688,6 @@ extern "C"
    * @param where can be AVCsps, AVCpps, AVCspsext, HEVCvps, HEVCsps or HEVCpps
    * @param index the indexes start at 1 (1 is the first parameter set in the indicated array).
    */
-  MP4_EXTERN(ISOErr)
-  ISOAddVVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where);
-  /**
-   * @brief Add the parameters into the VVC sample entry.
-   * @ingroup SampleDescr
-   *
-   * @param where can be VVC vps, sps, pps, dci, opi, prefix APS, prefix SEI.
-   */
-  ISO_EXTERN(ISOErr)
-  ISOGetVVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, u32 index);
-  /**
-   * @brief Gets a VVC parameter set, placing it in the given handle
-   * @ingroup SampleDescr
-   *
-   * @param sampleEntryH input sample entry handle
-   * @param ps output handle which is holding the parameter set.
-   * @param where can be VVC vps, sps, pps, dci, opi, prefix APS, prefix SEI.
-   * @param index the indexes start at 1 (1 is the first parameter set in the indicated array).
-   */
-  ISO_EXTERN(ISOErr)
-  ISOGetVVCNaluNums(MP4Handle sampleEntryH, u32 where, u32 *num_nalus, u32 index,
-                    u32 *nal_unit_length);
-  /**
-   * @brief Gets a VVC parameter set, placing it in the given handle
-   * @ingroup SampleDescr
-   *
-   * @param sampleEntryH input sample entry handle
-   * @param where can be VVC vps, sps, pps, dci, opi, prefix APS, prefix SEI.
-   * @param num_nalus output the number of nalus in the corresponding parameter set.
-   * @param index the indexes start at 1 (1 is the first parameter set in the indicated array).
-   * @param nal_unit_length output the length of the nalu.
-   */
   ISO_EXTERN(ISOErr)
   ISOGetRESVSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, u32 index);
   /**
@@ -749,23 +717,64 @@ extern "C"
                               u32 dataReferenceIndex, u32 length_size, MP4Handle first_sps,
                               MP4Handle first_pps, MP4Handle first_vps);
 
+  /*************************************************************************************************
+   * VVC Sample descriptions
+   ************************************************************************************************/
   /**
-   * @brief Create new VVC sample entry
+   * @brief Create a new VVC sample entry.
+   * @ingroup SampleDescr
    *
-   * @todo Implement me
-   *
-   * @param theTrack
-   * @param sampleDescriptionH
-   * @param dataReferenceIndex
-   * @param test
+   * @note implement me
+   * @param length_size the size of the NAL Unit length field (and must be 1, 2 or 4). The value of
+   * length_size = LengthSizeMinusOne + 1
+   * @param first_sps The sequence parameter set (MUST be passed) used to get the profile, level,
+   * etc. It will only be added to the configuration if a picture parameter set is also present.
+   * @param other ps implement me
    */
   ISO_EXTERN(ISOErr)
   ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
                              u32 dataReferenceIndex, u32 length_size, MP4Handle first_sps);
-
-  MP4_EXTERN(MP4Err)
+  /**
+   * @brief Gets the basic parameters of the VVC sample entry.
+   * @ingroup SampleDescr
+   */
+  MP4_EXTERN(ISOErr)
   ISOGetVVCSampleDescription(MP4Handle sampleEntryH, u32 *dataReferenceIndex, u32 *length_size,
                              u32 naluType, u32 *count);
+  /**
+   * @brief Gets a VVC parameter set, placing it in the given handle
+   * @ingroup SampleDescr
+   *
+   * @param sampleEntryH input sample entry handle
+   * @param where can be VVC vps, sps, pps, dci, opi, prefix APS, prefix SEI.
+   * @param num_nalus output the number of nalus in the corresponding parameter set.
+   * @param index the indexes start at 1 (1 is the first parameter set in the indicated array).
+   * @param nal_unit_length output the length of the nalu.
+   */
+  ISO_EXTERN(ISOErr)
+  ISOGetVVCNaluNums(MP4Handle sampleEntryH, u32 where, u32 *num_nalus, u32 index,
+                    u32 *nal_unit_length);
+  /**
+   * @brief Gets a VVC parameter set, placing it in the given handle
+   * @ingroup SampleDescr
+   *
+   * @param sampleEntryH input sample entry handle
+   * @param ps output handle which is holding the parameter set.
+   * @param where can be VVC vps, sps, pps, dci, opi, prefix APS, prefix SEI.
+   * @param index the indexes start at 1 (1 is the first parameter set in the indicated array).
+   */
+  ISO_EXTERN(ISOErr)
+  ISOGetVVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, u32 index);
+  /**
+   * @brief This adds another parameter set (which is not, in fact, inspected), to the
+   * configuration.
+   * @ingroup SampleDescr
+   *
+   * @param ps input handle which is saving the parameter set.
+   * @param where can be VVC vps, sps, pps, dci, opi, prefix APS, prefix SEI.
+   */
+  MP4_EXTERN(ISOErr)
+  ISOAddVVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where);
 
   /*************************************************************************************************
    * 3GPP media

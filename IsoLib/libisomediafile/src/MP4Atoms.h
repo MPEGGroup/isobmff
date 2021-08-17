@@ -1072,11 +1072,13 @@ typedef struct ISOVVCConfigAtom
   u32 LengthSizeMinusOne; //
   u32 ptl_present_flag;   //
 
-  u32 ols_idx;
+  u32 ols_idx;                                    // opi_ols_idx
   u32 num_sublayers; /* 3 bits (max value = 7) */ //
   u32 constant_frame_rate;
-  u32 chroma_format_idc; //
-  u32 bit_depth_minus8;  //
+  u32 chroma_format_idc; // one layer ? sps_chroma_format_idc : vps_ols_dpb_chroma_format[
+                         // MultiLayerOlsIdx[ ols_idx ] ]
+  u32 bit_depth_minus8; // one layer ? sps_bitdepth_minus8 : vps_ols_dpb_bitdepth_minus8[
+                        // MultiLayerOlsIdx[ ols_idx ] ]
 
   /* Profile Tile Level */
   struct PTL
