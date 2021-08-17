@@ -185,6 +185,22 @@ extern "C"
   };
 
   /**
+   * @brief VVC Parameter Set places
+   * @ingroup Types
+   * @see ISOAddVVCSampleDescriptionPS, ISOGetVVCSampleDescriptionPS,
+   */
+  enum
+  {
+    VVCsps         = 15,
+    VVCpps         = 16,
+    VVCvps         = 14,
+    VVCopi         = 12,
+    VVCdci         = 13,
+    VVC_prefix_aps = 17,
+    VVC_prefix_sei = 23
+  };
+
+  /**
    * @brief Meta-data records
    */
   struct ISOMetaRecord
@@ -672,6 +688,14 @@ extern "C"
    * @param where can be AVCsps, AVCpps, AVCspsext, HEVCvps, HEVCsps or HEVCpps
    * @param index the indexes start at 1 (1 is the first parameter set in the indicated array).
    */
+  MP4_EXTERN(ISOErr)
+  ISOAddVVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where);
+  /**
+   * @brief Add the parameters into the VVC sample entry.
+   * @ingroup SampleDescr
+   *
+   * @param where can be VVC vps, sps, pps, dci, opi, prefix APS, prefix SEI.
+   */
   ISO_EXTERN(ISOErr)
   ISOGetVVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, u32 index);
   /**
@@ -682,6 +706,19 @@ extern "C"
    * @param ps output handle which is holding the parameter set.
    * @param where can be VVC vps, sps, pps, dci, opi, prefix APS, prefix SEI.
    * @param index the indexes start at 1 (1 is the first parameter set in the indicated array).
+   */
+  ISO_EXTERN(ISOErr)
+  ISOGetVVCNaluNums(MP4Handle sampleEntryH, u32 where, u32 *num_nalus, u32 index,
+                    u32 *nal_unit_length);
+  /**
+   * @brief Gets a VVC parameter set, placing it in the given handle
+   * @ingroup SampleDescr
+   *
+   * @param sampleEntryH input sample entry handle
+   * @param where can be VVC vps, sps, pps, dci, opi, prefix APS, prefix SEI.
+   * @param num_nalus output the number of nalus in the corresponding parameter set.
+   * @param index the indexes start at 1 (1 is the first parameter set in the indicated array).
+   * @param nal_unit_length output the length of the nalu.
    */
   ISO_EXTERN(ISOErr)
   ISOGetRESVSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, u32 index);

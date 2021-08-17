@@ -132,9 +132,9 @@ TEST_CASE("Test VVC related stuff")
     MP4DisposeHandle(w_handle1);
   }
 
-  SECTION("creat vvcC from SPS") {
-    MP4Handle sps, sampleEntryH;
-    ISOVVCConfigAtomPtr box;
+  SECTION("creat vvcC from SPS")
+  {
+    MP4Handle sps, sampleEntryH, pps;
 
     ISOMovie moov;
     ISOMedia media;
@@ -154,6 +154,11 @@ TEST_CASE("Test VVC related stuff")
     err            = ISONewVVCSampleDescription(trak, sampleEntryH, 1, lengthSize, sps);
     CHECK(err == ISONoErr);
 
+    u32 lengthSizeOut;
+    err = ISOGetNALUnitLength(sampleEntryH, &lengthSizeOut);
+    CHECK(err == ISONoErr);
+    CHECK(lengthSizeOut == lengthSize);
+
     // get sampledescription type
     u32 typeOut = 0;
     err         = ISOGetSampleDescriptionType(sampleEntryH, &typeOut);
@@ -169,10 +174,26 @@ TEST_CASE("Test VVC related stuff")
     // test get parameter sets
     ISOHandle spsHandleOut;
     ISONewHandle(0, &spsHandleOut);
-    err = ISOGetVVCSampleDescriptionPS(sampleEntryH, spsHandleOut, 15, 1);
+    err = ISOGetVVCSampleDescriptionPS(sampleEntryH, spsHandleOut, VVCsps, 1);
     CHECK(err == ISONoErr);
     err = compareData(spsHandleOut, VVC::SPS, sizeof(VVC::SPS));
     CHECK(err == ISONoErr);
 
+    u32 num_nalus, nal_unit_length;
+    err = ISOGetVVCNaluNums(sampleEntryH, VVCsps, &num_nalus, 1, &nal_unit_length);
+    CHECK(err == ISONoErr);
+    CHECK(num_nalus == 1);
+    CHECK(nal_unit_length == 197);
+
+    err = createHandleFromBuffer(&pps, VVC::PPS, sizeof(VVC::PPS));
+    REQUIRE(err == MP4NoErr);
+
+    err = ISOAddVVCSampleDescriptionPS(sampleEntryH, pps, VVCpps);
+    CHECK(err == ISONoErr);
+
+    err = ISOGetVVCNaluNums(sampleEntryH, VVCpps, &num_nalus, 1, &nal_unit_length);
+    CHECK(err == ISONoErr);
+    CHECK(num_nalus == 1);
+    CHECK(nal_unit_length == 13);
   }
 }

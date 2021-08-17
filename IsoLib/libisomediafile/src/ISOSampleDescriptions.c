@@ -1176,6 +1176,36 @@ bail:
 }
 
 MP4_EXTERN(MP4Err)
+ISOAddVVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where)
+{
+  MP4Err err = MP4NoErr;
+  ISOVVCConfigAtomPtr config;
+  MP4VisualSampleEntryAtomPtr entry = NULL;
+
+  err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4GenericSampleEntryAtomType);
+  if(err) goto bail;
+
+  if(entry->type != ISOVVCSampleEntryAtomType) BAILWITHERROR(MP4BadParamErr);
+
+  err = MP4GetListEntryAtom(entry->ExtensionAtomList, ISOVVCConfigAtomType, (MP4AtomPtr *)&config);
+  if(err == MP4NotFoundErr)
+  {
+    BAILWITHERROR(MP4BadDataErr);
+  }
+
+  err = config->addParameterSet(config, ps, where);
+  if(err) goto bail;
+
+  /* rewrite it... */
+  err = atomPtrToSampleEntryH(sampleEntryH, (MP4AtomPtr)entry);
+  if(err) goto bail;
+
+bail:
+  if(entry) entry->destroy((MP4AtomPtr)entry);
+  return err;
+}
+
+MP4_EXTERN(MP4Err)
 ISOGetVVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, u32 index)
 {
   MP4Err err                        = MP4NoErr;
@@ -1194,6 +1224,47 @@ ISOGetVVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, u3
 
   err = config->getParameterSet(config, ps, where, index);
   if(err) goto bail;
+
+bail:
+  if(entry) entry->destroy((MP4AtomPtr)entry);
+  return err;
+}
+
+MP4_EXTERN(MP4Err)
+ISOGetVVCNaluNums(MP4Handle sampleEntryH, u32 where, u32 *num_nalus, u32 index,
+                  u32 *nal_unit_length)
+{
+  MP4Err err                        = MP4NoErr;
+  MP4VisualSampleEntryAtomPtr entry = NULL;
+  ISOVVCConfigAtomPtr config;
+  MP4Handle ps;
+  u32 i;
+
+  err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType);
+  if(err) goto bail;
+
+  if(entry->type != ISOVVCSampleEntryAtomType) BAILWITHERROR(MP4BadParamErr);
+  err = MP4GetListEntryAtom(entry->ExtensionAtomList, ISOVVCConfigAtomType, (MP4AtomPtr *)&config);
+  if(err == MP4NotFoundErr)
+  {
+    BAILWITHERROR(MP4BadDataErr);
+  }
+
+  for(i = 0; i < 7; i++)
+  {
+    if(config->arrays[i].NAL_unit_type == where)
+    {
+      err = MP4GetListEntryCount(config->arrays[i].nalList, num_nalus);
+      err = MP4GetListEntry(config->arrays[i].nalList, index - 1, (char **)&ps);
+      if(err) BAILWITHERROR(MP4BadParamErr);
+      err = MP4GetHandleSize(ps, nal_unit_length);
+      break;
+    }
+    if(i == 6)
+    {
+      BAILWITHERROR(MP4BadParamErr);
+    }
+  }
 
 bail:
   if(entry) entry->destroy((MP4AtomPtr)entry);
@@ -1238,6 +1309,7 @@ MP4_EXTERN(MP4Err) ISOGetNALUnitLength(MP4Handle sampleEntryH, u32 *out)
   MP4VisualSampleEntryAtomPtr entry = NULL;
   ISOHEVCConfigAtomPtr configHEVC;
   ISOVCConfigAtomPtr configAVC;
+  ISOVVCConfigAtomPtr configVVC;
 
   if(!out) BAILWITHERROR(MP4BadParamErr);
 
@@ -1248,7 +1320,8 @@ MP4_EXTERN(MP4Err) ISOGetNALUnitLength(MP4Handle sampleEntryH, u32 *out)
   }
 
   if(entry->type != MP4RestrictedVideoSampleEntryAtomType &&
-     entry->type != ISOHEVCSampleEntryAtomType && entry->type != ISOAVCSampleEntryAtomType)
+     entry->type != ISOHEVCSampleEntryAtomType && entry->type != ISOAVCSampleEntryAtomType &&
+     entry->type != ISOVVCSampleEntryAtomType)
     BAILWITHERROR(MP4BadParamErr);
 
   err =
@@ -1257,8 +1330,17 @@ MP4_EXTERN(MP4Err) ISOGetNALUnitLength(MP4Handle sampleEntryH, u32 *out)
   {
     err =
       MP4GetListEntryAtom(entry->ExtensionAtomList, ISOVCConfigAtomType, (MP4AtomPtr *)&configAVC);
-    if(err == MP4NotFoundErr) BAILWITHERROR(MP4BadDataErr);
-    *out = configAVC->length_size;
+    if(err == MP4NotFoundErr)
+    {
+      err = MP4GetListEntryAtom(entry->ExtensionAtomList, ISOVVCConfigAtomType,
+                                (MP4AtomPtr *)&configVVC);
+      if(err == MP4NotFoundErr) BAILWITHERROR(MP4BadDataErr);
+      *out = configVVC->LengthSizeMinusOne + 1;
+    }
+    else
+    {
+      *out = configAVC->length_size;
+    }
   }
   else
   {
@@ -1848,6 +1930,10 @@ ISOGetVVCSampleDescription(MP4Handle sampleEntryH, u32 *dataReferenceIndex, u32 
       err = MP4GetListEntryCount(config->arrays[i].nalList, count);
       if(err) goto bail;
       break;
+    }
+    if(i == 6)
+    {
+      BAILWITHERROR(MP4BadParamErr);
     }
   }
 

@@ -49,7 +49,7 @@ bail:
 static MP4Err serialize(struct MP4Atom *s, char *buffer)
 {
   MP4Err err;
-  u32 x, array_index, ui, j, cnt, helper;
+  u32 x, array_index, ui, j, cnt, helper, numByteGciLower;
   s32 i;
   ISOVVCConfigAtomPtr self = (ISOVVCConfigAtomPtr)s;
   err                      = MP4NoErr;
@@ -90,7 +90,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
 
       if(self->native_ptl.num_bytes_constraint_info > 1)
       {
-        u32 numByteGciLower = self->native_ptl.num_bytes_constraint_info - 1;
+        numByteGciLower = self->native_ptl.num_bytes_constraint_info - 1;
         PUTBYTES(*self->native_ptl.general_constraint_info_lower, numByteGciLower);
       }
 
@@ -129,9 +129,8 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
 
   PUT8(num_of_arrays);
 
-  for(array_index = 0; array_index < 7; array_index++)
+  for(array_index = 0; array_index < self->num_of_arrays; array_index++)
   {
-    if(!self->arrays[array_index].array_completeness) continue;
     u32 num_nalus;
     err = MP4GetListEntryCount(self->arrays[array_index].nalList, &num_nalus);
     if(err) goto bail;
@@ -186,7 +185,7 @@ static MP4Err calculateSize(struct MP4Atom *s)
     self->size += 3;
     /* PTL */
     {
-      self->size += 4;
+      self->size += 3;
       self->size += self->native_ptl.num_bytes_constraint_info;
       /* ptl_sublayer_level_present_flag */
       self->size += 1;
@@ -194,6 +193,8 @@ static MP4Err calculateSize(struct MP4Atom *s)
       {
         if(self->native_ptl.subPTL[x].ptl_sublayer_level_present_flag) self->size += 1;
       }
+      /* ptl_num_sub_profiles */
+      self->size += 1;
       for(y = 0; y < self->native_ptl.ptl_num_sub_profiles; y++)
       {
         self->size += 4;
@@ -207,9 +208,8 @@ static MP4Err calculateSize(struct MP4Atom *s)
 
   if(self->num_of_arrays)
   {
-    for(j = 0; j < 7; j++)
+    for(j = 0; j < self->num_of_arrays; j++)
     {
-      if(!self->arrays[j].array_completeness) continue;
       u32 num_nalus;
       self->size += 1;
       err = MP4GetListEntryCount(self->arrays[j].nalList, &num_nalus);
@@ -249,12 +249,13 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
 {
   MP4Err err;
   ISOVVCConfigAtomPtr self = (ISOVVCConfigAtomPtr)s;
-  u32 x, num_nalus, array_index, j, numBytesGciLower, ui;
-  int i;
+  u32 x, num_nalus, array_index, j, numBytesGciLower;
+  s32 i;
   u8 helper;
+  // u32 nalTypeLut[7] = {13, 12, 14, 15, 16, 17, 23};
 
   err = MP4NoErr;
-  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+  if(self == NULL) BAILWITHERROR(MP4BadParamErr);
   err = self->super->createFromInputStream(s, proto, (char *)inputStream);
   if(err) goto bail;
 
@@ -303,10 +304,10 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
       self->native_ptl.general_constraint_info_upper = x & 0x3f;
       if(self->native_ptl.num_bytes_constraint_info > 1)
       {
-        numBytesGciLower = self->native_ptl.num_bytes_constraint_info;
+        numBytesGciLower = self->native_ptl.num_bytes_constraint_info - 1;
         err = MP4NewHandle(numBytesGciLower, &self->native_ptl.general_constraint_info_lower);
         if(err) goto bail;
-        /* byte_aligned()?? */
+        /* byte_aligned() */
         GETBYTES_V_MSG(numBytesGciLower, *self->native_ptl.general_constraint_info_lower,
                        "general_constraint_info_lower");
       }
@@ -344,6 +345,16 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   for(array_index = 0; array_index < self->num_of_arrays; array_index++)
   {
     GET8_V(x);
+    // array_index = 0;
+    // nalType = x & 0x1f;
+    // for(j = 0; j < 7; j++)
+    //{
+    //  if(nalType == nalTypeLut[j])
+    //  {
+    //    break;
+    //  }
+    //  array_index += 1;
+    //}
     self->arrays[array_index].array_completeness = (x & 0x80) ? 1 : 0;
     self->arrays[array_index].NAL_unit_type      = x & 0x1f;
     DEBUG_SPRINTF("NAL_unit_type = %u", self->arrays[array_index].NAL_unit_type);
@@ -360,7 +371,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
       num_nalus = 1;
     }
 
-    for(ui = 0; ui < num_nalus; ui++)
+    for(j = 0; j < num_nalus; j++)
     {
       MP4Handle nal_unit;
       u32 nal_unit_length;
@@ -397,9 +408,8 @@ static MP4Err addParameterSet(struct ISOVVCConfigAtom *self, MP4Handle ps, u32 n
   {
     if(self->arrays[i].NAL_unit_type == nalu)
     {
-      self->arrays[i].array_completeness = 1;
-      u32 nalCount                       = 0;
-      err                                = MP4GetListEntryCount(self->arrays[i].nalList, &nalCount);
+      u32 nalCount = 0;
+      err          = MP4GetListEntryCount(self->arrays[i].nalList, &nalCount);
       if(err) goto bail;
       if(!nalCount)
       {
@@ -408,6 +418,10 @@ static MP4Err addParameterSet(struct ISOVVCConfigAtom *self, MP4Handle ps, u32 n
       err = MP4AddListEntry((void *)b, self->arrays[i].nalList);
       if(err) goto bail;
       break;
+    }
+    if(i == 6)
+    {
+      BAILWITHERROR(MP4BadParamErr);
     }
   }
 
@@ -434,6 +448,10 @@ static MP4Err getParameterSet(struct ISOVVCConfigAtom *self, MP4Handle ps, u32 n
       if(err) goto bail;
       break;
     }
+    if(i == 6)
+    {
+      BAILWITHERROR(MP4BadParamErr);
+    }
   }
 
   err = MP4GetHandleSize(b, &the_size);
@@ -455,12 +473,12 @@ MP4Err MP4CreateVVCConfigAtom(ISOVVCConfigAtomPtr *outAtom)
   u32 i;
   /*
     There is a set of arrays to carry initialization non-VCL NAL units. The NAL unit types are
-    restricted to indicate DCI(13), OPI(12), VPS(14), SPS(15), PPS(16), prefix APS(17), and prefix
+    restricted to indicate OPI(12), DCI(13), VPS(14), SPS(15), PPS(16), prefix APS(17), and prefix
     SEI(23) NAL units only. NAL unit types that are reserved in ISO/IEC 23090-3 and in this
     specification may acquire a definition in the future specification, and readers should ignore
     arrays with reserved or unpermitted values of NAL unit type.
   */
-  u32 nalType[7] = {13, 12, 14, 15, 16, 17, 23};
+  u32 nalType[7] = {15, 16, 14, 12, 13, 17, 23};
   self           = (ISOVVCConfigAtomPtr)calloc(1, sizeof(ISOVVCConfigAtom));
   TESTMALLOC(self);
 
@@ -479,6 +497,7 @@ MP4Err MP4CreateVVCConfigAtom(ISOVVCConfigAtomPtr *outAtom)
   {
     err = MP4MakeLinkedList(&self->arrays[i].nalList);
     if(err) goto bail;
+    self->arrays[i].array_completeness = 1;
     self->arrays[i].NAL_unit_type      = nalType[i];
     self->arrays[i].array_completeness = 0;
   }
