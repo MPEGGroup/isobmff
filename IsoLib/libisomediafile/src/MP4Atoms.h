@@ -1069,45 +1069,45 @@ typedef struct ISOVVCConfigAtom
   MP4Err (*addParameterSet)(struct ISOVVCConfigAtom *self, MP4Handle ps, u32 where);
   MP4Err (*getParameterSet)(struct ISOVVCConfigAtom *self, MP4Handle ps, u32 where, u32 index);
 
-  u32 LengthSizeMinusOne; //
-  u32 ptl_present_flag;   //
-
-  u32 ols_idx;                                    // opi_ols_idx
-  u32 num_sublayers; /* 3 bits (max value = 7) */ //
+  u32 LengthSizeMinusOne;
+  u32 ptl_present_flag;
+  /* opi_ols_idx */
+  u32 ols_idx;
+  u32 num_sublayers; /* 3 bits (max value = 7) */
   u32 constant_frame_rate;
-  u32 chroma_format_idc; // one layer ? sps_chroma_format_idc : vps_ols_dpb_chroma_format[
-                         // MultiLayerOlsIdx[ ols_idx ] ]
-  u32 bit_depth_minus8; // one layer ? sps_bitdepth_minus8 : vps_ols_dpb_bitdepth_minus8[
-                        // MultiLayerOlsIdx[ ols_idx ] ]
+  /* one layer ? sps_chroma_format_idc : vps_ols_dpb_chroma_format[ MultiLayerOlsIdx[ ols_idx ] ] */
+  u32 chroma_format_idc;
+  /* one layer ? sps_bitdepth_minus8 : vps_ols_dpb_bitdepth_minus8[ MultiLayerOlsIdx[ ols_idx ] ] */
+  u32 bit_depth_minus8;
 
   /* Profile Tile Level */
   struct PTL
   {
     u32 num_bytes_constraint_info;
-    u32 general_profile_idc;            //
-    u32 general_tier_flag;              //
-    u32 general_level_idc;              //
-    u32 ptl_frame_only_constraint_flag; //
-    u32 ptl_multi_layer_enabled_flag;   //
+    u32 general_profile_idc;
+    u32 general_tier_flag;
+    u32 general_level_idc;
+    u32 ptl_frame_only_constraint_flag;
+    u32 ptl_multi_layer_enabled_flag;
 
     u32 general_constraint_info_upper;
     MP4Handle general_constraint_info_lower;
 
     struct SubPTL
     {
-      u32 ptl_sublayer_level_present_flag; //
-      u32 sublayer_level_idc;              //
+      u32 ptl_sublayer_level_present_flag;
+      u32 sublayer_level_idc;
     } subPTL[8];
 
-    u32 ptl_num_sub_profiles;     //
-    u32 *general_sub_profile_idc; //
+    u32 ptl_num_sub_profiles;
+    u32 *general_sub_profile_idc;
   } native_ptl;
 
-  u32 max_picture_width;  //
-  u32 max_picture_height; //
+  u32 max_picture_width;
+  u32 max_picture_height;
   u32 avg_frame_rate;
 
-  u32 num_of_arrays; //
+  u32 num_of_arrays;
   struct
   {
     /*

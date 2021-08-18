@@ -1,4 +1,4 @@
-﻿/* This software module was originally developed by Apple Computer, Inc.
+/* This software module was originally developed by Apple Computer, Inc.
  * in the course of development of MPEG-4.
  * This software module is an implementation of a part of one or
  * more MPEG-4 tools as specified by MPEG-4.
@@ -1593,14 +1593,6 @@ bail:
   return err;
 }
 
-u32 ceil_log2(u32 x)
-{
-  u32 ret = 0;
-  while(x > ((u32)1 << ret))
-    ret++;
-  return ret;
-}
-
 MP4_EXTERN(MP4Err)
 ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 dataReferenceIndex,
                            u32 length_size, MP4Handle first_sps)
@@ -1834,28 +1826,44 @@ ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 
         if(ui > 0 && config->max_picture_width > CtbSize)
         {
           tmpWidthVal = (config->max_picture_width + CtbSize - 1) / CtbSize;
-          uvBits      = ceil_log2(tmpWidthVal);
+          uvBits      = 0;
+          while(tmpWidthVal > ((u32)1 << uvBits))
+          {
+            uvBits += 1;
+          }
           y           = GetBits(bb, uvBits, &err);
           if(err) goto bail;
         }
         if(ui > 0 && config->max_picture_height > CtbSize)
         {
           tmpHeightVal = (config->max_picture_height + CtbSize - 1) / CtbSize;
-          uvBits       = ceil_log2(tmpHeightVal);
+          uvBits       = 0;
+          while(tmpHeightVal > ((u32)1 << uvBits))
+          {
+            uvBits += 1;
+          }
           y            = GetBits(bb, uvBits, &err);
           if(err) goto bail;
         }
         if(ui < sps_num_subpics_minus1 && config->max_picture_width > CtbSize)
         {
           tmpWidthVal = (config->max_picture_width + CtbSize - 1) / CtbSize;
-          uvBits      = ceil_log2(tmpWidthVal);
+          uvBits      = 0;
+          while(tmpWidthVal > ((u32)1 << uvBits))
+          {
+            uvBits += 1;
+          }
           y           = GetBits(bb, uvBits, &err);
           if(err) goto bail;
         }
         if(ui < sps_num_subpics_minus1 && config->max_picture_height > CtbSize)
         {
           tmpHeightVal = (config->max_picture_height + CtbSize - 1) / CtbSize;
-          uvBits       = ceil_log2(tmpHeightVal);
+          uvBits       = 0;
+          while(tmpHeightVal > ((u32)1 << uvBits))
+          {
+            uvBits += 1;
+          }
           y            = GetBits(bb, uvBits, &err);
           if(err) goto bail;
         }
