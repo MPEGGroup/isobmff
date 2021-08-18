@@ -1595,7 +1595,7 @@ bail:
 
 MP4_EXTERN(MP4Err)
 ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 dataReferenceIndex,
-                           u32 length_size, MP4Handle first_sps)
+                           u32 length_size, MP4Handle first_sps, MP4Handle first_pps)
 {
   MP4Err MP4CreateVisualSampleEntryAtom(MP4VisualSampleEntryAtomPtr * outAtom);
   MP4Err MP4CreateVVCConfigAtom(ISOVVCConfigAtomPtr * outAtom);
@@ -1655,7 +1655,7 @@ ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 
   /* sps_max_sublayers_minus1 */
   config->num_sublayers     = ((x & 0xff) >> 5) + 1;
   config->chroma_format_idc = (x & 0x1f) >> 3;
-  CtbSize                   = 1 << (((x & 0x60) >> 1) + 5);
+  CtbSize                   = 1 << (((x & 0x06) >> 1) + 5);
   config->ptl_present_flag  = x & 0x01;
 
   if(config->ptl_present_flag)
@@ -1831,7 +1831,7 @@ ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 
           {
             uvBits += 1;
           }
-          y           = GetBits(bb, uvBits, &err);
+          y = GetBits(bb, uvBits, &err);
           if(err) goto bail;
         }
         if(ui > 0 && config->max_picture_height > CtbSize)
@@ -1842,7 +1842,7 @@ ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 
           {
             uvBits += 1;
           }
-          y            = GetBits(bb, uvBits, &err);
+          y = GetBits(bb, uvBits, &err);
           if(err) goto bail;
         }
         if(ui < sps_num_subpics_minus1 && config->max_picture_width > CtbSize)
@@ -1853,7 +1853,7 @@ ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 
           {
             uvBits += 1;
           }
-          y           = GetBits(bb, uvBits, &err);
+          y = GetBits(bb, uvBits, &err);
           if(err) goto bail;
         }
         if(ui < sps_num_subpics_minus1 && config->max_picture_height > CtbSize)
@@ -1864,7 +1864,7 @@ ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 
           {
             uvBits += 1;
           }
-          y            = GetBits(bb, uvBits, &err);
+          y = GetBits(bb, uvBits, &err);
           if(err) goto bail;
         }
       }
@@ -1903,9 +1903,27 @@ ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 
   if(err) goto bail;
   config->bit_depth_minus8 = ue;
 
-  /* add sps*/
+  /* add sps */
   err = config->addParameterSet(config, first_sps, 15);
   if(err) goto bail;
+
+  /* add pps */
+  if(first_pps)
+  {
+    err = MP4GetHandleSize(first_pps, &the_size);
+    if(err) goto bail;
+    err = BitBuffer_Init(bb, (u8 *)*first_pps, 8 * the_size);
+    if(err) goto bail;
+    bb->prevent_emulation = 1;
+    /* Get first two bytes for nal_unit_type */
+    err = GetBytes(bb, 1, &x);
+    err = GetBytes(bb, 1, &x);
+    if(err) goto bail;
+    /* PPS == 16 */
+    if((x >> 3) != 16) BAILWITHERROR(MP4BadParamErr);
+    err = config->addParameterSet(config, first_pps, 16);
+    if(err) goto bail;
+  }
 
   err = atomPtrToSampleEntryH(sampleDescriptionH, (MP4AtomPtr)entry);
   if(err) goto bail;

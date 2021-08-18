@@ -102,7 +102,10 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
         cnt--;
         x |= helper;
       }
-      PUT8_V(x);
+      if(self->num_sublayers >= 2)
+      {
+        PUT8_V(x);
+      }
 
       for(i = self->num_sublayers - 2; i >= 0; i--)
       {
@@ -188,7 +191,10 @@ static MP4Err calculateSize(struct MP4Atom *s)
       self->size += 3;
       self->size += self->native_ptl.num_bytes_constraint_info;
       /* ptl_sublayer_level_present_flag */
-      self->size += 1;
+      if(self->num_sublayers >= 2)
+      {
+        self->size += 1;
+      }
       for(x = self->num_sublayers - 2; x >= 0; x--)
       {
         if(self->native_ptl.subPTL[x].ptl_sublayer_level_present_flag) self->size += 1;
@@ -312,7 +318,10 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
                        "general_constraint_info_lower");
       }
 
-      GET8_V(x);
+      if(self->num_sublayers >= 2)
+      {
+        GET8_V(x);
+      }
       helper = 0x80;
       for(i = self->num_sublayers - 2; i >= 0; i--)
       {

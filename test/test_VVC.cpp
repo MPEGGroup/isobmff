@@ -146,12 +146,22 @@ TEST_CASE("Test VVC related stuff")
     err = ISONewTrackMedia(trak, &media, ISOVisualHandlerType, TIMESCALE, NULL);
     REQUIRE(err == ISONoErr);
 
+    //u8 data[132];
+    //FILE *input;
+    //input = fopen("C:\\Users\\29968\\Desktop\\sps.bin", "rb");
+    //fread(data, 132, 1, input);
+    //err = createHandleFromBuffer(&sps, data, sizeof(data));
+    //REQUIRE(err == MP4NoErr);
+
     err = createHandleFromBuffer(&sps, VVC::SPS, sizeof(VVC::SPS));
+    REQUIRE(err == MP4NoErr);
+
+    err = createHandleFromBuffer(&pps, VVC::PPS, sizeof(VVC::PPS));
     REQUIRE(err == MP4NoErr);
 
     u32 lengthSize = 4;
     err            = MP4NewHandle(0, &sampleEntryH);
-    err            = ISONewVVCSampleDescription(trak, sampleEntryH, 1, lengthSize, sps);
+    err            = ISONewVVCSampleDescription(trak, sampleEntryH, 1, lengthSize, sps, pps);
     CHECK(err == ISONoErr);
 
     u32 lengthSizeOut;
@@ -193,7 +203,39 @@ TEST_CASE("Test VVC related stuff")
 
     err = ISOGetVVCNaluNums(sampleEntryH, VVCpps, &num_nalus, 1, &nal_unit_length);
     CHECK(err == ISONoErr);
-    CHECK(num_nalus == 1);
+    CHECK(num_nalus == 2);
     CHECK(nal_unit_length == 13);
   }
-}
+
+  SECTION("parse VVC bitstream")
+  {
+    MP4Handle sps, pps, sampleEntryH;
+    ISOVVCConfigAtomPtr box;
+
+    s32 nalType, length;
+    u8 *data;
+    FILE *input;
+    input   = fopen("C:\\Users\\29968\\Desktop\\str1.bin", "rb");
+
+    nalType = parseVVCNal(input, &data, &length);
+    err     = createHandleFromBuffer(&sps, data, length);
+    REQUIRE(err == MP4NoErr);
+    nalType = parseVVCNal(input, &data, &length);
+    err     = createHandleFromBuffer(&pps, data, length);
+
+    ISOMovie moov;
+    ISOMedia media;
+    ISOTrack trak;
+    err = MP4NewMovie(&moov, 0, 0, 0, 0, 0, 0);
+    REQUIRE(err == ISONoErr);
+    err = ISONewMovieTrack(moov, MP4NewTrackIsVisual, &trak);
+    REQUIRE(err == ISONoErr);
+    err = ISONewTrackMedia(trak, &media, ISOVisualHandlerType, TIMESCALE, NULL);
+    REQUIRE(err == ISONoErr);
+
+    u32 lengthSize = 4;
+    err            = MP4NewHandle(0, &sampleEntryH);
+    err            = ISONewVVCSampleDescription(trak, sampleEntryH, 1, lengthSize, sps, pps);
+    CHECK(err == ISONoErr);
+  }
+ }

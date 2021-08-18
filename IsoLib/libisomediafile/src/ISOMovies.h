@@ -733,7 +733,8 @@ extern "C"
    */
   ISO_EXTERN(ISOErr)
   ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
-                             u32 dataReferenceIndex, u32 length_size, MP4Handle first_sps);
+                             u32 dataReferenceIndex, u32 length_size, MP4Handle first_sps,
+                             MP4Handle first_pps);
   /**
    * @brief Gets the basic parameters of the VVC sample entry.
    * @ingroup SampleDescr
