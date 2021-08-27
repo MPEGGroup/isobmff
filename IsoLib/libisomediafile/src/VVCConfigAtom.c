@@ -33,7 +33,7 @@ static void destroy(MP4AtomPtr s)
   if(self == NULL) BAILWITHERROR(MP4BadParamErr)
   if(self->num_of_arrays)
   {
-    for(i = 0; i < self->num_of_arrays; i++)
+    for(i = 0; i < 7; i++)
     {
       err = MP4DeleteLinkedList(self->arrays[i].nalList);
       if(err) goto bail;
@@ -132,11 +132,12 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
 
   PUT8(num_of_arrays);
 
-  for(array_index = 0; array_index < self->num_of_arrays; array_index++)
+  for(array_index = 0; array_index < 7; array_index++)
   {
     u32 num_nalus;
     err = MP4GetListEntryCount(self->arrays[array_index].nalList, &num_nalus);
     if(err) goto bail;
+    if(!num_nalus) continue;
     x =
       (self->arrays[array_index].array_completeness << 7) | self->arrays[array_index].NAL_unit_type;
     PUT8_V(x);
@@ -214,12 +215,13 @@ static MP4Err calculateSize(struct MP4Atom *s)
 
   if(self->num_of_arrays)
   {
-    for(j = 0; j < self->num_of_arrays; j++)
-    {
-      u32 num_nalus;
-      self->size += 1;
+    for(j = 0; j < 7; j++)
+    {    
+      u32 num_nalus;   
       err = MP4GetListEntryCount(self->arrays[j].nalList, &num_nalus);
       if(err) goto bail;
+      if(!num_nalus) continue;
+      self->size += 1;
       if(self->arrays[j].NAL_unit_type != 13 /*DCI_NUT*/ &&
          self->arrays[j].NAL_unit_type != 12 /*OPI_NUT*/)
       {
@@ -255,10 +257,11 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
 {
   MP4Err err;
   ISOVVCConfigAtomPtr self = (ISOVVCConfigAtomPtr)s;
-  u32 x, num_nalus, array_index, j, numBytesGciLower;
+  u32 x, num_nalus, array_index, j, numBytesGciLower,ui;
   s32 i;
   u8 helper;
-  // u32 nalTypeLut[7] = {13, 12, 14, 15, 16, 17, 23};
+  u32 nalTypeLut[7] = {15, 16, 14, 12, 13, 17, 23};
+  u8 nalType;
 
   err = MP4NoErr;
   if(self == NULL) BAILWITHERROR(MP4BadParamErr);
@@ -351,19 +354,24 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
 
   GET8(num_of_arrays);
 
-  for(array_index = 0; array_index < self->num_of_arrays; array_index++)
+  for(ui = 0; ui < self->num_of_arrays; ui++)
   {
     GET8_V(x);
-    // array_index = 0;
-    // nalType = x & 0x1f;
-    // for(j = 0; j < 7; j++)
-    //{
-    //  if(nalType == nalTypeLut[j])
-    //  {
-    //    break;
-    //  }
-    //  array_index += 1;
-    //}
+    nalType = x & 0x1f;
+    array_index = ui;
+    for(j = 0; j < 7; j++)
+    {
+      if(nalType == nalTypeLut[j])
+      {
+        array_index = j;
+        break;
+      }
+      if(j == 6)
+      {
+        /* unknown nalu type */
+        assert(0);
+      }
+    }
     self->arrays[array_index].array_completeness = (x & 0x80) ? 1 : 0;
     self->arrays[array_index].NAL_unit_type      = x & 0x1f;
     DEBUG_SPRINTF("NAL_unit_type = %u", self->arrays[array_index].NAL_unit_type);

@@ -210,7 +210,6 @@ TEST_CASE("Test VVC related stuff")
   SECTION("parse VVC bitstream")
   {
     MP4Handle sps, pps, sampleEntryH;
-    ISOVVCConfigAtomPtr box;
 
     s32 nalType, length;
     u8 *data;
