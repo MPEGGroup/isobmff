@@ -39,11 +39,11 @@ enum
   /* Decode Capability Info */
   VVC_NALU_DCI = 13,
   /* Video Parameter Set */
-  VVC_NALU_VID_PARAM = 14,
+  VVC_NALU_VPS = 14,
   /* Sequence Parameter Set */
-  VVC_NALU_SEQ_PARAM = 15,
+  VVC_NALU_SPS = 15,
   /* Picture Parameter Set */
-  VVC_NALU_PIC_PARAM = 16,
+  VVC_NALU_PPS = 16,
   /* APS prefix */
   VVC_NALU_APS_PREFIX = 17,
   /* APS suffix */
@@ -70,8 +70,6 @@ MP4Err vvc_parse_slice_header_minimal(BitBuffer *bb, struct vvc_poc* poc, struct
 struct vvc_sps* sps, struct vvc_pps* pps);
 MP4Err vvc_parse_ph_minimal(BitBuffer *bb, struct vvc_picture_header *ph, struct vvc_sps *sps,
                             struct vvc_pps *pps);
-
-u8* stripNALEmulation(u8* buffer, u32* bufferLen);
 s32 parseVVCNal(FILE* input, u8** data, int* data_len);
 ISOErr analyze_vvc_stream(FILE* input, struct vvc_stream* stream);
 

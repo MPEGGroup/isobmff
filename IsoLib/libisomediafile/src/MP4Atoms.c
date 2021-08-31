@@ -635,6 +635,10 @@ MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom)
     err = MP4CreateVVCConfigAtom((ISOVVCConfigAtomPtr *)&newAtom);
     break;
 
+  case ISOVVCNALUConfigAtomType:
+    err = MP4CreateVVCNALUConfigAtom((ISOVVCNALUConfigAtomPtr *)&newAtom);
+    break;
+
   default:
     err           = MP4CreateUnknownAtom((MP4UnknownAtomPtr *)&newAtom);
     newAtom->type = atomType;

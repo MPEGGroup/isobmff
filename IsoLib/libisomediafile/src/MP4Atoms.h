@@ -129,6 +129,7 @@ enum
   ISOVCConfigAtomType                          = MP4_FOUR_CHAR_CODE('a', 'v', 'c', 'C'),
   ISOHEVCConfigAtomType                        = MP4_FOUR_CHAR_CODE('h', 'v', 'c', 'C'),
   ISOVVCConfigAtomType                         = MP4_FOUR_CHAR_CODE('v', 'v', 'c', 'C'),
+  ISOVVCNALUConfigAtomType                     = MP4_FOUR_CHAR_CODE('v', 'v', 'n', 'C'),
   ISOAVCSampleEntryAtomType                    = MP4_FOUR_CHAR_CODE('a', 'v', 'c', '1'),
   ISOHEVCSampleEntryAtomType                   = MP4_FOUR_CHAR_CODE('h', 'v', 'c', '1'),
   ISOLHEVCSampleEntryAtomType                  = MP4_FOUR_CHAR_CODE('h', 'v', 'c', '2'),
@@ -1120,6 +1121,16 @@ typedef struct ISOVVCConfigAtom
   } arrays[7]; //
 
 } ISOVVCConfigAtom, *ISOVVCConfigAtomPtr;
+
+typedef struct ISOVVCNALUConfigAtom
+{
+  MP4_FULL_ATOM
+
+  u32 LengthSizeMinusOne;
+} ISOVVCNALUConfigAtom, *ISOVVCNALUConfigAtomPtr;
+
+
+
 
 typedef struct MP4SampleSizeAtom
 {
@@ -2165,6 +2176,8 @@ MP4Err MP4CreateItemPropertyAssociationAtom(MP4ItemPropertyAssociationAtomPtr *o
 
 MP4Err MP4CreateHEVCConfigAtom(ISOHEVCConfigAtomPtr *outAtom);
 MP4Err MP4CreateVVCConfigAtom(ISOVVCConfigAtomPtr *outAtom);
+MP4Err MP4CreateVVCNALUConfigAtom(ISOVVCNALUConfigAtomPtr *outAtom);
+
 
 MP4Err MP4CreateOriginalFormatAtom(MP4OriginalFormatAtomPtr *outAtom);
 MP4Err MP4CreateSchemeInfoAtom(MP4SchemeInfoAtomPtr *outAtom);

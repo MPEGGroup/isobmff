@@ -696,56 +696,6 @@ s32 parseVVCNal(FILE *input, u8 **data, int *data_len)
   return byte;
 }
 
-u8 *stripNALEmulation(u8 *buffer, u32 *bufferLen)
-{
-  u8 *outBuffer;
-  u32 zerocount                = 0;
-  u32 emulationPreventionBytes = 0;
-  u32 ii                       = 0;
-  u32 i;
-  for(i = 0; i < *bufferLen; i++)
-  {
-    /* Check for emulation prevention code */
-    if(zerocount == 2 && buffer[i] == 0x03 && i + 1 < *bufferLen && buffer[i + 1] <= 0x04)
-    {
-      zerocount = buffer[i + 1] ? 0 : 1;
-      emulationPreventionBytes++;
-      i++;
-    }
-    else if(buffer[i] == 0)
-    {
-      zerocount++;
-    }
-    else
-    {
-      zerocount = 0;
-    }
-  }
-  outBuffer = malloc(*bufferLen - emulationPreventionBytes);
-
-  for(i = 0, ii = 0; i < *bufferLen; i++, ii++)
-  {
-    /* Check for emulation prevention code */
-    if(zerocount == 2 && buffer[i] == 0x03 && i + 1 < *bufferLen && buffer[i + 1] <= 0x04)
-    {
-      zerocount = buffer[i + 1] ? 0 : 1;
-      i++;
-    }
-    else if(buffer[i] == 0)
-    {
-      zerocount++;
-    }
-    else
-    {
-      zerocount = 0;
-    }
-    outBuffer[ii] = buffer[i];
-  }
-  *bufferLen = *bufferLen - emulationPreventionBytes;
-
-  return outBuffer;
-}
-
 ISOErr analyze_vvc_stream(FILE* input, struct vvc_stream* stream) {
 	ISOErr err = MP4NoErr;
 	ISOHandle spsHandle = NULL;
@@ -790,10 +740,9 @@ ISOErr analyze_vvc_stream(FILE* input, struct vvc_stream* stream) {
 			}
 			if (naltype == -1) break;
 			switch (naltype) {
-      case VVC_NALU_VID_PARAM:
+      case VVC_NALU_VPS:
 				if (vps_found) {
 					free(data); data = NULL;
-					//printf("Another VPS\r\n");
 					continue;
 				}
 				vps_found = 1;
@@ -802,14 +751,13 @@ ISOErr analyze_vvc_stream(FILE* input, struct vvc_stream* stream) {
 				memcpy((*vpsHandle), data, datalen);
 				free(data); data = NULL;
 				break;
-      case VVC_NALU_SEQ_PARAM:
+      case VVC_NALU_SPS:
 				if (sps_found) {
-					header->aggregator_data = (u8*)realloc(header->aggregator_data, header->aggregator_datalen + datalen + 4);
-					memcpy(&header->aggregator_data[header->aggregator_datalen + 4], data, datalen);
-					PUT32(&header->aggregator_data[header->aggregator_datalen], datalen);
-					header->aggregator_datalen += datalen + 4;
+					header->non_VCL_data = (u8*)realloc(header->non_VCL_data, header->non_VCL_datalen + datalen + 4);
+					memcpy(&header->non_VCL_data[header->non_VCL_datalen + 4], data, datalen);
+					PUT32(&header->non_VCL_data[header->non_VCL_datalen], datalen);
+					header->non_VCL_datalen += datalen + 4;
 					free(data); data = NULL;
-					//printf("Another SPS\r\n");
 					continue;
 				}
 				sps_found = 1;
@@ -818,14 +766,13 @@ ISOErr analyze_vvc_stream(FILE* input, struct vvc_stream* stream) {
 				memcpy((*spsHandle), data, datalen);
 				free(data); data = NULL;
 				break;
-      case VVC_NALU_PIC_PARAM:
+      case VVC_NALU_PPS:
 				if (pps_found) {
-					header->aggregator_data = (u8*)realloc(header->aggregator_data, header->aggregator_datalen + datalen + 4);
-					memcpy(&header->aggregator_data[header->aggregator_datalen + 4], data, datalen);
-					PUT32(&header->aggregator_data[header->aggregator_datalen], datalen);
-					header->aggregator_datalen += datalen + 4;
+					header->non_VCL_data = (u8*)realloc(header->non_VCL_data, header->non_VCL_datalen + datalen + 4);
+					memcpy(&header->non_VCL_data[header->non_VCL_datalen + 4], data, datalen);
+					PUT32(&header->non_VCL_data[header->non_VCL_datalen], datalen);
+					header->non_VCL_datalen += datalen + 4;
 					free(data); data = NULL;
-					//printf("Another PPS\r\n");
 					continue;
 				}
 				pps_found = 1;
@@ -847,6 +794,7 @@ ISOErr analyze_vvc_stream(FILE* input, struct vvc_stream* stream) {
         free(data);
         data = NULL;
         break;
+      case VVC_NALU_SLICE_IDR_W_RADL:
       case VVC_NALU_SLICE_IDR_N_LP:
         poc_reset = 1;
 			default:
@@ -862,22 +810,23 @@ ISOErr analyze_vvc_stream(FILE* input, struct vvc_stream* stream) {
 					frameNal += !layer;
 					if (layer) {
             //todo
-						header->aggregator_header = GET16(data);
-						printf("Push aggregator layer 1\r\n");
-						header->aggregator_data = (u8*)realloc(header->aggregator_data, header->aggregator_datalen + datalen + 4);
-						memcpy(&header->aggregator_data[header->aggregator_datalen + 4], data, datalen);
-						PUT32(&header->aggregator_data[header->aggregator_datalen], datalen);
-						header->aggregator_datalen += datalen + 4;
-						free(data); data = NULL;
+						//header->aggregator_header = GET16(data);
+						//printf("Push aggregator layer 1\r\n");
+						//header->aggregator_data = (u8*)realloc(header->aggregator_data, header->aggregator_datalen + datalen + 4);
+						//memcpy(&header->aggregator_data[header->aggregator_datalen + 4], data, datalen);
+						//PUT32(&header->aggregator_data[header->aggregator_datalen], datalen);
+						//header->aggregator_datalen += datalen + 4;
+						//free(data); data = NULL;
 					}
 				} 
         else 
+         /* Non-VCL */
         {
-					if (header->aggregator_datalen) {
-						header->aggregator_data = (u8*)realloc(header->aggregator_data, header->aggregator_datalen + datalen + 4);
-						memcpy(&header->aggregator_data[header->aggregator_datalen + 4], data, datalen);
-						PUT32(&header->aggregator_data[header->aggregator_datalen], datalen);
-						header->aggregator_datalen += datalen + 4;
+					if (header->non_VCL_datalen) {
+						header->non_VCL_data = (u8*)realloc(header->non_VCL_data, header->non_VCL_datalen + datalen + 4);
+						memcpy(&header->non_VCL_data[header->non_VCL_datalen + 4], data, datalen);
+						PUT32(&header->non_VCL_data[header->non_VCL_datalen], datalen);
+						header->non_VCL_datalen += datalen + 4;
 					}
 					free(data); data = NULL;
 				}

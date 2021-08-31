@@ -749,12 +749,9 @@ extern "C"
    * @param sampleEntryH input sample entry handle
    * @param where can be VVC vps, sps, pps, dci, opi, prefix APS, prefix SEI.
    * @param num_nalus output the number of nalus in the corresponding parameter set.
-   * @param index the indexes start at 1 (1 is the first parameter set in the indicated array).
-   * @param nal_unit_length output the length of the nalu.
    */
   ISO_EXTERN(ISOErr)
-  ISOGetVVCNaluNums(MP4Handle sampleEntryH, u32 where, u32 *num_nalus, u32 index,
-                    u32 *nal_unit_length);
+  ISOGetVVCNaluNums(MP4Handle sampleEntryH, u32 where, u32 *num_nalus);
   /**
    * @brief Gets a VVC parameter set, placing it in the given handle
    * @ingroup SampleDescr

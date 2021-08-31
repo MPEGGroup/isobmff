@@ -71,11 +71,12 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
 	u32 datalen;
 	u32 slice_datalen = 0;
 	
-	u32 sei_count = 0;
-  u8 i;
+	u32 sei_count = 0, aps_count = 0;
+  u32 i;
+  s32 j;
   ISOHandle opiHandle = NULL;
   ISOHandle dciHandle = NULL;
-  ISOHandle prefixApsHandle  = NULL;
+  ISOHandle* prefixApsHandle  = NULL;
   ISOHandle* prefixSeiHandle = NULL;
 
 	/* On first sample */
@@ -112,7 +113,7 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
       free(data);
       data = NULL;
       break;
-    case VVC_NALU_VID_PARAM:
+    case VVC_NALU_VPS:
 			if (vps_found) {
 				free(data); data = NULL;
 				/*printf("Another VPS\r\n");*/
@@ -124,10 +125,9 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
 			memcpy((*vpsHandle), data, datalen);
 			free(data); data = NULL;
 			break;
-    case VVC_NALU_SEQ_PARAM:
+    case VVC_NALU_SPS:
 			if (sps_found) {
 				free(data); data = NULL;
-				/*printf("Another SPS\r\n");*/
 				continue;
 			}
 			sps_found = 1;
@@ -136,11 +136,10 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
 			memcpy((*spsHandle), data, datalen);
 			free(data); data = NULL;
 			break;
-    case VVC_NALU_PIC_PARAM:
+    case VVC_NALU_PPS:
 			if (pps_found) {
 				free(data); data = NULL;
-				/*printf("Another PPS\r\n");*/
-				continue;
+        continue;
 			}
 			pps_found = 1;
 			ISODisposeHandle(ppsHandle);
@@ -149,9 +148,15 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
 			free(data); data = NULL;
 			break;
     case VVC_NALU_APS_PREFIX:
-			// nothing todo;
+      prefixApsHandle = (ISOHandle*)realloc(prefixApsHandle, sizeof(ISOHandle) * (aps_count + 1));
+      err             = ISONewHandle(datalen, &prefixApsHandle[aps_count]);
+      memcpy((*prefixApsHandle[aps_count]), data, datalen);
+      free(data);
+      data = NULL;
+      aps_count += 1;
       break;
     case VVC_NALU_PIC_HEADER:
+      break;
     case VVC_NALU_SEI_PREFIX:
       prefixSeiHandle = (ISOHandle*)realloc(prefixSeiHandle, sizeof(ISOHandle) * (sei_count + 1));
       err             = ISONewHandle(datalen, &prefixSeiHandle[sei_count]);
@@ -181,6 +186,7 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
 			}
 			free(data); data = NULL;
 			break;
+
 		default:
 			if (naltype < 11) {
 				u32 layer = data[0];
@@ -238,7 +244,7 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
 		ISONewVVCSampleDescription(trak, sampleEntryH, 1, 4, spsHandle, ppsHandle);
     if(vps_found)
     {
-      ISOAddVVCSampleDescriptionPS(sampleEntryH, vpsHandle, VVC_NALU_VID_PARAM);
+      ISOAddVVCSampleDescriptionPS(sampleEntryH, vpsHandle, VVC_NALU_VPS);
 		}
     if(opiHandle)
     {
@@ -250,12 +256,25 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
       ISOAddVVCSampleDescriptionPS(sampleEntryH, dciHandle, VVC_NALU_DCI);
       err = ISODisposeHandle(dciHandle);
     }
+    for(i = 0; i < aps_count; i++)
+    {
+      ISOAddVVCSampleDescriptionPS(sampleEntryH, prefixApsHandle[i], VVC_NALU_APS_PREFIX);
+    }	
     for(i = 0; i < sei_count; i++)
     {
       ISOAddVVCSampleDescriptionPS(sampleEntryH, prefixSeiHandle[i], VVC_NALU_SEI_PREFIX);
-      err = ISODisposeHandle(prefixSeiHandle[i]);	
 		}	
+		for(j = aps_count - 1; j >= 0; j--)
+    {
+      err = ISODisposeHandle(prefixApsHandle[j]);
+		}
+    for(j = sei_count - 1; j >= 0; j--)
+    {
+      err = ISODisposeHandle(prefixSeiHandle[j]);
+		}
 	}
+
+
 	err = ISONewHandle(sizeof(u32), &sampleDurationH);
 	*((u32*)*sampleDurationH) = parameters->frameduration;
 	
@@ -263,18 +282,12 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
 	err = ISONewHandle(sizeof(u32), &sampleOffsetH);
 
 	/* Special case for aggregators */
-	if (header->aggregator_datalen) {
+	if (header->non_VCL_datalen) {
 		const u32 DATALEN_FIELD_LEN = 4;
-		/* Construct SHVC header by using NAL header data with nal_unit_type changed */		
-		u16 NALU_header = ((AGGREGATOR_NAL_TYPE << 1) << 8) | (header->aggregator_header & 0xff);
-		err = ISONewHandle(datalen + header->aggregator_datalen + 10, &sampleDataH);		
+		err = ISONewHandle(datalen + header->non_VCL_datalen + 4, &sampleDataH);		
 		PUT32(*sampleDataH, datalen);
 		memcpy((*sampleDataH) + DATALEN_FIELD_LEN, data, datalen);
-
-		/* Append aggregator data after slice data */		
-		PUT32((*sampleDataH) + datalen + DATALEN_FIELD_LEN, header->aggregator_datalen + 2);//+2??
-		PUT16((*sampleDataH) + datalen + DATALEN_FIELD_LEN + DATALEN_FIELD_LEN, NALU_header);
-		memcpy((*sampleDataH) + datalen + DATALEN_FIELD_LEN + DATALEN_FIELD_LEN + 2, header->aggregator_data, header->aggregator_datalen);
+		memcpy((*sampleDataH) + datalen + DATALEN_FIELD_LEN, header->non_VCL_data, header->non_VCL_datalen);
 	} else if (frame_slices) {
 		err = ISONewHandle(datalen, &sampleDataH);
 		memcpy((*sampleDataH), data, datalen);
@@ -358,8 +371,12 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 										graphics_profileAndLevel);  
 
 	MP4NewHandle(1, &rap_desc); /* Allocate one byte for rap */
-  //ISOSetMovieCompatibleBrand(moov, MP4_FOUR_CHAR_CODE('i', 's', 'o', 'm'));
-	//ISOSetMovieBrand(moov, MP4_FOUR_CHAR_CODE('i', 's', 'o', '8'), 0);
+	ISOSetMovieBrand(moov, MP4_FOUR_CHAR_CODE('m', 'p', '4', '1'), 0);
+	ISOSetMovieCompatibleBrand(moov, MP4_FOUR_CHAR_CODE('v', 'v', 'c', '1'));
+  ISOSetMovieCompatibleBrand(moov, MP4_FOUR_CHAR_CODE('i', 's', 'o', 'm'));
+  ISOSetMovieCompatibleBrand(moov, MP4_FOUR_CHAR_CODE('i', 's', 'o', '8'));
+
+
 
 	for (trackID = 1; trackID < (u32)parameters->inputCount + 1; trackID++) {
 	
@@ -376,7 +393,7 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 		err = analyze_vvc_stream(input, &stream); if (err) goto bail;
 		printf("Found: %d slices\r\n", stream.used_count);
 
-		parameters->subsample_information = 4;
+		//parameters->subsample_information = 4;
 
 		/* Analyze POC numbers for discontinuety */
 		for (frameCounter = 1; frameCounter < stream.used_count; frameCounter++) {
@@ -599,7 +616,6 @@ int cleanParameters(struct ParamStruct *parameters) {
 	}
 	return 1;
 }
-
 
 
 int main(int argc, char* argv[])

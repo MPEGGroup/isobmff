@@ -67,9 +67,10 @@ struct vvc_slice_header {
   u32 num_slices;
   u32 *slice_offsets;
 	//in-stream structure using a NAL unit header for grouping of NAL units belonging to the same sample
-	u8 *aggregator_data;	//数据汇总，用于存储nalu，其中前4个字节为length
-  u32 aggregator_datalen;	//存储数据的总长度
-  u16 aggregator_header;
+	u8 *non_VCL_data;	//数据汇总，用于存储nalu，其中前4个字节为length
+  u32 non_VCL_datalen;	//存储数据的总长度
+  
+	u16 aggregator_header;
 };
 
 struct vvc_poc {

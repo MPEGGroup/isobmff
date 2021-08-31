@@ -1230,13 +1230,11 @@ bail:
 }
 
 MP4_EXTERN(MP4Err)
-ISOGetVVCNaluNums(MP4Handle sampleEntryH, u32 where, u32 *num_nalus, u32 index,
-                  u32 *nal_unit_length)
+ISOGetVVCNaluNums(MP4Handle sampleEntryH, u32 where, u32 *num_nalus)
 {
   MP4Err err                        = MP4NoErr;
   MP4VisualSampleEntryAtomPtr entry = NULL;
   ISOVVCConfigAtomPtr config;
-  MP4Handle ps;
   u32 i;
 
   err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType);
@@ -1254,9 +1252,7 @@ ISOGetVVCNaluNums(MP4Handle sampleEntryH, u32 where, u32 *num_nalus, u32 index,
     if(config->arrays[i].NAL_unit_type == where)
     {
       err = MP4GetListEntryCount(config->arrays[i].nalList, num_nalus);
-      err = MP4GetListEntry(config->arrays[i].nalList, index - 1, (char **)&ps);
       if(err) BAILWITHERROR(MP4BadParamErr);
-      err = MP4GetHandleSize(ps, nal_unit_length);
       break;
     }
     if(i == 6)
@@ -1309,6 +1305,7 @@ MP4_EXTERN(MP4Err) ISOGetNALUnitLength(MP4Handle sampleEntryH, u32 *out)
   ISOHEVCConfigAtomPtr configHEVC;
   ISOVCConfigAtomPtr configAVC;
   ISOVVCConfigAtomPtr configVVC;
+  ISOVVCNALUConfigAtomPtr VVCNaluConfig;
 
   if(!out) BAILWITHERROR(MP4BadParamErr);
 
@@ -1322,6 +1319,14 @@ MP4_EXTERN(MP4Err) ISOGetNALUnitLength(MP4Handle sampleEntryH, u32 *out)
      entry->type != ISOHEVCSampleEntryAtomType && entry->type != ISOAVCSampleEntryAtomType &&
      entry->type != ISOVVCSampleEntryAtomType)
     BAILWITHERROR(MP4BadParamErr);
+
+  err = MP4GetListEntryAtom(entry->ExtensionAtomList, ISOVVCNALUConfigAtomType,
+                            (MP4AtomPtr *)&VVCNaluConfig);
+  if(err == MP4NoErr)
+  {
+    *out = VVCNaluConfig->LengthSizeMinusOne + 1;
+    goto bail;
+  }
 
   err =
     MP4GetListEntryAtom(entry->ExtensionAtomList, ISOHEVCConfigAtomType, (MP4AtomPtr *)&configHEVC);
@@ -1932,6 +1937,18 @@ bail:
   TEST_RETURN(err);
   return err;
 }
+
+//MP4_EXTERN(MP4Err)
+//ISONewSubpicVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 dataReferenceIndex, u32 length_size, MP4Handle first_sps,
+//                                 MP4Handle first_pps)
+//{
+//  // todo implement me
+//  // 
+//  //ISONewVVCNonVCLsampleEntry()
+//  //The sample entry of type 'vvs1' shall contain VvcNALUConfigBox.
+//  // todo 'stsd'
+//  //A VVC non-VCL sample entry shall contain a VvcNALUConfigBox
+//}
 
 MP4_EXTERN(MP4Err)
 ISOGetVVCSampleDescription(MP4Handle sampleEntryH, u32 *dataReferenceIndex, u32 *length_size,
