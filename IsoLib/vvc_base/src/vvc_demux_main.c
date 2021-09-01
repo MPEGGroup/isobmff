@@ -120,7 +120,7 @@ MP4Err writeVvccNalus(FILE *out, ISOHandle  sampleEntryH)
     for(ui = 0; ui < aps_count; ui++)
     {
       err = ISOGetHandleSize(apsHandle[ui], &sampleSize); if(err) goto bail;
-      fwrite(&syncCode2, 3, 1, out); fwrite(*apsHandle[ui], sampleSize, 1, out);
+      fwrite(&syncCode, 4, 1, out); fwrite(*apsHandle[ui], sampleSize, 1, out);
     }
   }
 
@@ -332,7 +332,8 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 						// sample
             nalType = ((u8*)(*sampleH + sampleOffsetBytes + 4))[1] >> 3;
             printf("OutNAL: %d\r\n", nalType);
-            if(nalType >= 14 && nalType <= 16)
+            //if(nalType >= 14 && nalType <= 16)
+            if(nalType > 11)
 							fwrite(&syncCodeZeroByte[0], 4, 1, out);
             else
               fwrite(&syncCode[0], 3, 1, out);

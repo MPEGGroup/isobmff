@@ -305,6 +305,7 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
 	cumulativeOffset += datalen;
 	
 	err = ISOGetHandleSize(sampleDataH,(u32*)*sampleSizeH);
+	//'mdia'/'stbl'
 	err = MP4AddMediaSamples(media, sampleDataH, 1,
                             sampleDurationH,
                             sampleSizeH,
@@ -370,7 +371,7 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 										visual_profileAndLevel,
 										graphics_profileAndLevel);  
 
-	MP4NewHandle(1, &rap_desc); /* Allocate one byte for rap */
+	//MP4NewHandle(1, &rap_desc); /* Allocate one byte for rap */
 	ISOSetMovieBrand(moov, MP4_FOUR_CHAR_CODE('m', 'p', '4', '1'), 0);
 	ISOSetMovieCompatibleBrand(moov, MP4_FOUR_CHAR_CODE('v', 'v', 'c', '1'));
   ISOSetMovieCompatibleBrand(moov, MP4_FOUR_CHAR_CODE('i', 's', 'o', 'm'));
@@ -392,8 +393,6 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 
 		err = analyze_vvc_stream(input, &stream); if (err) goto bail;
 		printf("Found: %d slices\r\n", stream.used_count);
-
-		//parameters->subsample_information = 4;
 
 		/* Analyze POC numbers for discontinuety */
 		for (frameCounter = 1; frameCounter < stream.used_count; frameCounter++) {
@@ -420,6 +419,7 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 		err = ISONewTrackMedia(trak, &media, ISOVisualHandlerType, 30000, NULL); if (err) goto bail;
 
 		/* Add sub-sample information box */
+    // parameters->subsample_information = 4;
 		/* TODO: only add when needed */
 		if (parameters->subsample_information == 4 /* Slice based sub-sample */ 
 			|| parameters->subsample_information == 2 /* Tile based sub-sample*/) {
@@ -485,22 +485,23 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 		err = ISOEndMediaEdits(media);  if (err) goto bail;/* Calculate duration */
 
 		/* Create "rap " sample description and group */
-    //"roll" section 7(MVC MVD)   &11 
+    //"roll" section 7(MVC MVD) & 11 
 		// ph_recovery_poc_cnt
-    ISOAddGroupDescription(media, MP4_FOUR_CHAR_CODE('r', 'a', 'p', ' '), rap_desc,
-                           &rap_desc_index);
-    ISOSetSamplestoGroupType(media, parameters->compactSampleToGroup);
-    for(frameCounter = 1; frameCounter < stream.used_count; frameCounter++)
-    {
-      /* Mark RAP frames (CRA/BLA/IDR/IRAP) to the group */
-      if(stream.header[frameCounter]->is_first_slice &&
-         stream.header[frameCounter]->nal_unit_type >= VVC_NALU_SLICE_IDR_W_RADL &&
-         stream.header[frameCounter]->nal_unit_type <= VVC_NALU_SLICE_CRA)
-      {
-        ISOMapSamplestoGroup(media, MP4_FOUR_CHAR_CODE('r', 'a', 'p', ' '), rap_desc_index,
-                             stream.header[frameCounter]->sample_number, 1);
-      }
-    }
+    //ISOAddGroupDescription(media, MP4_FOUR_CHAR_CODE('r', 'a', 'p', ' '), rap_desc,
+    //                       &rap_desc_index);
+    //ISOSetSamplestoGroupType(media, parameters->compactSampleToGroup);
+    //for(frameCounter = 1; frameCounter < stream.used_count; frameCounter++)
+    //{
+    //  /* Mark RAP frames (CRA/BLA/IDR/IRAP) to the group */
+    //  if(stream.header[frameCounter]->is_first_slice &&
+    //     stream.header[frameCounter]->nal_unit_type >= VVC_NALU_SLICE_IDR_W_RADL &&
+    //     stream.header[frameCounter]->nal_unit_type <= VVC_NALU_SLICE_CRA)
+    //  {
+    //    ISOMapSamplestoGroup(media, MP4_FOUR_CHAR_CODE('r', 'a', 'p', ' '), rap_desc_index,
+    //                         stream.header[frameCounter]->sample_number, 1);
+    //  }
+    //}
+#if 0
 		/* Create an alternative startup sequence */
 		//todo
 		{
@@ -531,6 +532,7 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 					break;
 				}       
 			}
+
 			/* If RASL slices are present, we can use alternative startup sequences */
 			if (leading_pic_count) {
 				alst_dataptr alst;
@@ -571,8 +573,9 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 				MP4DisposeHandle(alst_desc);
 			}
 		}
-
-		err = ISOInsertMediaIntoTrack(trak, 0, 0, mediaDuration, 1); if (err) goto bail;
+#endif
+		//'edit'
+		//err = ISOInsertMediaIntoTrack(trak, 0, 0, mediaDuration, 1); if (err) goto bail;
 		
 		for (i = 0; i < stream.used_count; i++) {
 			free(stream.header[i]); stream.header[i] = NULL;
@@ -591,7 +594,7 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 
 	err = ISOWriteMovieToFile(moov, filename); if (err) goto bail;
 	if (alst_desc) ISODisposeHandle(alst_desc);
-	ISODisposeHandle(rap_desc);
+	//ISODisposeHandle(rap_desc);
 	err = ISODisposeMovie(moov); if (err) goto bail;
 bail:
 	return err;

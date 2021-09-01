@@ -261,6 +261,8 @@ MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom)
   case ISOHEVCSampleEntryAtomType:
   case MP4H263SampleEntryAtomType:
   case ISOVVCSampleEntryAtomType:
+  case ISOVVCSampleEntryAtomType2:
+  case ISOVVCSubpicSampleEntryAtomType:
     err = MP4CreateVisualSampleEntryAtom((MP4VisualSampleEntryAtomPtr *)&newAtom);
     break;
 

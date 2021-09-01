@@ -216,8 +216,8 @@ static MP4Err calculateSize(struct MP4Atom *s)
   if(self->num_of_arrays)
   {
     for(j = 0; j < 7; j++)
-    {    
-      u32 num_nalus;   
+    {
+      u32 num_nalus;
       err = MP4GetListEntryCount(self->arrays[j].nalList, &num_nalus);
       if(err) goto bail;
       if(!num_nalus) continue;
@@ -257,7 +257,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
 {
   MP4Err err;
   ISOVVCConfigAtomPtr self = (ISOVVCConfigAtomPtr)s;
-  u32 x, num_nalus, array_index, j, numBytesGciLower,ui;
+  u32 x, num_nalus, array_index, j, numBytesGciLower, ui;
   s32 i;
   u8 helper;
   u32 nalTypeLut[7] = {15, 16, 14, 12, 13, 17, 23};
@@ -357,7 +357,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   for(ui = 0; ui < self->num_of_arrays; ui++)
   {
     GET8_V(x);
-    nalType = x & 0x1f;
+    nalType     = x & 0x1f;
     array_index = ui;
     for(j = 0; j < 7; j++)
     {

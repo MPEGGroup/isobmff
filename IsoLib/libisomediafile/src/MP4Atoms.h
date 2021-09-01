@@ -134,6 +134,8 @@ enum
   ISOHEVCSampleEntryAtomType                   = MP4_FOUR_CHAR_CODE('h', 'v', 'c', '1'),
   ISOLHEVCSampleEntryAtomType                  = MP4_FOUR_CHAR_CODE('h', 'v', 'c', '2'),
   ISOVVCSampleEntryAtomType                    = MP4_FOUR_CHAR_CODE('v', 'v', 'c', '1'),
+  ISOVVCSampleEntryAtomType2                   = MP4_FOUR_CHAR_CODE('v', 'v', 'i', '1'),
+  ISOVVCSubpicSampleEntryAtomType              = MP4_FOUR_CHAR_CODE('v', 'v', 's', '1'),
   MP4XMLMetaSampleEntryAtomType                = MP4_FOUR_CHAR_CODE('m', 'e', 't', 'x'),
   MP4TextMetaSampleEntryAtomType               = MP4_FOUR_CHAR_CODE('m', 'e', 't', 't'),
   MP4AMRSampleEntryAtomType                    = MP4_FOUR_CHAR_CODE('s', 'a', 'm', 'r'),
@@ -1111,10 +1113,6 @@ typedef struct ISOVVCConfigAtom
   u32 num_of_arrays;
   struct
   {
-    /*
-      To get the num_nalus use "MP4GetListEntryCount()" or nalList->entryCount
-      To get the nal_unit_length use "MP4GetListEntry()" then "MP4GetHandleSize(nalu)"
-    */
     u32 array_completeness;
     u32 NAL_unit_type;
     MP4LinkedList nalList;
@@ -1128,9 +1126,6 @@ typedef struct ISOVVCNALUConfigAtom
 
   u32 LengthSizeMinusOne;
 } ISOVVCNALUConfigAtom, *ISOVVCNALUConfigAtomPtr;
-
-
-
 
 typedef struct MP4SampleSizeAtom
 {

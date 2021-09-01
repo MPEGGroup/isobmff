@@ -773,6 +773,18 @@ extern "C"
    */
   MP4_EXTERN(ISOErr)
   ISOAddVVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where);
+  /**
+   * @brief Create a new VVC subpicture (vvs1) sample entry.
+   * including a NALUconfigAtom (vvnC)
+   * @ingroup SampleDescr
+   *
+   * @param length_size the size of the NAL Unit length field (and must be 1, 2 or 4). The value of
+   * length_size = LengthSizeMinusOne + 1
+   */
+  MP4_EXTERN(ISOErr)
+  ISONewVVCSubpicSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
+                                   u32 dataReferenceIndex, u32 length_size);
+
 
   /*************************************************************************************************
    * 3GPP media

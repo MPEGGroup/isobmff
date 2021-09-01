@@ -46,15 +46,23 @@ MP4Err MP4ParseAtomUsingProtoList(MP4InputStreamPtr inputStream, u32 *protoList,
                                   MP4AtomPtr *outAtom);
 
 #ifdef ISMACrypt
-u32 MP4SampleEntryProtos[] = {
-  MP4MPEGSampleEntryAtomType,      MP4VisualSampleEntryAtomType,
-  MP4AudioSampleEntryAtomType,     MP4EncAudioSampleEntryAtomType,
-  MP4EncVisualSampleEntryAtomType, MP4XMLMetaSampleEntryAtomType,
-  MP4TextMetaSampleEntryAtomType,  MP4AMRSampleEntryAtomType,
-  MP4AWBSampleEntryAtomType,       MP4AMRWPSampleEntryAtomType,
-  MP4H263SampleEntryAtomType,      MP4RestrictedVideoSampleEntryAtomType,
-  ISOAVCSampleEntryAtomType,       ISOHEVCSampleEntryAtomType,
-  ISOVVCSampleEntryAtomType,       0};
+u32 MP4SampleEntryProtos[] = {MP4MPEGSampleEntryAtomType,
+                              MP4VisualSampleEntryAtomType,
+                              MP4AudioSampleEntryAtomType,
+                              MP4EncAudioSampleEntryAtomType,
+                              MP4EncVisualSampleEntryAtomType,
+                              MP4XMLMetaSampleEntryAtomType,
+                              MP4TextMetaSampleEntryAtomType,
+                              MP4AMRSampleEntryAtomType,
+                              MP4AWBSampleEntryAtomType,
+                              MP4AMRWPSampleEntryAtomType,
+                              MP4H263SampleEntryAtomType,
+                              MP4RestrictedVideoSampleEntryAtomType,
+                              ISOAVCSampleEntryAtomType,
+                              ISOHEVCSampleEntryAtomType,
+                              ISOVVCSampleEntryAtomType,
+                              ISOVVCSubpicSampleEntryAtomType,
+                              0};
 #else
 u32 MP4SampleEntryProtos[] = {MP4MPEGSampleEntryAtomType,
                               MP4VisualSampleEntryAtomType,
@@ -1938,17 +1946,43 @@ bail:
   return err;
 }
 
-//MP4_EXTERN(MP4Err)
-//ISONewSubpicVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 dataReferenceIndex, u32 length_size, MP4Handle first_sps,
-//                                 MP4Handle first_pps)
-//{
-//  // todo implement me
-//  // 
-//  //ISONewVVCNonVCLsampleEntry()
-//  //The sample entry of type 'vvs1' shall contain VvcNALUConfigBox.
-//  // todo 'stsd'
-//  //A VVC non-VCL sample entry shall contain a VvcNALUConfigBox
-//}
+MP4_EXTERN(MP4Err)
+ISONewVVCSubpicSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
+                                 u32 dataReferenceIndex, u32 length_size)
+{
+  MP4Err MP4CreateVisualSampleEntryAtom(MP4VisualSampleEntryAtomPtr * outAtom);
+  MP4Err MP4CreateVVCNALUConfigAtom(ISOVVCNALUConfigAtomPtr * outAtom);
+
+  MP4Err err = MP4NoErr;
+  GenericSampleEntryAtomPtr entry;
+  ISOVVCNALUConfigAtomPtr NALUConfig;
+  MP4TrackAtomPtr trak;
+
+  if((theTrack == NULL) || (sampleDescriptionH == NULL)) BAILWITHERROR(MP4BadParamErr);
+  if(length_size != 1 && length_size != 2 && length_size != 4) BAILWITHERROR(MP4BadParamErr);
+
+  trak = (MP4TrackAtomPtr)theTrack;
+  if(!(trak->newTrackFlags & MP4NewTrackIsVisual)) BAILWITHERROR(MP4BadParamErr);
+  err = MP4CreateVisualSampleEntryAtom((MP4VisualSampleEntryAtomPtr *)&entry);
+  if(err) goto bail;
+  entry->super              = NULL;
+  entry->dataReferenceIndex = dataReferenceIndex;
+  entry->type               = ISOVVCSubpicSampleEntryAtomType;
+
+  err                            = MP4CreateVVCNALUConfigAtom(&NALUConfig);
+  NALUConfig->LengthSizeMinusOne = length_size - 1;
+
+  /* list vvnC to vvs1 */
+  err = MP4AddListEntry((void *)NALUConfig, entry->ExtensionAtomList);
+  if(err) goto bail;
+
+  err = atomPtrToSampleEntryH(sampleDescriptionH, (MP4AtomPtr)entry);
+  if(err) goto bail;
+
+bail:
+  TEST_RETURN(err);
+  return err;
+}
 
 MP4_EXTERN(MP4Err)
 ISOGetVVCSampleDescription(MP4Handle sampleEntryH, u32 *dataReferenceIndex, u32 *length_size,

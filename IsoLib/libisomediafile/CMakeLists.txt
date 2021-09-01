@@ -72,6 +72,7 @@ add_library(
     src/HandlerAtom.c
     src/HEVCConfigAtom.c
     src/VVCConfigAtom.c
+    src/VVCNALUConfigAtom.c
     src/HintMediaHeaderAtom.c
     src/IPMPToolUpdateCommand.c
     src/ISMAKMSAtom.c

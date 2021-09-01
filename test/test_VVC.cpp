@@ -87,7 +87,7 @@ TEST_CASE("Test VVC related stuff")
     CHECK(box->avg_frame_rate == 0);
     CHECK(box->num_of_arrays == 2);
 
-    for(int i = 0; i < box->num_of_arrays; i++)
+    for(u32 i = 0; i < box->num_of_arrays; i++)
     {
       CHECK(box->arrays[i].array_completeness == 1);
       CHECK(box->arrays[i].nalList->entryCount == 1);
@@ -190,10 +190,10 @@ TEST_CASE("Test VVC related stuff")
     CHECK(err == ISONoErr);
 
     u32 num_nalus, nal_unit_length;
-    err = ISOGetVVCNaluNums(sampleEntryH, VVCsps, &num_nalus, 1, &nal_unit_length);
+    err = ISOGetVVCNaluNums(sampleEntryH, VVCsps, &num_nalus);
     CHECK(err == ISONoErr);
     CHECK(num_nalus == 1);
-    CHECK(nal_unit_length == 197);
+    //CHECK(nal_unit_length == 197);
 
     err = createHandleFromBuffer(&pps, VVC::PPS, sizeof(VVC::PPS));
     REQUIRE(err == MP4NoErr);
@@ -201,26 +201,15 @@ TEST_CASE("Test VVC related stuff")
     err = ISOAddVVCSampleDescriptionPS(sampleEntryH, pps, VVCpps);
     CHECK(err == ISONoErr);
 
-    err = ISOGetVVCNaluNums(sampleEntryH, VVCpps, &num_nalus, 1, &nal_unit_length);
+    err = ISOGetVVCNaluNums(sampleEntryH, VVCpps, &num_nalus);
     CHECK(err == ISONoErr);
     CHECK(num_nalus == 2);
-    CHECK(nal_unit_length == 13);
+    //CHECK(nal_unit_length == 13);
   }
 
-  SECTION("parse VVC bitstream")
+  SECTION("test vvs1 sample entry") 
   {
-    MP4Handle sps, pps, sampleEntryH;
-
-    s32 nalType, length;
-    u8 *data;
-    FILE *input;
-    input   = fopen("C:\\Users\\29968\\Desktop\\str1.bin", "rb");
-
-    nalType = parseVVCNal(input, &data, &length);
-    err     = createHandleFromBuffer(&sps, data, length);
-    REQUIRE(err == MP4NoErr);
-    nalType = parseVVCNal(input, &data, &length);
-    err     = createHandleFromBuffer(&pps, data, length);
+    MP4Handle sampleEntryH;
 
     ISOMovie moov;
     ISOMedia media;
@@ -234,7 +223,20 @@ TEST_CASE("Test VVC related stuff")
 
     u32 lengthSize = 4;
     err            = MP4NewHandle(0, &sampleEntryH);
-    err            = ISONewVVCSampleDescription(trak, sampleEntryH, 1, lengthSize, sps, pps);
+    err            = ISONewVVCSubpicSampleDescription(trak, sampleEntryH, 1, lengthSize);   
     CHECK(err == ISONoErr);
+
+    u32 typeOut = 0;
+    err         = ISOGetSampleDescriptionType(sampleEntryH, &typeOut);
+    CHECK(err == ISONoErr);
+    CHECK(typeOut == MP4_FOUR_CHAR_CODE('v', 'v', 's', '1'));
+
+    u32 length;
+    err = MP4GetHandleSize(sampleEntryH, &length);
+    CHECK(err == ISONoErr);
+    /* the vvs1 extend VisualSampleEntry and including the vvnC box, which is a fullBox */
+    CHECK(length == 99);
+    
+    ISODisposeHandle(sampleEntryH);
   }
  }
