@@ -641,6 +641,15 @@ MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom)
     err = MP4CreateVVCNALUConfigAtom((ISOVVCNALUConfigAtomPtr *)&newAtom);
     break;
 
+  case MP4TrackGroupAtomType:
+    err = MP4CreateTrackGroupAtom((MP4TrackGroupAtomPtr *)&newAtom);
+    break;
+
+  case MP4_FOUR_CHAR_CODE('m', 's', 'r', 'c'):
+  case MP4_FOUR_CHAR_CODE('a', 'l', 't', 'e'):
+    err = MP4CreateTrackGroupTypeAtom(atomType, (MP4TrackGroupTypeAtomPtr *)&newAtom);
+    break;
+
   default:
     err           = MP4CreateUnknownAtom((MP4UnknownAtomPtr *)&newAtom);
     newAtom->type = atomType;

@@ -93,11 +93,11 @@ MP4Err writeVvccNalus(FILE *out, ISOHandle  sampleEntryH)
     fwrite(&syncCode2, 3, 1, out); fwrite(*dciHandle, sampleSize, 1, out);
   }
 
-  err = ISOGetVVCNaluNums(sampleEntryH, VVC_NALU_SEI_PREFIX, &sei_count); if(err) goto bail;
+  err = ISOGetVVCNaluNums(sampleEntryH, VVC_NALU_PREFIX_SEI, &sei_count); if(err) goto bail;
   for(ui = 0; ui < sei_count; ui++)
   {
     err = ISONewHandle(1, &seiHandle[ui]); if(err) goto bail;
-    err = ISOGetVVCSampleDescriptionPS(sampleEntryH, seiHandle[ui], VVC_NALU_SEI_PREFIX, ui + 1); if(err) goto bail;
+    err = ISOGetVVCSampleDescriptionPS(sampleEntryH, seiHandle[ui], VVC_NALU_PREFIX_SEI, ui + 1); if(err) goto bail;
   }
   if(sei_count)
   {
@@ -108,12 +108,12 @@ MP4Err writeVvccNalus(FILE *out, ISOHandle  sampleEntryH)
     }
   }
 
-	err = ISOGetVVCNaluNums(sampleEntryH, VVC_NALU_APS_PREFIX, &aps_count);
+	err = ISOGetVVCNaluNums(sampleEntryH, VVC_NALU_PREFIX_APS, &aps_count);
   if(err) goto bail;
   for(ui = 0; ui < aps_count; ui++)
   {
     err = ISONewHandle(1, &apsHandle[ui]); if(err) goto bail;
-    err = ISOGetVVCSampleDescriptionPS(sampleEntryH, apsHandle[ui], VVC_NALU_APS_PREFIX, ui + 1); if(err) goto bail;
+    err = ISOGetVVCSampleDescriptionPS(sampleEntryH, apsHandle[ui], VVC_NALU_PREFIX_APS, ui + 1); if(err) goto bail;
   }
   if(aps_count)
   {
@@ -171,7 +171,8 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 	err = ISONewHandle(1, &sampleEntryH); if (err) goto bail;
 	err = ISONewHandle(1, &alst_desc); if (err) goto bail;
 
-	err = ISOOpenMovieFile(&moov, filename, MP4OpenMovieDebug); if (err) goto bail;
+	err = ISOOpenMovieFile(&moov, filename, MP4OpenMovieDebug);
+  if(err) goto bail;
 	err = MP4GetMovieTrackCount(moov, &trackCount); if (err) goto bail;
 
 	printf("trackCount: %d\r\n", trackCount);
@@ -194,7 +195,7 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 
 		/* Check if track group box exists and print the group if found */
 		MP4_EXTERN(MP4Err) MP4GetTrackGroup(MP4Track theTrack, u32 groupType, u32 *outGroupId);
-		if (MP4GetTrackGroup(trak, MP4_FOUR_CHAR_CODE('m', 's', 'r', 'c'), &trackGroupID) == MP4NoErr) {
+		if (MP4GetTrackGroup(trak, MP4_FOUR_CHAR_CODE('a', 'l', 't', 'e'), &trackGroupID) == MP4NoErr) {
 			printf("Found trackGroup (Group ID: %d)\r\n", trackGroupID);
 		}
 
@@ -332,8 +333,7 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 						// sample
             nalType = ((u8*)(*sampleH + sampleOffsetBytes + 4))[1] >> 3;
             printf("OutNAL: %d\r\n", nalType);
-            //if(nalType >= 14 && nalType <= 16)
-            if(nalType > 11)
+            if((nalType >= 12 && nalType <= 16) || nalType == VVC_NALU_PREFIX_APS || nalType == VVC_NALU_SUFFIX_APS)
 							fwrite(&syncCodeZeroByte[0], 4, 1, out);
             else
               fwrite(&syncCode[0], 3, 1, out);

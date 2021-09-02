@@ -1,7 +1,6 @@
 #ifndef __VVC_H__
 #define __VVC_H__
 
-#define AGGREGATOR_NAL_TYPE 48
 #define VVC_MAX_LAYERS 4
 #define VVC_MAX_NUM_LAYER_SETS 1024
 
@@ -45,9 +44,9 @@ enum
   /* Picture Parameter Set */
   VVC_NALU_PPS = 16,
   /* APS prefix */
-  VVC_NALU_APS_PREFIX = 17,
+  VVC_NALU_PREFIX_APS = 17,
   /* APS suffix */
-  VVC_NALU_APS_SUFFIX = 18,
+  VVC_NALU_SUFFIX_APS = 18,
   /* Picture Header */
   VVC_NALU_PIC_HEADER = 19,
   /* AU delimiter */
@@ -57,9 +56,9 @@ enum
   /* End of stream */
   VVC_NALU_END_OF_STREAM = 22,
   /* prefix SEI message */
-  VVC_NALU_SEI_PREFIX = 23,
+  VVC_NALU_PREFIX_SEI = 23,
   /* suffix SEI message */
-  VVC_NALU_SEI_SUFFIX = 24,
+  VVC_NALU_SUFFIX_SEI = 24,
   /* Filler Data */
   VVC_NALU_FILLER_DATA = 25,
 };

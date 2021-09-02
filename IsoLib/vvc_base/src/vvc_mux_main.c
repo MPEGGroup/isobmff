@@ -147,7 +147,7 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
 			memcpy((*ppsHandle), data, datalen);
 			free(data); data = NULL;
 			break;
-    case VVC_NALU_APS_PREFIX:
+    case VVC_NALU_PREFIX_APS:
       prefixApsHandle = (ISOHandle*)realloc(prefixApsHandle, sizeof(ISOHandle) * (aps_count + 1));
       err             = ISONewHandle(datalen, &prefixApsHandle[aps_count]);
       memcpy((*prefixApsHandle[aps_count]), data, datalen);
@@ -157,7 +157,7 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
       break;
     case VVC_NALU_PIC_HEADER:
       break;
-    case VVC_NALU_SEI_PREFIX:
+    case VVC_NALU_PREFIX_SEI:
       prefixSeiHandle = (ISOHandle*)realloc(prefixSeiHandle, sizeof(ISOHandle) * (sei_count + 1));
       err             = ISONewHandle(datalen, &prefixSeiHandle[sei_count]);
       memcpy((*prefixSeiHandle[sei_count]), data, datalen);
@@ -165,7 +165,7 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
       data = NULL;
 			sei_count += 1;
       break;
-    case VVC_NALU_SEI_SUFFIX:
+    case VVC_NALU_SUFFIX_SEI:
 			{
 				u32 sei_type = 0;
 				u32 datapos = 2;
@@ -258,11 +258,11 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
     }
     for(i = 0; i < aps_count; i++)
     {
-      ISOAddVVCSampleDescriptionPS(sampleEntryH, prefixApsHandle[i], VVC_NALU_APS_PREFIX);
+      ISOAddVVCSampleDescriptionPS(sampleEntryH, prefixApsHandle[i], VVC_NALU_PREFIX_APS);
     }	
     for(i = 0; i < sei_count; i++)
     {
-      ISOAddVVCSampleDescriptionPS(sampleEntryH, prefixSeiHandle[i], VVC_NALU_SEI_PREFIX);
+      ISOAddVVCSampleDescriptionPS(sampleEntryH, prefixSeiHandle[i], VVC_NALU_PREFIX_SEI);
 		}	
 		for(j = aps_count - 1; j >= 0; j--)
     {
@@ -273,7 +273,6 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
       err = ISODisposeHandle(prefixSeiHandle[j]);
 		}
 	}
-
 
 	err = ISONewHandle(sizeof(u32), &sampleDurationH);
 	*((u32*)*sampleDurationH) = parameters->frameduration;
@@ -371,7 +370,6 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 										visual_profileAndLevel,
 										graphics_profileAndLevel);  
 
-	//MP4NewHandle(1, &rap_desc); /* Allocate one byte for rap */
 	ISOSetMovieBrand(moov, MP4_FOUR_CHAR_CODE('m', 'p', '4', '1'), 0);
 	ISOSetMovieCompatibleBrand(moov, MP4_FOUR_CHAR_CODE('v', 'v', 'c', '1'));
   ISOSetMovieCompatibleBrand(moov, MP4_FOUR_CHAR_CODE('i', 's', 'o', 'm'));
@@ -501,7 +499,7 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
     //                         stream.header[frameCounter]->sample_number, 1);
     //  }
     //}
-#if 0
+#if 1
 		/* Create an alternative startup sequence */
 		//todo
 		{
@@ -574,8 +572,7 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 			}
 		}
 #endif
-		//'edit'
-		//err = ISOInsertMediaIntoTrack(trak, 0, 0, mediaDuration, 1); if (err) goto bail;
+
 		
 		for (i = 0; i < stream.used_count; i++) {
 			free(stream.header[i]); stream.header[i] = NULL;
@@ -585,16 +582,16 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 	}
 
 	/* Add each track group to the traks */
+  /* trackgropu 'trgr' -> 'alte' (trackid, track_group_id) */
 	for (trackGroup = 0; trackGroup < (u32)parameters->trackGroupCount; trackGroup++) {
 		err = ISOGetMovieIndTrack(moov, parameters->trackGroups[trackGroup]->track, &trak); if (err) goto bail;
-		err =  MP4AddTrackGroup(trak, parameters->trackGroups[trackGroup]->track_group_id, MP4_FOUR_CHAR_CODE('m', 's', 'r', 'c'));
+		err =  MP4AddTrackGroup(trak, parameters->trackGroups[trackGroup]->track_group_id, MP4_FOUR_CHAR_CODE('a', 'l', 't', 'e'));
 		if (err) goto bail;
 	}
 
 
 	err = ISOWriteMovieToFile(moov, filename); if (err) goto bail;
 	if (alst_desc) ISODisposeHandle(alst_desc);
-	//ISODisposeHandle(rap_desc);
 	err = ISODisposeMovie(moov); if (err) goto bail;
 bail:
 	return err;
