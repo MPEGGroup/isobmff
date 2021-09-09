@@ -198,12 +198,20 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 		if (MP4GetTrackGroup(trak, MP4_FOUR_CHAR_CODE('a', 'l', 't', 'e'), &trackGroupID) == MP4NoErr) {
 			printf("Found trackGroup (Group ID: %d)\r\n", trackGroupID);
 		}
+    u32 refcount;
+    MP4GetTrackReferenceCount(trak, MP4_FOUR_CHAR_CODE('s', 'u', 'b', 'p'), &refcount);
+
+    ISOTrack reftrak;
+    MP4GetTrackReference(trak, MP4_FOUR_CHAR_CODE('s', 'u', 'b', 'p'), 1, &reftrak);
+		s32 j;
 
 		err = ISOGetTrackMedia(trak, &media); if (err) goto bail;
 		err = ISOGetMediaHandlerDescription(media, &handlerType, NULL); if (err) goto bail;
-		err = ISONewHandle(0, &decoderConfigH); if (err) goto bail;
+		//err = ISONewHandle(0, &decoderConfigH); if (err) goto bail;
 		err = ISOCreateTrackReader(trak, &reader); if (err) goto bail;
 		err = ISONewHandle(0, &sampleH); if (err) goto bail;
+
+#if 0
 		{
 			u32 flags;
 			u32 entry_count;
@@ -242,6 +250,7 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 			}
 		}
 
+
 		/* Handle alternative startup sequence, 'rap ' is also required */
 		if (ISOGetGroupDescription(media, MP4_FOUR_CHAR_CODE('r', 'a', 'p', ' '), 1, alst_desc) == MP4NoErr) {
 			if (ISOGetGroupDescription(media, MP4_FOUR_CHAR_CODE('a', 'l', 's', 't'), 1, alst_desc) == MP4NoErr) {
@@ -256,11 +265,24 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 				}
 			}
 		}
-
+#endif
 		/* Get sample description from the trak */
 		err = MP4TrackReaderGetCurrentSampleDescription(reader, sampleEntryH); if (err) goto bail;
 		
-		err = writeVvccNalus(out, sampleEntryH); if(err) goto bail;
+		// only call when first track?
+    if(trackNumber == 1)
+    {
+      u32 configsize;
+      MP4GetHandleSize(sampleEntryH,&configsize);
+      err = ISONewHandle(configsize, &decoderConfigH); if(err) goto bail;
+      memcpy((*decoderConfigH), (*sampleEntryH), configsize);
+      MP4GetHandleSize(decoderConfigH, &configsize);
+      err = writeVvccNalus(out, sampleEntryH); if(err) goto bail;
+    }
+    //else
+    //{
+    //  err = writeVvccNalus(out, decoderConfigH); if(err) goto bail;
+    //}
 
 		ISOGetMediaTimeScale(media, &mediaTimeScale);
 		ISOGetMediaSampleCount(media, &totalSamples);    
@@ -271,6 +293,7 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 		err = ISONewHandle(totalSamples*sizeof(u32), &alst_index); if (err) goto bail;
 		err = ISONewHandle(totalSamples*sizeof(u32), &rap_index); if (err) goto bail;
 
+#if 0
 		/* Extract alternative startup sequences related groupings */
 		if (alst) {
 			u32 group_index = 0;
@@ -299,69 +322,54 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 			}
 			printf("RAP: %d\n", alst_start);
 		}
+#endif
+    for(i = 1;; i++)
+    { /* play every frame */
+      u32 unitSize;
+      s32 cts;
+      s32 dts;
+      u32 sampleFlags;
+      static u32 roll_count = 0;
 
-		for (i = 1;;i++) { /* play every frame */
-			u32 unitSize;
-			s32 cts;
-			s32 dts;
-			u32 sampleFlags;
-			static u32 roll_count = 0;
-			
-			err = MP4TrackReaderGetNextAccessUnit(reader, sampleH,
-				&unitSize, &sampleFlags,
-				&cts, &dts);
-			if (err) {
-				if (err == ISOEOF)
-					err = ISONoErr;
-				break;
-			}
-			
-			/* ALST needs special handling, if alst_start if the default -1, this should write everything to a file */
-			if (i >= alst_start) {
-				if (alst_start == -1 || roll_count == alst->roll_count || ((u32*)*alst_index)[i - 1]) {
-					u32 sampleSize = 0;
-					u32 sampleOffsetBytes = 0;
-          u8 nalType           = 0;
-					
-					MP4GetHandleSize(sampleH, &sampleSize);
-					/* ToDo: only RADL slices have short start code */
-					/* Handle multiple NAL units in a sample */
-					while (sampleOffsetBytes < sampleSize)
-					{
-						u32 boxSize = GET32(*sampleH + sampleOffsetBytes);
-						u32 byteoffset = 4;									
-						// sample
-            nalType = ((u8*)(*sampleH + sampleOffsetBytes + 4))[1] >> 3;
-            printf("OutNAL: %d\r\n", nalType);
-            if((nalType >= 12 && nalType <= 16) || nalType == VVC_NALU_PREFIX_APS || nalType == VVC_NALU_SUFFIX_APS)
-							fwrite(&syncCodeZeroByte[0], 4, 1, out);
-            else
-              fwrite(&syncCode[0], 3, 1, out);
-            fwrite(*sampleH + sampleOffsetBytes + byteoffset, boxSize, 1, out);
-						sampleOffsetBytes += boxSize + byteoffset;
-					}
-					pics_written++;
-					
-					if (alst && roll_count < alst->roll_count) roll_count++;
-				} else {
-					pics_rasl_skipped++;
-				}
-			} else {
-				pics_start_skipped++;
-			}
-		}
-		if (pics_rasl_skipped) printf("Skipped %d RASL and %d pictures from the start, written %d pictures, %d pictures to decode until seek position\n", pics_rasl_skipped, pics_start_skipped, pics_written, alst_target - pics_start_skipped - pics_rasl_skipped);
+      err = MP4TrackReaderGetNextAccessUnit(reader, sampleH, &unitSize, &sampleFlags, &cts, &dts);
+      if(err)
+      {
+        if(err == ISOEOF) err = ISONoErr;
+        break;
+      }
+
+      u32 sampleSize        = 0;
+      u32 sampleOffsetBytes = 0;
+      u8 nalType            = 0;
+      MP4GetHandleSize(sampleH, &sampleSize);
+
+      while(sampleOffsetBytes < sampleSize)
+      {
+        u32 boxSize    = GET32(*sampleH + sampleOffsetBytes);
+        u32 byteoffset = 4;
+        // sample
+        nalType = ((u8 *)(*sampleH + sampleOffsetBytes + 4))[1] >> 3;
+        printf("OutNAL: %d\r\n", nalType);
+        fwrite(&syncCodeZeroByte[0], 4, 1, out);
+        fwrite(*sampleH + sampleOffsetBytes + byteoffset, boxSize, 1, out);
+        sampleOffsetBytes += boxSize + byteoffset;
+      }
+      pics_written++;
+    }
+
+
 		fclose(out);
 		err = ISODisposeHandle(rap_index);
 		if (alst_struct) err = ISODisposeHandle(alst_struct);
 		err = ISODisposeHandle(alst_index);
 		err = ISODisposeHandle(alst_desc);
 		err = ISODisposeHandle(sampleH);
-		err = ISODisposeHandle(decoderConfigH);
+		//err = ISODisposeHandle(decoderConfigH);
 		err = ISODisposeTrackReader(reader);
 
 	}
 	free(outSampleName);
+  err = ISODisposeHandle(decoderConfigH);
 	err = ISODisposeMovie(moov);
 bail:
 	return err;

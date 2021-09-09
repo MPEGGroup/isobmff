@@ -1619,7 +1619,7 @@ ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 
   MP4TrackAtomPtr trak;
   BitBuffer mybb;
   BitBuffer *bb;
-  u32 the_size, ue, ui, y, uvBits, tmpWidthVal, tmpHeightVal;
+  u32 the_size, ue, ui, y, uvBits, tmpWidthVal, tmpHeightVal, width, height;
   s32 i;
   u8 x;
   u8 gciBuffer[10];
@@ -1724,7 +1724,8 @@ ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 
 
         err = MP4NewHandle(config->native_ptl.num_bytes_constraint_info,
                            &config->native_ptl.general_constraint_info_lower);
-        memcpy((**&config->native_ptl.general_constraint_info_lower), gciBuffer,
+        /* todo fix bug */
+        memcpy((*config->native_ptl.general_constraint_info_lower), gciBuffer,
                config->native_ptl.num_bytes_constraint_info);
       }
     }
@@ -1786,14 +1787,17 @@ ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 
   }
 
   /* sps_pic_width_max_in_luma_samples */
-  ue = read_golomb_uev(bb, &err);
+  width = read_golomb_uev(bb, &err);
   if(err) goto bail;
-  config->max_picture_width = ue;
+  config->max_picture_width = width;
+  ((MP4VisualSampleEntryAtomPtr)entry)->width = width;
 
   /* sps_pic_height_max_in_luma_samples */
-  ue = read_golomb_uev(bb, &err);
+  height = read_golomb_uev(bb, &err);
   if(err) goto bail;
-  config->max_picture_height = ue;
+  config->max_picture_height = height;
+  ((MP4VisualSampleEntryAtomPtr)entry)->height = height;
+  ((MP4TrackAtomPtr)theTrack)->setDimensions((MP4TrackAtomPtr)theTrack, width, height);
 
   /* sps_conformance_window_flag */
   x = (u8)GetBits(bb, 1, &err);
@@ -1948,7 +1952,7 @@ bail:
 
 MP4_EXTERN(MP4Err)
 ISONewVVCSubpicSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
-                                 u32 dataReferenceIndex, u32 length_size)
+                                 u32 dataReferenceIndex, u32 width, u32 height, u32 length_size)
 {
   MP4Err MP4CreateVisualSampleEntryAtom(MP4VisualSampleEntryAtomPtr * outAtom);
   MP4Err MP4CreateVVCNALUConfigAtom(ISOVVCNALUConfigAtomPtr * outAtom);
@@ -1965,6 +1969,10 @@ ISONewVVCSubpicSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH
   if(!(trak->newTrackFlags & MP4NewTrackIsVisual)) BAILWITHERROR(MP4BadParamErr);
   err = MP4CreateVisualSampleEntryAtom((MP4VisualSampleEntryAtomPtr *)&entry);
   if(err) goto bail;
+
+  ((MP4VisualSampleEntryAtomPtr)entry)->width  = width;
+  ((MP4VisualSampleEntryAtomPtr)entry)->height = height;
+  ((MP4TrackAtomPtr)theTrack)->setDimensions((MP4TrackAtomPtr)theTrack, width, height);
   entry->super              = NULL;
   entry->dataReferenceIndex = dataReferenceIndex;
   entry->type               = ISOVVCSubpicSampleEntryAtomType;

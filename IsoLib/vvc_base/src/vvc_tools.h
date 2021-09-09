@@ -17,6 +17,9 @@
 	((u8*) buffer)[0] = (u8) (((val) >> 8) & 0xff); \
 	((u8*) buffer)[1] = (u8) ((val) & 0xff);
 
+#define PUT8(buffer, val)                       \
+  ((u8 *)buffer)[0] = (u8)((val)&0xff);
+
 #define PUT32(buffer, val ) \
 	((u8*) buffer)[0] = (u8) (((val) >> 24) & 0xff); \
 	((u8*) buffer)[1] = (u8) (((val) >> 16) & 0xff); \

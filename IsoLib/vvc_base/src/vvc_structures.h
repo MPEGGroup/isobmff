@@ -48,11 +48,12 @@ struct vvc_slice_header {
   struct vvc_picture_header ph;
 
   u32 frame_num;
-  u8 poc_msb_cycle_present_flag;
   s32 poc;
+	s32 poc_offset;
+
+  u8 poc_msb_cycle_present_flag;
   u32 poc_lsb, poc_msb, poc_msb_cycle, poc_msb_prev, poc_lsb_prev, frame_num_prev;
 
-	s32 poc_offset;
 	u32 sample_number;
 	u32 slice_segment_address;
 	u8 dependent_slice;
@@ -66,20 +67,15 @@ struct vvc_slice_header {
   u32 *entry_point_offset_minus1;
   u32 num_slices;
   u32 *slice_offsets;
-	//in-stream structure using a NAL unit header for grouping of NAL units belonging to the same sample
-	u8 *non_VCL_data;	//数据汇总，用于存储nalu，其中前4个字节为length
-  u32 non_VCL_datalen;	//存储数据的总长度
-  
-	u16 aggregator_header;
+
+	u8 *non_VCL_data;	
+  u32 non_VCL_datalen;
 };
 
 struct vvc_poc {
   u8 poc_msb_cycle_present_flag;
   s32 poc;
   u32 poc_lsb, poc_msb, poc_msb_cycle, poc_msb_prev, poc_lsb_prev, frame_num_prev;
-  //s32 order_cnt_msb;
-  //s32 order_cnt_lsb;
-  //u32 last_rap;
 };
 
 struct vvc_sps {
@@ -111,6 +107,30 @@ struct vvc_stream {
 	struct vvc_sps sps;
 	struct vvc_pps pps;
 };
+
+typedef struct 
+{
+  u8 subpic_id_info_flag, subpic_id_len_minus1, start_code_emul_flag, 
+    pps_sps_subpic_id_flag, pps_id, sps_id;
+  u16 num_subpic_ref_idx, subpic_id_bit_pos;
+  u16* subp_track_ref_idx;
+} spor_box, *spor_boxPtr;
+
+typedef struct
+{
+  u16 groupID, horizontal_offset, vertical_offset, region_width, region_height;
+  u16 dependency_rect_region_count;
+  u16 *dependencyRectRegionGroupID;
+  u8 rect_region_flag, independent_idc, full_picture, filtering_disabled, has_dependency_list;
+}trif_box, *trif_boxPtr;
+
+typedef struct
+{
+  u32 groupID_info_4cc;
+  u16 entry_count_minus1;
+  u16 *groupID;
+}sulm_box, *sulm_boxPtr;
+
 /* whole loads of bitBuffer stuff for parsing parameter sets */
 
 typedef struct {

@@ -223,7 +223,7 @@ TEST_CASE("Test VVC related stuff")
 
     u32 lengthSize = 4;
     err            = MP4NewHandle(0, &sampleEntryH);
-    err            = ISONewVVCSubpicSampleDescription(trak, sampleEntryH, 1, lengthSize);   
+    err            = ISONewVVCSubpicSampleDescription(trak, sampleEntryH, 1, 100,100, lengthSize);   
     CHECK(err == ISONoErr);
 
     u32 typeOut = 0;

@@ -702,6 +702,7 @@ ISOErr analyze_vvc_stream(FILE* input, struct vvc_stream* stream) {
 	ISOHandle vpsHandle = NULL;
 	ISOHandle ppsHandle = NULL;
   ISOHandle phHandle  = NULL;
+  ISOHandle otherHandle = NULL;
 	u8 frameNal = 0;
 	u32 size_temp;
 	u8* data = NULL;
@@ -712,9 +713,7 @@ ISOErr analyze_vvc_stream(FILE* input, struct vvc_stream* stream) {
 	size_t startPos;
 	struct vvc_poc poc;
 	static u8 sps_found = 0, vps_found = 0, pps_found = 0;
-  u8 ph_found = 0, is_first_slice = 0;
-
-  u8 poc_reset = 0;
+  u8 ph_found = 0, is_first_slice = 0, find_first_IDR_frame = 0;
 
 	memset(&poc, 0, sizeof(struct vvc_poc));
 	memset(stream, 0, sizeof(struct vvc_stream));
@@ -743,7 +742,7 @@ ISOErr analyze_vvc_stream(FILE* input, struct vvc_stream* stream) {
       case VVC_NALU_VPS:
 				if (vps_found) {
 					free(data); data = NULL;
-					continue;
+          continue;
 				}
 				vps_found = 1;
 				ISODisposeHandle(vpsHandle);
@@ -753,12 +752,16 @@ ISOErr analyze_vvc_stream(FILE* input, struct vvc_stream* stream) {
 				break;
       case VVC_NALU_SPS:
 				if (sps_found) {
+          ISODisposeHandle(spsHandle);
+          err = ISONewHandle(datalen, &spsHandle);
+          memcpy((*spsHandle), data, datalen);
+
 					header->non_VCL_data = (u8*)realloc(header->non_VCL_data, header->non_VCL_datalen + datalen + 4);
 					memcpy(&header->non_VCL_data[header->non_VCL_datalen + 4], data, datalen);
 					PUT32(&header->non_VCL_data[header->non_VCL_datalen], datalen);
 					header->non_VCL_datalen += datalen + 4;
 					free(data); data = NULL;
-					continue;
+          continue;
 				}
 				sps_found = 1;
 				ISODisposeHandle(spsHandle);
@@ -768,12 +771,16 @@ ISOErr analyze_vvc_stream(FILE* input, struct vvc_stream* stream) {
 				break;
       case VVC_NALU_PPS:
 				if (pps_found) {
+          ISODisposeHandle(ppsHandle);
+          err = ISONewHandle(datalen, &ppsHandle);
+          memcpy((*ppsHandle), data, datalen);
+
 					header->non_VCL_data = (u8*)realloc(header->non_VCL_data, header->non_VCL_datalen + datalen + 4);
 					memcpy(&header->non_VCL_data[header->non_VCL_datalen + 4], data, datalen);
 					PUT32(&header->non_VCL_data[header->non_VCL_datalen], datalen);
 					header->non_VCL_datalen += datalen + 4;
 					free(data); data = NULL;
-					continue;
+          continue;
 				}
 				pps_found = 1;
 				ISODisposeHandle(ppsHandle);
@@ -794,15 +801,19 @@ ISOErr analyze_vvc_stream(FILE* input, struct vvc_stream* stream) {
         free(data);
         data = NULL;
         break;
+      //case VVC_NALU_PREFIX_APS:
+      //case VVC_NALU_PREFIX_SEI:
+      //  continue;
       case VVC_NALU_SLICE_IDR_W_RADL:
       case VVC_NALU_SLICE_IDR_N_LP:
-        poc_reset = 1;
+        find_first_IDR_frame = 1;
 			default:
         /* VCL */
 				if (naltype < 11) 
         {
 					u32 layer = data[0];
 					if (!frameNal) {
+            is_first_slice = 1;
             printf("copy slice data\r\n");
 						slicedata = data;
 						slicedatalen = datalen;
@@ -810,24 +821,20 @@ ISOErr analyze_vvc_stream(FILE* input, struct vvc_stream* stream) {
 					frameNal += !layer;
 					if (layer) {
             //todo
-						//header->aggregator_header = GET16(data);
-						//printf("Push aggregator layer 1\r\n");
-						//header->aggregator_data = (u8*)realloc(header->aggregator_data, header->aggregator_datalen + datalen + 4);
-						//memcpy(&header->aggregator_data[header->aggregator_datalen + 4], data, datalen);
-						//PUT32(&header->aggregator_data[header->aggregator_datalen], datalen);
-						//header->aggregator_datalen += datalen + 4;
-						//free(data); data = NULL;
 					}
 				} 
         else 
          /* Non-VCL */
         {
-					if (header->non_VCL_datalen) {
-						header->non_VCL_data = (u8*)realloc(header->non_VCL_data, header->non_VCL_datalen + datalen + 4);
-						memcpy(&header->non_VCL_data[header->non_VCL_datalen + 4], data, datalen);
-						PUT32(&header->non_VCL_data[header->non_VCL_datalen], datalen);
-						header->non_VCL_datalen += datalen + 4;
-					}
+          /* before find the first frame, the non-VCL nalus are store in the vvcC box */
+          if(find_first_IDR_frame)
+          {
+            header->non_VCL_data =
+              (u8 *)realloc(header->non_VCL_data, header->non_VCL_datalen + datalen + 4);
+            memcpy(&header->non_VCL_data[header->non_VCL_datalen + 4], data, datalen);
+            PUT32(&header->non_VCL_data[header->non_VCL_datalen], datalen);
+            header->non_VCL_datalen += datalen + 4;
+          }
 					free(data); data = NULL;
 				}
 			}
@@ -866,13 +873,10 @@ ISOErr analyze_vvc_stream(FILE* input, struct vvc_stream* stream) {
     }
     if(is_first_slice)
     {
-      printf("be first slice\r\n");
+      //printf("be first slice\r\n");
       header->is_first_slice = is_first_slice;
       is_first_slice         = 0;
     }
-
-    /* compute poc?? */
-    //at @addNaluSample
 
 		/* Double the allocated space when depleted */
 		if (stream->used_count == stream->allocated_count) {

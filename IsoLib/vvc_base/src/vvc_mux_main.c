@@ -104,19 +104,16 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
     case VVC_NALU_OPI:
       err = ISONewHandle(datalen, &opiHandle);
       memcpy((*opiHandle), data, datalen);
-      free(data);
-      data = NULL;
+      free(data); data = NULL;
       break;
     case VVC_NALU_DCI:
       err = ISONewHandle(datalen, &dciHandle);
       memcpy((*dciHandle), data, datalen);
-      free(data);
-      data = NULL;
+      free(data); data = NULL;
       break;
     case VVC_NALU_VPS:
 			if (vps_found) {
 				free(data); data = NULL;
-				/*printf("Another VPS\r\n");*/
 				continue;
 			}
 			vps_found = 1;
@@ -148,22 +145,26 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
 			free(data); data = NULL;
 			break;
     case VVC_NALU_PREFIX_APS:
-      prefixApsHandle = (ISOHandle*)realloc(prefixApsHandle, sizeof(ISOHandle) * (aps_count + 1));
-      err             = ISONewHandle(datalen, &prefixApsHandle[aps_count]);
-      memcpy((*prefixApsHandle[aps_count]), data, datalen);
-      free(data);
-      data = NULL;
-      aps_count += 1;
+      if(first_sample)
+      {
+        prefixApsHandle = (ISOHandle *)realloc(prefixApsHandle, sizeof(ISOHandle) * (aps_count + 1));
+        err = ISONewHandle(datalen, &prefixApsHandle[aps_count]);
+        memcpy((*prefixApsHandle[aps_count]), data, datalen);       
+        aps_count += 1;
+      }
+			free(data); data = NULL;
       break;
     case VVC_NALU_PIC_HEADER:
       break;
     case VVC_NALU_PREFIX_SEI:
-      prefixSeiHandle = (ISOHandle*)realloc(prefixSeiHandle, sizeof(ISOHandle) * (sei_count + 1));
-      err             = ISONewHandle(datalen, &prefixSeiHandle[sei_count]);
-      memcpy((*prefixSeiHandle[sei_count]), data, datalen);
-      free(data);
-      data = NULL;
-			sei_count += 1;
+      if(first_sample)
+      {
+        prefixSeiHandle = (ISOHandle *)realloc(prefixSeiHandle, sizeof(ISOHandle) * (sei_count + 1));
+        err = ISONewHandle(datalen, &prefixSeiHandle[sei_count]);
+        memcpy((*prefixSeiHandle[sei_count]), data, datalen);
+        sei_count += 1;
+      }
+			free(data); data = NULL;
       break;
     case VVC_NALU_SUFFIX_SEI:
 			{
@@ -280,7 +281,6 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
 	err = ISONewHandle(sizeof(u32), &sampleSizeH);
 	err = ISONewHandle(sizeof(u32), &sampleOffsetH);
 
-	/* Special case for aggregators */
 	if (header->non_VCL_datalen) {
 		const u32 DATALEN_FIELD_LEN = 4;
 		err = ISONewHandle(datalen + header->non_VCL_datalen + 4, &sampleDataH);		
@@ -347,6 +347,9 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 	u32 alst_desc_index;
 	MP4Handle rap_desc;  
 	MP4Handle alst_desc = NULL;
+  MP4Handle spor_desc = NULL;
+  MP4Handle trif_desc = NULL;
+  MP4Handle sulm_desc = NULL;
 	u32 initialObjectDescriptorID;
 	u8 OD_profileAndLevel;
 	u8 scene_profileAndLevel;
@@ -374,8 +377,6 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 	ISOSetMovieCompatibleBrand(moov, MP4_FOUR_CHAR_CODE('v', 'v', 'c', '1'));
   ISOSetMovieCompatibleBrand(moov, MP4_FOUR_CHAR_CODE('i', 's', 'o', 'm'));
   ISOSetMovieCompatibleBrand(moov, MP4_FOUR_CHAR_CODE('i', 's', 'o', '8'));
-
-
 
 	for (trackID = 1; trackID < (u32)parameters->inputCount + 1; trackID++) {
 	
@@ -413,17 +414,17 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 		/* Create a new trak to the movie */
 		err = ISONewMovieTrackWithID(moov, ISONewTrackIsVisual, trackID, &trak); if (err) goto bail;
 
+    // main::track reference 'tref' -> 'subp'
+    // err = MP4AddTrackReference();
+    u32 refid;
+    for(i = 1; i <= parameters->inputCount; i++)
+    {
+      err = MP4AddTrackReferenceWithID(trak, i, MP4_FOUR_CHAR_CODE('s', 'u', 'b', 'p'), &refid);
+    }
+
+		/* mdia */
 		err = MP4AddTrackToMovieIOD(trak); if (err) goto bail;
 		err = ISONewTrackMedia(trak, &media, ISOVisualHandlerType, 30000, NULL); if (err) goto bail;
-
-		/* Add sub-sample information box */
-    // parameters->subsample_information = 4;
-		/* TODO: only add when needed */
-		if (parameters->subsample_information == 4 /* Slice based sub-sample */ 
-			|| parameters->subsample_information == 2 /* Tile based sub-sample*/) {
-			err = MP4AddSubSampleInformationToTrack(trak, &subs); if (err) goto bail;
-			err = MP4SetSubSampleInformationFlags(subs, parameters->subsample_information ); if (err) goto bail;
-		}
 
 		err = ISOBeginMediaEdits(media); if (err) goto bail;
 		/* Add each slice as a new sample */
@@ -432,7 +433,7 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 			stream.header[frameCounter]->sample_number = sampleNumber;
       if(!stream.header[frameCounter]->is_first_slice) continue;
 			err = addNaluSamples(input, trak, media, trackID, frameCounter == 0, parameters, &stream); if (err) goto bail;
-
+#if(0)
 			/* Handle slice sub-sample information */
 			if (parameters->subsample_information == 4 /* Slice based sub-sample */  && stream.header[frameCounter]->num_slices) {
 				MP4Handle subsample_size_array = NULL;
@@ -454,8 +455,6 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 				MP4DisposeHandle(subsample_discardable_array);
 			}
 
-#if(0)
-			//not support for tile
       /* Handle tile sub-sample information */
 			if (parameters->subsample_information == 2 /* Tile based sub-sample*/ && stream.header[frameCounter]->num_entry_point_offsets) {
 				MP4Handle subsample_size_array = NULL;
@@ -485,21 +484,206 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 		/* Create "rap " sample description and group */
     //"roll" section 7(MVC MVD) & 11 
 		// ph_recovery_poc_cnt
-    //ISOAddGroupDescription(media, MP4_FOUR_CHAR_CODE('r', 'a', 'p', ' '), rap_desc,
-    //                       &rap_desc_index);
-    //ISOSetSamplestoGroupType(media, parameters->compactSampleToGroup);
-    //for(frameCounter = 1; frameCounter < stream.used_count; frameCounter++)
-    //{
-    //  /* Mark RAP frames (CRA/BLA/IDR/IRAP) to the group */
-    //  if(stream.header[frameCounter]->is_first_slice &&
-    //     stream.header[frameCounter]->nal_unit_type >= VVC_NALU_SLICE_IDR_W_RADL &&
-    //     stream.header[frameCounter]->nal_unit_type <= VVC_NALU_SLICE_CRA)
-    //  {
-    //    ISOMapSamplestoGroup(media, MP4_FOUR_CHAR_CODE('r', 'a', 'p', ' '), rap_desc_index,
-    //                         stream.header[frameCounter]->sample_number, 1);
-    //  }
-    //}
-#if 1
+		
+		/* 'spor' box */
+		u8 usespor = 1;
+		if(usespor){
+      spor_boxPtr spor;
+      MP4Handle spor_temp;
+      u32 sporSize = 0;
+      u32 spor_data_idx = 0;
+      u32 spor_data, spor_idx;
+      /* Define trif parameters */
+      MP4NewHandle(sizeof(spor_box), &spor_temp);
+      spor = (spor_boxPtr)*spor_temp;
+      spor->subpic_id_info_flag    = 1;
+      spor->num_subpic_ref_idx     = 1;
+      spor->subp_track_ref_idx     = (u16 *)malloc(sizeof(u16) * spor->num_subpic_ref_idx);
+      for(i = 0; i < spor->num_subpic_ref_idx; i++)
+      {
+        spor->subp_track_ref_idx[i] = i;
+      }
+      spor->subpic_id_len_minus1   = 0;
+      spor->subpic_id_bit_pos      = 0;
+      spor->start_code_emul_flag   = 0;
+      spor->pps_sps_subpic_id_flag = 0;
+      spor->sps_id                 = 0;
+      spor->pps_id                 = 0;
+			/* caculate size */
+      sporSize += 2;
+      if(spor->num_subpic_ref_idx) sporSize += 2 * spor->num_subpic_ref_idx;
+      if(spor->subpic_id_info_flag) sporSize += 3;
+
+			MP4NewHandle(sporSize, &spor_desc);
+      spor_data = ((spor->subpic_id_info_flag & 0x01) << 15) | (spor->num_subpic_ref_idx & 0x7fff);
+      PUT16(&(*spor_desc)[spor_data_idx], spor_data); spor_data_idx+=2;
+      for(i = 0; i < spor->num_subpic_ref_idx; i++)
+      {
+        spor_data = spor->subp_track_ref_idx[i];
+        PUT16(&(*spor_desc)[spor_data_idx], spor_data); spor_data_idx += 2;
+      }
+      if(spor->subpic_id_info_flag)
+      {
+        spor_data = ((spor->subpic_id_len_minus1 & 0x0f) << 12) | (spor->subpic_id_bit_pos & 0x0fff);
+        PUT16(&(*spor_desc)[spor_data_idx], spor_data); spor_data_idx += 2;
+				if(spor->pps_sps_subpic_id_flag)
+        {
+          spor_data = (u8)((spor->start_code_emul_flag & 0x01) << 7) |
+                 ((spor->pps_sps_subpic_id_flag & 0x01) << 6) | (spor->pps_id & 0x3f);
+        }
+        else
+        {
+          spor_data = (u8)((spor->start_code_emul_flag & 0x01) << 7) |
+                 ((spor->pps_sps_subpic_id_flag & 0x01) << 6) | ((spor->sps_id & 0x3f) << 2);
+        }
+        PUT8(&(*spor_desc)[spor_data_idx], spor_data); spor_data_idx += 1;
+      }
+      assert(spor_data_idx == sporSize);
+      /* sgpd */
+      err = ISOAddGroupDescription(media, MP4_FOUR_CHAR_CODE('s', 'p', 'o', 'r'), spor_desc, &spor_idx);
+      if(err) goto bail;
+      /* sbgp */
+      err = ISOMapSamplestoGroup(media, MP4_FOUR_CHAR_CODE('s', 'p', 'o', 'r'), spor_idx, 0, 1);
+      if(err) goto bail;
+
+      free(spor->subp_track_ref_idx);
+			MP4DisposeHandle(spor_temp);
+      MP4DisposeHandle(spor_desc);
+    }
+
+		u8 usetrif = 1;
+    if(usetrif)
+    {
+      trif_boxPtr trif;
+      MP4Handle trif_temp;
+      u32 trifSize      = 0;
+      u32 trif_data_idx = 0;
+      u32 trif_data, trif_idx;
+      /* Define spor parameters */
+      MP4NewHandle(sizeof(trif_box), &trif_temp);
+			trif = (trif_boxPtr)*trif_temp;
+      trif->groupID             = 0;
+      trif->rect_region_flag    = 1;
+      trif->independent_idc     = 1;
+      trif->full_picture        = 0;
+      trif->filtering_disabled  = 0;
+      trif->has_dependency_list = 0;
+      if(!trif->full_picture)
+      {
+        trif->horizontal_offset = 0;
+        trif->vertical_offset   = 0;
+			}
+      trif->region_width  = stream.sps.sps_pic_width_max_in_luma_samples;
+      trif->region_height = stream.sps.sps_pic_height_max_in_luma_samples;
+      if(trif->has_dependency_list)
+      {
+        trif->dependency_rect_region_count = 0;
+        trif->dependencyRectRegionGroupID  = (u16 *)malloc(sizeof(u16) * trif->dependency_rect_region_count);
+        for(i = 1; i <= trif->dependency_rect_region_count; i++)
+        {
+          trif->dependencyRectRegionGroupID[i - 1] = 0;
+				}
+			}
+      /* caculate size */
+      trifSize += 3;
+      if(trif->rect_region_flag)
+      {
+        if(!trif->full_picture)
+        {
+          trifSize += 4;
+				}
+        trifSize += 4;
+        if(trif->has_dependency_list)
+        {
+          trifSize += 2 + 2 * trif->dependency_rect_region_count;
+				}
+      }
+
+			MP4NewHandle(trifSize, &trif_desc);
+      PUT16(&(*trif_desc)[trif_data_idx], trif->groupID); trif_data_idx += 2;
+      if(!trif->rect_region_flag)
+      {
+        trif_data = (u8)(trif->rect_region_flag << 7);
+        PUT8(&(*trif_desc)[trif_data_idx], trif_data); trif_data_idx += 1;
+			}
+      else
+      {
+        trif_data = (u8)(trif->rect_region_flag << 7) | ((trif->independent_idc & 0x03) << 5) |
+                    (trif->full_picture << 4) | (trif->filtering_disabled << 3) |
+                    (trif->has_dependency_list << 2);
+        PUT8(&(*trif_desc)[trif_data_idx], trif_data); trif_data_idx += 1;
+        if(!trif->full_picture)
+        {
+					PUT16(&(*trif_desc)[trif_data_idx], trif->horizontal_offset); trif_data_idx += 2;
+					PUT16(&(*trif_desc)[trif_data_idx], trif->vertical_offset); trif_data_idx += 2;		
+				}
+        PUT16(&(*trif_desc)[trif_data_idx], trif->region_width); trif_data_idx += 2;
+        PUT16(&(*trif_desc)[trif_data_idx], trif->region_height); trif_data_idx += 2;
+        if(trif->has_dependency_list)
+        {
+          PUT16(&(*trif_desc)[trif_data_idx], trif->dependency_rect_region_count); trif_data_idx += 2;
+          for(i = 1; i <= trif->dependency_rect_region_count; i++)
+          {
+            PUT16(&(*trif_desc)[trif_data_idx], trif->dependencyRectRegionGroupID[i-1]); trif_data_idx += 2;
+          }
+				}
+			}
+      assert(trifSize == trif_data_idx);
+      /* sgpd */
+      err = ISOAddGroupDescription(media, MP4_FOUR_CHAR_CODE('t', 'r', 'i', 'f'), trif_desc, &trif_idx);
+      if(err) goto bail;
+      /* sbgp */
+      err = ISOMapSamplestoGroup(media, MP4_FOUR_CHAR_CODE('t', 'r', 'i', 'f'), trif_idx, -1, 1);
+      if(err) goto bail;
+
+			free(trif->dependencyRectRegionGroupID);
+      MP4DisposeHandle(trif_temp);
+      MP4DisposeHandle(trif_desc);
+		}
+
+		u8 usesulm = 1;
+    if(usesulm)
+    {
+      sulm_boxPtr sulm;
+      MP4Handle sulm_temp;
+      u32 sulmSize      = 0;
+      u32 sulm_data_idx = 0;
+      u32 sulm_idx;
+      /* Define sulm parameters */
+      MP4NewHandle(sizeof(sulm_box), &sulm_temp);
+      sulm = (trif_boxPtr)*sulm_temp;
+      sulm->groupID_info_4cc = MP4_FOUR_CHAR_CODE('t', 'r', 'i', 'f');
+      sulm->entry_count_minus1 = 3; // num of subpicture
+      sulm->groupID = (u16 *)malloc(sizeof(u16) * (sulm->entry_count_minus1 + 1));
+      for(i = 0; i <= sulm->entry_count_minus1; i++)
+      {
+        sulm->groupID[i] = i + 1;
+      }
+      /* caculate size */
+      sulmSize += 6;
+      sulmSize += 2 * (sulm->entry_count_minus1 + 1);
+
+      MP4NewHandle(sulmSize, &sulm_desc);
+      PUT32(&(*sulm_desc)[sulm_data_idx], sulm->groupID_info_4cc); sulm_data_idx += 4;
+      PUT16(&(*sulm_desc)[sulm_data_idx], sulm->entry_count_minus1); sulm_data_idx += 2;
+      for(i = 0; i <= sulm->entry_count_minus1; i++)
+      {
+        PUT16(&(*sulm_desc)[sulm_data_idx], sulm->groupID[i]); sulm_data_idx += 2;
+      }
+			assert(sulmSize == sulm_data_idx);
+      /* sgpd */
+      err = ISOAddGroupDescription(media, MP4_FOUR_CHAR_CODE('s', 'u', 'l', 'm'), sulm_desc, &sulm_idx);
+      if(err) goto bail;
+      /* sbgp */
+      err = ISOMapSamplestoGroup(media, MP4_FOUR_CHAR_CODE('s', 'u', 'l', 'm'), sulm_idx, 1, 1);
+      if(err) goto bail;
+
+      free(sulm->groupID);
+      MP4DisposeHandle(sulm_temp);
+      MP4DisposeHandle(sulm_desc);
+		}
+  
+#if 0
 		/* Create an alternative startup sequence */
 		//todo
 		{
@@ -572,8 +756,7 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 			}
 		}
 #endif
-
-		
+	
 		for (i = 0; i < stream.used_count; i++) {
 			free(stream.header[i]); stream.header[i] = NULL;
 		}
@@ -582,13 +765,12 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 	}
 
 	/* Add each track group to the traks */
-  /* trackgropu 'trgr' -> 'alte' (trackid, track_group_id) */
+  /* sub::trackgroup 'trgr' -> 'alte' (trackid, track_group_id) */
 	for (trackGroup = 0; trackGroup < (u32)parameters->trackGroupCount; trackGroup++) {
 		err = ISOGetMovieIndTrack(moov, parameters->trackGroups[trackGroup]->track, &trak); if (err) goto bail;
 		err =  MP4AddTrackGroup(trak, parameters->trackGroups[trackGroup]->track_group_id, MP4_FOUR_CHAR_CODE('a', 'l', 't', 'e'));
 		if (err) goto bail;
 	}
-
 
 	err = ISOWriteMovieToFile(moov, filename); if (err) goto bail;
 	if (alst_desc) ISODisposeHandle(alst_desc);
@@ -596,6 +778,7 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 bail:
 	return err;
 }
+
 
 int cleanParameters(struct ParamStruct *parameters) {
 	u32 i;

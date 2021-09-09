@@ -285,7 +285,9 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
     GET8_V(x);
     self->bit_depth_minus8 = (x & 0xe0) >> 5;
 
+    DEBUG_SPRINTF("ols_idx = %u", self->ols_idx);
     DEBUG_SPRINTF("num_sublayers = %u", self->num_sublayers);
+    DEBUG_SPRINTF("constant_frame_rate = %u", self->constant_frame_rate);
     DEBUG_SPRINTF("chroma_format_idc = %u", self->chroma_format_idc);
     DEBUG_SPRINTF("bit_depth_minus8 = %u", self->bit_depth_minus8);
 

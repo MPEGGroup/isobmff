@@ -778,12 +778,14 @@ extern "C"
    * including a NALUconfigAtom (vvnC)
    * @ingroup SampleDescr
    *
+   * @param width indicate the width of subpicture
+   * @param height indicate the height of subpicture
    * @param length_size the size of the NAL Unit length field (and must be 1, 2 or 4). The value of
    * length_size = LengthSizeMinusOne + 1
    */
   MP4_EXTERN(ISOErr)
   ISONewVVCSubpicSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
-                                   u32 dataReferenceIndex, u32 length_size);
+                                   u32 dataReferenceIndex, u32 width, u32 height, u32 length_size);
 
 
   /*************************************************************************************************
