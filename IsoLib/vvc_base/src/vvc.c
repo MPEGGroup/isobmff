@@ -505,6 +505,7 @@ MP4Err vvc_parse_ph_minimal(BitBuffer *bb, struct vvc_picture_header *ph, struct
   }
   ph->pic_parameter_set_id = read_golomb_uev(bb, &err); if(err) goto bail;
   ph->pic_order_cnt_lsb = GetBits(bb, sps->sps_log2_max_pic_order_cnt_lsb_minus4 + 4, &err); if(err) goto bail;
+  ph->poc_lsb = ph->pic_order_cnt_lsb;
   if(ph->gdr_pic_flag)
   {
       ph->recovery_poc_cnt = read_golomb_uev(bb, &err); if(err) goto bail;
@@ -527,36 +528,41 @@ bail:
   return err;
 }
 
-void vvc_compute_poc(struct vvc_sps* sps, struct vvc_slice_header* header) {
-  u32 max_poc_lsb = 1 << (sps->sps_log2_max_pic_order_cnt_lsb_minus4 + 4);
+void vvc_compute_poc(struct vvc_slice_header* header) {
+  u32 max_poc_lsb = header->max_poc_lsb;
 
-  if(header->poc_msb_cycle_present_flag)
+  if(header->ph.poc_msb_cycle_present_flag)
   {
-    header->poc_msb = header->poc_msb_cycle;
+    header->ph.poc_msb = header->ph.poc_msb_cycle_val;
   }
   else
   {
-    if((header->poc_lsb < header->poc_lsb_prev) && (header->poc_lsb_prev - header->poc_lsb >= max_poc_lsb / 2))
-      header->poc_msb = header->poc_msb_prev + max_poc_lsb;
-    else if((header->poc_lsb > header->poc_lsb_prev) && (header->poc_lsb - header->poc_lsb_prev > max_poc_lsb / 2))
-      header->poc_msb = header->poc_msb_prev - max_poc_lsb;
+    if((header->ph.poc_lsb < header->ph.poc_lsb_prev) &&
+       (header->ph.poc_lsb_prev - header->ph.poc_lsb >= max_poc_lsb / 2))
+      header->ph.poc_msb = header->ph.poc_msb_prev + max_poc_lsb;
+    else if((header->ph.poc_lsb > header->ph.poc_lsb_prev) &&
+            (header->ph.poc_lsb - header->ph.poc_lsb_prev > max_poc_lsb / 2))
+      header->ph.poc_msb = header->ph.poc_msb_prev - max_poc_lsb;
     else
-      header->poc_msb = header->poc_msb_prev;
+      header->ph.poc_msb = header->ph.poc_msb_prev;
   }
 
-  header->poc = header->poc_msb + header->poc_lsb;
+  header->ph.poc = header->ph.poc_msb + header->ph.poc_lsb;
+  header->poc    = header->ph.poc;
 }
 
-
-MP4Err vvc_parse_slice_header_minimal(BitBuffer *bb, struct vvc_poc* poc, struct vvc_slice_header* header,
-struct vvc_sps* sps, struct vvc_pps* pps) {
+MP4Err vvc_parse_slice_header_minimal(BitBuffer *bb, struct vvc_slice_header *header,
+                                      struct vvc_sps *sps, struct vvc_pps *pps)
+{
 	MP4Err err = MP4NoErr;
 	u8 x;
 	u8 slice_temporal_mvp_enabled_flag = 0;
 	u8 slice_deblocking_filter_disabled_flag = 0;
-	u32 y, i;
+	u32 i;
 	u32 nal_unit_type;
-  u32 max_poc_lsb;
+
+  /* for POC compute */
+  header->max_poc_lsb = 1 << (sps->sps_log2_max_pic_order_cnt_lsb_minus4 + 4);
 
 	/* Get first header byte for nal_unit_type */
 	err = GetBytes(bb, 1, &x); if(err) goto bail;
@@ -574,9 +580,10 @@ struct vvc_sps* sps, struct vvc_pps* pps) {
   header->sh_picture_header_in_slice_header_flag = (u8)GetBits(bb, 1, &err); if(err) goto bail;
   if(header->sh_picture_header_in_slice_header_flag)
   {
+    //printf("be first slice\r\n");
     header->is_first_slice = 1;
     /* Picture header in slice header incomplete support */
-    return vvc_parse_ph_minimal(&bb, &header->ph, sps, pps);
+    return vvc_parse_ph_minimal(bb, &header->ph, sps, pps);
   }
   if(sps->sps_subpic_info_present_flag)
   {
@@ -711,11 +718,9 @@ ISOErr analyze_vvc_stream(FILE* input, struct vvc_stream* stream) {
 	u32 datalen;
 	BitBuffer bb;
 	size_t startPos;
-	struct vvc_poc poc;
 	static u8 sps_found = 0, vps_found = 0, pps_found = 0;
-  u8 ph_found = 0, is_first_slice = 0, find_first_IDR_frame = 0;
+  u8 ph_found = 0, is_first_slice = 0, find_first_IDR_frame = 0, poc_reset = 0;
 
-	memset(&poc, 0, sizeof(struct vvc_poc));
 	memset(stream, 0, sizeof(struct vvc_stream));
 	startPos = ftell(input);
 
@@ -801,19 +806,16 @@ ISOErr analyze_vvc_stream(FILE* input, struct vvc_stream* stream) {
         free(data);
         data = NULL;
         break;
-      //case VVC_NALU_PREFIX_APS:
-      //case VVC_NALU_PREFIX_SEI:
-      //  continue;
       case VVC_NALU_SLICE_IDR_W_RADL:
       case VVC_NALU_SLICE_IDR_N_LP:
         find_first_IDR_frame = 1;
+        poc_reset            = 1;
 			default:
         /* VCL */
 				if (naltype < 11) 
         {
 					u32 layer = data[0];
 					if (!frameNal) {
-            is_first_slice = 1;
             printf("copy slice data\r\n");
 						slicedata = data;
 						slicedatalen = datalen;
@@ -861,21 +863,35 @@ ISOErr analyze_vvc_stream(FILE* input, struct vvc_stream* stream) {
 		err = vvc_parse_pps_minimal(&bb, &stream->pps); if (err) goto bail;
 		/* Slice header */
 		err = BitBuffer_Init(&bb, slicedata, 8 * slicedatalen); if (err) goto bail;
-		err = vvc_parse_slice_header_minimal(&bb, &poc, header, &stream->sps, &stream->pps); if (err) goto bail;
+		err = vvc_parse_slice_header_minimal(&bb, header, &stream->sps, &stream->pps); if (err) goto bail;
     /* Picture header */
     if(ph_found)
     {
-      ph_found = 0;
+      ph_found       = 0;
       is_first_slice = 1;
-      err = BitBuffer_Init(&bb, slicedata, 8 * slicedatalen); if (err) goto bail;
-      err = vvc_parse_ph_minimal(&bb, &header->ph, &stream->sps, &stream->pps);
-      if(err) goto bail;
-    }
-    if(is_first_slice)
-    {
-      //printf("be first slice\r\n");
-      header->is_first_slice = is_first_slice;
+      err = BitBuffer_Init(&bb, slicedata, 8 * slicedatalen); if(err) goto bail;
+      err = vvc_parse_ph_minimal(&bb, &header->ph, &stream->sps, &stream->pps); if(err) goto bail;
+      /* the slice after the PH is the first slice of one frame */
+      printf("be first slice\r\n");
+      header->is_first_slice = 1;
       is_first_slice         = 0;
+    }
+    /* compute POC */
+    if(header->is_first_slice)
+    {
+      //u32 max_poc_lsb = stream->sps.sps_log2_max_pic_order_cnt_lsb_minus4 + 4;
+      if(poc_reset)
+      {
+        poc_reset = 0;
+        header->ph.poc_lsb_prev = 0;
+        header->ph.poc_msb_prev = 0;
+      }
+      else
+      {
+        header->ph.poc_lsb_prev = stream->header[stream->used_count - 1]->ph.poc_lsb;
+        header->ph.poc_msb_prev = stream->header[stream->used_count - 1]->ph.poc_msb;
+      }
+      vvc_compute_poc(header);
     }
 
 		/* Double the allocated space when depleted */

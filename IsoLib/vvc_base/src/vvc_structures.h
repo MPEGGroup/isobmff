@@ -42,6 +42,8 @@ struct vvc_picture_header
   u32 pic_parameter_set_id, pic_order_cnt_lsb, recovery_poc_cnt;
   u8 poc_msb_cycle_present_flag;
   u32 poc_msb_cycle_val;
+  /* compute POC */
+  u32 poc, poc_lsb, poc_msb, poc_msb_prev, poc_lsb_prev;
 };
 
 struct vvc_slice_header {
@@ -50,9 +52,8 @@ struct vvc_slice_header {
   u32 frame_num;
   s32 poc;
 	s32 poc_offset;
-
-  u8 poc_msb_cycle_present_flag;
-  u32 poc_lsb, poc_msb, poc_msb_cycle, poc_msb_prev, poc_lsb_prev, frame_num_prev;
+  u32 max_poc_lsb;
+  //u32 frame_num_prev;
 
 	u32 sample_number;
 	u32 slice_segment_address;
@@ -72,11 +73,6 @@ struct vvc_slice_header {
   u32 non_VCL_datalen;
 };
 
-struct vvc_poc {
-  u8 poc_msb_cycle_present_flag;
-  s32 poc;
-  u32 poc_lsb, poc_msb, poc_msb_cycle, poc_msb_prev, poc_lsb_prev, frame_num_prev;
-};
 
 struct vvc_sps {
   u8 sps_max_sublayers, sps_chroma_format_idc, sps_log2_ctu_size_minus5,

@@ -65,11 +65,12 @@ enum
 
 MP4Err vvc_parse_sps_minimal(BitBuffer *bb, struct vvc_sps* sps);
 MP4Err vvc_parse_pps_minimal(BitBuffer *bb, struct vvc_pps* pps);
-MP4Err vvc_parse_slice_header_minimal(BitBuffer *bb, struct vvc_poc* poc, struct vvc_slice_header* header,
-struct vvc_sps* sps, struct vvc_pps* pps);
+MP4Err vvc_parse_slice_header_minimal(BitBuffer *bb,struct vvc_slice_header *header,
+                                      struct vvc_sps *sps, struct vvc_pps *pps);
 MP4Err vvc_parse_ph_minimal(BitBuffer *bb, struct vvc_picture_header *ph, struct vvc_sps *sps,
                             struct vvc_pps *pps);
 s32 parseVVCNal(FILE* input, u8** data, int* data_len);
 ISOErr analyze_vvc_stream(FILE* input, struct vvc_stream* stream);
+void vvc_compute_poc(struct vvc_sps *sps, struct vvc_slice_header *header);
 
 #endif
