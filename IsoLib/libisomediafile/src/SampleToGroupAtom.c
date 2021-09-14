@@ -462,7 +462,7 @@ static MP4Err addSamples(struct MP4SampletoGroupAtom *self, u32 count)
   err = MP4NoErr;
   err = ensureSize(self, (self->sampleCount + count) * sizeof(u32));
   if(err) goto bail;
-  
+
   p = &((self->group_index)[self->sampleCount]);
   for(j = 0; j < count; j++)
     *p++ = 0;

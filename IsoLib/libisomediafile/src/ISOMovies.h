@@ -787,7 +787,6 @@ extern "C"
   ISONewVVCSubpicSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
                                    u32 dataReferenceIndex, u32 width, u32 height, u32 length_size);
 
-
   /*************************************************************************************************
    * 3GPP media
    ************************************************************************************************/

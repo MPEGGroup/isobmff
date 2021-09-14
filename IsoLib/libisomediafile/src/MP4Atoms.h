@@ -2173,7 +2173,6 @@ MP4Err MP4CreateHEVCConfigAtom(ISOHEVCConfigAtomPtr *outAtom);
 MP4Err MP4CreateVVCConfigAtom(ISOVVCConfigAtomPtr *outAtom);
 MP4Err MP4CreateVVCNALUConfigAtom(ISOVVCNALUConfigAtomPtr *outAtom);
 
-
 MP4Err MP4CreateOriginalFormatAtom(MP4OriginalFormatAtomPtr *outAtom);
 MP4Err MP4CreateSchemeInfoAtom(MP4SchemeInfoAtomPtr *outAtom);
 MP4Err MP4CreateRestrictedSchemeInfoAtom(MP4RestrictedSchemeInfoAtomPtr *outAtom);

@@ -1789,13 +1789,13 @@ ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 
   /* sps_pic_width_max_in_luma_samples */
   width = read_golomb_uev(bb, &err);
   if(err) goto bail;
-  config->max_picture_width = width;
+  config->max_picture_width                   = width;
   ((MP4VisualSampleEntryAtomPtr)entry)->width = width;
 
   /* sps_pic_height_max_in_luma_samples */
   height = read_golomb_uev(bb, &err);
   if(err) goto bail;
-  config->max_picture_height = height;
+  config->max_picture_height                   = height;
   ((MP4VisualSampleEntryAtomPtr)entry)->height = height;
   ((MP4TrackAtomPtr)theTrack)->setDimensions((MP4TrackAtomPtr)theTrack, width, height);
 
