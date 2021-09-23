@@ -40,7 +40,6 @@ MP4_EXTERN(MP4Err) ISONewVVCSampleDescription(MP4Track theTrack,
 MP4_EXTERN(ISOErr)
 ISOAddVVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where);
 
-
 static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trackID, u8 first_sample, struct ParamStruct *parameters, struct vvc_stream *stream) {
 	ISOErr err;
 	static struct vvc_slice_header *header;
@@ -325,15 +324,10 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
 
 MP4_EXTERN(MP4Err) MP4AddAtomToTrack(MP4Track theTrack, MP4GenericAtom the_atom);
 MP4_EXTERN(MP4Err) MP4AddTrackGroup(MP4Track theTrack, u32 groupID, u32 dependencyType);
-MP4_EXTERN(MP4Err) MP4AddSubSampleInformationToTrack(MP4Track theTrack, MP4GenericAtom *subs);
-MP4_EXTERN(MP4Err) MP4AddSubSampleInformationEntry(MP4GenericAtom subsample, u32 sample_delta,
-	u32 subsample_count, MP4Handle subsample_size_array, MP4Handle subsample_priority_array,
-	MP4Handle subsample_discardable_array);
-MP4_EXTERN(MP4Err) MP4SetSubSampleInformationFlags(MP4GenericAtom subsample, u32 flags);
 ISO_EXTERN(ISOErr)
 ISOSetMovieBrand(ISOMovie theMovie, u32 brand, u32 minorversion);
 
-static MP4Err creatSporBox(MP4Media media, struct vvc_stream stream)
+static MP4Err creatSporBox(MP4Media media, struct vvc_stream stream, struct ParamStruct *parameters)
 {
   MP4Err err = MP4NoErr;
   spor_boxPtr spor;
@@ -342,7 +336,7 @@ static MP4Err creatSporBox(MP4Media media, struct vvc_stream stream)
   u32 sporSize      = 0;
   u32 spor_data_idx = 0;
   u32 i, spor_data, spor_idx;
-  /* Define trif parameters */
+
   MP4NewHandle(sizeof(spor_box), &spor_temp);
   spor                      = (spor_boxPtr)*spor_temp;
   spor->subpic_id_info_flag = 1;
@@ -352,12 +346,16 @@ static MP4Err creatSporBox(MP4Media media, struct vvc_stream stream)
   {
     spor->subp_track_ref_idx[i] = i;
   }
-  spor->subpic_id_len_minus1   = 0;
-  spor->subpic_id_bit_pos      = 0;
-  spor->start_code_emul_flag   = 0;
-  spor->pps_sps_subpic_id_flag = 0;
-  spor->sps_id                 = 0;
-  spor->pps_id                 = 0;
+  if(spor->subpic_id_info_flag)
+  {
+    spor->subpic_id_len_minus1   = 0;
+    spor->subpic_id_bit_pos      = 0;
+    spor->start_code_emul_flag   = 0;
+    spor->pps_sps_subpic_id_flag = 0;
+    spor->sps_id                 = 0;
+    spor->pps_id                 = 0;
+  }
+
   /* caculate size */
   sporSize += 2;
   if(spor->num_subpic_ref_idx) sporSize += 2 * spor->num_subpic_ref_idx;
@@ -402,6 +400,132 @@ static MP4Err creatSporBox(MP4Media media, struct vvc_stream stream)
   free(spor->subp_track_ref_idx);
   MP4DisposeHandle(spor_temp);
   MP4DisposeHandle(spor_desc);
+bail:
+  return err;
+}
+
+static MP4Err creatRrorBox(MP4Media media, struct vvc_stream stream, struct ParamStruct *parameters)
+{
+  MP4Err err = MP4NoErr;
+  rror_boxPtr rror;
+  MP4Handle rror_desc = NULL;
+  MP4Handle rror_temp;
+  u32 rrorSize      = 0;
+  u32 rror_data_idx = 0;
+  u32 i, j, rror_data, rror_idx;
+  u32 group_count = 0;
+  static u32 group_idx = 0;
+
+  MP4NewHandle(sizeof(rror_box), &rror_temp);
+  rror                      = (rror_boxPtr)*rror_temp;
+  rror->subpic_id_info_flag = 0;
+  rror->num_alternate_region_set = 1; //parameters->trackGroupCount?
+  rror->num_regions_in_set = (u16 *)malloc(sizeof(u16) * rror->num_alternate_region_set);
+  rror->alternate_region_set_id = (u16 *)malloc(sizeof(u16) * rror->num_alternate_region_set);
+  rror->groupID                 = (u16 **)malloc(sizeof(u16*) * rror->num_alternate_region_set);
+
+  for(i = 0; i < rror->num_alternate_region_set; i++)
+  {
+    rror->num_regions_in_set[i] = parameters->inputCount;
+    rror->alternate_region_set_id[i] = i;
+    rror->groupID[i] = (u16 *)malloc(sizeof(u16) * rror->num_regions_in_set[i]);
+    for(j = 0; j < rror->num_regions_in_set[i]; j++)
+    {
+      rror->groupID[i][j] = group_count;
+      group_count += 1;
+    }
+  }
+	rror->num_regions_minus1 = 0;
+  rror->region_id          = (u16 *)malloc(sizeof(u16) * rror->num_regions_minus1);
+  for(i = 0; i < rror->num_regions_minus1; i++)
+  {
+    rror->region_id[i] = i;
+  }
+  if(rror->subpic_id_info_flag)
+  {
+    rror->subpic_id_len_minus1   = 0;
+    rror->subpic_id_bit_pos      = 0;
+    rror->start_code_emul_flag   = 0;
+    rror->pps_sps_subpic_id_flag = 0;
+    rror->sps_id                 = 0;
+    rror->pps_id                 = 0;
+  }
+
+  /* caculate size */
+  rrorSize += 3;
+  for(i = 0; i < rror->num_alternate_region_set; i++)
+  {
+    rrorSize += 4;
+    for(j = 0; j < rror->num_regions_in_set[i]; j++)
+    {
+      rrorSize += 2;
+    }
+  }
+  rrorSize += 2;
+  for(i = 0; i < rror->num_regions_minus1; i++)
+  {
+    rrorSize += 2;
+  }
+  if(rror->subpic_id_info_flag) rrorSize += 3;
+
+  /* write bit */
+  MP4NewHandle(rrorSize, &rror_desc);
+  rror_data = (rror->subpic_id_info_flag & 0x01) << 7;
+  PUT8(&(*rror_desc)[rror_data_idx], rror_data);
+  rror_data_idx += 1;
+  PUT16(&(*rror_desc)[rror_data_idx], rror->num_alternate_region_set);
+  rror_data_idx += 2;
+  for(i = 0; i < rror->num_alternate_region_set; i++)
+  {
+    PUT16(&(*rror_desc)[rror_data_idx], rror->num_regions_in_set[i]);
+    rror_data_idx += 2;
+    PUT16(&(*rror_desc)[rror_data_idx], rror->alternate_region_set_id[i]);
+    rror_data_idx += 2;
+    for(j = 0; j < rror->num_regions_in_set[i]; j++)
+    {
+      PUT16(&(*rror_desc)[rror_data_idx], rror->groupID[i][j]);
+      rror_data_idx += 2;
+    }
+  }
+  PUT16(&(*rror_desc)[rror_data_idx], rror->num_regions_minus1);
+  rror_data_idx += 2;
+  for(i = 0; i < rror->num_regions_minus1; i++)
+  {
+    PUT16(&(*rror_desc)[rror_data_idx], rror->region_id[i]);
+    rror_data_idx += 2;
+  }
+  if(rror->subpic_id_info_flag)
+  {
+    rror_data = ((rror->subpic_id_len_minus1 & 0x0f) << 12) | (rror->subpic_id_bit_pos & 0x0fff);
+    PUT16(&(*rror_desc)[rror_data_idx], rror_data);
+    rror_data_idx += 2;
+    if(rror->pps_sps_subpic_id_flag)
+    {
+      rror_data = (u8)((rror->start_code_emul_flag & 0x01) << 7) |
+                  ((rror->pps_sps_subpic_id_flag & 0x01) << 6) | (rror->pps_id & 0x3f);
+    }
+    else
+    {
+      rror_data = (u8)((rror->start_code_emul_flag & 0x01) << 7) |
+                  ((rror->pps_sps_subpic_id_flag & 0x01) << 6) | ((rror->sps_id & 0x3f) << 2);
+    }
+    PUT8(&(*rror_desc)[rror_data_idx], rror_data);
+    rror_data_idx += 1;
+  }
+  assert(rror_data_idx == rrorSize);
+
+  /* sgpd */
+  err = ISOAddGroupDescription(media, MP4_FOUR_CHAR_CODE('r', 'r', 'o', 'r'), rror_desc, &rror_idx); if(err) goto bail;
+  /* sbgp */
+  err = ISOMapSamplestoGroup(media, MP4_FOUR_CHAR_CODE('r', 'r', 'o', 'r'), group_idx, 0, stream.used_count); if(err) goto bail;
+  group_idx += 1;
+  free(rror->num_regions_in_set);
+  free(rror->alternate_region_set_id);
+  free(rror->region_id);
+  free(rror->groupID);
+
+  MP4DisposeHandle(rror_temp);
+  MP4DisposeHandle(rror_desc);
 bail:
   return err;
 }
@@ -578,7 +702,7 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 	u64 mediaDuration;
 	char *filename = parameters->output ? parameters->output : "mov.mp4";
 	err = ISONoErr;
-	initialObjectDescriptorID = 1;
+  initialObjectDescriptorID = 0;
 	OD_profileAndLevel        = 0xff; /* none required */
 	scene_profileAndLevel     = 0xff; /* none required */
 	audio_profileAndLevel     = 0xff; /* none required */
@@ -633,16 +757,18 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 		/* Create a new trak to the movie */
 		err = ISONewMovieTrackWithID(moov, ISONewTrackIsVisual, trackID, &trak); if (err) goto bail;
 
-    // main::track reference 'tref' -> 'subp'
-    // err = MP4AddTrackReference();
-    u32 refid;
-    for(i = 1; i <= parameters->inputCount; i++)
-    {
-      err = MP4AddTrackReferenceWithID(trak, i, MP4_FOUR_CHAR_CODE('s', 'u', 'b', 'p'), &refid);
-    }
+    // merge base track reference: 'tref' -> 'subp' only add this box in the fitst main track
+		//		correspond to the sample grop 'spor' 
+		// extraction base track reference: 'tref' -> 'recr' add these box in all the track
+		//		correspond to the sample grop 'rror' 
+    // using MP4AddTrackReferenceWithID();
+    //u32 refid;
+    //for(i = 1; i <= parameters->inputCount; i++)
+    //{
+    //  err = MP4AddTrackReferenceWithID(trak, i, MP4_FOUR_CHAR_CODE('r', 'e', 'c', 'r'), &refid);
+    //}
 
 		/* mdia */
-		err = MP4AddTrackToMovieIOD(trak); if (err) goto bail;
 		err = ISONewTrackMedia(trak, &media, ISOVisualHandlerType, 30000, NULL); if (err) goto bail;
 
 		err = ISOBeginMediaEdits(media); if (err) goto bail;
@@ -652,135 +778,15 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 			stream.header[frameCounter]->sample_number = sampleNumber;
       if(!stream.header[frameCounter]->is_first_slice) continue;
 			err = addNaluSamples(input, trak, media, trackID, frameCounter == 0, parameters, &stream); if (err) goto bail;
-#if(0)
-			/* Handle slice sub-sample information */
-			if (parameters->subsample_information == 4 /* Slice based sub-sample */  && stream.header[frameCounter]->num_slices) {
-				MP4Handle subsample_size_array = NULL;
-				MP4Handle subsample_priority_array = NULL;
-				MP4Handle subsample_discardable_array = NULL;
-				MP4NewHandle(stream.header[frameCounter]->num_slices * sizeof(u32), &subsample_size_array);
-				MP4NewHandle(stream.header[frameCounter]->num_slices * sizeof(u32), &subsample_priority_array);
-				MP4NewHandle(stream.header[frameCounter]->num_slices * sizeof(u32), &subsample_discardable_array);
-				for (i = 0; i < stream.header[frameCounter]->num_slices; i++) {
-					((u32*)*subsample_size_array)[i] = stream.header[frameCounter]->slice_offsets[i];
-					((u32*)*subsample_priority_array)[i] = 0;
-					((u32*)*subsample_discardable_array)[i] = 0;
-				}
-				err = MP4AddSubSampleInformationEntry(subs, frameCounter?1:0, stream.header[frameCounter]->num_slices,
-					subsample_size_array, subsample_priority_array, subsample_discardable_array); if (err) goto bail;
-
-				MP4DisposeHandle(subsample_size_array);
-				MP4DisposeHandle(subsample_priority_array);
-				MP4DisposeHandle(subsample_discardable_array);
-			}
-
-      /* Handle tile sub-sample information */
-			if (parameters->subsample_information == 2 /* Tile based sub-sample*/ && stream.header[frameCounter]->num_entry_point_offsets) {
-				MP4Handle subsample_size_array = NULL;
-				MP4Handle subsample_priority_array = NULL;
-				MP4Handle subsample_discardable_array = NULL;
-				MP4NewHandle(stream.header[frameCounter]->num_entry_point_offsets * sizeof(u32), &subsample_size_array);
-				MP4NewHandle(stream.header[frameCounter]->num_entry_point_offsets * sizeof(u32), &subsample_priority_array);
-				MP4NewHandle(stream.header[frameCounter]->num_entry_point_offsets * sizeof(u32), &subsample_discardable_array);
-				for (i = 0; i < stream.header[frameCounter]->num_entry_point_offsets; i++) {
-					((u32*)*subsample_size_array)[i] = stream.header[frameCounter]->entry_point_offset_minus1[i] + 1;
-					((u32*)*subsample_priority_array)[i] = 0;
-					((u32*)*subsample_discardable_array)[i] = 0;
-				}
-				err = MP4AddSubSampleInformationEntry(subs, frameCounter ? 1 : 0, stream.header[frameCounter]->num_entry_point_offsets,
-					subsample_size_array, subsample_priority_array, subsample_discardable_array); if (err) goto bail;
-
-				MP4DisposeHandle(subsample_size_array);
-				MP4DisposeHandle(subsample_priority_array);
-				MP4DisposeHandle(subsample_discardable_array);
-			}
-#endif
 			sampleNumber++;
 		}
 		err = ISOGetMediaDuration(media, &mediaDuration); if (err) goto bail;
 		err = ISOEndMediaEdits(media);  if (err) goto bail;/* Calculate duration */
-
-		/* Create "rap " sample description and group */
-    //"roll" section 7(MVC MVD) & 11 
-		// ph_recovery_poc_cnt
-		
-		err = creatSporBox(media, stream); if(err) goto bail;
-		err = creatTrifBox(media, stream); if(err) goto bail;
-		err = creatSulmBox(media); if(err) goto bail;
-  
-#if 0
-		/* Create an alternative startup sequence */
-		//todo
-		{
-			u32 start_slice = 0;
-			u32 leading_pic_count = 0;      
-			/* Map RASL picture count from the headers, search second RAP */
-			for (frameCounter = 1; frameCounter < stream.used_count; frameCounter++) {
-        if(!stream.header[frameCounter]->is_first_slice) continue;
-        if(stream.header[frameCounter]->nal_unit_type >= VVC_NALU_SLICE_IDR_W_RADL &&
-           stream.header[frameCounter]->nal_unit_type <= VVC_NALU_SLICE_CRA)
-        {
-						start_slice = frameCounter;
-						break;
-				}
-			}
-			frameCounter++;
-			/* Count RASL slices following */
-			for (; frameCounter < stream.used_count; frameCounter++) {
-        if(!stream.header[frameCounter]->is_first_slice) continue;
-        if(stream.header[frameCounter]->nal_unit_type == VVC_NALU_SLICE_RASL)
-        {
-					leading_pic_count++;
-        }
-        else if(stream.header[frameCounter]->nal_unit_type == VVC_NALU_SLICE_RADL)
-        {
-					leading_pic_count++;
-				} else {
-					break;
-				}       
-			}
-
-			/* If RASL slices are present, we can use alternative startup sequences */
-			if (leading_pic_count) {
-				alst_dataptr alst;
-				MP4Handle alst_temp;
-				/* Define alst parameters */
-				MP4NewHandle(2 + 2 + 4 * 2, &alst_temp);
-				alst = (alst_dataptr)*alst_temp;
-				alst->roll_count = 2; alst->first_output_sample = 1;
-				alst->sample_offset[0] = leading_pic_count * parameters->frameduration; alst->sample_offset[1] = 0;
-				/* Write alst parameters to the description using correct endianness */
-				MP4NewHandle(2 + 2 + 4 * 2, &alst_desc);				
-				PUT16(&(*alst_desc)[0], alst->roll_count); /* We need the picture before and after RASL pictures */
-				PUT16(&(*alst_desc)[2], alst->first_output_sample); /* Output the first picture */
-				PUT32(&(*alst_desc)[4], alst->sample_offset[0]); /* Push decoding time forward */
-				PUT32(&(*alst_desc)[8], alst->sample_offset[1]);
-				ISOAddGroupDescription(media, MP4_FOUR_CHAR_CODE('a', 'l', 's', 't'), alst_desc, &alst_desc_index);
-        ISOSetSamplestoGroupType( media, parameters->compactSampleToGroup );
-                
-				for (frameCounter = start_slice; frameCounter < stream.used_count-1; frameCounter++) {
-          if(!stream.header[frameCounter]->is_first_slice) continue;
-					/* Mark RAP before RASL pics and one picture after them to this group */
-					/* This enabled alternative startup sequence to use only the RAP and the picture after RASL in decoding */
-					/* and skip all the RASL pictures */
-          if(((stream.header[frameCounter]->nal_unit_type != VVC_NALU_SLICE_RASL &&
-               stream.header[frameCounter]->nal_unit_type != VVC_NALU_SLICE_RADL) &&
-              (stream.header[frameCounter + 1]->nal_unit_type == VVC_NALU_SLICE_RASL ||
-               stream.header[frameCounter + 1]->nal_unit_type == VVC_NALU_SLICE_RADL))
-							||
-             ((stream.header[frameCounter - 1]->nal_unit_type == VVC_NALU_SLICE_RASL ||
-               stream.header[frameCounter - 1]->nal_unit_type == VVC_NALU_SLICE_RADL) &&
-              (stream.header[frameCounter]->nal_unit_type != VVC_NALU_SLICE_RASL &&
-               stream.header[frameCounter]->nal_unit_type != VVC_NALU_SLICE_RADL))
-							) {
-						ISOMapSamplestoGroup(media, MP4_FOUR_CHAR_CODE('a', 'l', 's', 't'), alst_desc_index, stream.header[frameCounter]->sample_number, 1 );
-					}
-				}
-				MP4DisposeHandle(alst_temp);
-				MP4DisposeHandle(alst_desc);
-			}
-		}
-#endif
+	
+		//err = creatSporBox(media, stream, parameters); if(err) goto bail;
+		//err = creatTrifBox(media, stream); if(err) goto bail;
+		//err = creatSulmBox(media); if(err) goto bail;
+    //err = creatRrorBox(media, stream, parameters); if(err) goto bail;
 	
 		for (i = 0; i < stream.used_count; i++) {
 			free(stream.header[i]); stream.header[i] = NULL;
@@ -789,13 +795,12 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 		stream.header = NULL;
 	}
 
-	/* Add each track group to the traks */
   /* sub::trackgroup 'trgr' -> 'alte' (trackid, track_group_id) */
-	for (trackGroup = 0; trackGroup < (u32)parameters->trackGroupCount; trackGroup++) {
-		err = ISOGetMovieIndTrack(moov, parameters->trackGroups[trackGroup]->track, &trak); if (err) goto bail;
-		err =  MP4AddTrackGroup(trak, parameters->trackGroups[trackGroup]->track_group_id, MP4_FOUR_CHAR_CODE('a', 'l', 't', 'e'));
-		if (err) goto bail;
-	}
+	//for (trackGroup = 0; trackGroup < (u32)parameters->trackGroupCount; trackGroup++) {
+	//	err = ISOGetMovieIndTrack(moov, parameters->trackGroups[trackGroup]->track, &trak); if (err) goto bail;
+	//	err =  MP4AddTrackGroup(trak, parameters->trackGroups[trackGroup]->track_group_id, MP4_FOUR_CHAR_CODE('a', 'l', 't', 'e'));
+	//	if (err) goto bail;
+	//}
 
 	err = ISOWriteMovieToFile(moov, filename); if (err) goto bail;
 	if (alst_desc) ISODisposeHandle(alst_desc);
@@ -803,7 +808,6 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 bail:
 	return err;
 }
-
 
 int cleanParameters(struct ParamStruct *parameters) {
 	u32 i;
@@ -825,7 +829,6 @@ int cleanParameters(struct ParamStruct *parameters) {
 	return 1;
 }
 
-
 int main(int argc, char* argv[])
 {
 	struct ParamStruct parameters;
@@ -839,13 +842,11 @@ int main(int argc, char* argv[])
 	/* We need inputs */
 	if (!parameters.inputCount) {
 		fprintf(stderr, "Usage:\r\n");
-		fprintf(stderr, "hevc_muxer -i <inputFile> -g <TrackID>:<GroupID> -o <outputFile> -f <framerate(float)>\r\n");
+		fprintf(stderr, "vvc_muxer -i <inputFile> -g <TrackID>:<GroupID> -o <outputFile> -f <framerate(float)>\r\n");
 		fprintf(stderr, "    --input, -i <filename>: Input file, can be multiple\r\n");
 		fprintf(stderr, "    -g <TrackID>:<GroupID> :Add track group, can be multiple\r\n");
 		fprintf(stderr, "    --output, -o <filename> Output file (MP4)\r\n");
 		fprintf(stderr, "    --framerate, -f <framerate> set framerate, default 30\r\n");
-		fprintf(stderr, "    --subs <type> enable subsample information, 4 = slice, 2 = tile\r\n");
-		fprintf(stderr, "    -c use compact sample to group box\r\n");
 		exit(1);
 	}
 

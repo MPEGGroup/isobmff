@@ -737,7 +737,7 @@ ISOErr analyze_vvc_stream(FILE* input, struct vvc_stream* stream) {
 		/* Parse NAL units until slice (and the next) is found */
 		while (frameNal != 2) {
 			s32 naltype = parseVVCNal(input, &data, &datalen);
-			printf("NAL type: %d\r\n", naltype);
+			//printf("NAL type: %d\r\n", naltype);
 			if (naltype == -1 && frameNal) {
 				fseek(input, peek_origin, SEEK_SET);
 				break;
@@ -816,7 +816,7 @@ ISOErr analyze_vvc_stream(FILE* input, struct vvc_stream* stream) {
         {
 					u32 layer = data[0];
 					if (!frameNal) {
-            printf("copy slice data\r\n");
+            //printf("copy slice data\r\n");
 						slicedata = data;
 						slicedatalen = datalen;
 					}
@@ -872,14 +872,12 @@ ISOErr analyze_vvc_stream(FILE* input, struct vvc_stream* stream) {
       err = BitBuffer_Init(&bb, slicedata, 8 * slicedatalen); if(err) goto bail;
       err = vvc_parse_ph_minimal(&bb, &header->ph, &stream->sps, &stream->pps); if(err) goto bail;
       /* the slice after the PH is the first slice of one frame */
-      printf("be first slice\r\n");
       header->is_first_slice = 1;
       is_first_slice         = 0;
     }
     /* compute POC */
     if(header->is_first_slice)
     {
-      //u32 max_poc_lsb = stream->sps.sps_log2_max_pic_order_cnt_lsb_minus4 + 4;
       if(poc_reset)
       {
         poc_reset = 0;

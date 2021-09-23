@@ -198,12 +198,14 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 		if (MP4GetTrackGroup(trak, MP4_FOUR_CHAR_CODE('a', 'l', 't', 'e'), &trackGroupID) == MP4NoErr) {
 			printf("Found trackGroup (Group ID: %d)\r\n", trackGroupID);
 		}
-    u32 refcount;
+    u32 refcount = 0;
     MP4GetTrackReferenceCount(trak, MP4_FOUR_CHAR_CODE('s', 'u', 'b', 'p'), &refcount);
+    MP4GetTrackReferenceCount(trak, MP4_FOUR_CHAR_CODE('r', 'e', 'c', 'r'), &refcount);
 
+    // get track reference
     ISOTrack reftrak;
     MP4GetTrackReference(trak, MP4_FOUR_CHAR_CODE('s', 'u', 'b', 'p'), 1, &reftrak);
-		s32 j;
+    MP4GetTrackReference(trak, MP4_FOUR_CHAR_CODE('r', 'e', 'c', 'r'), 1, &reftrak);
 
 		err = ISOGetTrackMedia(trak, &media); if (err) goto bail;
 		err = ISOGetMediaHandlerDescription(media, &handlerType, NULL); if (err) goto bail;
@@ -211,78 +213,18 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 		err = ISOCreateTrackReader(trak, &reader); if (err) goto bail;
 		err = ISONewHandle(0, &sampleH); if (err) goto bail;
 
-#if 0
-		{
-			u32 flags;
-			u32 entry_count;
-			u32* sample_delta = NULL;
-			u32* subsample_count = NULL;
-			u32** subsample_size_array = NULL;
-			u32** subsample_priority_array = NULL;
-			u32** subsample_discardable_array = NULL;
-
-			if (MP4GetSubSampleInformationEntryFromTrack(trak, &flags, &entry_count, &sample_delta, &subsample_count, &subsample_size_array, &subsample_priority_array, &subsample_discardable_array) == MP4NoErr) {
-				printf("Subsample found: flags: %x, entries: %d\r\n", flags, entry_count);
-				for (i = 0; i < entry_count; i++) {
-					u32 j;
-					printf("[%2d] Subsamples: ", i+1);
-					for (j = 0; j < (u32)subsample_count[i]; j++) {						
-						printf("%d ", subsample_size_array[i][j]);
-					}
-					printf("\r\n");
-				}
-
-				/* Cleanup */
-				/* ToDo: fix */
-				for (i = 0; i < entry_count; i++) {
-					if ((u32)subsample_count[i]) {
-						free(subsample_size_array[i]);        subsample_size_array[i] = NULL;
-						free(subsample_priority_array[i]);    subsample_priority_array[i] = NULL;
-						//free(subsample_discardable_array[i]);	subsample_discardable_array[i] = NULL;
-					}
-				}
-				free(subsample_size_array);        subsample_size_array = NULL;
-				free(subsample_priority_array);    subsample_priority_array = NULL;
-				//free(subsample_discardable_array); subsample_discardable_array = NULL;
-
-				free(sample_delta);                sample_delta = NULL;
-				free(subsample_count);             subsample_count = NULL;
-			}
-		}
-
-
-		/* Handle alternative startup sequence, 'rap ' is also required */
-		if (ISOGetGroupDescription(media, MP4_FOUR_CHAR_CODE('r', 'a', 'p', ' '), 1, alst_desc) == MP4NoErr) {
-			if (ISOGetGroupDescription(media, MP4_FOUR_CHAR_CODE('a', 'l', 's', 't'), 1, alst_desc) == MP4NoErr) {
-				u32 roll_count;
-				err = ISOGetHandleSize(alst_desc, &sampleSize); if (err) goto bail;
-				err = ISONewHandle(sampleSize, &alst_struct); if (err) goto bail;
-				alst = (alst_dataptr)*alst_struct;
-				alst->roll_count = GET16(&(*alst_desc)[0]);
-				alst->first_output_sample = GET16(&(*alst_desc)[2]);
-				for (roll_count = 0; roll_count < alst->roll_count; roll_count++) {
-					alst->sample_offset[roll_count] = GET32(&(*alst_desc)[4 + roll_count * 4]);
-				}
-			}
-		}
-#endif
 		/* Get sample description from the trak */
 		err = MP4TrackReaderGetCurrentSampleDescription(reader, sampleEntryH); if (err) goto bail;
 		
 		// only call when first track?
-    if(trackNumber == 1)
-    {
-      u32 configsize;
-      MP4GetHandleSize(sampleEntryH,&configsize);
-      err = ISONewHandle(configsize, &decoderConfigH); if(err) goto bail;
-      memcpy((*decoderConfigH), (*sampleEntryH), configsize);
-      MP4GetHandleSize(decoderConfigH, &configsize);
-      err = writeVvccNalus(out, sampleEntryH); if(err) goto bail;
-    }
-    //else
-    //{
-    //  err = writeVvccNalus(out, decoderConfigH); if(err) goto bail;
-    //}
+    u32 configsize;
+    MP4GetHandleSize(sampleEntryH, &configsize);
+    err = ISONewHandle(configsize, &decoderConfigH);
+    if(err) goto bail;
+    memcpy((*decoderConfigH), (*sampleEntryH), configsize);
+    MP4GetHandleSize(decoderConfigH, &configsize);
+    err = writeVvccNalus(out, sampleEntryH);
+    if(err) goto bail;
 
 		ISOGetMediaTimeScale(media, &mediaTimeScale);
 		ISOGetMediaSampleCount(media, &totalSamples);    
@@ -293,36 +235,6 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 		err = ISONewHandle(totalSamples*sizeof(u32), &alst_index); if (err) goto bail;
 		err = ISONewHandle(totalSamples*sizeof(u32), &rap_index); if (err) goto bail;
 
-#if 0
-		/* Extract alternative startup sequences related groupings */
-		if (alst) {
-			u32 group_index = 0;
-			u32 i;
-			printf("Alternative startup sequences found!\r\n");
-			for (i = 0; i < totalSamples; i++) {
-				ISOGetSampletoGroupMap(media, MP4_FOUR_CHAR_CODE('r', 'a', 'p', ' '), i + 1, &((u32*)*rap_index)[i]);
-				ISOGetSampletoGroupMap(media, MP4_FOUR_CHAR_CODE('a', 'l', 's', 't'), i + 1, &((u32*)*alst_index)[i]);
-			}
-		}
-
-		/* Handle the case when seek parameter is given and alst is present */
-		if (parameters->seek && alst) {
-			/* scale given time in ms to mediatimescale */
-			u64 mediatime = (parameters->seek * mediaTimeScale) / 1000, sampleCTS, sampleDTS;
-			u32 sampleDuration;
-			s32 i;
-			
-			err = MP4MediaTimeToSampleNum(media, mediatime, &alst_target, &sampleCTS, &sampleDTS, &sampleDuration); if (err) goto bail;
-			
-			for (i = alst_target - 1; i >= 0; i--) {
-				if (((u32*)*rap_index)[i] && ((u32*)*alst_index)[i]) {
-					alst_start = i + 1;
-					break;
-				}
-			}
-			printf("RAP: %d\n", alst_start);
-		}
-#endif
     for(i = 1;; i++)
     { /* play every frame */
       u32 unitSize;
@@ -349,7 +261,7 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
         u32 byteoffset = 4;
         // sample
         nalType = ((u8 *)(*sampleH + sampleOffsetBytes + 4))[1] >> 3;
-        printf("OutNAL: %d\r\n", nalType);
+        printf("Out NAL type: %d\r\n", nalType);
         fwrite(&syncCodeZeroByte[0], 4, 1, out);
         fwrite(*sampleH + sampleOffsetBytes + byteoffset, boxSize, 1, out);
         sampleOffsetBytes += boxSize + byteoffset;
@@ -405,9 +317,9 @@ int main(int argc, char* argv[])
 
 	/* We need inputs */
 	if (!parameters.inputCount) {
-		fprintf(stderr, "Usage: hevc_demuxer -i <inputFile>\r\n");
+		fprintf(stderr, "Usage: vvc_demuxer -i <inputFile>\r\n");
 		fprintf(stderr, "            --input, -i <filename>: Input file\r\n");
-		fprintf(stderr, "            --seek,-s <frame> seek to frame\r\n");
+		//fprintf(stderr, "            --seek,-s <frame> seek to frame\r\n");
 		exit(1);
 	}
 

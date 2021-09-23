@@ -106,11 +106,28 @@ struct vvc_stream {
 
 typedef struct 
 {
-  u8 subpic_id_info_flag, subpic_id_len_minus1, start_code_emul_flag, 
-    pps_sps_subpic_id_flag, pps_id, sps_id;
-  u16 num_subpic_ref_idx, subpic_id_bit_pos;
+  u8 subpic_id_info_flag;
+  u16 num_subpic_ref_idx;
   u16* subp_track_ref_idx;
+  struct
+  {
+    u8 subpic_id_len_minus1, start_code_emul_flag, pps_sps_subpic_id_flag, pps_id, sps_id;
+    u16 subpic_id_bit_pos;
+  };
 } spor_box, *spor_boxPtr;
+
+typedef struct
+{
+  u8 subpic_id_info_flag;
+  u16 num_alternate_region_set, num_regions_minus1;
+  u16 *num_regions_in_set, *alternate_region_set_id, *region_id;
+  u16 **groupID;
+  struct
+  {
+    u8 subpic_id_len_minus1, start_code_emul_flag, pps_sps_subpic_id_flag, pps_id, sps_id;
+    u16 subpic_id_bit_pos;
+  };
+} rror_box, *rror_boxPtr;
 
 typedef struct
 {
