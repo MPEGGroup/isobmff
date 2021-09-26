@@ -30,13 +30,12 @@ derivative works. Copyright (c) 1999.
 #include "vvc.h"
 #include "vvc_tools.h"
 
-MP4_EXTERN(MP4Err) ISOGetHEVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, u32 index);
+MP4_EXTERN(MP4Err) ISOGetVVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, u32 index);
 MP4_EXTERN(MP4Err) ISOGetGroupDescription(MP4Media media, u32 groupType, u32 index, MP4Handle description);
 MP4_EXTERN(MP4Err) MP4MediaTimeToSampleNum(MP4Media theMedia, u64 mediaTime, u32 *outSampleNum, 
                                            u64 *outSampleCTS, u64 *outSampleDTS, s32 *outSampleDuration);
-MP4_EXTERN(MP4Err) MP4GetSubSampleInformationEntryFromTrack(MP4Track theTrack, u32* flags, u32 *entry_count, u32 **sample_delta,
-	u32 **subsample_count, u32 ***subsample_size_array, u32 ***subsample_priority_array,
-	u32 ***subsample_discardable_array);
+MP4_EXTERN(ISOErr)
+ISOGetVVCSubpicSampleDescription(MP4Handle sampleEntryH, u32 *dataReferenceIndex, u32 *length_size);
 
 MP4Err writeVvccNalus(FILE *out, ISOHandle  sampleEntryH)
 {
@@ -156,12 +155,6 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 	ISOTrackReader reader;
 	ISOHandle sampleH;
 	ISOHandle decoderConfigH;
-
-	ISOHandle alst_desc;
-	ISOHandle alst_struct = NULL;
-	alst_dataptr alst = NULL;
-	ISOHandle alst_index;
-	ISOHandle rap_index;
 	s32 alst_start = -1;
 
 	const char syncCodeZeroByte[] = "\0\0\0\1";
@@ -169,7 +162,6 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 	char *outSampleName = malloc(128);
 	ISOHandle sampleEntryH;
 	err = ISONewHandle(1, &sampleEntryH); if (err) goto bail;
-	err = ISONewHandle(1, &alst_desc); if (err) goto bail;
 
 	err = ISOOpenMovieFile(&moov, filename, MP4OpenMovieDebug);
   if(err) goto bail;
@@ -232,9 +224,6 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 
 		printf("numberofSamples %u, duration: %u\r\n", totalSamples, duration);
 
-		err = ISONewHandle(totalSamples*sizeof(u32), &alst_index); if (err) goto bail;
-		err = ISONewHandle(totalSamples*sizeof(u32), &rap_index); if (err) goto bail;
-
     for(i = 1;; i++)
     { /* play every frame */
       u32 unitSize;
@@ -262,7 +251,7 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
         // sample
         nalType = ((u8 *)(*sampleH + sampleOffsetBytes + 4))[1] >> 3;
         printf("Out NAL type: %d\r\n", nalType);
-        fwrite(&syncCodeZeroByte[0], 4, 1, out);
+        fwrite(&syncCode[0], 3, 1, out);
         fwrite(*sampleH + sampleOffsetBytes + byteoffset, boxSize, 1, out);
         sampleOffsetBytes += boxSize + byteoffset;
       }
@@ -271,10 +260,6 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 
 
 		fclose(out);
-		err = ISODisposeHandle(rap_index);
-		if (alst_struct) err = ISODisposeHandle(alst_struct);
-		err = ISODisposeHandle(alst_index);
-		err = ISODisposeHandle(alst_desc);
 		err = ISODisposeHandle(sampleH);
 		//err = ISODisposeHandle(decoderConfigH);
 		err = ISODisposeTrackReader(reader);
@@ -286,7 +271,6 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 bail:
 	return err;
 }
-
 
 int cleanParameters(struct ParamStruct *parameters) {
 	u32 i;

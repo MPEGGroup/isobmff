@@ -39,6 +39,10 @@ MP4_EXTERN(MP4Err) ISONewVVCSampleDescription(MP4Track theTrack,
 	u32 length_size, MP4Handle first_sps, MP4Handle first_pps);
 MP4_EXTERN(ISOErr)
 ISOAddVVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where);
+MP4_EXTERN(ISOErr)
+ISONewVVCSubpicSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
+                                 u32 dataReferenceIndex, u32 width, u32 height, u32 length_size);
+
 
 static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trackID, u8 first_sample, struct ParamStruct *parameters, struct vvc_stream *stream) {
 	ISOErr err;
@@ -278,6 +282,22 @@ static ISOErr addNaluSamples(FILE* input, ISOTrack trak, ISOMedia media, u8 trac
 	err = ISONewHandle(sizeof(u32), &sampleSizeH);
 	err = ISONewHandle(sizeof(u32), &sampleOffsetH);
 
+  /**
+   * @brief add different NAL unit into sample
+   * 
+   * if (header->non_VCL_datalen > 0) Means that other non_VCL_nalu appeared in the middle of the code stream
+   * E.g: another PS, or Picture Header, Slice Header..
+   * We should store them as an AU in 'mdat' box (I'm not sure, maybe creat another 'vvcC' box? 
+   * But there can only be one 'vvcC' box in one track)
+   *
+   * if(frame_slice > 0) means that a frame is divided into many slice to encode,
+   * For now, we put these slices together without distinction.
+   * if we want to creat a sub-sample or store them into different subpic track, 
+   * we can store this data as a new AU.
+   * 
+   * else: find another frame, add the nalu as an AU in 'mdat'
+   *
+   */
 	if (header->non_VCL_datalen) {
 		const u32 DATALEN_FIELD_LEN = 4;
 		err = ISONewHandle(datalen + header->non_VCL_datalen + 4, &sampleDataH);		
@@ -688,10 +708,6 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 	u32 trackGroup = 0;
 	ISOTrack trak;
 	ISOMedia media;
-	u32 rap_desc_index;
-	u32 alst_desc_index;
-	MP4Handle rap_desc;  
-	MP4Handle alst_desc = NULL;
 
 	u32 initialObjectDescriptorID;
 	u8 OD_profileAndLevel;
@@ -803,7 +819,6 @@ ISOErr createMyMovie(struct ParamStruct *parameters) {
 	//}
 
 	err = ISOWriteMovieToFile(moov, filename); if (err) goto bail;
-	if (alst_desc) ISODisposeHandle(alst_desc);
 	err = ISODisposeMovie(moov); if (err) goto bail;
 bail:
 	return err;

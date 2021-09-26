@@ -738,6 +738,13 @@ extern "C"
   /**
    * @brief Gets the basic parameters of the VVC sample entry.
    * @ingroup SampleDescr
+   * 
+   * @param sampleEntryH input sample entry handle
+   * @param dataReferenceIndex output dataReferenceIndex
+   * @param length_size output length size: the size of the NAL Unit length field (and must be 1, 2 or 4). The value of
+   * length_size = LengthSizeMinusOne + 1
+   * @param naluType input NAL unit type (must be one of 12, 13, 14, 15, 16, 17, 23)
+   * @param count output the number of nalus with type = @param naluType, if there is no nalu, output 0
    */
   MP4_EXTERN(ISOErr)
   ISOGetVVCSampleDescription(MP4Handle sampleEntryH, u32 *dataReferenceIndex, u32 *length_size,
@@ -786,6 +793,17 @@ extern "C"
   MP4_EXTERN(ISOErr)
   ISONewVVCSubpicSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
                                    u32 dataReferenceIndex, u32 width, u32 height, u32 length_size);
+  /**
+   * @brief Gets the length size of the VVC subpicture sample entry.
+   * @ingroup SampleDescr
+   *
+   * @param sampleEntryH input sample entry handle
+   * @param dataReferenceIndex output dataReferenceIndex
+   * @param length_size output length size: the size of the NAL Unit length field (and must be 1, 2
+   * or 4). The value of length_size = LengthSizeMinusOne + 1
+   */
+  MP4_EXTERN(ISOErr)
+  ISOGetVVCSubpicSampleDescription(MP4Handle sampleEntryH, u32 *dataReferenceIndex, u32 *length_size);
 
   /*************************************************************************************************
    * 3GPP media

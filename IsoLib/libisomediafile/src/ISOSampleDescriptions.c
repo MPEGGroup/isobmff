@@ -2032,3 +2032,29 @@ bail:
   if(entry) entry->destroy((MP4AtomPtr)entry);
   return err;
 }
+
+MP4_EXTERN(MP4Err)
+ISOGetVVCSubpicSampleDescription(MP4Handle sampleEntryH, u32 *dataReferenceIndex, u32 *length_size)
+{
+  MP4Err err                        = MP4NoErr;
+  MP4VisualSampleEntryAtomPtr entry = NULL;
+  ISOVVCNALUConfigAtomPtr config;
+
+  err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType);
+  if(err) goto bail;
+
+  if(entry->type != ISOVVCSubpicSampleEntryAtomType) BAILWITHERROR(MP4BadParamErr);
+  err =
+    MP4GetListEntryAtom(entry->ExtensionAtomList, ISOVVCNALUConfigAtomType, (MP4AtomPtr *)&config);
+  if(err == MP4NotFoundErr)
+  {
+    BAILWITHERROR(MP4BadDataErr);
+  }
+
+  *dataReferenceIndex = entry->dataReferenceIndex;
+  *length_size        = config->LengthSizeMinusOne + 1;
+
+bail:
+  if(entry) entry->destroy((MP4AtomPtr)entry);
+  return err;
+}
