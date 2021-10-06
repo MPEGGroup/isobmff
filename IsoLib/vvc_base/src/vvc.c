@@ -614,7 +614,7 @@ bail:
 	return err;
 }
 
-s32 parseVVCNal(FILE *input, u8 **data, int *data_len)
+s32 parseVVCNal(FILE *input, u8 **data, u32 *data_len)
 {
   size_t startPos;
   size_t NALStart = 0;

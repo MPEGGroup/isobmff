@@ -222,7 +222,7 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 		ISOGetMediaSampleCount(media, &totalSamples);    
 		ISOGetMediaDuration(media, &duration);
 
-		printf("numberofSamples %u, duration: %u\r\n", totalSamples, duration);
+		printf("numberofSamples %u, duration: %llu\r\n", totalSamples, duration);
 
     for(i = 1;; i++)
     { /* play every frame */
