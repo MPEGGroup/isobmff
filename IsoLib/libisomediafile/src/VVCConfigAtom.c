@@ -235,10 +235,10 @@ static MP4Err calculateSize(struct MP4Atom *s)
 
       for(i = 0; i < num_nalus; i++)
       {
-        /* nal_unit_length */
-        self->size += 2;
         MP4Handle b;
         u32 the_size;
+        /* nal_unit_length */
+        self->size += 2;
         err = MP4GetListEntry(self->arrays[j].nalList, i, (char **)&b);
         if(err) goto bail;
         err = MP4GetHandleSize(b, &the_size);

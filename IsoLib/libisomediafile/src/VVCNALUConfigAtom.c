@@ -25,15 +25,10 @@
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
   ISOVVCNALUConfigAtomPtr self;
-  err  = MP4NoErr;
   self = (ISOVVCNALUConfigAtomPtr)s;
-  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+  if(self == NULL) return;
   if(self->super) self->super->destroy(s);
-bail:
-  TEST_RETURN(err);
-  return;
 }
 
 static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream)
