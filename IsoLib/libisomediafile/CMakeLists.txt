@@ -206,6 +206,8 @@ add_library(
     src/VolumetricVisualSampleEntryAtom.c
     src/HapticSampleEntryAtom.c
     src/XMLMetaSampleEntry.c
+    src/GroupsListBox.c
+    src/EntityToGroupBox.c
 
     #-----------------------------------------------------------------------------------------------
     # Platform specific header
