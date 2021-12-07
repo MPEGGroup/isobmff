@@ -2116,7 +2116,7 @@ ISO_EXTERN(ISOErr) ISOGetEntityGroupEntries(ISOMeta meta, EntityGroupEntryPtr *p
   u32 listSize, i, j;
   GroupListBoxPtr grpl;
   EntityToGroupBoxPtr entityGroupAtom;
-  EntityGroupEntryPtr pGroupEntries;
+  EntityGroupEntryPtr pGroupEntries = NULL;
   MP4Err err = MP4NoErr;
 
   ISOMetaAtomPtr metaAtom = (ISOMetaAtomPtr)meta;

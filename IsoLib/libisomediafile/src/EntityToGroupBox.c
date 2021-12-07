@@ -64,7 +64,7 @@ static MP4Err calculateSize(struct MP4Atom *s)
   err = MP4CalculateFullAtomFieldSize((MP4FullAtomPtr)s);
   if(err) goto bail;
 
-  // group_id + num_entities_in_group
+  /* group_id + num_entities_in_group */
   self->size += (4 + 4);
 
   if(self->entity_ids->entryCount != self->num_entities_in_group) BAILWITHERROR(MP4BadDataErr);
@@ -150,7 +150,7 @@ bail:
   return err;
 }
 
-MP4Err addEntityId(struct EntityToGroupBox *s, u32 entity_id)
+static MP4Err addEntityId(struct EntityToGroupBox *s, u32 entity_id)
 {
   u32 *p;
   MP4Err err               = MP4NoErr;
@@ -176,7 +176,7 @@ bail:
   return err;
 }
 
-MP4Err getEntityId(struct EntityToGroupBox *s, u32 *entity_id, u32 index)
+static MP4Err getEntityId(struct EntityToGroupBox *s, u32 *entity_id, u32 index)
 {
   u32 *p;
   MP4Err err               = MP4NoErr;
