@@ -2051,7 +2051,6 @@ typedef struct GroupListBox
 
 } GroupListBox, *GroupListBoxPtr;
 
-
 /**
  * @brief EntityToGroupBox
  *

@@ -2138,16 +2138,16 @@ ISO_EXTERN(ISOErr) ISOGetEntityGroupEntries(ISOMeta meta, EntityGroupEntryPtr *p
     if(err) goto bail;
     entityGroupAtom = (EntityToGroupBoxPtr)anAtom;
 
-    (pGroupEntries + i)->grouping_type = entityGroupAtom->type;
-    (pGroupEntries + i)->group_id = entityGroupAtom->group_id;
+    (pGroupEntries + i)->grouping_type         = entityGroupAtom->type;
+    (pGroupEntries + i)->group_id              = entityGroupAtom->group_id;
     (pGroupEntries + i)->num_entities_in_group = entityGroupAtom->num_entities_in_group;
 
     if(entityGroupAtom->num_entities_in_group > 0)
     {
       (pGroupEntries + i)->entity_ids = calloc(entityGroupAtom->num_entities_in_group, sizeof(u32));
-      for(j=0; j<entityGroupAtom->num_entities_in_group; j++)
+      for(j = 0; j < entityGroupAtom->num_entities_in_group; j++)
       {
-        u32* temp;
+        u32 *temp;
         err = MP4GetListEntry(entityGroupAtom->entity_ids, j, (char **)&temp);
         if(err)
         {
@@ -2158,7 +2158,7 @@ ISO_EXTERN(ISOErr) ISOGetEntityGroupEntries(ISOMeta meta, EntityGroupEntryPtr *p
       }
     }
   }
-  
+
   *pEntries = pGroupEntries;
 
 bail:

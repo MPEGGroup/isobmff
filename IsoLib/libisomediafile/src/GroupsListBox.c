@@ -84,18 +84,18 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
 {
   MP4Err err;
   GroupListBoxPtr self = (GroupListBoxPtr)s;
-  
+
   if(self == NULL) BAILWITHERROR(MP4BadParamErr);
   err = MP4NoErr;
 
   err = self->super->createFromInputStream(s, proto, (char *)inputStream);
   if(err) goto bail;
-  
+
   while(self->bytesRead < self->size)
   {
     MP4AtomPtr atom;
-    err = MP4ParseAtomUsingProtoList(inputStream, EntityGroupProtos,
-                                     MP4AlternativeEntityGroup, &atom);
+    err =
+      MP4ParseAtomUsingProtoList(inputStream, EntityGroupProtos, MP4AlternativeEntityGroup, &atom);
     if(err) goto bail;
 
     self->bytesRead += atom->size;
@@ -130,10 +130,10 @@ MP4Err MP4CreateGroupListBox(GroupListBoxPtr *outAtom)
   self->destroy               = destroy;
   err                         = MP4MakeLinkedList(&self->atomList);
   if(err) goto bail;
-  self->calculateSize  = calculateSize;
-  self->serialize      = serialize;
-  self->addAtom        = addAtom;
-  *outAtom             = self;
+  self->calculateSize = calculateSize;
+  self->serialize     = serialize;
+  self->addAtom       = addAtom;
+  *outAtom            = self;
 
 bail:
   TEST_RETURN(err);

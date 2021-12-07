@@ -44,7 +44,7 @@ static void destroy(MP4AtomPtr s)
   if(self->remainingData)
   {
     free(self->remainingData);
-    self->remainingData = NULL;
+    self->remainingData     = NULL;
     self->remainingDataSize = 0;
   }
 
@@ -131,9 +131,9 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   assert(self->num_entities_in_group == count);
 
   bytesToRead = self->size - self->bytesRead;
-  if(bytesToRead>0)
+  if(bytesToRead > 0)
   {
-    self->remainingData  = (char *)calloc(1, bytesToRead);
+    self->remainingData = (char *)calloc(1, bytesToRead);
     TESTMALLOC(self->remainingData)
     GETBYTES_MSG(bytesToRead, remainingData, "unknown EntityToGroupBox data");
     self->remainingDataSize = bytesToRead;

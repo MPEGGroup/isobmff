@@ -218,7 +218,7 @@ extern "C"
    * @brief Structure which contanis all the common parameters of an EntityGroup
    * @ingroup Types
    */
-  typedef struct EntityGroupEntry 
+  typedef struct EntityGroupEntry
   {
     u32 grouping_type;
     u32 group_id;
@@ -1074,7 +1074,7 @@ extern "C"
   ISOGetProperitesOfMetaItem(ISOMetaItem item, MP4GenericAtom **properties, u32 *propertiesFound);
   /**
    * @brief Add new EntityToGroupBox (creates grpl if needed)
-   * 
+   *
    * @param meta MetaBox where the new EntityToGroupBox should be added to
    * @param grouping_type grouping type
    * @param group_id group ID
@@ -1082,7 +1082,7 @@ extern "C"
   ISO_EXTERN(ISOErr) ISONewEntityGroup(ISOMeta meta, u32 grouping_type, u32 group_id);
   /**
    * @brief Add entity_id to EntityToGroupBox
-   * 
+   *
    * @param meta MetaBox on which we are operating
    * @param group_id unique group ID to which we want to add the entity_id
    * @param entity_id entity ID value
@@ -1090,7 +1090,7 @@ extern "C"
   ISO_EXTERN(ISOErr) ISOAddEntityID(ISOMeta meta, u32 group_id, u32 entity_id);
   /**
    * @brief Get number of entries in the EntityToGroupBox
-   * 
+   *
    * @param meta MetaBox on which we are operating
    * @param group_id group ID
    * @param num_entities_in_group [out] number of entities in group
@@ -1098,9 +1098,9 @@ extern "C"
   ISO_EXTERN(ISOErr) ISOGetEntityIDCnt(ISOMeta meta, u32 group_id, u32 *num_entities_in_group);
   /**
    * @brief Get common data for all EntityToGroup entries.
-   * 
+   *
    * @note Each call of this function allocates memory in pEntries and you are responsible to clean.
-   * 
+   *
    * @param meta MetaBox on which we are operating
    * @param pEntries [out] An array of EntityGroup entries with common data (id's, count, etc.)
    * @param cnt [out] Number of EntityGroup entries (size of EntityGroupEntryPtr array)
