@@ -96,11 +96,11 @@ TEST_CASE("metadata")
 
     u32 id1 = 1001;
     u32 id2 = 2001;
-    err     = ISOAddEntityID(metaFile, groupID1 + 1, id1);
+    err     = ISOAddEntityIDToGroup(metaFile, groupID1 + 1, id1);
     CHECK(err == MP4NotFoundErr); // no such groupID present
-    err = ISOAddEntityID(metaFile, groupID1, id1);
+    err = ISOAddEntityIDToGroup(metaFile, groupID1, id1);
     CHECK(err == MP4NoErr);
-    err = ISOAddEntityID(metaFile, groupID1, id2);
+    err = ISOAddEntityIDToGroup(metaFile, groupID1, id2);
     CHECK(err == MP4NoErr);
 
     u32 temp = 0;

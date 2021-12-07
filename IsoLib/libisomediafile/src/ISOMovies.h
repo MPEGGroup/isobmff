@@ -1087,7 +1087,7 @@ extern "C"
    * @param group_id unique group ID to which we want to add the entity_id
    * @param entity_id entity ID value
    */
-  ISO_EXTERN(ISOErr) ISOAddEntityID(ISOMeta meta, u32 group_id, u32 entity_id);
+  ISO_EXTERN(ISOErr) ISOAddEntityIDToGroup(ISOMeta meta, u32 group_id, u32 entity_id);
   /**
    * @brief Get number of entries in the EntityToGroupBox
    *

@@ -2044,7 +2044,7 @@ bail:
   return err;
 }
 
-ISO_EXTERN(ISOErr) ISOAddEntityID(ISOMeta meta, u32 group_id, u32 entity_id)
+ISO_EXTERN(ISOErr) ISOAddEntityIDToGroup(ISOMeta meta, u32 group_id, u32 entity_id)
 {
   u32 listSize, i;
   GroupListBoxPtr grpl;
