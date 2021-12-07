@@ -1800,6 +1800,7 @@ typedef struct ISOMetaAtom
   MP4AtomPtr pitm;
   MP4AtomPtr ipro;
   MP4AtomPtr iprp;
+  MP4AtomPtr grpl;
 
   MP4AtomPtr mdat;
   MP4LinkedList atomList;
@@ -2068,6 +2069,10 @@ typedef struct EntityToGroupBox
   /** List containing the entity ids */
   MP4LinkedList entity_ids;
 
+  /** ISOBMFF allows extensions to EntityToGroupBox. This buffer holds the data for it */
+  char *remainingData;
+  u32 remainingDataSize;
+
   /**
    * @brief Add an entity ID to EntityToGroupBox
    *
@@ -2088,6 +2093,7 @@ typedef struct EntityToGroupBox
 } EntityToGroupBox, *EntityToGroupBoxPtr;
 
 MP4Err MP4CreateGroupListBox(GroupListBoxPtr *outAtom);
+MP4Err MP4CreateEntityToGroupBox(EntityToGroupBoxPtr *pOut, u32 type);
 MP4Err MP4GetListEntryAtom(MP4LinkedList list, u32 atomType, MP4AtomPtr *outItem);
 MP4Err MP4DeleteListEntryAtom(MP4LinkedList list, u32 atomType);
 

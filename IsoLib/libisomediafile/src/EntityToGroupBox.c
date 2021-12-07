@@ -13,6 +13,8 @@
  */
 
 #include "MP4Atoms.h"
+#include <stdlib.h>
+#include <string.h>
 
 static void destroy(MP4AtomPtr s)
 {
@@ -38,6 +40,13 @@ static void destroy(MP4AtomPtr s)
   self->entity_ids            = NULL;
   self->num_entities_in_group = 0;
   self->group_id              = 0;
+
+  if(self->remainingData)
+  {
+    free(self->remainingData);
+    self->remainingData = NULL;
+    self->remainingDataSize = 0;
+  }
 
   if(self->super) self->super->destroy(s);
 
@@ -90,6 +99,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
     PUT32_V(entity_id);
   }
 
+  PUTBYTES(self->remainingData, self->remainingDataSize);
   assert(self->bytesWritten == self->size);
 bail:
   TEST_RETURN(err);
@@ -98,6 +108,7 @@ bail:
 
 static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream)
 {
+  u32 bytesToRead;
   u32 i, count, entity_id;
   MP4Err err               = MP4NoErr;
   EntityToGroupBoxPtr self = (EntityToGroupBoxPtr)s;
@@ -118,9 +129,24 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
     if(err) goto bail;
   }
   assert(self->num_entities_in_group == count);
+
+  bytesToRead = self->size - self->bytesRead;
+  if(bytesToRead>0)
+  {
+    self->remainingData  = (char *)calloc(1, bytesToRead);
+    TESTMALLOC(self->remainingData)
+    GETBYTES_MSG(bytesToRead, remainingData, "unknown EntityToGroupBox data");
+    self->remainingDataSize = bytesToRead;
+  }
+
   assert(self->bytesRead == self->size);
 bail:
   TEST_RETURN(err);
+
+  if(err && self->remainingData)
+  {
+    free(self->remainingData);
+  }
   return err;
 }
 
@@ -190,6 +216,8 @@ MP4Err MP4CreateEntityToGroupBox(EntityToGroupBoxPtr *pOut, u32 type)
   self->serialize             = serialize;
   self->addEntityId           = addEntityId;
   self->getEntityId           = getEntityId;
+  self->remainingData         = NULL;
+  self->remainingDataSize     = 0;
 
   /* members */
   self->type    = type;

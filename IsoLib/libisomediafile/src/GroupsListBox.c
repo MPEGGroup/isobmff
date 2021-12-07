@@ -14,7 +14,11 @@
 
 #include "MP4Atoms.h"
 #include <stdlib.h>
-#include <string.h>
+
+MP4Err MP4ParseAtomUsingProtoList(MP4InputStreamPtr inputStream, u32 *protoList, u32 defaultAtom,
+                                  MP4AtomPtr *outAtom);
+
+u32 EntityGroupProtos[] = {MP4AlternativeEntityGroup, 0};
 
 static void destroy(MP4AtomPtr s)
 {
@@ -78,9 +82,6 @@ bail:
 
 static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream)
 {
-  /* PARSE_ATOM_LIST(GroupListBox) */
-  /* we need to have an empty proto list and a default type here, alas */
-  u32 NoProtos[] = {0};
   MP4Err err;
   GroupListBoxPtr self = (GroupListBoxPtr)s;
   
@@ -93,8 +94,8 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   while(self->bytesRead < self->size)
   {
     MP4AtomPtr atom;
-    err = MP4ParseAtomUsingProtoList((MP4InputStreamPtr)inputStream, NoProtos,
-                                     MP4_FOUR_CHAR_CODE('m', 's', 'r', 'c'), &atom);
+    err = MP4ParseAtomUsingProtoList(inputStream, EntityGroupProtos,
+                                     MP4AlternativeEntityGroup, &atom);
     if(err) goto bail;
 
     self->bytesRead += atom->size;
