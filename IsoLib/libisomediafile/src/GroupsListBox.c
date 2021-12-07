@@ -9,140 +9,133 @@
  * non MPEG-4 conforming products. Apple Computer, Inc. retains full right to use the code for its
  * own purpose, assign or donate the code to a third party and to inhibit third parties from using
  * the code for non MPEG-4 conforming products. This copyright notice must be included in all copies
- * or derivative works. Copyright (c) 1999.
+ * or derivative works. Copyright (c) 2021.
  */
-/*
-  $Id: VisualSampleEntryAtom.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
-*/
 
 #include "MP4Atoms.h"
 #include <stdlib.h>
-#include <string.h>
+
+MP4Err MP4ParseAtomUsingProtoList(MP4InputStreamPtr inputStream, u32 *protoList, u32 defaultAtom,
+                                  MP4AtomPtr *outAtom);
+
+u32 EntityGroupProtos[] = {MP4AlternativeEntityGroup, 0};
 
 static void destroy(MP4AtomPtr s)
 {
   MP4Err err;
-  MP4VisualSampleEntryAtomPtr self;
+  u32 i;
+  GroupListBoxPtr self;
   err  = MP4NoErr;
-  self = (MP4VisualSampleEntryAtomPtr)s;
+  self = (GroupListBoxPtr)s;
+
   if(self == NULL) BAILWITHERROR(MP4BadParamErr)
-  DESTROY_ATOM_LIST_F(ExtensionAtomList)
+  DESTROY_ATOM_LIST
+
   if(self->super) self->super->destroy(s);
+
 bail:
   TEST_RETURN(err);
-
   return;
 }
 
 static MP4Err serialize(struct MP4Atom *s, char *buffer)
 {
-  MP4Err err;
-  MP4VisualSampleEntryAtomPtr self = (MP4VisualSampleEntryAtomPtr)s;
-  err                              = MP4NoErr;
+  MP4Err err           = MP4NoErr;
+  GroupListBoxPtr self = (GroupListBoxPtr)s;
 
   err = MP4SerializeCommonBaseAtomFields(s, buffer);
   if(err) goto bail;
+
   buffer += self->bytesWritten;
-  PUTBYTES(self->reserved, 6);
-  PUT16(dataReferenceIndex);
-  PUTBYTES(self->reserved2, 16);
-  PUT16(width);
-  PUT16(height);
-  /* PUT32( reserved3 ); */
-  PUT32(reserved4);
-  PUT32(reserved5);
-  PUT32(reserved6);
-  PUT16(reserved7);
-  PUT8(nameLength);
-  PUTBYTES(self->name31, 31);
-  PUT16(reserved8);
-  PUT16(reserved9);
-  SERIALIZE_ATOM_LIST(ExtensionAtomList);
+  SERIALIZE_ATOM_LIST(atomList);
   assert(self->bytesWritten == self->size);
+
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 
 static MP4Err calculateSize(struct MP4Atom *s)
 {
   MP4Err err;
-  MP4VisualSampleEntryAtomPtr self = (MP4VisualSampleEntryAtomPtr)s;
-  err                              = MP4NoErr;
+  GroupListBoxPtr self = (GroupListBoxPtr)s;
+  err                  = MP4NoErr;
 
   err = MP4CalculateBaseAtomFieldSize(s);
   if(err) goto bail;
-  self->size += (6 + 16 + 31 + (4 * 2) + (1 * 1) + (4 * 4));
-  ADD_ATOM_LIST_SIZE(ExtensionAtomList);
+  ADD_ATOM_LIST_SIZE(atomList);
+
 bail:
   TEST_RETURN(err);
+  return err;
+}
 
+static MP4Err addAtom(GroupListBoxPtr self, MP4AtomPtr atom)
+{
+  MP4Err err;
+  if(self == 0) BAILWITHERROR(MP4BadParamErr);
+  err = MP4AddListEntry(atom, self->atomList);
+bail:
+  TEST_RETURN(err);
   return err;
 }
 
 static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream)
 {
   MP4Err err;
-  MP4VisualSampleEntryAtomPtr self = (MP4VisualSampleEntryAtomPtr)s;
+  GroupListBoxPtr self = (GroupListBoxPtr)s;
 
+  if(self == NULL) BAILWITHERROR(MP4BadParamErr);
   err = MP4NoErr;
-  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+
   err = self->super->createFromInputStream(s, proto, (char *)inputStream);
   if(err) goto bail;
 
-  GETBYTES(6, reserved);
-  GET16(dataReferenceIndex);
-  GETBYTES(16, reserved2);
-  GET16(width);
-  GET16(height);
-  /* GET32( reserved3 ); */
-  GET32(reserved4);
-  GET32(reserved5);
-  GET32(reserved6);
-  GET16(reserved7);
-  GET8(nameLength);
-  GETBYTES(31, name31);
-  GET16(reserved8);
-  GET16(reserved9);
-  GETATOM_LIST(ExtensionAtomList);
+  while(self->bytesRead < self->size)
+  {
+    MP4AtomPtr atom;
+    err =
+      MP4ParseAtomUsingProtoList(inputStream, EntityGroupProtos, MP4AlternativeEntityGroup, &atom);
+    if(err) goto bail;
+
+    self->bytesRead += atom->size;
+    if(((atom->type) == MP4FreeSpaceAtomType) || ((atom->type) == MP4SkipAtomType))
+      atom->destroy(atom);
+    else
+    {
+      err = addAtom(self, atom);
+      if(err) goto bail;
+    }
+  }
+
+  if(self->bytesRead != self->size) BAILWITHERROR(MP4BadDataErr)
 
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 
-MP4Err MP4CreateVisualSampleEntryAtom(MP4VisualSampleEntryAtomPtr *outAtom)
+MP4Err MP4CreateGroupListBox(GroupListBoxPtr *outAtom)
 {
   MP4Err err;
-  MP4VisualSampleEntryAtomPtr self;
-
-  self = (MP4VisualSampleEntryAtomPtr)calloc(1, sizeof(MP4VisualSampleEntryAtom));
+  GroupListBoxPtr self;
+  self = (GroupListBoxPtr)calloc(1, sizeof(GroupListBox));
   TESTMALLOC(self)
 
   err = MP4CreateBaseAtom((MP4AtomPtr)self);
   if(err) goto bail;
-  self->type = MP4VisualSampleEntryAtomType;
-  self->name = "visual sample entry";
-  err        = MP4MakeLinkedList(&self->ExtensionAtomList);
-  if(err) goto bail;
+  self->type                  = MP4GroupsListBoxType;
+  self->name                  = "GroupListBox";
   self->createFromInputStream = (cisfunc)createFromInputStream;
   self->destroy               = destroy;
-  self->calculateSize         = calculateSize;
-  self->serialize             = serialize;
+  err                         = MP4MakeLinkedList(&self->atomList);
+  if(err) goto bail;
+  self->calculateSize = calculateSize;
+  self->serialize     = serialize;
+  self->addAtom       = addAtom;
+  *outAtom            = self;
 
-  self->width     = 0x140;
-  self->height    = 0xf0;
-  self->reserved4 = 0x00480000;
-  self->reserved5 = 0x00480000;
-  self->reserved7 = 1;
-  self->reserved8 = 0x18;
-  self->reserved9 = -1;
-
-  *outAtom = self;
 bail:
   TEST_RETURN(err);
-
   return err;
 }

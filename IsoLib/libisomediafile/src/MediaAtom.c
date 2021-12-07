@@ -133,6 +133,7 @@ static MP4Err setupNew(struct MP4MediaAtom *self, MP4AtomPtr track, u32 mediaTyp
   MP4Err err;
   u64 currentTime;
   MP4MediaHeaderAtomPtr mdhd;
+  MP4VolumetricVisualMediaHeaderAtomPtr vvhd;
   MP4MediaInformationAtomPtr minf;
   MP4HandlerAtomPtr hdlr;
   MP4AtomPtr mdat;
@@ -159,6 +160,14 @@ static MP4Err setupNew(struct MP4MediaAtom *self, MP4AtomPtr track, u32 mediaTyp
   hdlr->setName((MP4AtomPtr)hdlr, name, hdlr->is_qt);
 
   err = minf->setupNewMedia(minf, mediaType, dataHandlerH, mdat);
+
+  if(mediaType == MP4VolumetricHandlerType)
+  {
+    err = MP4CreateVisualMediaHeaderAtom(&vvhd);
+    if(err) goto bail;
+    err = addAtom(self, (MP4AtomPtr)vvhd);
+    if(err) goto bail;
+  }
 
   err = addAtom(self, (MP4AtomPtr)mdhd);
   if(err) goto bail;

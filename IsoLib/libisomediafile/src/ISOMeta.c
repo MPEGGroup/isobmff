@@ -1,25 +1,16 @@
-/*
-This software module was originally developed by Apple Computer, Inc.
-in the course of development of MPEG-4.
-This software module is an implementation of a part of one or
-more MPEG-4 tools as specified by MPEG-4.
-ISO/IEC gives users of MPEG-4 free license to this
-software module or modifications thereof for use in hardware
-or software products claiming conformance to MPEG-4.
-Those intending to use this software module in hardware or software
-products are advised that its use may infringe existing patents.
-The original developer of this software module and his/her company,
-the subsequent editors and their companies, and ISO/IEC have no
-liability for use of this software module or modifications thereof
-in an implementation.
-Copyright is not released for non MPEG-4 conforming
-products. Apple Computer, Inc. retains full right to use the code for its own
-purpose, assign or donate the code to a third party and to
-inhibit third parties from using the code for non
-MPEG-4 conforming products.
-This copyright notice must be included in all copies or
-derivative works. Copyright (c) 1999, 2000.
-*/
+/* This software module was originally developed by Apple Computer, Inc. in the course of
+ * development of MPEG-4. This software module is an implementation of a part of one or more MPEG-4
+ * tools as specified by MPEG-4. ISO/IEC gives users of MPEG-4 free license to this software module
+ * or modifications thereof for use in hardware or software products claiming conformance to MPEG-4.
+ * Those intending to use this software module in hardware or software products are advised that its
+ * use may infringe existing patents. The original developer of this software module and his/her
+ * company, the subsequent editors and their companies, and ISO/IEC have no liability for use of
+ * this software module or modifications thereof in an implementation. Copyright is not released for
+ * non MPEG-4 conforming products. Apple Computer, Inc. retains full right to use the code for its
+ * own purpose, assign or donate the code to a third party and to inhibit third parties from using
+ * the code for non MPEG-4 conforming products. This copyright notice must be included in all copies
+ * or derivative works. Copyright (c) 1999, 2000.
+ */
 /*
   $Id: MP4Movies.c,v 1.1.1.1 2002/09/20 08:53:35 julien Exp $
 */
@@ -80,6 +71,7 @@ ISO_EXTERN(ISOErr) ISONewFileMeta(ISOMovie theMovie, u32 metaType, ISOMeta *outM
   {
     if(moov->meta->type == metaType) BAILWITHERROR(MP4BadParamErr);
 
+    printf("WARNING: adding additional meta box to 'meco' container is depricated!\n");
     if(moov->meco == NULL)
     {
       err = ISOCreateAdditionalMetaDataContainerAtom(
@@ -2007,6 +1999,173 @@ ISOGetProperitesOfMetaItem(ISOMetaItem item, MP4GenericAtom **properties, u32 *p
 
 bail:
   TEST_RETURN(err);
+  return err;
+}
 
+ISO_EXTERN(ISOErr) ISONewEntityGroup(ISOMeta meta, u32 grouping_type, u32 group_id)
+{
+  u32 listSize, i;
+  GroupListBoxPtr grpl;
+  EntityToGroupBoxPtr entityGroupAtom;
+  MP4Err err = MP4NoErr;
+
+  ISOMetaAtomPtr metaAtom = (ISOMetaAtomPtr)meta;
+  if(metaAtom == NULL) BAILWITHERROR(MP4BadParamErr);
+
+  /* create grpl if not present */
+  if(metaAtom->grpl == NULL)
+  {
+    err = MP4CreateGroupListBox((GroupListBoxPtr *)&metaAtom->grpl);
+    if(err) goto bail;
+    err = MP4AddListEntry(metaAtom->grpl, metaAtom->atomList);
+    if(err) goto bail;
+  }
+
+  grpl = (GroupListBoxPtr)metaAtom->grpl;
+  err  = MP4GetListEntryCount(grpl->atomList, &listSize);
+  if(err) goto bail;
+  for(i = 0; i < listSize; i++)
+  {
+    MP4AtomPtr anAtom;
+    err = MP4GetListEntry(grpl->atomList, i, (char **)&anAtom);
+    if(err) goto bail;
+    entityGroupAtom = (EntityToGroupBoxPtr)anAtom;
+    if(entityGroupAtom->group_id == group_id) BAILWITHERROR(MP4BadParamErr);
+  }
+
+  err = MP4CreateEntityToGroupBox(&entityGroupAtom, grouping_type);
+  if(err) goto bail;
+  entityGroupAtom->group_id = group_id;
+  err                       = grpl->addAtom(grpl, (MP4AtomPtr)entityGroupAtom);
+  if(err) goto bail;
+
+bail:
+  TEST_RETURN(err);
+  return err;
+}
+
+ISO_EXTERN(ISOErr) ISOAddEntityID(ISOMeta meta, u32 group_id, u32 entity_id)
+{
+  u32 listSize, i;
+  GroupListBoxPtr grpl;
+  EntityToGroupBoxPtr entityGroupAtom;
+  MP4Err err = MP4NoErr;
+
+  ISOMetaAtomPtr metaAtom = (ISOMetaAtomPtr)meta;
+  if(metaAtom == NULL) BAILWITHERROR(MP4BadParamErr);
+
+  if(metaAtom->grpl == NULL) BAILWITHERROR(MP4NotFoundErr);
+  grpl = (GroupListBoxPtr)metaAtom->grpl;
+  err  = MP4GetListEntryCount(grpl->atomList, &listSize);
+  if(err) goto bail;
+  for(i = 0; i < listSize; i++)
+  {
+    MP4AtomPtr anAtom;
+    err = MP4GetListEntry(grpl->atomList, i, (char **)&anAtom);
+    if(err) goto bail;
+    entityGroupAtom = (EntityToGroupBoxPtr)anAtom;
+    if(entityGroupAtom->group_id == group_id)
+    {
+      err = entityGroupAtom->addEntityId(entityGroupAtom, entity_id);
+      if(err) goto bail;
+      return MP4NoErr;
+    }
+  }
+  err = MP4NotFoundErr;
+
+bail:
+  TEST_RETURN(err);
+  return err;
+}
+
+ISO_EXTERN(ISOErr) ISOGetEntityIDCnt(ISOMeta meta, u32 group_id, u32 *num_entities_in_group)
+{
+  u32 listSize, i;
+  GroupListBoxPtr grpl;
+  EntityToGroupBoxPtr entityGroupAtom;
+  MP4Err err = MP4NoErr;
+
+  ISOMetaAtomPtr metaAtom = (ISOMetaAtomPtr)meta;
+  if(metaAtom == NULL) BAILWITHERROR(MP4BadParamErr);
+
+  if(metaAtom->grpl == NULL) BAILWITHERROR(MP4NotFoundErr);
+  grpl = (GroupListBoxPtr)metaAtom->grpl;
+  err  = MP4GetListEntryCount(grpl->atomList, &listSize);
+  if(err) goto bail;
+  for(i = 0; i < listSize; i++)
+  {
+    MP4AtomPtr anAtom;
+    err = MP4GetListEntry(grpl->atomList, i, (char **)&anAtom);
+    if(err) goto bail;
+    entityGroupAtom = (EntityToGroupBoxPtr)anAtom;
+    if(entityGroupAtom->group_id == group_id)
+    {
+      *num_entities_in_group = entityGroupAtom->num_entities_in_group;
+      return MP4NoErr;
+    }
+  }
+  err = MP4NotFoundErr;
+
+bail:
+  TEST_RETURN(err);
+  return err;
+}
+
+ISO_EXTERN(ISOErr) ISOGetEntityGroupEntries(ISOMeta meta, EntityGroupEntryPtr *pEntries, u32 *cnt)
+{
+  u32 listSize, i, j;
+  GroupListBoxPtr grpl;
+  EntityToGroupBoxPtr entityGroupAtom;
+  EntityGroupEntryPtr pGroupEntries = NULL;
+  MP4Err err = MP4NoErr;
+
+  ISOMetaAtomPtr metaAtom = (ISOMetaAtomPtr)meta;
+  if(metaAtom == NULL) BAILWITHERROR(MP4BadParamErr);
+
+  if(metaAtom->grpl == NULL) BAILWITHERROR(MP4NotFoundErr);
+  grpl = (GroupListBoxPtr)metaAtom->grpl;
+  err  = MP4GetListEntryCount(grpl->atomList, &listSize);
+  if(err) goto bail;
+  *cnt = listSize;
+
+  pGroupEntries = (EntityGroupEntryPtr)calloc(listSize, sizeof(EntityGroupEntry));
+  TESTMALLOC(pGroupEntries);
+
+  for(i = 0; i < listSize; i++)
+  {
+    MP4AtomPtr anAtom;
+    err = MP4GetListEntry(grpl->atomList, i, (char **)&anAtom);
+    if(err) goto bail;
+    entityGroupAtom = (EntityToGroupBoxPtr)anAtom;
+
+    (pGroupEntries + i)->grouping_type         = entityGroupAtom->type;
+    (pGroupEntries + i)->group_id              = entityGroupAtom->group_id;
+    (pGroupEntries + i)->num_entities_in_group = entityGroupAtom->num_entities_in_group;
+
+    if(entityGroupAtom->num_entities_in_group > 0)
+    {
+      (pGroupEntries + i)->entity_ids = calloc(entityGroupAtom->num_entities_in_group, sizeof(u32));
+      for(j = 0; j < entityGroupAtom->num_entities_in_group; j++)
+      {
+        u32 *temp;
+        err = MP4GetListEntry(entityGroupAtom->entity_ids, j, (char **)&temp);
+        if(err)
+        {
+          free((pGroupEntries + i)->entity_ids);
+          goto bail;
+        }
+        *((pGroupEntries + i)->entity_ids + j) = *temp;
+      }
+    }
+  }
+
+  *pEntries = pGroupEntries;
+
+bail:
+  if(err != MP4NoErr && pGroupEntries != NULL)
+  {
+    free(pGroupEntries);
+  }
+  TEST_RETURN(err);
   return err;
 }

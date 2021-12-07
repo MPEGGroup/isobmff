@@ -202,7 +202,12 @@ add_library(
     src/VCConfigAtom.c
     src/VideoMediaHeaderAtom.c
     src/VisualSampleEntryAtom.c
+    src/VolumetricVisualMediaHeaderAtom.c
+    src/VolumetricVisualSampleEntryAtom.c
+    src/HapticSampleEntryAtom.c
     src/XMLMetaSampleEntry.c
+    src/GroupsListBox.c
+    src/EntityToGroupBox.c
 
     #-----------------------------------------------------------------------------------------------
     # Platform specific header

@@ -23,12 +23,14 @@
 #include <catch.hpp>
 #include <ISOMovies.h>
 #include <MP4Atoms.h>
+#include "test_helpers.h"
 
 TEST_CASE("Check Metadata functions")
 {
-  SECTION("Check Properties")
+  MP4Err err;
+
+  SECTION("Check writing of Properties and EntityToGroups")
   {
-    ISOErr err;
     ISOMovie moov;
     ISOTrack trak;
     ISOMedia media;
@@ -39,13 +41,13 @@ TEST_CASE("Check Metadata functions")
     MP4AddTrackToMovieIOD(trak);
     ISONewTrackMedia(trak, &media, ISOVisualHandlerType, 90000, NULL);
 
-    err = ISONewFileMeta( moov, 123, &metaFile);
+    err = ISONewFileMeta( moov, MP4_FOUR_CHAR_CODE('f', 'o', 'o', '1'), &metaFile);
     CHECK(err == ISONoErr);
 
-    err = ISONewMovieMeta( moov, 456, &metaMovie);
+    err = ISONewMovieMeta( moov, MP4_FOUR_CHAR_CODE('f', 'o', 'o', '2'), &metaMovie);
     CHECK(err == ISONoErr);
 
-    err = ISONewTrackMeta( trak, 789, &metaTrack);
+    err = ISONewTrackMeta( trak, MP4_FOUR_CHAR_CODE('f', 'o', 'o', '3'), &metaTrack);
     CHECK(err == ISONoErr);
 
     u16 outRefIdx;
@@ -80,8 +82,117 @@ TEST_CASE("Check Metadata functions")
     MP4MediaAtomPtr prop2 = (MP4MediaAtomPtr)properties[1];
     CHECK(MP4_FOUR_CHAR_CODE('t', 'k', 'h', 'd') == prop1->type);
     CHECK(MP4_FOUR_CHAR_CODE('m', 'd', 'h', 'd') == prop2->type);
+
+    u32 groupID1 = 123;
+    u32 groupID2 = 555;
+    err = ISONewEntityGroup(metaFile, MP4AlternativeEntityGroup, groupID1);
+    CHECK(err == MP4NoErr);
+    err = ISONewEntityGroup(metaFile, MP4AlternativeEntityGroup, groupID1);
+    CHECK(err == MP4BadParamErr);
+    err = ISONewEntityGroup(metaFile, MP4AlternativeEntityGroup+1, groupID1);
+    CHECK(err == MP4BadParamErr);
+    err = ISONewEntityGroup(metaFile, MP4AlternativeEntityGroup, groupID2);
+    CHECK(err == MP4NoErr);
+
+    u32 id1 = 1001;
+    u32 id2 = 2001;
+    err = ISOAddEntityID(metaFile, groupID1+1, id1);
+    CHECK(err == MP4NotFoundErr); // no such groupID present
+    err = ISOAddEntityID(metaFile, groupID1, id1);
+    CHECK(err == MP4NoErr);
+    err = ISOAddEntityID(metaFile, groupID1, id2);
+    CHECK(err == MP4NoErr);
+
+    u32 temp = 0;
+    err = ISOGetEntityIDCnt(metaFile, groupID1+1, &temp);
+    CHECK(err == MP4NotFoundErr);
+    err = ISOGetEntityIDCnt(metaFile, groupID1, &temp);
+    CHECK(err == MP4NoErr);
+    CHECK(2 == temp);
+    err = ISOGetEntityIDCnt(metaFile, groupID2, &temp);
+    CHECK(err == MP4NoErr);
+    CHECK(0 == temp);
+
+    u32 entityCnt = 0;
+    EntityGroupEntryPtr pEntityGroupEntries;
+    err = ISOGetEntityGroupEntries(metaFile, &pEntityGroupEntries, &entityCnt);
+    CHECK(err == MP4NoErr);
+    CHECK(2 == entityCnt);
+    for(uint32_t i=0; i<entityCnt; i++)
+    {
+      CHECK((pEntityGroupEntries + i)->grouping_type == MP4AlternativeEntityGroup);
+      switch(i)
+      {
+      case 0:
+        CHECK((pEntityGroupEntries + i)->group_id == groupID1);
+        CHECK((pEntityGroupEntries + i)->num_entities_in_group == 2);
+        CHECK((pEntityGroupEntries + i)->entity_ids != NULL);
+        CHECK((pEntityGroupEntries + i)->entity_ids[0] == id1);
+        CHECK((pEntityGroupEntries + i)->entity_ids[1] == id2);
+        break;
+      case 1:
+        CHECK((pEntityGroupEntries + i)->group_id == groupID2);
+        CHECK((pEntityGroupEntries + i)->num_entities_in_group == 0);
+        CHECK((pEntityGroupEntries + i)->entity_ids == NULL);
+        break;
+      default:
+        break;
+      }
+    }
   
     err = MP4WriteMovieToFile(moov, "test_metadata.mp4");
     CHECK(err==ISONoErr);
+  }
+
+  SECTION("Check parsing of Properties and EntityToGroups")
+  {
+    MP4Handle handle;
+    // create handle with data from buffer
+    err = createHandleFromBuffer(&handle, META_FILE1, sizeof(META_FILE1));
+    REQUIRE(err == MP4NoErr);
+
+    ISOMovie cMovieBox;
+    err = MP4NewMovieFromHandle(&cMovieBox, handle, MP4OpenMovieNormal);
+    REQUIRE(err == MP4NoErr);
+
+    ISOMeta metaFile;
+    u32 outMetaType = 0;
+    err = ISOGetFileMeta(cMovieBox, &metaFile, 0, &outMetaType);
+    CHECK(err == MP4NoErr);
+    CHECK(outMetaType == MP4_FOUR_CHAR_CODE('t', 'e', 's', 't'));
+    CHECK(metaFile != NULL);
+
+
+    u32 entityCnt = 0;
+    u32 groupID1 = 123;
+    u32 groupID2 = 555;
+    u32 id1 = 1001;
+    u32 id2 = 2001;
+    EntityGroupEntryPtr pEntityGroupEntries;
+    err = ISOGetEntityGroupEntries(metaFile, &pEntityGroupEntries, &entityCnt);
+    CHECK(err == MP4NoErr);
+    CHECK(2 == entityCnt);
+    for(uint32_t i=0; i<entityCnt; i++)
+    {
+      switch(i)
+      {
+      case 0:
+        CHECK((pEntityGroupEntries + i)->grouping_type == MP4AlternativeEntityGroup);
+        CHECK((pEntityGroupEntries + i)->group_id == groupID1);
+        CHECK((pEntityGroupEntries + i)->num_entities_in_group == 2);
+        CHECK((pEntityGroupEntries + i)->entity_ids != NULL);
+        CHECK((pEntityGroupEntries + i)->entity_ids[0] == id1);
+        CHECK((pEntityGroupEntries + i)->entity_ids[1] == id2);
+        break;
+      case 1:
+        CHECK((pEntityGroupEntries + i)->grouping_type == MP4_FOUR_CHAR_CODE('a', 'l', 't', 'X'));
+        CHECK((pEntityGroupEntries + i)->group_id == groupID2);
+        CHECK((pEntityGroupEntries + i)->num_entities_in_group == 0);
+        CHECK((pEntityGroupEntries + i)->entity_ids == NULL);
+        break;
+      default:
+        break;
+      }
+    }
   }
 }

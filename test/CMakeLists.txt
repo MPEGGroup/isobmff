@@ -20,18 +20,13 @@ include_directories(
 )
 
 file(GLOB LIBMD5_FILES "libmd5/*.cpp" )
+file(GLOB TEST_FILES "*.cpp" )
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable(
   unit_tests
-
-  test_main.cpp
-  test_01_simple.cpp
-  test_sample_groups.cpp
-  test_metadata.cpp
-  test_sample_description.cpp
-  test_largefiles.cpp
+  ${TEST_FILES}
   ${LIBMD5_FILES}
 )
 

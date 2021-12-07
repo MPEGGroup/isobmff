@@ -629,6 +629,14 @@ MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom)
     err = MP4CreateHEVCConfigAtom((ISOHEVCConfigAtomPtr *)&newAtom);
     break;
 
+  case MP4GroupsListBoxType:
+    err = MP4CreateGroupListBox((GroupListBoxPtr *)&newAtom);
+    break;
+
+  case MP4AlternativeEntityGroup:
+    err = MP4CreateEntityToGroupBox((EntityToGroupBoxPtr *)&newAtom, 0);
+    break;
+
   default:
     err           = MP4CreateUnknownAtom((MP4UnknownAtomPtr *)&newAtom);
     newAtom->type = atomType;
