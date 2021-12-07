@@ -25,7 +25,7 @@
 #include <MP4Atoms.h>
 #include "test_helpers.h"
 
-TEST_CASE("Check Metadata functions")
+TEST_CASE("metadata")
 {
   MP4Err err;
 

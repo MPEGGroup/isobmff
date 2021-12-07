@@ -25,7 +25,7 @@
 #include <MP4Atoms.h>
 #include "test_helpers.h"
 
-TEST_CASE("Check large files/boxes")
+TEST_CASE("large_files")
 {
   MP4Err err;
   SECTION("Check writing large mdat box (not fragmented)")

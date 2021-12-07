@@ -229,7 +229,7 @@ ISOErr checkSamples(std::string strFile)
  * @brief Starting point for this testing case
  *
  */
-TEST_CASE("Test sample groups")
+TEST_CASE("sample_groups")
 {
   std::string strFrag          = "test_samplegroups_fragmeted.mp4";
   std::string strDefragNormal  = "test_samplegroups_defrag_normal.mp4";
@@ -412,7 +412,7 @@ TEST_CASE("Test sample groups")
    * create Defragmented file with AUTO SampleToGroupBox (smaller size is used automatically)
    *
    */
-  SECTION("Check defragmentation")
+  SECTION("Check defragmentation of sample groups")
   {
     ISOErr err;
     ISOMovie moov;
@@ -450,7 +450,7 @@ TEST_CASE("Test sample groups")
    * samples are correclty extracted (check the payload of every extracted sample as well)
    *
    */
-  SECTION("Check all samples in fragmented and defragmented files")
+  SECTION("Check all sample groups in fragmented and defragmented files")
   {
     ISOErr err;
     err = checkSamples(strFrag);
