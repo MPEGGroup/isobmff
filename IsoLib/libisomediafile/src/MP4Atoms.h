@@ -256,7 +256,7 @@ typedef struct MP4MediaDataAtom
   char *data;
   u64 dataSize;
   u64 dataOffset;
-  u32 allocatedSize;
+  u64 allocatedSize;
 } MP4MediaDataAtom, *MP4MediaDataAtomPtr;
 
 typedef struct MP4UnknownAtom

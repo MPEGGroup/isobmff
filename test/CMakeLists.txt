@@ -26,7 +26,6 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable(
   unit_tests
-
   ${TEST_FILES}
   ${LIBMD5_FILES}
 )

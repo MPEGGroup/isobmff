@@ -4,7 +4,7 @@
  * @brief Helper functions for testing
  * @version 0.1
  * @date 2021-01-04
- * 
+ *
  * @copyright This software module was originally developed by Apple Computer, Inc. in the course of
  * development of MPEG-4. This software module is an implementation of a part of one or more MPEG-4
  * tools as specified by MPEG-4. ISO/IEC gives users of MPEG-4 free license to this software module
@@ -17,7 +17,7 @@
  * own purpose, assign or donate the code to a third party and to inhibit third parties from using
  * the code for non MPEG-4 conforming products. This copyright notice must be included in all copies
  * or derivative works. Copyright (c) 1999.
- * 
+ *
  */
 #pragma once
 #include <ISOMovies.h>
@@ -49,19 +49,19 @@ inline MP4Err createHandleFromBuffer(MP4Handle *dataH, const u8 *data, u32 size)
 
 /**
  * @brief Append data to buffer with the preceding length field of lengthSize bytes.
- * 
+ *
  * @param rBuffer Buffer to add data to
  * @param lengthSize length field size in bytes
  * @param data data to append
  * @param size size of data
  */
-inline void appendDataWithLengthField(std::vector<u8>& rBuffer, u32 lengthSize, const u8* data, 
+inline void appendDataWithLengthField(std::vector<u8> &rBuffer, u32 lengthSize, const u8 *data,
                                       u32 size)
 {
   std::vector<u8> lengthData(lengthSize, 0x00);
-  for(u32 n=0; n<lengthSize; n++)
+  for(u32 n = 0; n < lengthSize; n++)
   {
-    lengthData[lengthSize-n-1] = size >> (n*8);
+    lengthData[lengthSize - n - 1] = size >> (n * 8);
   }
   rBuffer.insert(rBuffer.end(), lengthData.begin(), lengthData.end());
   rBuffer.insert(rBuffer.end(), data, data + size);
@@ -74,7 +74,7 @@ inline void appendDataWithLengthField(std::vector<u8>& rBuffer, u32 lengthSize, 
  * @param strPattern color pattern of samples (r,b,g,y,w,k)
  * @param repeatPattern number of times to repeat the pattern. No samples are added if this is 0
  * @param sampleEntryH sample entry handle (for the first call)
- * @param lengthSize the length in bytes of the NALUnitLength field in an HEVC video sample 
+ * @param lengthSize the length in bytes of the NALUnitLength field in an HEVC video sample
  * @return ISOErr error code
  */
 inline ISOErr addHEVCSamples(MP4Media media, std::string strPattern, u32 repeatPattern = 1,
@@ -158,10 +158,9 @@ inline ISOErr addHEVCSamples(MP4Media media, std::string strPattern, u32 repeatP
   return err;
 }
 
-
 /**
  * @brief Compare data in a MP4Handle with a data from a buffer
- * 
+ *
  * @param dataH MP4handle holding some data
  * @param comparePtr Pointer to a buffer holding data
  * @param compareSize Size of the buffer
@@ -181,7 +180,7 @@ inline ISOErr compareData(MP4Handle dataH, const u8 *comparePtr, u32 compareSize
 
 /**
  * @brief Compare the payload of a sample with the data in a buffer.
- * 
+ *
  * lengthSize bytes of the sample payload are skipped for comparison. Single NALU in a sample only.
  *
  * @param media media to take a sample from
@@ -191,7 +190,7 @@ inline ISOErr compareData(MP4Handle dataH, const u8 *comparePtr, u32 compareSize
  * @param lengthSize the length in bytes of the NALUnitLength field
  * @return ISOErr error code
  */
-inline ISOErr checkSample(MP4Media media, u32 sampleNr, const u8 *comparePtr, u32 compareSize, 
+inline ISOErr checkSample(MP4Media media, u32 sampleNr, const u8 *comparePtr, u32 compareSize,
                           u32 lengthSize = 1)
 {
   ISOErr err;
@@ -208,7 +207,7 @@ inline ISOErr checkSample(MP4Media media, u32 sampleNr, const u8 *comparePtr, u3
   u32 handleSize;
   MP4GetHandleSize(sampleH, &handleSize);
   if(handleSize != outSize) return MP4BadDataErr;
-  if(outSize != compareSize+lengthSize) return MP4BadDataErr;
+  if(outSize != compareSize + lengthSize) return MP4BadDataErr;
 
   int compareVal = std::memcmp(comparePtr, *sampleH + lengthSize, compareSize);
   if(compareVal != 0) return MP4BadDataErr;

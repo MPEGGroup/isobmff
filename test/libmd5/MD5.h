@@ -37,9 +37,10 @@
 //! \ingroup libMD5
 //! \{
 
-static const uint32_t MD5_DIGEST_STRING_LENGTH=16;
+static const uint32_t MD5_DIGEST_STRING_LENGTH = 16;
 
-namespace libmd5 {
+namespace libmd5
+{
 
 class MD5
 {
@@ -47,33 +48,23 @@ public:
   /**
    * initialize digest state
    */
-  MD5()
-  {
-    MD5Init(&m_state);
-  }
+  MD5() { MD5Init(&m_state); }
 
   /**
    * compute digest over buf of length len.
    * multiple calls may extend the digest over more data.
    */
-  void update(unsigned char *buf, unsigned len)
-  {
-    MD5Update(&m_state, buf, len);
-  }
+  void update(unsigned char *buf, unsigned len) { MD5Update(&m_state, buf, len); }
 
   /**
    * flush any outstanding MD5 data, write the digest into digest.
    */
-  void finalize(unsigned char digest[MD5_DIGEST_STRING_LENGTH])
-  {
-    MD5Final(digest, &m_state);
-  }
+  void finalize(unsigned char digest[MD5_DIGEST_STRING_LENGTH]) { MD5Final(digest, &m_state); }
 
 private:
   context_md5_t m_state;
 };
 
-
 //! \}
 
-} // namespace
+} // namespace libmd5
