@@ -4,7 +4,7 @@
  * @brief Perform checks for Sample Description functions
  * @version 0.1
  * @date 2021-01-04
- * 
+ *
  * @copyright This software module was originally developed by Apple Computer, Inc. in the course of
  * development of MPEG-4. This software module is an implementation of a part of one or more MPEG-4
  * tools as specified by MPEG-4. ISO/IEC gives users of MPEG-4 free license to this software module
@@ -17,7 +17,7 @@
  * own purpose, assign or donate the code to a third party and to inhibit third parties from using
  * the code for non MPEG-4 conforming products. This copyright notice must be included in all copies
  * or derivative works. Copyright (c) 1999.
- * 
+ *
  */
 
 #include <catch.hpp>
@@ -59,7 +59,7 @@ TEST_CASE("Check Sample Description functions")
     CHECK(err == ISOBadParamErr);
 
     u32 lengthSize = 2;
-    err = ISONewHEVCSampleDescription(trak, sampleEntryH, 1, lengthSize, spsHandle, ppsHandle, 
+    err = ISONewHEVCSampleDescription(trak, sampleEntryH, 1, lengthSize, spsHandle, ppsHandle,
                                       vpsHandle);
     CHECK(err == ISONoErr);
 
@@ -94,15 +94,14 @@ TEST_CASE("Check Sample Description functions")
 
     // get sampledescription type
     u32 typeOut = 0;
-    err = ISOGetSampleDescriptionType(sampleEntryH, &typeOut);
+    err         = ISOGetSampleDescriptionType(sampleEntryH, &typeOut);
     CHECK(err == ISONoErr);
     CHECK(typeOut == MP4_FOUR_CHAR_CODE('h', 'v', 'c', '1'));
 
     u32 lengthSizeOut = 0;
-    err = ISOGetNALUnitLength(sampleEntryH, &lengthSizeOut);
+    err               = ISOGetNALUnitLength(sampleEntryH, &lengthSizeOut);
     CHECK(err == ISONoErr);
     CHECK(lengthSizeOut == lengthSize);
-
 
     err = MP4WriteMovieToFile(moov, strHEVC.c_str());
     CHECK(err == ISONoErr);

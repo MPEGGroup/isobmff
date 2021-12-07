@@ -4,7 +4,7 @@
  * @brief Metadata testing
  * @version 0.1
  * @date 2020-11-20
- * 
+ *
  * @copyright This software module was originally developed by Apple Computer, Inc. in the course of
  * development of MPEG-4. This software module is an implementation of a part of one or more MPEG-4
  * tools as specified by MPEG-4. ISO/IEC gives users of MPEG-4 free license to this software module
@@ -41,13 +41,13 @@ TEST_CASE("Check Metadata functions")
     MP4AddTrackToMovieIOD(trak);
     ISONewTrackMedia(trak, &media, ISOVisualHandlerType, 90000, NULL);
 
-    err = ISONewFileMeta( moov, MP4_FOUR_CHAR_CODE('f', 'o', 'o', '1'), &metaFile);
+    err = ISONewFileMeta(moov, MP4_FOUR_CHAR_CODE('f', 'o', 'o', '1'), &metaFile);
     CHECK(err == ISONoErr);
 
-    err = ISONewMovieMeta( moov, MP4_FOUR_CHAR_CODE('f', 'o', 'o', '2'), &metaMovie);
+    err = ISONewMovieMeta(moov, MP4_FOUR_CHAR_CODE('f', 'o', 'o', '2'), &metaMovie);
     CHECK(err == ISONoErr);
 
-    err = ISONewTrackMeta( trak, MP4_FOUR_CHAR_CODE('f', 'o', 'o', '3'), &metaTrack);
+    err = ISONewTrackMeta(trak, MP4_FOUR_CHAR_CODE('f', 'o', 'o', '3'), &metaTrack);
     CHECK(err == ISONoErr);
 
     u16 outRefIdx;
@@ -64,7 +64,7 @@ TEST_CASE("Check Metadata functions")
 
     // MP4GenericAtom foo;
     MP4TrackAtomPtr trackPtr = (MP4TrackAtomPtr)trak;
-    MP4MediaAtomPtr mediaPtr = (MP4MediaAtom*)trackPtr->trackMedia;
+    MP4MediaAtomPtr mediaPtr = (MP4MediaAtom *)trackPtr->trackMedia;
 
     // put tkhd and mdhd as properties in the media item
     err = ISOAddMetaItemProperty(outItem, (MP4GenericAtom *)trackPtr->trackHeader, 0);
@@ -85,18 +85,18 @@ TEST_CASE("Check Metadata functions")
 
     u32 groupID1 = 123;
     u32 groupID2 = 555;
-    err = ISONewEntityGroup(metaFile, MP4AlternativeEntityGroup, groupID1);
+    err          = ISONewEntityGroup(metaFile, MP4AlternativeEntityGroup, groupID1);
     CHECK(err == MP4NoErr);
     err = ISONewEntityGroup(metaFile, MP4AlternativeEntityGroup, groupID1);
     CHECK(err == MP4BadParamErr);
-    err = ISONewEntityGroup(metaFile, MP4AlternativeEntityGroup+1, groupID1);
+    err = ISONewEntityGroup(metaFile, MP4AlternativeEntityGroup + 1, groupID1);
     CHECK(err == MP4BadParamErr);
     err = ISONewEntityGroup(metaFile, MP4AlternativeEntityGroup, groupID2);
     CHECK(err == MP4NoErr);
 
     u32 id1 = 1001;
     u32 id2 = 2001;
-    err = ISOAddEntityID(metaFile, groupID1+1, id1);
+    err     = ISOAddEntityID(metaFile, groupID1 + 1, id1);
     CHECK(err == MP4NotFoundErr); // no such groupID present
     err = ISOAddEntityID(metaFile, groupID1, id1);
     CHECK(err == MP4NoErr);
@@ -104,7 +104,7 @@ TEST_CASE("Check Metadata functions")
     CHECK(err == MP4NoErr);
 
     u32 temp = 0;
-    err = ISOGetEntityIDCnt(metaFile, groupID1+1, &temp);
+    err      = ISOGetEntityIDCnt(metaFile, groupID1 + 1, &temp);
     CHECK(err == MP4NotFoundErr);
     err = ISOGetEntityIDCnt(metaFile, groupID1, &temp);
     CHECK(err == MP4NoErr);
@@ -118,7 +118,7 @@ TEST_CASE("Check Metadata functions")
     err = ISOGetEntityGroupEntries(metaFile, &pEntityGroupEntries, &entityCnt);
     CHECK(err == MP4NoErr);
     CHECK(2 == entityCnt);
-    for(uint32_t i=0; i<entityCnt; i++)
+    for(uint32_t i = 0; i < entityCnt; i++)
     {
       CHECK((pEntityGroupEntries + i)->grouping_type == MP4AlternativeEntityGroup);
       switch(i)
@@ -139,9 +139,9 @@ TEST_CASE("Check Metadata functions")
         break;
       }
     }
-  
+
     err = MP4WriteMovieToFile(moov, "test_metadata.mp4");
-    CHECK(err==ISONoErr);
+    CHECK(err == ISONoErr);
   }
 
   SECTION("Check parsing of Properties and EntityToGroups")
@@ -157,22 +157,21 @@ TEST_CASE("Check Metadata functions")
 
     ISOMeta metaFile;
     u32 outMetaType = 0;
-    err = ISOGetFileMeta(cMovieBox, &metaFile, 0, &outMetaType);
+    err             = ISOGetFileMeta(cMovieBox, &metaFile, 0, &outMetaType);
     CHECK(err == MP4NoErr);
     CHECK(outMetaType == MP4_FOUR_CHAR_CODE('t', 'e', 's', 't'));
     CHECK(metaFile != NULL);
 
-
     u32 entityCnt = 0;
-    u32 groupID1 = 123;
-    u32 groupID2 = 555;
-    u32 id1 = 1001;
-    u32 id2 = 2001;
+    u32 groupID1  = 123;
+    u32 groupID2  = 555;
+    u32 id1       = 1001;
+    u32 id2       = 2001;
     EntityGroupEntryPtr pEntityGroupEntries;
     err = ISOGetEntityGroupEntries(metaFile, &pEntityGroupEntries, &entityCnt);
     CHECK(err == MP4NoErr);
     CHECK(2 == entityCnt);
-    for(uint32_t i=0; i<entityCnt; i++)
+    for(uint32_t i = 0; i < entityCnt; i++)
     {
       switch(i)
       {

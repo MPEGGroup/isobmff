@@ -4,7 +4,7 @@
  * @brief Testing large files
  * @version 0.1
  * @date 2021-12-06
- * 
+ *
  * @copyright This software module was originally developed by Apple Computer, Inc. in the course of
  * development of MPEG-4. This software module is an implementation of a part of one or more MPEG-4
  * tools as specified by MPEG-4. ISO/IEC gives users of MPEG-4 free license to this software module
@@ -41,7 +41,7 @@ TEST_CASE("Check large files/boxes")
     MP4NewHandle(sizeof(u32), &sizeH);
     MP4NewHandle(sampleSize * sizeof(u8), &sampleDataH);
     *((u32 *)*durationH) = 90000 / 30;
-    *((u32 *)*sizeH) = sampleSize;
+    *((u32 *)*sizeH)     = sampleSize;
 
     MP4Handle spsHandle, ppsHandle, vpsHandle, sampleEntryH;
     err = MP4NewHandle(sizeof(HEVC::SPS), &spsHandle);
@@ -57,7 +57,7 @@ TEST_CASE("Check large files/boxes")
     MP4NewTrackMedia(trak, &media, ISOVisualHandlerType, 90000, NULL);
     err = ISONewHEVCSampleDescription(trak, sampleEntryH, 1, 1, spsHandle, ppsHandle, vpsHandle);
     REQUIRE(err == ISONoErr);
-    
+
     err = addHEVCSamples(media, "r", 0, sampleEntryH);
 
     for(u32 i = 0; i < numSamples; i++)
@@ -69,7 +69,7 @@ TEST_CASE("Check large files/boxes")
         break;
       }
     }
-    
+
     err = MP4WriteMovieToFile(moov, "large_mdat.mp4");
     CHECK(err == ISONoErr);
   }
@@ -88,7 +88,7 @@ TEST_CASE("Check large files/boxes")
     err = MP4GetTrackMedia(trak, &media);
 
     u32 sampleCnt = 0;
-    err = MP4GetMediaSampleCount(media, &sampleCnt);
+    err           = MP4GetMediaSampleCount(media, &sampleCnt);
     CHECK(err == MP4NoErr);
     CHECK(sampleCnt == 41);
   }
