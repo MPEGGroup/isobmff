@@ -70,7 +70,7 @@ TEST_CASE("Check large files/boxes")
       }
     }
     
-    err = MP4WriteMovieToFile(moov, "foo.mp4");
+    err = MP4WriteMovieToFile(moov, "large_mdat.mp4");
     CHECK(err == ISONoErr);
   }
 }
