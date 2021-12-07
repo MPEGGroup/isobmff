@@ -28,7 +28,7 @@
 TEST_CASE("Check large files/boxes")
 {
   MP4Err err;
-  SECTION("Check Properties")
+  SECTION("Check writing large mdat box (not fragmented)")
   {
     MP4Movie moov;
     MP4Track trak;
@@ -72,5 +72,24 @@ TEST_CASE("Check large files/boxes")
     
     err = MP4WriteMovieToFile(moov, "large_mdat.mp4");
     CHECK(err == ISONoErr);
+  }
+
+  SECTION("Check reading of the large mdat from the previous test")
+  {
+    MP4Movie moov;
+    MP4Track trak;
+    MP4Media media;
+
+    err = ISOOpenMovieFile(&moov, "large_mdat.mp4", MP4OpenMovieNormal);
+    CHECK(err == ISONoErr);
+
+    err = MP4GetMovieTrack(moov, 1, &trak);
+    CHECK(err == ISONoErr);
+    err = MP4GetTrackMedia(trak, &media);
+
+    u32 sampleCnt = 0;
+    err = MP4GetMediaSampleCount(media, &sampleCnt);
+    CHECK(err == MP4NoErr);
+    CHECK(sampleCnt == 41);
   }
 }
