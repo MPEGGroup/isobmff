@@ -848,16 +848,16 @@ typedef struct MP4AudioSampleEntryAtom
 {
   MP4_BASE_ATOM
   COMMON_SAMPLE_ENTRY_FIELDS
-  char reserved2[8]; /* uint(32)[2] */
-  u32 reserved3;     /* uint(16) = 2 */
-  u32 reserved4;     /* uint(16) = 16 */
-  u32 reserved5;     /* uint(32) = 0 */
-  u32 timeScale;     /* uint(16) copied from track! */
-  u32 reserved6;     /* uint(16) = 0 */
+  char reserved2[8];      /* uint(32)[2] */
+  u32 reserved3;          /* uint(16) = 2 */
+  u32 reserved4;          /* uint(16) = 16 */
+  u32 reserved5;          /* uint(32) = 0 */
+  u32 timeScale;          /* uint(16) copied from track! */
+  u32 reserved6;          /* uint(16) = 0 */
   u32 qtSamplesPerPacket; /* from SoundDescriptionV1 in QTFF */
-  u32 qtbytesPerPacket; /* from SoundDescriptionV1 in QTFF */
-  u32 qtbytesPerFrame; /* from SoundDescriptionV1 in QTFF */
-  u32 qtbytesPerSample; /* from SoundDescriptionV1 in QTFF */
+  u32 qtbytesPerPacket;   /* from SoundDescriptionV1 in QTFF */
+  u32 qtbytesPerFrame;    /* from SoundDescriptionV1 in QTFF */
+  u32 qtbytesPerSample;   /* from SoundDescriptionV1 in QTFF */
 
 } MP4AudioSampleEntryAtom, *MP4AudioSampleEntryAtomPtr;
 
