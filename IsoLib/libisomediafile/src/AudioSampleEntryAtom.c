@@ -102,7 +102,42 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   GET32(reserved5);
   GET16(timeScale);
   GET16(reserved6);
-  GETATOM_LIST(ExtensionAtomList);
+  
+  while(self->bytesRead < self->size) 
+  { 
+    MP4AtomPtr atm;
+    u64 currentOffset = 0;
+    u64 available = inputStream->available;
+    u32 indent = inputStream->indent;
+    MP4FileMappingInputStreamPtr fm = (MP4FileMappingInputStreamPtr)inputStream;
+    currentOffset = fm->current_offset;
+    err = MP4ParseAtom(inputStream, &atm); if(err) goto bail;
+    
+    if(self->bytesRead + atm->size > self->size && self->reserved2[1] == 1)
+    {
+      /* most likely we are parsing QTFF SoundDescriptionV1, rewind and parse 16 more bytes */
+      atm->destroy(atm);
+      inputStream->available = available;
+      inputStream->indent = indent;
+      fm->current_offset = currentOffset;
+
+      GET32(qtSamplesPerPacket);
+      GET32(qtbytesPerPacket);
+      GET32(qtbytesPerFrame);
+      GET32(qtbytesPerSample);
+    }
+    else
+    {
+      self->bytesRead += atm->size; 
+      if(((atm->type) == MP4FreeSpaceAtomType) || ((atm->type) == MP4SkipAtomType))
+        atm->destroy(atm); 
+      else 
+      { 
+        err = MP4AddListEntry((void *)atm, self->ExtensionAtomList); if(err) goto bail; 
+      }
+    } 
+  }
+
 bail:
   TEST_RETURN(err);
 
