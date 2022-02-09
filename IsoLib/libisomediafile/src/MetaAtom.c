@@ -308,7 +308,9 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
       inputStream->available = available + 4;
       inputStream->indent    = indent;
       fm->current_offset     = currentOffset - 4;
-      self->bytesRead -= 4;
+      self->bytesRead        = 8;
+      self->flags            = 0;
+      self->version          = 0;
 
       err = MP4ParseAtom((MP4InputStreamPtr)inputStream, &atom);
     }
