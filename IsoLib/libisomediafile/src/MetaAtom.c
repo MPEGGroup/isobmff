@@ -1,27 +1,19 @@
+/* This software module was originally developed by Apple Computer, Inc. in the course of
+ * development of MPEG-4. This software module is an implementation of a part of one or more MPEG-4
+ * tools as specified by MPEG-4. ISO/IEC gives users of MPEG-4 free license to this software module
+ * or modifications thereof for use in hardware or software products claiming conformance to MPEG-4.
+ * Those intending to use this software module in hardware or software products are advised that its
+ * use may infringe existing patents. The original developer of this software module and his/her
+ * company, the subsequent editors and their companies, and ISO/IEC have no liability for use of
+ * this software module or modifications thereof in an implementation. Copyright is not released for
+ * non MPEG-4 conforming products. Apple Computer, Inc. retains full right to use the code for its
+ * own purpose, assign or donate the code to a third party and to inhibit third parties from using
+ * the code for non MPEG-4 conforming products. This copyright notice must be included in all copies
+ * or derivative works. Copyright (c) 1999.
+ */
+
 /*
-This software module was originally developed by Apple Computer, Inc.
-in the course of development of MPEG-4.
-This software module is an implementation of a part of one or
-more MPEG-4 tools as specified by MPEG-4.
-ISO/IEC gives users of MPEG-4 free license to this
-software module or modifications thereof for use in hardware
-or software products claiming conformance to MPEG-4.
-Those intending to use this software module in hardware or software
-products are advised that its use may infringe existing patents.
-The original developer of this software module and his/her company,
-the subsequent editors and their companies, and ISO/IEC have no
-liability for use of this software module or modifications thereof
-in an implementation.
-Copyright is not released for non MPEG-4 conforming
-products. Apple Computer, Inc. retains full right to use the code for its own
-purpose, assign or donate the code to a third party and to
-inhibit third parties from using the code for non
-MPEG-4 conforming products.
-This copyright notice must be included in all copies or
-derivative works. Copyright (c) 1999.
-*/
-/*
-        $Id: MetaAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
+  $Id: MetaAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
 */
 
 #include "MP4Atoms.h"
@@ -44,7 +36,6 @@ static void destroy(MP4AtomPtr s)
 
 bail:
   TEST_RETURN(err);
-
   return;
 }
 
@@ -62,7 +53,6 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
 
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 
@@ -102,7 +92,6 @@ static MP4Err closeDataHandler(ISOMetaAtomPtr self)
 
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 
@@ -141,7 +130,6 @@ static MP4Err openDataHandler(ISOMetaAtomPtr self, u32 dataEntryIndex)
 
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 
@@ -157,7 +145,6 @@ static MP4Err calculateSize(struct MP4Atom *s)
   ADD_ATOM_LIST_SIZE(atomList);
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 
@@ -247,7 +234,6 @@ static MP4Err addAtom(ISOMetaAtomPtr self, MP4AtomPtr atom)
   err = MP4AddListEntry(atom, self->atomList);
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 
@@ -293,17 +279,55 @@ static MP4Err getData(ISOMetaAtomPtr self, u32 box_type, MP4Handle data, u8 is_f
 
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 
 static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream)
 {
-  PARSE_ATOM_LIST(ISOMetaAtom)
+  MP4Err err;
+  ISOMetaAtomPtr self = (ISOMetaAtomPtr)s;
+  err                 = MP4NoErr;
+  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+
+  err = self->super->createFromInputStream(s, proto, (char *)inputStream);
+  if(err) goto bail;
+
+  while(self->bytesRead < self->size)
+  {
+    MP4AtomPtr atom;
+    u64 currentOffset               = 0;
+    u64 available                   = inputStream->available;
+    u32 indent                      = inputStream->indent;
+    MP4FileMappingInputStreamPtr fm = (MP4FileMappingInputStreamPtr)inputStream;
+    currentOffset                   = fm->current_offset;
+    err                             = MP4ParseAtom((MP4InputStreamPtr)inputStream, &atom);
+
+    if(err == MP4BadDataErr && self->bytesRead == 12)
+    {
+      /* most likely we are parsing QTFF MetaBox which is a Box and not a FullBox */
+      inputStream->available = available + 4;
+      inputStream->indent    = indent;
+      fm->current_offset     = currentOffset - 4;
+      self->bytesRead -= 4;
+
+      err = MP4ParseAtom((MP4InputStreamPtr)inputStream, &atom);
+    }
+    if(err) goto bail;
+
+    self->bytesRead += atom->size;
+    if(((atom->type) == MP4FreeSpaceAtomType) || ((atom->type) == MP4SkipAtomType))
+      atom->destroy(atom);
+    else
+    {
+      err = addAtom(self, atom);
+      if(err) goto bail;
+    }
+  }
+  if(self->bytesRead != self->size) BAILWITHERROR(MP4BadDataErr)
+
   self->inputStream = inputStream;
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 
@@ -323,7 +347,6 @@ static MP4Err mdatMoved(ISOMetaAtomPtr self, u64 mdatBase, u64 mdatEnd, s32 mdat
   if(iloc) err = iloc->mdatMoved(iloc, mdatBase, mdatEnd, mdatOffset);
 
   TEST_RETURN(err);
-
   return err;
 }
 
@@ -360,6 +383,5 @@ MP4Err ISOCreateMetaAtom(ISOMetaAtomPtr *outAtom)
   *outAtom = self;
 bail:
   TEST_RETURN(err);
-
   return err;
 }

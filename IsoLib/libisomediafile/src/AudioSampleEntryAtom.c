@@ -105,7 +105,6 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
     MP4FileMappingInputStreamPtr fm = (MP4FileMappingInputStreamPtr)inputStream;
     currentOffset                   = fm->current_offset;
     err                             = MP4ParseAtom(inputStream, &atm);
-    if(err) goto bail;
 
     if(self->bytesRead + atm->size > self->size && self->reserved2[1] == 1)
     {
@@ -120,7 +119,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
       GET32(qtbytesPerFrame);
       GET32(qtbytesPerSample);
     }
-    else
+    else if(err == MP4NoErr)
     {
       self->bytesRead += atm->size;
       if(((atm->type) == MP4FreeSpaceAtomType) || ((atm->type) == MP4SkipAtomType))
@@ -135,7 +134,6 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
 
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 
