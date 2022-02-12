@@ -58,7 +58,6 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   assert(self->bytesWritten == self->size);
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 

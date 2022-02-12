@@ -96,7 +96,6 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   assert(self->bytesWritten == self->size);
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 
@@ -141,6 +140,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   err = MP4NoErr;
   if(self == NULL) BAILWITHERROR(MP4BadParamErr)
   err = self->super->createFromInputStream(s, proto, (char *)inputStream);
+  if(err) goto bail;
 
   while(self->bytesRead < self->size)
   {
