@@ -15,3 +15,114 @@
 #include "MP4Atoms.h"
 #include <stdlib.h>
 #include <string.h>
+
+static void destroy(MP4AtomPtr s)
+{
+  MP4Err err;
+  MP4MetadataLocaleBoxPtr self;
+  u32 i = 0;
+  self = (MP4MetadataLocaleBoxPtr)s;
+
+  if(self == NULL) return;
+
+  if(self->locale_string)
+  {
+    free(self->locale_string);
+    self->locale_string = NULL;
+  }
+
+  if(self->super) self->super->destroy(s);
+
+bail:
+  TEST_RETURN(err);
+  return;
+}
+
+static MP4Err serialize(struct MP4Atom *s, char *buffer)
+{
+  u32 strLen;
+  MP4Err err = MP4NoErr;
+  MP4MetadataLocaleBoxPtr self = (MP4MetadataLocaleBoxPtr)s;
+
+  err = MP4SerializeCommonBaseAtomFields(s, buffer);
+  if(err) goto bail;
+  buffer += self->bytesWritten;
+
+  strLen = (u32)strlen(self->locale_string) + 1;
+  PUTBYTES(self->locale_string, strLen);
+
+  assert(self->bytesWritten == self->size);
+bail:
+  TEST_RETURN(err);
+
+  return err;
+}
+
+static MP4Err calculateSize(struct MP4Atom *s)
+{
+  MP4Err err;
+  MP4MetadataLocaleBoxPtr self = (MP4MetadataLocaleBoxPtr)s;
+  err                    = MP4NoErr;
+
+  err = MP4CalculateBaseAtomFieldSize(s);
+  if(err) goto bail;
+
+  if((self->locale_string) && (strlen(self->locale_string) > 0))
+  {
+    self->size += (u32)strlen(self->locale_string) + 1; /* strlen ignores \0 */
+  }
+
+bail:
+  TEST_RETURN(err);
+  return err;
+}
+
+static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream)
+{
+  MP4Err err;
+  long bytesToRead;
+  MP4MetadataLocaleBoxPtr self = (MP4MetadataLocaleBoxPtr)s;
+
+  err = MP4NoErr;
+  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+  err = self->super->createFromInputStream(s, proto, (char *)inputStream);
+
+  bytesToRead = (long)self->size - self->bytesRead;
+  if(bytesToRead < 0) BAILWITHERROR(MP4BadDataErr);
+  if(bytesToRead > 0)
+  {
+    self->locale_string = (char *)calloc(1, bytesToRead);
+    if(self->locale_string == NULL) BAILWITHERROR(MP4NoMemoryErr);
+    GETBYTES(bytesToRead, locale_string);
+  }
+
+  if(self->bytesRead != self->size) BAILWITHERROR(MP4BadDataErr)
+
+bail:
+  TEST_RETURN(err);
+  return err;
+}
+
+MP4Err MP4CreateMetadataLocaleBox(MP4MetadataLocaleBoxPtr *outAtom)
+{
+  MP4Err err;
+  MP4MetadataLocaleBoxPtr self;
+
+  self = (MP4MetadataLocaleBoxPtr)calloc(1, sizeof(MP4MetadataLocaleBox));
+  TESTMALLOC(self)
+
+  err = MP4CreateBaseAtom((MP4AtomPtr)self);
+  if(err) goto bail;
+
+  self->type                  = MP4MetadataLocaleBoxType;
+  self->name                  = "MetadataLocaleBox";
+  self->destroy               = destroy;
+  self->createFromInputStream = (cisfunc)createFromInputStream;
+  self->calculateSize         = calculateSize;
+  self->serialize             = serialize;
+
+  *outAtom                    = self;
+bail:
+  TEST_RETURN(err);
+  return err;
+}
