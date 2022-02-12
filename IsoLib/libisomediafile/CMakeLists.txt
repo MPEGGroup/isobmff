@@ -203,6 +203,11 @@ add_library(
     src/VideoMediaHeaderAtom.c
     src/VisualSampleEntryAtom.c
     src/XMLMetaSampleEntry.c
+    src/BoxedMetadataSampleEntry.c
+    src/MetadataKeyDeclarationBox.c
+    src/MetadataKeyTableBox.c
+    src/MetadataLocaleBox.c
+    src/MetadataSetupBox.c
 
     #-----------------------------------------------------------------------------------------------
     # Platform specific header
