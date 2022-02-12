@@ -869,7 +869,8 @@ typedef struct MP4AudioSampleEntryAtom
 typedef struct MetadataSetupBox
 {
   MP4_BASE_ATOM
-  MP4LinkedList ExtensionAtomList;
+  MP4Err (*addAtom)(struct MetadataSetupBox *self, MP4AtomPtr atom);
+  MP4LinkedList atomList;
 } MP4MetadataSetupBox, *MP4MetadataSetupBoxPtr;
 
 typedef struct MetadataLocaleBox
@@ -891,7 +892,7 @@ typedef struct MetadataKeyBox
   MP4MetadataKeyDeclarationBoxPtr keyDeclarationBox;
   MP4MetadataLocaleBoxPtr localeBox;
   MP4MetadataSetupBoxPtr setupBox;
-  MP4LinkedList ExtensionAtomList;
+  MP4LinkedList atomList;
 } MP4MetadataKeyBox, *MP4MetadataKeyBoxPtr;
 
 typedef struct MetadataKeyTableBox

@@ -21,7 +21,7 @@ static void destroy(MP4AtomPtr s)
   MP4Err err;
   MP4MetadataLocaleBoxPtr self;
   u32 i = 0;
-  self = (MP4MetadataLocaleBoxPtr)s;
+  self  = (MP4MetadataLocaleBoxPtr)s;
 
   if(self == NULL) return;
 
@@ -41,7 +41,7 @@ bail:
 static MP4Err serialize(struct MP4Atom *s, char *buffer)
 {
   u32 strLen;
-  MP4Err err = MP4NoErr;
+  MP4Err err                   = MP4NoErr;
   MP4MetadataLocaleBoxPtr self = (MP4MetadataLocaleBoxPtr)s;
 
   err = MP4SerializeCommonBaseAtomFields(s, buffer);
@@ -62,7 +62,7 @@ static MP4Err calculateSize(struct MP4Atom *s)
 {
   MP4Err err;
   MP4MetadataLocaleBoxPtr self = (MP4MetadataLocaleBoxPtr)s;
-  err                    = MP4NoErr;
+  err                          = MP4NoErr;
 
   err = MP4CalculateBaseAtomFieldSize(s);
   if(err) goto bail;
@@ -121,7 +121,7 @@ MP4Err MP4CreateMetadataLocaleBox(MP4MetadataLocaleBoxPtr *outAtom)
   self->calculateSize         = calculateSize;
   self->serialize             = serialize;
 
-  *outAtom                    = self;
+  *outAtom = self;
 bail:
   TEST_RETURN(err);
   return err;

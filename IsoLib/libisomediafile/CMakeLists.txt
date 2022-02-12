@@ -206,6 +206,7 @@ add_library(
     src/BoxedMetadataSampleEntry.c
     src/MetadataKeyDeclarationBox.c
     src/MetadataKeyTableBox.c
+    src/MetadataKeyBox.c
     src/MetadataLocaleBox.c
     src/MetadataSetupBox.c
 
