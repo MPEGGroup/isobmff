@@ -15,3 +15,132 @@
 #include "MP4Atoms.h"
 #include <stdlib.h>
 #include <string.h>
+
+
+static void destroy(MP4AtomPtr s)
+{
+  MP4Err err;
+  MP4BoxedMetadataSampleEntryPtr self;
+  err  = MP4NoErr;
+  self = (MP4BoxedMetadataSampleEntryPtr)s;
+  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+
+  DESTROY_ATOM_LIST_F(ExtensionAtomList)
+
+  if(self->super) self->super->destroy(s);
+bail:
+  TEST_RETURN(err);
+  return;
+}
+
+static MP4Err serialize(struct MP4Atom *s, char *buffer)
+{
+  MP4Err err;
+  MP4BoxedMetadataSampleEntryPtr self = (MP4BoxedMetadataSampleEntryPtr)s;
+  err                                 = MP4NoErr;
+
+  err = MP4SerializeCommonBaseAtomFields(s, buffer);
+  if(err) goto bail;
+  buffer += self->bytesWritten;
+
+  PUTBYTES(self->reserved, 6);
+  PUT16(dataReferenceIndex);
+  SERIALIZE_ATOM_LIST(ExtensionAtomList);
+  
+  assert(self->bytesWritten == self->size);
+bail:
+  TEST_RETURN(err);
+  return err;
+}
+
+static MP4Err calculateSize(struct MP4Atom *s)
+{
+  MP4Err err;
+  MP4BoxedMetadataSampleEntryPtr self = (MP4BoxedMetadataSampleEntryPtr)s;
+  err                                 = MP4NoErr;
+
+  err = MP4CalculateBaseAtomFieldSize(s);
+  if(err) goto bail;
+  self->size += (6 + 2);
+  ADD_ATOM_LIST_SIZE(ExtensionAtomList);
+bail:
+  TEST_RETURN(err);
+  return err;
+}
+
+static MP4Err addAtom(MP4BoxedMetadataSampleEntryPtr self, MP4AtomPtr atom)
+{
+  MP4Err err;
+  err = MP4NoErr;
+  if(atom == NULL) BAILWITHERROR(MP4BadParamErr);
+  if(atom->type == MP4MetadataKeyTableBoxType)
+  {
+    if(self->keyTable != 0) BAILWITHERROR(MP4BadParamErr);
+    self->keyTable = (MP4MetadataKeyTableBoxPtr)atom;
+  }
+
+  err = MP4AddListEntry(atom, self->ExtensionAtomList);
+  if(err) goto bail;
+  
+bail:
+  TEST_RETURN(err);
+  return err;
+}
+
+static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream)
+{
+  MP4Err err;
+  MP4BoxedMetadataSampleEntryPtr self = (MP4BoxedMetadataSampleEntryPtr)s;
+
+  err = MP4NoErr;
+  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+  err = self->super->createFromInputStream(s, proto, (char *)inputStream);
+  if(err) goto bail;
+
+  GETBYTES(6, reserved);
+  GET16(dataReferenceIndex);
+  
+  while(self->bytesRead < self->size)
+  {
+    MP4AtomPtr atom;
+    err = MP4ParseAtom((MP4InputStreamPtr)inputStream, &atom);
+    if(err) goto bail;
+    self->bytesRead += atom->size;
+    if(((atom->type) == MP4FreeSpaceAtomType) || ((atom->type) == MP4SkipAtomType))
+      atom->destroy(atom);
+    else
+    {
+      err = addAtom(self, atom);
+      if(err) goto bail;
+    }
+  }
+
+  if(self->bytesRead != self->size) BAILWITHERROR(MP4BadDataErr)
+
+bail:
+  TEST_RETURN(err);
+  return err;
+}
+
+MP4Err MP4CreateMP4BoxedMetadataSampleEntry(MP4BoxedMetadataSampleEntryPtr *outAtom)
+{
+  MP4Err err;
+  MP4BoxedMetadataSampleEntryPtr self;
+
+  self = (MP4BoxedMetadataSampleEntryPtr)calloc(1, sizeof(MP4BoxedMetadataSampleEntry));
+  TESTMALLOC(self)
+
+  err = MP4CreateEncBaseAtom((MP4EncBaseSampleEntryAtomPtr)self);
+  if(err) goto bail;
+  self->type                  = MP4BoxedMetadataSampleEntryType;
+  self->name                  = "BoxedMetadataSampleEntryType (mebx)";
+  self->createFromInputStream = (cisfunc)createFromInputStream;
+  self->destroy               = destroy;
+  self->calculateSize         = calculateSize;
+  self->serialize             = serialize;
+
+  *outAtom = self;
+bail:
+  TEST_RETURN(err);
+  return err;
+}

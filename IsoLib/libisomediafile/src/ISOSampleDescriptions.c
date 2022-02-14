@@ -58,6 +58,7 @@ u32 MP4SampleEntryProtos[] = {MP4MPEGSampleEntryAtomType,
                               MP4AMRWPSampleEntryAtomType,
                               MP4H263SampleEntryAtomType,
                               MP4RestrictedVideoSampleEntryAtomType,
+                              MP4BoxedMetadataSampleEntryType,
                               0};
 #else
 u32 MP4SampleEntryProtos[] = {MP4MPEGSampleEntryAtomType,
@@ -70,6 +71,7 @@ u32 MP4SampleEntryProtos[] = {MP4MPEGSampleEntryAtomType,
                               MP4AMRWPSampleEntryAtomType,
                               MP4H263SampleEntryAtomType,
                               MP4RestrictedVideoSampleEntryAtomType,
+                              MP4BoxedMetadataSampleEntryType,
                               0};
 #endif
 
