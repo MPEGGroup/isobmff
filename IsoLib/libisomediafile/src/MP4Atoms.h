@@ -866,36 +866,37 @@ typedef struct MP4AudioSampleEntryAtom
 
 } MP4AudioSampleEntryAtom, *MP4AudioSampleEntryAtomPtr;
 
-typedef struct MetadataSetupBox
+typedef struct MP4MetadataSetupBox
 {
   MP4_BASE_ATOM
-  MP4Err (*addAtom)(struct MetadataSetupBox *self, MP4AtomPtr atom);
+  MP4Err (*addAtom)(struct MP4MetadataSetupBox *self, MP4AtomPtr atom);
   MP4LinkedList atomList;
 } MP4MetadataSetupBox, *MP4MetadataSetupBoxPtr;
 
-typedef struct MetadataLocaleBox
+typedef struct MP4MetadataLocaleBox
 {
   MP4_BASE_ATOM
   char *locale_string;
 } MP4MetadataLocaleBox, *MP4MetadataLocaleBoxPtr;
 
-typedef struct MetadataKeyDeclarationBox
+typedef struct MP4MetadataKeyDeclarationBox
 {
   MP4_BASE_ATOM
   u32 key_namespace;
   MP4Handle key_value;
 } MP4MetadataKeyDeclarationBox, *MP4MetadataKeyDeclarationBoxPtr;
 
-typedef struct MetadataKeyBox
+typedef struct MP4MetadataKeyBox
 {
   MP4_BASE_ATOM
+  MP4Err (*addAtom)(struct MP4MetadataKeyBox *self, MP4AtomPtr atom);
   MP4MetadataKeyDeclarationBoxPtr keyDeclarationBox;
   MP4MetadataLocaleBoxPtr localeBox;
   MP4MetadataSetupBoxPtr setupBox;
   MP4LinkedList atomList;
 } MP4MetadataKeyBox, *MP4MetadataKeyBoxPtr;
 
-typedef struct MetadataKeyTableBox
+typedef struct MP4MetadataKeyTableBox
 {
   MP4_BASE_ATOM
   MP4Err (*addMetaDataKeyBox)(struct MP4MetadataKeyTableBox *self, MP4AtomPtr atom);
@@ -2133,6 +2134,7 @@ MP4Err MP4CreateMetadataKeyTableBox(MP4MetadataKeyTableBoxPtr *outAtom);
 MP4Err MP4CreateMetadataKeyDeclarationBox(MP4MetadataKeyDeclarationBoxPtr *outAtom);
 MP4Err MP4CreateMetadataLocaleBox(MP4MetadataLocaleBoxPtr *outAtom);
 MP4Err MP4CreateMetadataSetupBox(MP4MetadataSetupBoxPtr *outAtom);
+MP4Err MP4CreateMetadataKeyBox(MP4MetadataKeyBoxPtr *outAtom, u32 local_key_id);
 
 MP4Err MP4CreateXMLMetaSampleEntryAtom(MP4XMLMetaSampleEntryAtomPtr *outAtom);
 MP4Err MP4CreateTextMetaSampleEntryAtom(MP4TextMetaSampleEntryAtomPtr *outAtom);

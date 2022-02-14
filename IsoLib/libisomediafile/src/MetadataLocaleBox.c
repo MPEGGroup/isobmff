@@ -18,10 +18,8 @@
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
   MP4MetadataLocaleBoxPtr self;
-  u32 i = 0;
-  self  = (MP4MetadataLocaleBoxPtr)s;
+  self = (MP4MetadataLocaleBoxPtr)s;
 
   if(self == NULL) return;
 
@@ -32,10 +30,6 @@ static void destroy(MP4AtomPtr s)
   }
 
   if(self->super) self->super->destroy(s);
-
-bail:
-  TEST_RETURN(err);
-  return;
 }
 
 static MP4Err serialize(struct MP4Atom *s, char *buffer)

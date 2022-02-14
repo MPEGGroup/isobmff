@@ -45,7 +45,6 @@ bail:
 
 static MP4Err serialize(struct MP4Atom *s, char *buffer)
 {
-  u32 strLen;
   MP4Err err                  = MP4NoErr;
   MP4MetadataSetupBoxPtr self = (MP4MetadataSetupBoxPtr)s;
 

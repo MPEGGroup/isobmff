@@ -19,7 +19,6 @@
 static void destroy(MP4AtomPtr s)
 {
   MP4Err err;
-  u32 i;
   MP4MetadataKeyDeclarationBoxPtr self = (MP4MetadataKeyDeclarationBoxPtr)s;
   if(self == NULL) return;
 
@@ -28,7 +27,7 @@ static void destroy(MP4AtomPtr s)
     err = MP4DisposeHandle(self->key_value);
     if(err) goto bail;
   }
-  
+
   if(self->super) self->super->destroy(s);
 
 bail:
@@ -38,8 +37,7 @@ bail:
 
 static MP4Err serialize(struct MP4Atom *s, char *buffer)
 {
-  u32 strLen;
-  MP4Err err                  = MP4NoErr;
+  MP4Err err                           = MP4NoErr;
   MP4MetadataKeyDeclarationBoxPtr self = (MP4MetadataKeyDeclarationBoxPtr)s;
 
   err = MP4SerializeCommonBaseAtomFields(s, buffer);
@@ -68,11 +66,11 @@ static MP4Err calculateSize(struct MP4Atom *s)
 {
   MP4Err err;
   MP4MetadataKeyDeclarationBoxPtr self = (MP4MetadataKeyDeclarationBoxPtr)s;
-  err                         = MP4NoErr;
+  err                                  = MP4NoErr;
 
   err = MP4CalculateBaseAtomFieldSize(s);
   if(err) goto bail;
-  
+
   self->size += 4; /* key_namespace */
   if(self->key_value != NULL)
   {
