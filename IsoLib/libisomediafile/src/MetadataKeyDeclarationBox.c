@@ -107,7 +107,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
     GETBYTES_V(bytesToRead, (char *)*self->key_value);
   }
 
-  if(bytesToRead != 0 || self->bytesRead != self->size)
+  if(self->bytesRead != self->size)
   {
     BAILWITHERROR(MP4BadDataErr);
   }

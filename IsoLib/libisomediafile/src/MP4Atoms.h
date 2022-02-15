@@ -157,6 +157,7 @@ enum
   MP4ProducerReferenceTimeAtomType             = MP4_FOUR_CHAR_CODE('p', 'r', 'f', 't'),
   MP4BoxedMetadataSampleEntryType              = MP4_FOUR_CHAR_CODE('m', 'e', 'b', 'x'),
   MP4MetadataKeyTableBoxType                   = MP4_FOUR_CHAR_CODE('k', 'e', 'y', 's'),
+  MP4MetadataGenericKeyBoxType                 = MP4_FOUR_CHAR_CODE('!', 'k', 'e', 'y'), /* hack */
   MP4MetadataKeyDeclarationBoxType             = MP4_FOUR_CHAR_CODE('k', 'e', 'y', 'd'),
   MP4MetadataLocaleBoxType                     = MP4_FOUR_CHAR_CODE('l', 'o', 'c', 'a'),
   MP4MetadataSetupBoxType                      = MP4_FOUR_CHAR_CODE('s', 'e', 't', 'u')

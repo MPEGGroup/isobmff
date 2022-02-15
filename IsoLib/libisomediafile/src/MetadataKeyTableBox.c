@@ -144,12 +144,44 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
 
   while(self->bytesRead < self->size)
   {
+    u32 protos[] = {MP4MetadataGenericKeyBoxType, 0};
     MP4AtomPtr atom;
-    err = MP4ParseAtom(inputStream, &atom);
+    u64 currentOffset               = 0;
+    u64 available                   = inputStream->available;
+    u32 indent                      = inputStream->indent;
+    MP4FileMappingInputStreamPtr fm = (MP4FileMappingInputStreamPtr)inputStream;
+    currentOffset                   = fm->current_offset;
+
+    err = MP4ParseAtomUsingProtoList(inputStream, protos, MP4MetadataGenericKeyBoxType, &atom);
     if(err) goto bail;
-    self->bytesRead += atom->size;
-    err = self->addMetaDataKeyBox(self, atom);
-    if(err) goto bail;
+
+    if(self->bytesRead + atom->size > self->size)
+    {
+      u32 temp, cnt, i, key_size;
+      /* most likely we are parsing QTFF Metadata Items Key Atom */
+      atom->destroy(atom);
+      inputStream->available = available;
+      inputStream->indent    = indent;
+      fm->current_offset     = currentOffset;
+      GET32_V_MSG(temp, "QTFF: version+flags");
+      GET32_V_MSG(cnt, "QTFF: Entry_count");
+      for(i=0; i<cnt; i++)
+      {
+        MP4Handle key_valH;
+        GET32_V_MSG(key_size, "QTFF: Key_size");
+        err = MP4NewHandle(key_size-8, &key_valH);
+        if(err) goto bail;
+        GET32_V_MSG(temp, "QTFF: Key_namespace");
+        GETBYTES_V_MSG(key_size-8, *key_valH, "QTFF: key value");
+        MP4DisposeHandle(key_valH);
+      }
+    }
+    else if(err == MP4NoErr)
+    {
+      self->bytesRead += atom->size;
+      err = self->addMetaDataKeyBox(self, atom);
+      if(err) goto bail;
+    }    
   }
 
   if(self->bytesRead != self->size) BAILWITHERROR(MP4BadDataErr)
