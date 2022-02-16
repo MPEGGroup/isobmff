@@ -93,14 +93,12 @@ bail:
 
 static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream)
 {
-  // PARSE_ATOM_LIST(MP4MetadataKeyBox);
   MP4Err err;
   MP4MetadataKeyBoxPtr self = (MP4MetadataKeyBoxPtr)s;
   err                       = MP4NoErr;
   if(self == NULL) BAILWITHERROR(MP4BadParamErr)
   err = self->super->createFromInputStream(s, proto, (char *)inputStream);
   if(err) goto bail;
-  // PARSE_ATOM_INCLUDES(MP4MetadataKeyBox)
   while(self->bytesRead < self->size)
   {
     MP4AtomPtr atom;
