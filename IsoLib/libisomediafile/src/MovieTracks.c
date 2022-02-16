@@ -116,7 +116,7 @@ MP4AddTrackReferenceWithID(MP4Track theTrack, u32 dependsOnID, u32 dependencyTyp
   {
     *outReferenceIndex = dpnd->trackIDCount;
   }
-  
+
 bail:
   TEST_RETURN(err);
   return err;

@@ -85,8 +85,8 @@ extern "C"
   {
     MP4KeyNamespace_uiso = MP4_FOUR_CHAR_CODE('u', 'i', 's', 'o'),
     MP4KeyNamespace_me4c = MP4_FOUR_CHAR_CODE('m', 'e', '4', 'c'),
-    QTKeyNamespace_mdta = MP4_FOUR_CHAR_CODE('m', 'd', 't', 'a'),
-    QTKeyNamespace_udta = MP4_FOUR_CHAR_CODE('u', 'd', 't', 'a')
+    QTKeyNamespace_mdta  = MP4_FOUR_CHAR_CODE('m', 'd', 't', 'a'),
+    QTKeyNamespace_udta  = MP4_FOUR_CHAR_CODE('u', 'd', 't', 'a')
   };
 
   /**

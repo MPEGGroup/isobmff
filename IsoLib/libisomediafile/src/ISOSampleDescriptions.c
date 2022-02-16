@@ -1480,7 +1480,9 @@ bail:
 }
 
 MP4_EXTERN(MP4Err)
-ISONewMebxSampleDescription(MP4BoxedMetadataSampleEntryPtr *outSE, u32 dataReferenceIndex, u32 key_namespace, MP4Handle key_value, char *locale_string, MP4Handle setupInfo, u32* out_local_key_id)
+ISONewMebxSampleDescription(MP4BoxedMetadataSampleEntryPtr *outSE, u32 dataReferenceIndex,
+                            u32 key_namespace, MP4Handle key_value, char *locale_string,
+                            MP4Handle setupInfo, u32 *out_local_key_id)
 {
   MP4Err err;
   u32 local_key_id, valueSize;
@@ -1492,16 +1494,17 @@ ISONewMebxSampleDescription(MP4BoxedMetadataSampleEntryPtr *outSE, u32 dataRefer
   err = MP4CreateMP4BoxedMetadataSampleEntry(&mebx);
   if(err) goto bail;
   mebx->dataReferenceIndex = dataReferenceIndex;
-  err = MP4CreateMetadataKeyTableBox(&keys);
+  err                      = MP4CreateMetadataKeyTableBox(&keys);
   if(err) goto bail;
-
 
   err = MP4GetHandleSize(key_value, &valueSize);
   if(err) BAILWITHERROR(MP4BadParamErr);
 
-  if(valueSize == 4 && (key_namespace == MP4KeyNamespace_me4c || key_namespace == MP4KeyNamespace_uiso))
+  if(valueSize == 4 &&
+     (key_namespace == MP4KeyNamespace_me4c || key_namespace == MP4KeyNamespace_uiso))
   {
-    local_key_id = MP4_FOUR_CHAR_CODE((*key_value)[0], (*key_value)[1], (*key_value)[2], (*key_value)[3]);
+    local_key_id =
+      MP4_FOUR_CHAR_CODE((*key_value)[0], (*key_value)[1], (*key_value)[2], (*key_value)[3]);
   }
   else
   {
@@ -1544,7 +1547,7 @@ ISONewMebxSampleDescription(MP4BoxedMetadataSampleEntryPtr *outSE, u32 dataRefer
   err = mebx->addAtom(mebx, (MP4AtomPtr)keys);
   if(err) goto bail;
 
-  *outSE = mebx;
+  *outSE            = mebx;
   *out_local_key_id = local_key_id;
 
 bail:
@@ -1553,7 +1556,9 @@ bail:
 }
 
 ISO_EXTERN(ISOErr)
-ISOAddMebxMetadataToSampleEntry(struct MP4BoxedMetadataSampleEntry *inSE, u32 key_namespace, MP4Handle key_value, char *locale_string, MP4Handle setupInfo, u32* out_local_key_id)
+ISOAddMebxMetadataToSampleEntry(struct MP4BoxedMetadataSampleEntry *inSE, u32 key_namespace,
+                                MP4Handle key_value, char *locale_string, MP4Handle setupInfo,
+                                u32 *out_local_key_id)
 {
   // TODO: implement me
 }

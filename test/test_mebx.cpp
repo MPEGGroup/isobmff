@@ -29,12 +29,12 @@
 TEST_CASE("mebx")
 {
   MP4Err err;
-  std::string strPattern = "RUbFD";
-  u32 repeatPattern = 6;
-  std::string strMebxMe4cFile = "test_mebx_me4c.mp4";
+  std::string strPattern       = "RUbFD";
+  u32 repeatPattern            = 6;
+  std::string strMebxMe4cFile  = "test_mebx_me4c.mp4";
   std::string strMebxMixedFile = "test_mebx_mixed.mp4";
-  std::string strUnMebxFile = "test_unmebx.mp4";
-  std::string strReMebxFile = "test_remebx.mp4";
+  std::string strUnMebxFile    = "test_unmebx.mp4";
+  std::string strReMebxFile    = "test_remebx.mp4";
 
   char localeEN[] = "en-US";
   char localeDE[] = "de-DE";
@@ -42,7 +42,9 @@ TEST_CASE("mebx")
   SECTION("Open")
   {
     MP4Movie moov;
-    err = ISOOpenMovieFile(&moov, "/Users/podborski/Library/CloudStorage/Box-Box/Dolby/files/iphone13_DV_cinematic.MOV", MP4OpenMovieDebug);
+    err = ISOOpenMovieFile(
+      &moov, "/Users/podborski/Library/CloudStorage/Box-Box/Dolby/files/iphone13_DV_cinematic.MOV",
+      MP4OpenMovieDebug);
     CHECK(err == MP4NoErr);
   }
 
@@ -53,7 +55,7 @@ TEST_CASE("mebx")
     MP4Track trakM;
     MP4Media mediaV;
     MP4Media mediaM;
-    
+
     MP4Handle spsHandle, ppsHandle, vpsHandle, sampleEntryVH, sampleEntryMH;
     err = MP4NewHandle(sizeof(HEVC::SPS), &spsHandle);
     std::memcpy((*spsHandle), HEVC::SPS, sizeof(HEVC::SPS));
@@ -86,13 +88,13 @@ TEST_CASE("mebx")
     MP4BoxedMetadataSampleEntryPtr mebx;
     MP4Handle redKeyH, redSetupH;
     u32 local_key_id_red = 0;
-    err = createHandleFromString(&redKeyH, "redd");
-    err = createHandleFromString(&redSetupH, "Config RED");
-    err = ISONewMebxSampleDescription(&mebx, 1, MP4KeyNamespace_me4c, redKeyH, 0, redSetupH, &local_key_id_red);
+    err                  = createHandleFromString(&redKeyH, "redd");
+    err                  = createHandleFromString(&redSetupH, "Config RED");
+    err = ISONewMebxSampleDescription(&mebx, 1, MP4KeyNamespace_me4c, redKeyH, 0, redSetupH,
+                                      &local_key_id_red);
     CHECK(err == MP4NoErr);
 
     // add other keys to mebx sample entry
-
 
     // add mebx sample entry to track's media
     err = ISOGetMebxHandle(mebx, sampleEntryMH);
@@ -119,6 +121,6 @@ TEST_CASE("mebx")
   SECTION("Re mebx")
   {
     // TODO: convert multiple metadata tracks back to a single mebx track
-    // compare with 
+    // compare with
   }
 }

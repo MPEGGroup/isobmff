@@ -703,14 +703,15 @@ extern "C"
                               u32 dataReferenceIndex, u32 length_size, MP4Handle first_sps,
                               MP4Handle first_pps, MP4Handle first_vps);
 
-
-
+  ISO_EXTERN(ISOErr)
+  ISONewMebxSampleDescription(struct MP4BoxedMetadataSampleEntry **outSE, u32 dataReferenceIndex,
+                              u32 key_namespace, MP4Handle key_value, char *locale_string,
+                              MP4Handle setupInfo, u32 *out_local_key_id);
 
   ISO_EXTERN(ISOErr)
-  ISONewMebxSampleDescription(struct MP4BoxedMetadataSampleEntry **outSE, u32 dataReferenceIndex, u32 key_namespace, MP4Handle key_value, char *locale_string, MP4Handle setupInfo, u32* out_local_key_id);
-
-  ISO_EXTERN(ISOErr)
-  ISOAddMebxMetadataToSampleEntry(struct MP4BoxedMetadataSampleEntry *inSE, u32 key_namespace, MP4Handle key_value, char *locale_string, MP4Handle setupInfo, u32* out_local_key_id);
+  ISOAddMebxMetadataToSampleEntry(struct MP4BoxedMetadataSampleEntry *inSE, u32 key_namespace,
+                                  MP4Handle key_value, char *locale_string, MP4Handle setupInfo,
+                                  u32 *out_local_key_id);
 
   ISO_EXTERN(ISOErr)
   ISOGetMebxHandle(struct MP4BoxedMetadataSampleEntry *mebxSE, MP4Handle sampleDescriptionH);

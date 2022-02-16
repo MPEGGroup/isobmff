@@ -54,7 +54,8 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
     err = MP4GetHandleSize(self->key_value, &key_value_size);
     if(err) goto bail;
 
-    if(key_value_size != 4 && (self->key_namespace == MP4KeyNamespace_me4c || self->key_namespace == MP4KeyNamespace_uiso))
+    if(key_value_size != 4 &&
+       (self->key_namespace == MP4KeyNamespace_me4c || self->key_namespace == MP4KeyNamespace_uiso))
     {
       BAILWITHERROR(MP4BadDataErr); /* me4c and uiso require value to be 4 bytes */
     }
@@ -124,7 +125,8 @@ bail:
   return err;
 }
 
-MP4Err MP4CreateMetadataKeyDeclarationBox(MP4MetadataKeyDeclarationBoxPtr *outAtom, u32 key_ns, MP4Handle key_val)
+MP4Err MP4CreateMetadataKeyDeclarationBox(MP4MetadataKeyDeclarationBoxPtr *outAtom, u32 key_ns,
+                                          MP4Handle key_val)
 {
   MP4Err err;
   MP4MetadataKeyDeclarationBoxPtr self;
@@ -150,7 +152,8 @@ MP4Err MP4CreateMetadataKeyDeclarationBox(MP4MetadataKeyDeclarationBoxPtr *outAt
     u32 size1, size2;
     MP4GetHandleSize(key_val, &size2);
 
-    if(size2 != 4 && (self->key_namespace == MP4KeyNamespace_me4c || self->key_namespace == MP4KeyNamespace_uiso))
+    if(size2 != 4 &&
+       (self->key_namespace == MP4KeyNamespace_me4c || self->key_namespace == MP4KeyNamespace_uiso))
     {
       BAILWITHERROR(MP4BadParamErr); /* me4c and uiso require value to be 4 bytes */
     }

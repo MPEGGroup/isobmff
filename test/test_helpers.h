@@ -258,7 +258,7 @@ inline MP4Err createHandleFromBuffer(MP4Handle *dataH, const u8 *data, u32 size)
 inline MP4Err createHandleFromString(MP4Handle *dataH, const std::string str)
 {
   MP4Err err = MP4NoErr;
-  u32 size = static_cast<u32>(str.size());
+  u32 size   = static_cast<u32>(str.size());
 
   if(size == 0) return MP4BadParamErr;
   err = MP4NewHandle(size, dataH);
