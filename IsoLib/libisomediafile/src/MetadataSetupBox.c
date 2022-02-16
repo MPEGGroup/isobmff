@@ -19,28 +19,21 @@
 static void destroy(MP4AtomPtr s)
 {
   MP4Err err;
-  u32 i;
   MP4MetadataSetupBoxPtr self = (MP4MetadataSetupBoxPtr)s;
   if(self == NULL) return;
 
-  DESTROY_ATOM_LIST;
+  if(self->setup_data != NULL)
+  {
+    err = MP4DisposeHandle(self->setup_data);
+    if(err) goto bail;
+    self->setup_data = NULL;
+  }
+
   if(self->super) self->super->destroy(s);
 
 bail:
   TEST_RETURN(err);
   return;
-}
-
-static MP4Err addAtom(MP4MetadataSetupBoxPtr self, MP4AtomPtr atom)
-{
-  MP4Err err = MP4NoErr;
-
-  if(self == 0) BAILWITHERROR(MP4BadParamErr);
-  err = MP4AddListEntry(atom, self->atomList);
-
-bail:
-  TEST_RETURN(err);
-  return err;
 }
 
 static MP4Err serialize(struct MP4Atom *s, char *buffer)
@@ -52,7 +45,15 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   if(err) goto bail;
   buffer += self->bytesWritten;
 
-  SERIALIZE_ATOM_LIST(atomList);
+  if(self->setup_data != NULL)
+  {
+    u32 handle_size;
+    char *handleBuffer;
+    err = MP4GetHandleSize(self->setup_data, &handle_size);
+    if(err) goto bail;
+    handleBuffer = (char *)*self->setup_data;
+    PUTBYTES(handleBuffer, handle_size);
+  }
 
   assert(self->bytesWritten == self->size);
 bail:
@@ -68,7 +69,14 @@ static MP4Err calculateSize(struct MP4Atom *s)
 
   err = MP4CalculateBaseAtomFieldSize(s);
   if(err) goto bail;
-  ADD_ATOM_LIST_SIZE(atomList);
+
+  if(self->setup_data != NULL)
+  {
+    u32 handle_size;
+    err = MP4GetHandleSize(self->setup_data, &handle_size);
+    if(err) goto bail;
+    self->size += handle_size;
+  }
 
 bail:
   TEST_RETURN(err);
@@ -77,13 +85,35 @@ bail:
 
 static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream)
 {
-  PARSE_ATOM_LIST(MP4MetadataSetupBox);
+  MP4Err err;
+  long bytesToRead;
+  MP4MetadataSetupBoxPtr self = (MP4MetadataSetupBoxPtr)s;
+
+  err = MP4NoErr;
+  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+  err = self->super->createFromInputStream(s, proto, (char *)inputStream);
+  if(err) goto bail;
+
+  bytesToRead = (long)self->size - self->bytesRead;
+  if(bytesToRead < 0) BAILWITHERROR(MP4BadDataErr);
+  if(bytesToRead > 0)
+  {
+    err = MP4SetHandleSize(self->setup_data, bytesToRead);
+    if(err) goto bail;
+    GETBYTES_V_MSG(bytesToRead, (char *)*self->setup_data, "setup_data");
+  }
+
+  if(self->bytesRead != self->size)
+  {
+    BAILWITHERROR(MP4BadDataErr);
+  }
+
 bail:
   TEST_RETURN(err);
   return err;
 }
 
-MP4Err MP4CreateMetadataSetupBox(MP4MetadataSetupBoxPtr *outAtom)
+MP4Err MP4CreateMetadataSetupBox(MP4MetadataSetupBoxPtr *outAtom, MP4Handle setupH)
 {
   MP4Err err;
   MP4MetadataSetupBoxPtr self;
@@ -100,9 +130,18 @@ MP4Err MP4CreateMetadataSetupBox(MP4MetadataSetupBoxPtr *outAtom)
   self->createFromInputStream = (cisfunc)createFromInputStream;
   self->calculateSize         = calculateSize;
   self->serialize             = serialize;
-  self->addAtom               = addAtom;
-  err                         = MP4MakeLinkedList(&self->atomList);
+
+  err = MP4NewHandle(0, &self->setup_data);
   if(err) goto bail;
+  if(setupH != NULL)
+  {
+    u32 size1, size2;
+    err = MP4HandleCat(self->setup_data, setupH);
+    if(err) goto bail;
+    MP4GetHandleSize(self->setup_data, &size1);
+    MP4GetHandleSize(setupH, &size2);
+    if(size1 != size2 || size2 == 0) BAILWITHERROR(MP4BadParamErr);
+  }
 
   *outAtom = self;
 bail:

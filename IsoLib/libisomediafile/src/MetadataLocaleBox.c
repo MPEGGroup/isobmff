@@ -97,7 +97,7 @@ bail:
   return err;
 }
 
-MP4Err MP4CreateMetadataLocaleBox(MP4MetadataLocaleBoxPtr *outAtom)
+MP4Err MP4CreateMetadataLocaleBox(MP4MetadataLocaleBoxPtr *outAtom, char *locale_string)
 {
   MP4Err err;
   MP4MetadataLocaleBoxPtr self;
@@ -114,6 +114,16 @@ MP4Err MP4CreateMetadataLocaleBox(MP4MetadataLocaleBoxPtr *outAtom)
   self->createFromInputStream = (cisfunc)createFromInputStream;
   self->calculateSize         = calculateSize;
   self->serialize             = serialize;
+
+  if(locale_string != NULL)
+  {
+    u32 str_size;
+    str_size = (u32)strlen(locale_string) + 1;
+    self->locale_string = (char *)calloc(1, str_size);
+    TESTMALLOC(self->locale_string);
+    strncpy(self->locale_string, locale_string, str_size);
+    self->locale_string[str_size-1] = '\0';
+  }
 
   *outAtom = self;
 bail:

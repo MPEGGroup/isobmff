@@ -4,7 +4,7 @@
  * @brief Metadata testing
  * @version 0.1
  * @date 2020-11-20
- * 
+ *
  * @copyright This software module was originally developed by Apple Computer, Inc. in the course of
  * development of MPEG-4. This software module is an implementation of a part of one or more MPEG-4
  * tools as specified by MPEG-4. ISO/IEC gives users of MPEG-4 free license to this software module
@@ -39,13 +39,13 @@ TEST_CASE("Check Metadata functions")
     MP4AddTrackToMovieIOD(trak);
     ISONewTrackMedia(trak, &media, ISOVisualHandlerType, 90000, NULL);
 
-    err = ISONewFileMeta( moov, 123, &metaFile);
+    err = ISONewFileMeta(moov, 123, &metaFile);
     CHECK(err == ISONoErr);
 
-    err = ISONewMovieMeta( moov, 456, &metaMovie);
+    err = ISONewMovieMeta(moov, 456, &metaMovie);
     CHECK(err == ISONoErr);
 
-    err = ISONewTrackMeta( trak, 789, &metaTrack);
+    err = ISONewTrackMeta(trak, 789, &metaTrack);
     CHECK(err == ISONoErr);
 
     u16 outRefIdx;
@@ -62,7 +62,7 @@ TEST_CASE("Check Metadata functions")
 
     // MP4GenericAtom foo;
     MP4TrackAtomPtr trackPtr = (MP4TrackAtomPtr)trak;
-    MP4MediaAtomPtr mediaPtr = (MP4MediaAtom*)trackPtr->trackMedia;
+    MP4MediaAtomPtr mediaPtr = (MP4MediaAtom *)trackPtr->trackMedia;
 
     // put tkhd and mdhd as properties in the media item
     err = ISOAddMetaItemProperty(outItem, (MP4GenericAtom *)trackPtr->trackHeader, 0);
@@ -80,8 +80,8 @@ TEST_CASE("Check Metadata functions")
     MP4MediaAtomPtr prop2 = (MP4MediaAtomPtr)properties[1];
     CHECK(MP4_FOUR_CHAR_CODE('t', 'k', 'h', 'd') == prop1->type);
     CHECK(MP4_FOUR_CHAR_CODE('m', 'd', 'h', 'd') == prop2->type);
-  
+
     err = MP4WriteMovieToFile(moov, "test_metadata.mp4");
-    CHECK(err==ISONoErr);
+    CHECK(err == ISONoErr);
   }
 }

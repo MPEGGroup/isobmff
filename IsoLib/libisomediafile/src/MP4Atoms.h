@@ -870,8 +870,7 @@ typedef struct MP4AudioSampleEntryAtom
 typedef struct MP4MetadataSetupBox
 {
   MP4_BASE_ATOM
-  MP4Err (*addAtom)(struct MP4MetadataSetupBox *self, MP4AtomPtr atom);
-  MP4LinkedList atomList;
+  MP4Handle setup_data;
 } MP4MetadataSetupBox, *MP4MetadataSetupBoxPtr;
 
 typedef struct MP4MetadataLocaleBox
@@ -908,6 +907,7 @@ typedef struct MP4BoxedMetadataSampleEntry
 {
   MP4_BASE_ATOM
   COMMON_SAMPLE_ENTRY_FIELDS
+  MP4Err (*addAtom)(struct MP4BoxedMetadataSampleEntry *self, MP4AtomPtr atom);
   MP4MetadataKeyTableBoxPtr keyTable;
 } MP4BoxedMetadataSampleEntry, *MP4BoxedMetadataSampleEntryPtr;
 
@@ -2132,9 +2132,9 @@ MP4Err MP4CreateVisualSampleEntryAtom(MP4VisualSampleEntryAtomPtr *outAtom);
 /* mebx stuff */
 MP4Err MP4CreateMP4BoxedMetadataSampleEntry(MP4BoxedMetadataSampleEntryPtr *outAtom);
 MP4Err MP4CreateMetadataKeyTableBox(MP4MetadataKeyTableBoxPtr *outAtom);
-MP4Err MP4CreateMetadataKeyDeclarationBox(MP4MetadataKeyDeclarationBoxPtr *outAtom);
-MP4Err MP4CreateMetadataLocaleBox(MP4MetadataLocaleBoxPtr *outAtom);
-MP4Err MP4CreateMetadataSetupBox(MP4MetadataSetupBoxPtr *outAtom);
+MP4Err MP4CreateMetadataKeyDeclarationBox(MP4MetadataKeyDeclarationBoxPtr *outAtom, u32 key_ns, MP4Handle key_val);
+MP4Err MP4CreateMetadataLocaleBox(MP4MetadataLocaleBoxPtr *outAtom, char* locale_string);
+MP4Err MP4CreateMetadataSetupBox(MP4MetadataSetupBoxPtr *outAtom, MP4Handle setupH);
 MP4Err MP4CreateMetadataKeyBox(MP4MetadataKeyBoxPtr *outAtom, u32 local_key_id);
 
 MP4Err MP4CreateXMLMetaSampleEntryAtom(MP4XMLMetaSampleEntryAtomPtr *outAtom);

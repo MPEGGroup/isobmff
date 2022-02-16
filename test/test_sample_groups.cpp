@@ -191,7 +191,7 @@ ISOErr checkSamples(std::string strFile)
     CHECK(err == ISONoErr);
   }
   err =
-      ISOGetSampleGroupSampleNumbers(media, FOURCC_COLOR, groupIdBlue, &sampleNumbers, &sampleCnt);
+    ISOGetSampleGroupSampleNumbers(media, FOURCC_COLOR, groupIdBlue, &sampleNumbers, &sampleCnt);
   CHECK(sampleCnt == 5);
   for(u32 i = 0; i < sampleCnt; ++i)
   {
@@ -199,23 +199,23 @@ ISOErr checkSamples(std::string strFile)
     CHECK(err == ISONoErr);
   }
   err =
-      ISOGetSampleGroupSampleNumbers(media, FOURCC_COLOR, groupIdGreen, &sampleNumbers, &sampleCnt);
+    ISOGetSampleGroupSampleNumbers(media, FOURCC_COLOR, groupIdGreen, &sampleNumbers, &sampleCnt);
   CHECK(sampleCnt == 4);
   for(u32 i = 0; i < sampleCnt; ++i)
   {
     err = checkSample(media, sampleNumbers[i], HEVC::auGreen, sizeof(HEVC::auGreen));
     CHECK(err == ISONoErr);
   }
-  err = ISOGetSampleGroupSampleNumbers(media, FOURCC_COLOR, groupIdYellow, &sampleNumbers,
-                                       &sampleCnt);
+  err =
+    ISOGetSampleGroupSampleNumbers(media, FOURCC_COLOR, groupIdYellow, &sampleNumbers, &sampleCnt);
   CHECK(sampleCnt == 4);
   for(u32 i = 0; i < sampleCnt; ++i)
   {
     err = checkSample(media, sampleNumbers[i], HEVC::auYellow, sizeof(HEVC::auYellow));
     CHECK(err == ISONoErr);
   }
-  err = ISOGetSampleGroupSampleNumbers(media, FOURCC_BLACK, groupIdBlack, &sampleNumbers,
-                                       &sampleCnt);
+  err =
+    ISOGetSampleGroupSampleNumbers(media, FOURCC_BLACK, groupIdBlack, &sampleNumbers, &sampleCnt);
   CHECK(sampleCnt == 1);
   for(u32 i = 0; i < sampleCnt; ++i)
   {
@@ -395,7 +395,7 @@ TEST_CASE("Test sample groups")
     err = addHEVCSamples(media, "wk", 3);
     CHECK(err == ISONoErr);
     u32 groupIDBlack = 0;
-    err = addGroupDescription(media, FOURCC_BLACK, "Single black frame", groupIDBlack);
+    err              = addGroupDescription(media, FOURCC_BLACK, "Single black frame", groupIDBlack);
     CHECK(err == ISONoErr);
     err = ISOMapSamplestoGroup(media, FOURCC_BLACK, groupIDBlack, 3, 1);
     CHECK(err == ISONoErr);

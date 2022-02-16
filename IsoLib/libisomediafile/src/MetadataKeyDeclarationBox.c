@@ -26,6 +26,7 @@ static void destroy(MP4AtomPtr s)
   {
     err = MP4DisposeHandle(self->key_value);
     if(err) goto bail;
+    self->key_value = NULL;
   }
 
   if(self->super) self->super->destroy(s);
@@ -52,6 +53,12 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
     char *handleBuffer;
     err = MP4GetHandleSize(self->key_value, &key_value_size);
     if(err) goto bail;
+
+    if(key_value_size != 4 && (self->key_namespace == MP4KeyNamespace_me4c || self->key_namespace == MP4KeyNamespace_uiso))
+    {
+      BAILWITHERROR(MP4BadDataErr); /* me4c and uiso require value to be 4 bytes */
+    }
+
     handleBuffer = (char *)*self->key_value;
     PUTBYTES(handleBuffer, key_value_size);
   }
@@ -104,7 +111,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   {
     err = MP4SetHandleSize(self->key_value, bytesToRead);
     if(err) goto bail;
-    GETBYTES_V(bytesToRead, (char *)*self->key_value);
+    GETBYTES_V_MSG(bytesToRead, (char *)*self->key_value, "key_value");
   }
 
   if(self->bytesRead != self->size)
@@ -117,7 +124,7 @@ bail:
   return err;
 }
 
-MP4Err MP4CreateMetadataKeyDeclarationBox(MP4MetadataKeyDeclarationBoxPtr *outAtom)
+MP4Err MP4CreateMetadataKeyDeclarationBox(MP4MetadataKeyDeclarationBoxPtr *outAtom, u32 key_ns, MP4Handle key_val)
 {
   MP4Err err;
   MP4MetadataKeyDeclarationBoxPtr self;
@@ -134,9 +141,24 @@ MP4Err MP4CreateMetadataKeyDeclarationBox(MP4MetadataKeyDeclarationBoxPtr *outAt
   self->createFromInputStream = (cisfunc)createFromInputStream;
   self->calculateSize         = calculateSize;
   self->serialize             = serialize;
+  self->key_namespace         = key_ns;
 
   err = MP4NewHandle(0, &self->key_value);
   if(err) goto bail;
+  if(key_val != NULL)
+  {
+    u32 size1, size2;
+    MP4GetHandleSize(key_val, &size2);
+
+    if(size2 != 4 && (self->key_namespace == MP4KeyNamespace_me4c || self->key_namespace == MP4KeyNamespace_uiso))
+    {
+      BAILWITHERROR(MP4BadParamErr); /* me4c and uiso require value to be 4 bytes */
+    }
+    err = MP4HandleCat(self->key_value, key_val);
+    if(err) goto bail;
+    MP4GetHandleSize(self->key_value, &size1);
+    if(size1 != size2 || size2 == 0) BAILWITHERROR(MP4BadParamErr);
+  }
 
   *outAtom = self;
 bail:

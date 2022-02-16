@@ -638,15 +638,15 @@ MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom)
     break;
 
   case MP4MetadataKeyDeclarationBoxType:
-    err = MP4CreateMetadataKeyDeclarationBox((MP4MetadataKeyDeclarationBoxPtr *)&newAtom);
+    err = MP4CreateMetadataKeyDeclarationBox((MP4MetadataKeyDeclarationBoxPtr *)&newAtom, 0, 0);
     break;
-  
+
   case MP4MetadataLocaleBoxType:
-    err = MP4CreateMetadataLocaleBox((MP4MetadataLocaleBoxPtr *)&newAtom);
+    err = MP4CreateMetadataLocaleBox((MP4MetadataLocaleBoxPtr *)&newAtom, 0);
     break;
 
   case MP4MetadataSetupBoxType:
-    err = MP4CreateMetadataSetupBox((MP4MetadataSetupBoxPtr *)&newAtom);
+    err = MP4CreateMetadataSetupBox((MP4MetadataSetupBoxPtr *)&newAtom, 0);
     break;
 
   case MP4MetadataGenericKeyBoxType:

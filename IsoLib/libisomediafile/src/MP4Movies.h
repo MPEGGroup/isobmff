@@ -77,7 +77,16 @@ extern "C"
     MP4NewTrackIsVisual   = (1 << 1), /**< track contains visual media */
     MP4NewTrackIsAudio    = (1 << 2), /**< track contains audio media */
     MP4NewTrackIsMetadata = (1 << 3), /**< track contains meta-data */
+    MP4NewTrackIsMebx     = (1 << 4), /**< track contains boxed meta-data */
     MP4NewTrackIsPrivate  = (1 << 8)  /**< track contains a media type unknown to MPEG-4 */
+  };
+
+  enum
+  {
+    MP4KeyNamespace_uiso = MP4_FOUR_CHAR_CODE('u', 'i', 's', 'o'),
+    MP4KeyNamespace_me4c = MP4_FOUR_CHAR_CODE('m', 'e', '4', 'c'),
+    QTKeyNamespace_mdta = MP4_FOUR_CHAR_CODE('m', 'd', 't', 'a'),
+    QTKeyNamespace_udta = MP4_FOUR_CHAR_CODE('u', 'd', 't', 'a')
   };
 
   /**

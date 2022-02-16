@@ -165,14 +165,14 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
       fm->current_offset     = currentOffset;
       GET32_V_MSG(temp, "QTFF: version+flags");
       GET32_V_MSG(cnt, "QTFF: Entry_count");
-      for(i=0; i<cnt; i++)
+      for(i = 0; i < cnt; i++)
       {
         MP4Handle key_valH;
         GET32_V_MSG(key_size, "QTFF: Key_size");
-        err = MP4NewHandle(key_size-8, &key_valH);
+        err = MP4NewHandle(key_size - 8, &key_valH);
         if(err) goto bail;
         GET32_V_MSG(temp, "QTFF: Key_namespace");
-        GETBYTES_V_MSG(key_size-8, *key_valH, "QTFF: key value");
+        GETBYTES_V_MSG(key_size - 8, *key_valH, "QTFF: key value");
         MP4DisposeHandle(key_valH);
       }
     }
@@ -181,7 +181,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
       self->bytesRead += atom->size;
       err = self->addMetaDataKeyBox(self, atom);
       if(err) goto bail;
-    }    
+    }
   }
 
   if(self->bytesRead != self->size) BAILWITHERROR(MP4BadDataErr)
