@@ -1562,7 +1562,7 @@ ISOAddMebxMetadataToSampleEntry(MP4BoxedMetadataSampleEntryPtr mebx, u32 key_nam
                                 u32 *out_local_key_id)
 {
   MP4Err err;
-  u32 local_key_id, valueSize;
+  u32 local_key_id, valueSize, isUnique;
   MP4MetadataKeyTableBoxPtr keys;
   MP4MetadataKeyBoxPtr keyb;
   MP4MetadataKeyDeclarationBoxPtr keyd;
@@ -1586,11 +1586,39 @@ ISOAddMebxMetadataToSampleEntry(MP4BoxedMetadataSampleEntryPtr mebx, u32 key_nam
     local_key_id = keys->next_availiable_local_key_id;
   }
 
-  // TODO: make sure we have a unique entry here. compare namespace, value and locale
+  /* make sure we have a unique entry here. compare namespace, value and locale */
+  isUnique = 1;
+  keyb = keys->getMetadataKeyBox(keys, local_key_id);
+  if(keyb != NULL)
+  {
+    if(keyb->keyDeclarationBox == NULL) BAILWITHERROR(MP4BadDataErr);
+    if(keyb->keyDeclarationBox->key_namespace == key_namespace)
+    {
+      u32 handleSize1;
+      u32 handleSize2 = 0;
+      err = MP4GetHandleSize(keyb->keyDeclarationBox->key_value, &handleSize1);
+      if(err || handleSize1==0) BAILWITHERROR(MP4BadDataErr);
 
-  err = MP4CreateMetadataKeyBox(&keyb, local_key_id);
+      MP4GetHandleSize(key_value, &handleSize2);
+      if(handleSize1 == handleSize2)
+      {
+        int compareVal = memcmp(*(keyb->keyDeclarationBox->key_value), *key_value, handleSize1);
+        if(compareVal == 0)
+        {
+          if(keyb->localeBox == NULL && locale_string == NULL) isUnique = 0;
+          if(keyb->localeBox != NULL && locale_string != NULL)
+          {
+            isUnique = strcmp(keyb->localeBox->locale_string, locale_string) != 0;
+          }
+        }
+      }
+    }
+  }
+  if(isUnique == 0) BAILWITHERROR(MP4BadParamErr);
+  
+  err = MP4CreateMetadataKeyBox(&keyb, local_key_id); 
   if(err) goto bail;
-
+  
   /* keyd - MetadataKeyDeclarationBox */
   err = MP4CreateMetadataKeyDeclarationBox(&keyd, key_namespace, key_value);
   if(err) goto bail;
@@ -1619,9 +1647,6 @@ ISOAddMebxMetadataToSampleEntry(MP4BoxedMetadataSampleEntryPtr mebx, u32 key_nam
   }
 
   keys->addMetaDataKeyBox(keys, (MP4AtomPtr)keyb);
-  if(err) goto bail;
-
-  err = mebx->addAtom(mebx, (MP4AtomPtr)keys);
   if(err) goto bail;
 
   *out_local_key_id = local_key_id;

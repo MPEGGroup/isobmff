@@ -43,7 +43,8 @@ TEST_CASE("mebx")
   // {
   //   MP4Movie moov;
   //   err = ISOOpenMovieFile(
-  //     &moov, "/Users/podborski/Library/CloudStorage/Box-Box/Dolby/files/iphone13_DV_cinematic.MOV",
+  //     &moov,
+  //     "/Users/podborski/Library/CloudStorage/Box-Box/Dolby/files/iphone13_DV_cinematic.MOV",
   //     MP4OpenMovieDebug);
   //   CHECK(err == MP4NoErr);
   // }
@@ -55,6 +56,14 @@ TEST_CASE("mebx")
     MP4Track trakM;
     MP4Media mediaV;
     MP4Media mediaM;
+
+    u32 local_key_id_red      = 0;
+    u32 local_key_id_blu      = 0;
+    u32 local_key_id_ylw      = 0;
+    u32 local_key_id_wht      = 0;
+    u32 local_key_id_blk      = 0;
+    u32 local_key_id_lable_en = 0;
+    u32 local_key_id_lable_de = 0;
 
     MP4Handle spsHandle, ppsHandle, vpsHandle, sampleEntryVH, sampleEntryMH;
     err = MP4NewHandle(sizeof(HEVC::SPS), &spsHandle);
@@ -87,19 +96,63 @@ TEST_CASE("mebx")
     // create mebx sample entry
     MP4BoxedMetadataSampleEntryPtr mebx;
     MP4Handle redKeyH, redSetupH;
-    u32 local_key_id_red = 0;
-    err                  = createHandleFromString(&redKeyH, "redd");
-    err                  = createHandleFromString(&redSetupH, "Config RED");
+    err = createHandleFromString(&redKeyH, "redd");
+    err = createHandleFromString(&redSetupH, "Config RED");
     err = ISONewMebxSampleDescription(&mebx, 1, MP4KeyNamespace_me4c, redKeyH, 0, redSetupH,
                                       &local_key_id_red);
     CHECK(err == MP4NoErr);
 
     // add other keys to mebx sample entry
+    // make sure we can not add dups
+    err = ISOAddMebxMetadataToSampleEntry(mebx, MP4KeyNamespace_me4c, redKeyH, 0, redSetupH,
+                                          &local_key_id_red);
+    CHECK(err == MP4BadParamErr);
+    MP4Handle bluKeyH, bluSetupH;
+    err = createHandleFromString(&bluKeyH, "blue");
+    err = createHandleFromString(&bluSetupH, "Config BLUE");
+    err = ISOAddMebxMetadataToSampleEntry(mebx, MP4KeyNamespace_me4c, bluKeyH, 0, bluSetupH,
+                                          &local_key_id_blu);
+    CHECK(err == MP4NoErr);
+    MP4Handle ylwKeyH, ylwSetupH;
+    err = createHandleFromString(&ylwKeyH, "ylow");
+    err = createHandleFromString(&ylwSetupH, "Config YELLOW");
+    err = ISOAddMebxMetadataToSampleEntry(mebx, MP4KeyNamespace_me4c, ylwKeyH, 0, ylwSetupH,
+                                          &local_key_id_ylw);
+    CHECK(err == MP4NoErr);
+    MP4Handle whtKeyH, whtSetupH;
+    err = createHandleFromString(&whtKeyH, "whte");
+    err = createHandleFromString(&whtSetupH, "Config WHITE");
+    err = ISOAddMebxMetadataToSampleEntry(mebx, MP4KeyNamespace_me4c, whtKeyH, 0, whtSetupH,
+                                          &local_key_id_wht);
+    CHECK(err == MP4NoErr);
+    MP4Handle blkKeyH, blkSetupH;
+    err = createHandleFromString(&blkKeyH, "blck");
+    err = createHandleFromString(&blkSetupH, "Config BLACK");
+    err = ISOAddMebxMetadataToSampleEntry(mebx, MP4KeyNamespace_me4c, blkKeyH, 0, blkSetupH,
+                                          &local_key_id_blk);
+    CHECK(err == MP4NoErr);
+    MP4Handle lblKeyH, lblEnSetupH;
+    err = createHandleFromString(&lblKeyH, "labl");
+    err = createHandleFromString(&lblEnSetupH, "Config lable ENGLISH");
+    err = ISOAddMebxMetadataToSampleEntry(mebx, MP4KeyNamespace_me4c, lblKeyH, localeEN,
+                                          lblEnSetupH, &local_key_id_lable_en);
+    CHECK(err == MP4NoErr);
+    MP4Handle lblDeSetupH;
+    err = createHandleFromString(&lblDeSetupH, "Config lable GERMAN");
+    err = ISOAddMebxMetadataToSampleEntry(mebx, MP4KeyNamespace_me4c, lblKeyH, localeDE,
+                                          lblDeSetupH, &local_key_id_lable_de);
+    CHECK(err == MP4NoErr);
 
     // add mebx sample entry to track's media
     err = ISOGetMebxHandle(mebx, sampleEntryMH);
     CHECK(err == MP4NoErr);
-    err = addHEVCSamples(mediaM, "", 0, sampleEntryMH);
+    err = addMebxSamples(mediaM, "", 0, sampleEntryMH);
+    CHECK(err == MP4NoErr);
+
+    // add samples using local key ids and pattern
+    err = addMebxSamples(mediaM, strPattern, repeatPattern, 0, local_key_id_red, local_key_id_blu,
+                         local_key_id_ylw, local_key_id_wht, local_key_id_blk, 0,
+                         local_key_id_lable_en, local_key_id_lable_de);
     CHECK(err == MP4NoErr);
 
     // write file

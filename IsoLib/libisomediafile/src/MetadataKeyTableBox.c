@@ -48,7 +48,7 @@ bail:
   return;
 }
 
-static u32 isLocalKeyIDAvailable(MP4MetadataKeyTableBoxPtr self)
+static MP4MetadataKeyBoxPtr getMetadataKeyBox(MP4MetadataKeyTableBoxPtr self, u32 local_key_id)
 {
   u32 count, i;
   MP4MetadataKeyBoxPtr key;
@@ -58,10 +58,16 @@ static u32 isLocalKeyIDAvailable(MP4MetadataKeyTableBoxPtr self)
     MP4GetListEntry(self->metadataKeyBoxList, i, (char **)&key);
     if(key)
     {
-      if(key->type == self->next_availiable_local_key_id) return 0;
+      if(key->type == local_key_id) return key;
     }
   }
-  return 1;
+  return NULL;
+}
+
+static u32 isLocalKeyIDAvailable(MP4MetadataKeyTableBoxPtr self)
+{
+  MP4MetadataKeyBoxPtr key = self->getMetadataKeyBox(self, self->next_availiable_local_key_id);
+  return key == NULL;
 }
 
 static MP4Err addMetaDataKeyBox(MP4MetadataKeyTableBoxPtr self, MP4AtomPtr atom)
@@ -229,6 +235,7 @@ MP4Err MP4CreateMetadataKeyTableBox(MP4MetadataKeyTableBoxPtr *outAtom)
   self->calculateSize         = calculateSize;
   self->serialize             = serialize;
   self->addMetaDataKeyBox     = addMetaDataKeyBox;
+  self->getMetadataKeyBox     = getMetadataKeyBox;
 
   err = MP4MakeLinkedList(&self->metadataKeyBoxList);
   if(err) goto bail;
