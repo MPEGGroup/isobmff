@@ -1588,7 +1588,7 @@ ISOAddMebxMetadataToSampleEntry(MP4BoxedMetadataSampleEntryPtr mebx, u32 key_nam
 
   /* make sure we have a unique entry here. compare namespace, value and locale */
   isUnique = 1;
-  keyb = keys->getMetadataKeyBox(keys, local_key_id);
+  keyb     = keys->getMetadataKeyBox(keys, local_key_id);
   if(keyb != NULL)
   {
     if(keyb->keyDeclarationBox == NULL) BAILWITHERROR(MP4BadDataErr);
@@ -1596,8 +1596,8 @@ ISOAddMebxMetadataToSampleEntry(MP4BoxedMetadataSampleEntryPtr mebx, u32 key_nam
     {
       u32 handleSize1;
       u32 handleSize2 = 0;
-      err = MP4GetHandleSize(keyb->keyDeclarationBox->key_value, &handleSize1);
-      if(err || handleSize1==0) BAILWITHERROR(MP4BadDataErr);
+      err             = MP4GetHandleSize(keyb->keyDeclarationBox->key_value, &handleSize1);
+      if(err || handleSize1 == 0) BAILWITHERROR(MP4BadDataErr);
 
       MP4GetHandleSize(key_value, &handleSize2);
       if(handleSize1 == handleSize2)
@@ -1615,10 +1615,10 @@ ISOAddMebxMetadataToSampleEntry(MP4BoxedMetadataSampleEntryPtr mebx, u32 key_nam
     }
   }
   if(isUnique == 0) BAILWITHERROR(MP4BadParamErr);
-  
-  err = MP4CreateMetadataKeyBox(&keyb, local_key_id); 
+
+  err = MP4CreateMetadataKeyBox(&keyb, local_key_id);
   if(err) goto bail;
-  
+
   /* keyd - MetadataKeyDeclarationBox */
   err = MP4CreateMetadataKeyDeclarationBox(&keyd, key_namespace, key_value);
   if(err) goto bail;

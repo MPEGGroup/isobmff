@@ -68,17 +68,17 @@ inline void appendDataWithBoxField(std::vector<u8> &rBuffer, u32 type, std::vect
 
 inline std::vector<u8> getMetaSample(u32 x, u32 y, u32 w, u32 h)
 {
-  std::vector<u8> retVal(4*4, 0x00);
-  retVal[0] = x >> (3 * 8);
-  retVal[1] = x >> (2 * 8);
-  retVal[2] = x >> (1 * 8);
-  retVal[3] = x >> (0 * 8);
-  retVal[4] = y >> (3 * 8);
-  retVal[5] = y >> (2 * 8);
-  retVal[6] = y >> (1 * 8);
-  retVal[7] = y >> (0 * 8);
-  retVal[8] = w >> (3 * 8);
-  retVal[9] = w >> (2 * 8);
+  std::vector<u8> retVal(4 * 4, 0x00);
+  retVal[0]  = x >> (3 * 8);
+  retVal[1]  = x >> (2 * 8);
+  retVal[2]  = x >> (1 * 8);
+  retVal[3]  = x >> (0 * 8);
+  retVal[4]  = y >> (3 * 8);
+  retVal[5]  = y >> (2 * 8);
+  retVal[6]  = y >> (1 * 8);
+  retVal[7]  = y >> (0 * 8);
+  retVal[8]  = w >> (3 * 8);
+  retVal[9]  = w >> (2 * 8);
   retVal[10] = w >> (1 * 8);
   retVal[11] = w >> (0 * 8);
   retVal[12] = h >> (3 * 8);
@@ -329,52 +329,53 @@ inline MP4Err addMebxSamples(MP4Media media, std::string strPattern, u32 repeatP
     {
     case 'r':
     {
-      auto metaSample = getMetaSample(0,0,64,48);
+      auto metaSample = getMetaSample(0, 0, 64, 48);
       appendDataWithBoxField(bufferData, lk_r, metaSample);
       bufferSizes.push_back(metaSample.size() + 8);
       break;
     }
     case 'b':
     {
-      auto metaSample = getMetaSample(0,0,64,48);
+      auto metaSample = getMetaSample(0, 0, 64, 48);
       appendDataWithBoxField(bufferData, lk_b, metaSample);
       bufferSizes.push_back(metaSample.size() + 8);
       break;
     }
     case 'g':
     {
-      auto metaSample = getMetaSample(0,0,64,48);
+      auto metaSample = getMetaSample(0, 0, 64, 48);
       appendDataWithBoxField(bufferData, lk_g, metaSample);
       bufferSizes.push_back(metaSample.size() + 8);
       break;
     }
     case 'y':
     {
-      auto metaSample = getMetaSample(0,0,64,48);
+      auto metaSample = getMetaSample(0, 0, 64, 48);
       appendDataWithBoxField(bufferData, lk_y, metaSample);
       bufferSizes.push_back(metaSample.size() + 8);
       break;
     }
     case 'w':
     {
-      auto metaSample = getMetaSample(0,0,64,48);
+      auto metaSample = getMetaSample(0, 0, 64, 48);
       appendDataWithBoxField(bufferData, lk_y, metaSample);
       bufferSizes.push_back(metaSample.size() + 8);
       break;
     }
     case 'k':
     {
-      auto metaSample = getMetaSample(0,0,64,48);
+      auto metaSample = getMetaSample(0, 0, 64, 48);
       appendDataWithBoxField(bufferData, lk_k, metaSample);
       bufferSizes.push_back(metaSample.size() + 8);
       break;
     }
     case 'R':
     {
-      auto metaSampleRed = getMetaSample(0,32,64,16);
-      auto metaSampleBlue = getMetaSample(0,16,64,16);
-      auto metaSampleWhite = getMetaSample(0,0,64,16);
-      u32 sampleSize = metaSampleRed.size() + metaSampleBlue.size() + metaSampleWhite.size() + 3*8;
+      auto metaSampleRed   = getMetaSample(0, 32, 64, 16);
+      auto metaSampleBlue  = getMetaSample(0, 16, 64, 16);
+      auto metaSampleWhite = getMetaSample(0, 0, 64, 16);
+      u32 sampleSize =
+        metaSampleRed.size() + metaSampleBlue.size() + metaSampleWhite.size() + 3 * 8;
       appendDataWithBoxField(bufferData, lk_r, metaSampleRed);
       appendDataWithBoxField(bufferData, lk_b, metaSampleBlue);
       appendDataWithBoxField(bufferData, lk_w, metaSampleWhite);
@@ -383,9 +384,9 @@ inline MP4Err addMebxSamples(MP4Media media, std::string strPattern, u32 repeatP
     }
     case 'U':
     {
-      auto metaSampleYellow = getMetaSample(0,24,64,24);
-      auto metaSampleBlue = getMetaSample(0,0,64,24);
-      u32 sampleSize = metaSampleYellow.size() + metaSampleBlue.size() + 2*8;
+      auto metaSampleYellow = getMetaSample(0, 24, 64, 24);
+      auto metaSampleBlue   = getMetaSample(0, 0, 64, 24);
+      u32 sampleSize        = metaSampleYellow.size() + metaSampleBlue.size() + 2 * 8;
       appendDataWithBoxField(bufferData, lk_b, metaSampleBlue);
       appendDataWithBoxField(bufferData, lk_y, metaSampleYellow);
       bufferSizes.push_back(sampleSize);
@@ -393,10 +394,11 @@ inline MP4Err addMebxSamples(MP4Media media, std::string strPattern, u32 repeatP
     }
     case 'D':
     {
-      auto metaSampleBlack = getMetaSample(0,0,64,16);
-      auto metaSampleRed = getMetaSample(0,16,64,16);
-      auto metaSampleYellow = getMetaSample(0,32,64,16);
-      u32 sampleSize = metaSampleRed.size() + metaSampleBlack.size() + metaSampleYellow.size() + 3*8;
+      auto metaSampleBlack  = getMetaSample(0, 0, 64, 16);
+      auto metaSampleRed    = getMetaSample(0, 16, 64, 16);
+      auto metaSampleYellow = getMetaSample(0, 32, 64, 16);
+      u32 sampleSize =
+        metaSampleRed.size() + metaSampleBlack.size() + metaSampleYellow.size() + 3 * 8;
       appendDataWithBoxField(bufferData, lk_k, metaSampleBlack);
       appendDataWithBoxField(bufferData, lk_r, metaSampleRed);
       appendDataWithBoxField(bufferData, lk_y, metaSampleYellow);
@@ -405,10 +407,11 @@ inline MP4Err addMebxSamples(MP4Media media, std::string strPattern, u32 repeatP
     }
     case 'F':
     {
-      auto metaSampleRed = getMetaSample(44,0,20,48);
-      auto metaSampleBlue = getMetaSample(0,0,20,48);
-      auto metaSampleWhite = getMetaSample(20,0,24,48);
-      u32 sampleSize = metaSampleRed.size() + metaSampleBlue.size() + metaSampleWhite.size() + 3*8;
+      auto metaSampleRed   = getMetaSample(44, 0, 20, 48);
+      auto metaSampleBlue  = getMetaSample(0, 0, 20, 48);
+      auto metaSampleWhite = getMetaSample(20, 0, 24, 48);
+      u32 sampleSize =
+        metaSampleRed.size() + metaSampleBlue.size() + metaSampleWhite.size() + 3 * 8;
       appendDataWithBoxField(bufferData, lk_r, metaSampleRed);
       appendDataWithBoxField(bufferData, lk_b, metaSampleBlue);
       appendDataWithBoxField(bufferData, lk_w, metaSampleWhite);
