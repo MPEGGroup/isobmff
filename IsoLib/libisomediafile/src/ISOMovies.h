@@ -709,7 +709,7 @@ extern "C"
                               MP4Handle setupInfo, u32 *out_local_key_id);
 
   ISO_EXTERN(ISOErr)
-  ISOAddMebxMetadataToSampleEntry(struct MP4BoxedMetadataSampleEntry *inSE, u32 key_namespace,
+  ISOAddMebxMetadataToSampleEntry(struct MP4BoxedMetadataSampleEntry *mebxSE, u32 key_namespace,
                                   MP4Handle key_value, char *locale_string, MP4Handle setupInfo,
                                   u32 *out_local_key_id);
 

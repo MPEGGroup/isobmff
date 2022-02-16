@@ -1494,7 +1494,8 @@ ISONewMebxSampleDescription(MP4BoxedMetadataSampleEntryPtr *outSE, u32 dataRefer
   err = MP4CreateMP4BoxedMetadataSampleEntry(&mebx);
   if(err) goto bail;
   mebx->dataReferenceIndex = dataReferenceIndex;
-  err                      = MP4CreateMetadataKeyTableBox(&keys);
+
+  err = MP4CreateMetadataKeyTableBox(&keys);
   if(err) goto bail;
 
   err = MP4GetHandleSize(key_value, &valueSize);
@@ -1508,7 +1509,7 @@ ISONewMebxSampleDescription(MP4BoxedMetadataSampleEntryPtr *outSE, u32 dataRefer
   }
   else
   {
-    local_key_id = 1;
+    local_key_id = keys->next_availiable_local_key_id;
   }
 
   err = MP4CreateMetadataKeyBox(&keyb, local_key_id);
@@ -1556,11 +1557,78 @@ bail:
 }
 
 ISO_EXTERN(ISOErr)
-ISOAddMebxMetadataToSampleEntry(struct MP4BoxedMetadataSampleEntry *inSE, u32 key_namespace,
+ISOAddMebxMetadataToSampleEntry(MP4BoxedMetadataSampleEntryPtr mebx, u32 key_namespace,
                                 MP4Handle key_value, char *locale_string, MP4Handle setupInfo,
                                 u32 *out_local_key_id)
 {
-  // TODO: implement me
+  MP4Err err;
+  u32 local_key_id, valueSize;
+  MP4MetadataKeyTableBoxPtr keys;
+  MP4MetadataKeyBoxPtr keyb;
+  MP4MetadataKeyDeclarationBoxPtr keyd;
+
+  if(mebx == NULL) BAILWITHERROR(MP4BadParamErr);
+  if(mebx->keyTable == NULL) BAILWITHERROR(MP4BadDataErr);
+
+  keys = mebx->keyTable;
+
+  err = MP4GetHandleSize(key_value, &valueSize);
+  if(err) BAILWITHERROR(MP4BadParamErr);
+
+  if(valueSize == 4 &&
+     (key_namespace == MP4KeyNamespace_me4c || key_namespace == MP4KeyNamespace_uiso))
+  {
+    local_key_id =
+      MP4_FOUR_CHAR_CODE((*key_value)[0], (*key_value)[1], (*key_value)[2], (*key_value)[3]);
+  }
+  else
+  {
+    local_key_id = keys->next_availiable_local_key_id;
+  }
+
+  // TODO: make sure we have a unique entry here. compare namespace, value and locale
+
+  err = MP4CreateMetadataKeyBox(&keyb, local_key_id);
+  if(err) goto bail;
+
+  /* keyd - MetadataKeyDeclarationBox */
+  err = MP4CreateMetadataKeyDeclarationBox(&keyd, key_namespace, key_value);
+  if(err) goto bail;
+  err = keyb->addAtom(keyb, (MP4AtomPtr)keyd);
+  if(err) goto bail;
+
+  /* loca - MetadataLocaleBox */
+  if(locale_string != NULL)
+  {
+    MP4MetadataLocaleBoxPtr loca;
+    err = MP4CreateMetadataLocaleBox(&loca, locale_string);
+    if(err) goto bail;
+    err = keyb->addAtom(keyb, (MP4AtomPtr)loca);
+    if(err) goto bail;
+  }
+
+  /* setu - MetadataSetupBox */
+  if(setupInfo != NULL)
+  {
+    MP4MetadataSetupBoxPtr setu;
+    if(key_namespace == MP4KeyNamespace_uiso) BAILWITHERROR(MP4BadParamErr); /* setu not allowed */
+    err = MP4CreateMetadataSetupBox(&setu, setupInfo);
+    if(err) goto bail;
+    err = keyb->addAtom(keyb, (MP4AtomPtr)setu);
+    if(err) goto bail;
+  }
+
+  keys->addMetaDataKeyBox(keys, (MP4AtomPtr)keyb);
+  if(err) goto bail;
+
+  err = mebx->addAtom(mebx, (MP4AtomPtr)keys);
+  if(err) goto bail;
+
+  *out_local_key_id = local_key_id;
+
+bail:
+  TEST_RETURN(err);
+  return err;
 }
 
 ISO_EXTERN(ISOErr)

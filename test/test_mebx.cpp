@@ -39,14 +39,14 @@ TEST_CASE("mebx")
   char localeEN[] = "en-US";
   char localeDE[] = "de-DE";
 
-  SECTION("Open")
-  {
-    MP4Movie moov;
-    err = ISOOpenMovieFile(
-      &moov, "/Users/podborski/Library/CloudStorage/Box-Box/Dolby/files/iphone13_DV_cinematic.MOV",
-      MP4OpenMovieDebug);
-    CHECK(err == MP4NoErr);
-  }
+  // SECTION("Open")
+  // {
+  //   MP4Movie moov;
+  //   err = ISOOpenMovieFile(
+  //     &moov, "/Users/podborski/Library/CloudStorage/Box-Box/Dolby/files/iphone13_DV_cinematic.MOV",
+  //     MP4OpenMovieDebug);
+  //   CHECK(err == MP4NoErr);
+  // }
 
   SECTION("Create")
   {
