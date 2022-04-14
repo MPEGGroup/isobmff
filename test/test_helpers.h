@@ -19,6 +19,7 @@
  * or derivative works. Copyright (c) 1999.
  *
  */
+
 #pragma once
 #include <ISOMovies.h>
 #include <string>
@@ -154,6 +155,14 @@ inline MP4Err addHEVCSamples(MP4Media media, std::string strPattern, u32 repeatP
     case 'F':
       appendDataWithLengthField(bufferData, lengthSize, HEVC::auFR, sizeof(HEVC::auFR));
       bufferSizes.push_back(sizeof(HEVC::auFR) + lengthSize);
+      break;
+    case 'N':
+      appendDataWithLengthField(bufferData, lengthSize, HEVC::auNL, sizeof(HEVC::auNL));
+      bufferSizes.push_back(sizeof(HEVC::auNL) + lengthSize);
+      break;
+    case 'I':
+      appendDataWithLengthField(bufferData, lengthSize, HEVC::auID, sizeof(HEVC::auID));
+      bufferSizes.push_back(sizeof(HEVC::auID) + lengthSize);
       break;
     default:
       break;
@@ -312,7 +321,6 @@ inline MP4Err addMebxSamples(MP4Media media, std::string strPattern, u32 repeatP
                              MP4Handle sampleEntryH = 0, u32 lk_r = 0, u32 lk_b = 0, u32 lk_y = 0,
                              u32 lk_w = 0, u32 lk_k = 0, u32 lk_g = 0, u32 lk_en = 0, u32 lk_de = 0)
 {
-  // TODO: implement me
   MP4Err err;
   u32 sampleCount = 0;
   MP4Handle sampleDataH, durationsH, sizesH;
@@ -414,6 +422,29 @@ inline MP4Err addMebxSamples(MP4Media media, std::string strPattern, u32 repeatP
         metaSampleRed.size() + metaSampleBlue.size() + metaSampleWhite.size() + 3 * 8;
       appendDataWithBoxField(bufferData, lk_r, metaSampleRed);
       appendDataWithBoxField(bufferData, lk_b, metaSampleBlue);
+      appendDataWithBoxField(bufferData, lk_w, metaSampleWhite);
+      bufferSizes.push_back(sampleSize);
+      break;
+    }
+    case 'N':
+    {
+      auto metaSampleRed   = getMetaSample(0, 0, 64, 16);
+      auto metaSampleBlue  = getMetaSample(0, 32, 64, 16);
+      auto metaSampleWhite = getMetaSample(0, 16, 64, 16);
+      u32 sampleSize =
+        metaSampleRed.size() + metaSampleBlue.size() + metaSampleWhite.size() + 3 * 8;
+      appendDataWithBoxField(bufferData, lk_r, metaSampleRed);
+      appendDataWithBoxField(bufferData, lk_b, metaSampleBlue);
+      appendDataWithBoxField(bufferData, lk_w, metaSampleWhite);
+      bufferSizes.push_back(sampleSize);
+      break;
+    }
+    case 'I':
+    {
+      auto metaSampleRed    = getMetaSample(0, 0, 64, 24);
+      auto metaSampleWhite  = getMetaSample(0, 24, 64, 24);
+      u32 sampleSize        = metaSampleRed.size() + metaSampleWhite.size() + 2 * 8;
+      appendDataWithBoxField(bufferData, lk_r, metaSampleRed);
       appendDataWithBoxField(bufferData, lk_w, metaSampleWhite);
       bufferSizes.push_back(sampleSize);
       break;

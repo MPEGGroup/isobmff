@@ -29,7 +29,7 @@
 TEST_CASE("mebx")
 {
   MP4Err err;
-  std::string strPattern       = "RUbFD";
+  std::string strPattern       = "NIbFD";
   u32 repeatPattern            = 6;
   std::string strMebxMe4cFile  = "test_mebx_me4c.mp4";
   std::string strMebxMixedFile = "test_mebx_mixed.mp4";
