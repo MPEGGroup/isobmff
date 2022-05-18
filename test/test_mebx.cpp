@@ -32,7 +32,6 @@ TEST_CASE("mebx")
   std::string strPattern       = "NIbFD";
   u32 repeatPattern            = 6;
   std::string strMebxMe4cFile  = "test_mebx_me4c.mp4";
-  std::string strMebxMixedFile = "test_mebx_mixed.mp4";
   std::string strUnMebxFile    = "test_unmebx.mp4";
   std::string strReMebxFile    = "test_remebx.mp4";
 
@@ -167,8 +166,26 @@ TEST_CASE("mebx")
     MP4Movie moov;
     err = MP4OpenMovieFile(&moov, strMebxMe4cFile.c_str(), MP4OpenMovieDebug);
     REQUIRE(err == MP4NoErr);
+
+    MP4Track trak;
+    MP4Media media;
+    MP4TrackReader reader;
+    err = MP4GetMovieIndTrack(moov, 2, &trak);
+    err = MP4GetTrackMedia(trak, &media);
+    err = MP4CreateTrackReader(trak, &reader);
+    REQUIRE(err == MP4NoErr);
+
+    MP4Handle sampleEntryH;
+    MP4NewHandle(1, &sampleEntryH);
+    err = MP4TrackReaderGetCurrentSampleDescription(reader, sampleEntryH);
+    CHECK(err == MP4NoErr);
+
     // TODO: check getters
     // call a function to unmebx mebx track into multiple timed meta tracks
+
+    // write file
+    err = MP4WriteMovieToFile(moov, strUnMebxFile.c_str());
+    CHECK(err == MP4NoErr);
   }
 
   SECTION("Re mebx")
