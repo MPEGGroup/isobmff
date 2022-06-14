@@ -320,6 +320,11 @@ static MP4Err setupNewMedia(struct MP4MediaInformationAtom *self, u32 handlerTyp
     if(err) goto bail;
     break;
 
+  case MP4VolumetricHandlerType:
+    err = MP4CreateVisualMediaHeaderAtom((MP4VolumetricVisualMediaHeaderAtomPtr *)&mdhd);
+    if(err) goto bail;
+    break;
+
   /* Note that MP4TextHandlerType uses the MP4MPEGMediaHeaderAtom, i.e. the default is right */
   default:
     err = MP4CreateMPEGMediaHeaderAtom((MP4MPEGMediaHeaderAtomPtr *)&mdhd);
