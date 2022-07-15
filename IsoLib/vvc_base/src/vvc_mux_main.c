@@ -663,7 +663,7 @@ static MP4Err creatSulmBox(MP4Media media) {
   u32 i,sulm_idx;
   /* Define sulm parameters */
   MP4NewHandle(sizeof(sulm_box), &sulm_temp);
-  sulm                     = (trif_boxPtr)*sulm_temp;
+  sulm                     = (sulm_boxPtr)*sulm_temp;
   sulm->groupID_info_4cc   = MP4_FOUR_CHAR_CODE('t', 'r', 'i', 'f');
   sulm->entry_count_minus1 = 3; // num of subpicture
   sulm->groupID            = (u16 *)malloc(sizeof(u16) * (sulm->entry_count_minus1 + 1));
