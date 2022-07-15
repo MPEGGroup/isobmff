@@ -258,7 +258,11 @@ MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom)
 
   case MP4VisualSampleEntryAtomType:
   case ISOAVCSampleEntryAtomType:
+  case ISOHEVCSampleEntryAtomType:
   case MP4H263SampleEntryAtomType:
+  case ISOVVCSampleEntryAtomTypeOutOfBand:
+  case ISOVVCSampleEntryAtomTypeInBand:
+  case ISOVVCSubpicSampleEntryAtomType:
     err = MP4CreateVisualSampleEntryAtom((MP4VisualSampleEntryAtomPtr *)&newAtom);
     break;
 
@@ -636,6 +640,23 @@ MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom)
   case MP4AlternativeEntityGroup:
     err = MP4CreateEntityToGroupBox((EntityToGroupBoxPtr *)&newAtom, 0);
     break;
+    
+  case ISOVVCConfigAtomType:
+    err = MP4CreateVVCConfigAtom((ISOVVCConfigAtomPtr *)&newAtom);
+    break;
+
+  case ISOVVCNALUConfigAtomType:
+    err = MP4CreateVVCNALUConfigAtom((ISOVVCNALUConfigAtomPtr *)&newAtom);
+    break;
+
+  case MP4TrackGroupAtomType:
+    err = MP4CreateTrackGroupAtom((MP4TrackGroupAtomPtr *)&newAtom);
+    break;
+
+  case MP4_FOUR_CHAR_CODE('m', 's', 'r', 'c'):
+  case MP4_FOUR_CHAR_CODE('a', 'l', 't', 'e'):
+    err = MP4CreateTrackGroupTypeAtom(atomType, (MP4TrackGroupTypeAtomPtr *)&newAtom);
+    break;
 
   default:
     err           = MP4CreateUnknownAtom((MP4UnknownAtomPtr *)&newAtom);
@@ -854,13 +875,33 @@ MP4Err MP4ParseAtomUsingProtoList(MP4InputStreamPtr inputStream, u32 *protoList,
   inputStream->msg(inputStream, "}");
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 
 MP4Err MP4ParseAtom(MP4InputStreamPtr inputStream, MP4AtomPtr *outAtom)
 {
   return MP4ParseAtomUsingProtoList(inputStream, NULL, 0, outAtom);
+}
+
+MP4Err MP4ParseAtomFromHandle(MP4Handle inputHandle, MP4AtomPtr *outAtom)
+{
+  MP4Err err;
+  MP4InputStreamPtr is = NULL;
+  u32 size             = 0;
+  if(inputHandle == NULL) BAILWITHERROR(MP4BadParamErr);
+
+  err = MP4GetHandleSize(inputHandle, &size);
+  if(err) goto bail;
+  err = MP4CreateMemoryInputStream(*inputHandle, size, &is);
+  if(err) goto bail;
+  is->debugging = 0;
+  err           = MP4ParseAtom(is, outAtom);
+  if(err) goto bail;
+
+bail:
+  if(is) is->destroy(is);
+  TEST_RETURN(err);
+  return err;
 }
 
 MP4Err MP4CalculateBaseAtomFieldSize(struct MP4Atom *self)

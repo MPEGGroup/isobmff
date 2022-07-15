@@ -27,6 +27,94 @@
 #include <cstring>
 #include "test_data.h"
 
+inline int parseVVCNal(FILE *input, u8 **data, int *data_len)
+{
+  size_t startPos;
+  size_t NALStart = 0;
+  size_t NALEnd   = 0;
+  u32 NALULen;
+  u8 *NALU;
+
+  u8 byte;
+  int zerocount;
+  int frame = 0;
+  u8 nal_header[2];
+
+  // Save start position
+  startPos = ftell(input);
+
+  // Search for sync
+  zerocount = 0;
+  while(1)
+  {
+    u8 byte;
+    if(!fread(&byte, 1, 1, input))
+    {
+      return -1;
+    }
+    /* Search for sync */
+    if(zerocount >= 2 && byte == 1)
+    {
+      /* Read NAL unit header */
+      fread(nal_header, 2, 1, input);
+      /* Include header in the data */
+      fseek(input, -2, SEEK_CUR);
+      break;
+    }
+    else if(byte == 0)
+    {
+      zerocount++;
+    }
+    else
+    {
+      zerocount = 0;
+    }
+  }
+  NALStart = ftell(input);
+
+  // Search for next sync
+  zerocount = 0;
+  while(1)
+  {
+    if(!fread(&byte, 1, 1, input))
+    {
+      zerocount = 0;
+      break;
+    }
+    // Sync found
+    if(zerocount >= 2 && byte == 1)
+    {
+      fseek(input, -1 - zerocount, SEEK_CUR);
+      NALEnd = ftell(input);
+      break;
+    }
+    else if(byte == 0)
+    {
+      zerocount++;
+    }
+    else
+    {
+      zerocount = 0;
+    }
+  }
+  NALEnd = ftell(input);
+
+  NALULen = NALEnd - NALStart;
+  NALU    = (u8 *)malloc(NALULen);
+  fseek(input, NALStart, SEEK_SET);
+  if(!fread(NALU, NALULen, 1, input))
+  {
+    return -1;
+  }
+
+  /* Extract NAL unit type */
+  byte      = nal_header[1] >> 3;
+  *data_len = NALULen;
+  *data     = NALU;
+
+  return byte;
+}
+
 /**
  * @brief Create a Handle from a buffer
  *

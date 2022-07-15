@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file MP4Atoms.h
  * @brief MP4 Atoms (Boxes) definitions
  * @version 0.1
@@ -129,9 +129,14 @@ enum
   ISOItemReferenceAtomType                     = MP4_FOUR_CHAR_CODE('i', 'r', 'e', 'f'),
   ISOVCConfigAtomType                          = MP4_FOUR_CHAR_CODE('a', 'v', 'c', 'C'),
   ISOHEVCConfigAtomType                        = MP4_FOUR_CHAR_CODE('h', 'v', 'c', 'C'),
+  ISOVVCConfigAtomType                         = MP4_FOUR_CHAR_CODE('v', 'v', 'c', 'C'),
+  ISOVVCNALUConfigAtomType                     = MP4_FOUR_CHAR_CODE('v', 'v', 'n', 'C'),
   ISOAVCSampleEntryAtomType                    = MP4_FOUR_CHAR_CODE('a', 'v', 'c', '1'),
   ISOHEVCSampleEntryAtomType                   = MP4_FOUR_CHAR_CODE('h', 'v', 'c', '1'),
   ISOLHEVCSampleEntryAtomType                  = MP4_FOUR_CHAR_CODE('h', 'v', 'c', '2'),
+  ISOVVCSampleEntryAtomTypeOutOfBand           = MP4_FOUR_CHAR_CODE('v', 'v', 'c', '1'),
+  ISOVVCSampleEntryAtomTypeInBand              = MP4_FOUR_CHAR_CODE('v', 'v', 'i', '1'),
+  ISOVVCSubpicSampleEntryAtomType              = MP4_FOUR_CHAR_CODE('v', 'v', 's', '1'),
   MP4XMLMetaSampleEntryAtomType                = MP4_FOUR_CHAR_CODE('m', 'e', 't', 'x'),
   MP4TextMetaSampleEntryAtomType               = MP4_FOUR_CHAR_CODE('m', 'e', 't', 't'),
   MP4AMRSampleEntryAtomType                    = MP4_FOUR_CHAR_CODE('s', 'a', 'm', 'r'),
@@ -232,7 +237,18 @@ typedef struct MP4PrivateMovieRecord
   MP4LinkedList movieFragments;
 } MP4PrivateMovieRecord, *MP4PrivateMovieRecordPtr;
 
-MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom);
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+  MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom);
+  MP4Err MP4ParseAtomFromHandle(MP4Handle inputHandle, MP4AtomPtr *outAtom);
+
+#ifdef __cplusplus
+}
+#endif
+
 MP4Err MP4CreateBaseAtom(MP4AtomPtr self);
 MP4Err MP4CreateFullAtom(MP4AtomPtr s);
 MP4Err MP4ParseAtom(struct MP4InputStreamRecord *inputStream, MP4AtomPtr *outAtom);
@@ -1067,6 +1083,67 @@ typedef struct ISOHEVCConfigAtom
   u32 bitDepthLumaMinus8;
   u32 bitDepthChromaMinus8;
 } ISOHEVCConfigAtom, *ISOHEVCConfigAtomPtr;
+
+typedef struct ISOVVCConfigAtom
+{
+  MP4_FULL_ATOM
+  MP4Err (*addParameterSet)(struct ISOVVCConfigAtom *self, MP4Handle ps, u32 where);
+  MP4Err (*getParameterSet)(struct ISOVVCConfigAtom *self, MP4Handle ps, u32 where, u32 index);
+
+  u32 LengthSizeMinusOne;
+  u32 ptl_present_flag;
+  /* opi_ols_idx */
+  u32 ols_idx;
+  u32 num_sublayers; /* 3 bits (max value = 7) */
+  u32 constant_frame_rate;
+  /* one layer ? sps_chroma_format_idc : vps_ols_dpb_chroma_format[ MultiLayerOlsIdx[ ols_idx ] ] */
+  u32 chroma_format_idc;
+  /* one layer ? sps_bitdepth_minus8 : vps_ols_dpb_bitdepth_minus8[ MultiLayerOlsIdx[ ols_idx ] ] */
+  u32 bit_depth_minus8;
+
+  /* Profile Tile Level */
+  struct PTL
+  {
+    u32 num_bytes_constraint_info;
+    u32 general_profile_idc;
+    u32 general_tier_flag;
+    u32 general_level_idc;
+    u32 ptl_frame_only_constraint_flag;
+    u32 ptl_multi_layer_enabled_flag;
+
+    u32 general_constraint_info_upper;
+    MP4Handle general_constraint_info_lower;
+
+    struct SubPTL
+    {
+      u32 ptl_sublayer_level_present_flag;
+      u32 sublayer_level_idc;
+    } subPTL[8];
+
+    u32 ptl_num_sub_profiles;
+    u32 *general_sub_profile_idc;
+  } native_ptl;
+
+  u32 max_picture_width;
+  u32 max_picture_height;
+  u32 avg_frame_rate;
+
+  u32 num_of_arrays;
+  struct
+  {
+    u32 array_completeness;
+    u32 NAL_unit_type;
+    MP4LinkedList nalList;
+  } arrays[7];
+
+} ISOVVCConfigAtom, *ISOVVCConfigAtomPtr;
+
+typedef struct ISOVVCNALUConfigAtom
+{
+  MP4_FULL_ATOM
+
+  u32 LengthSizeMinusOne;
+} ISOVVCNALUConfigAtom, *ISOVVCNALUConfigAtomPtr;
 
 typedef struct MP4SampleSizeAtom
 {
@@ -2180,6 +2257,8 @@ MP4Err MP4CreateItemPropertyContainerAtom(MP4ItemPropertyContainerAtomPtr *outAt
 MP4Err MP4CreateItemPropertyAssociationAtom(MP4ItemPropertyAssociationAtomPtr *outAtom);
 
 MP4Err MP4CreateHEVCConfigAtom(ISOHEVCConfigAtomPtr *outAtom);
+MP4Err MP4CreateVVCConfigAtom(ISOVVCConfigAtomPtr *outAtom);
+MP4Err MP4CreateVVCNALUConfigAtom(ISOVVCNALUConfigAtomPtr *outAtom);
 
 MP4Err MP4CreateOriginalFormatAtom(MP4OriginalFormatAtomPtr *outAtom);
 MP4Err MP4CreateSchemeInfoAtom(MP4SchemeInfoAtomPtr *outAtom);

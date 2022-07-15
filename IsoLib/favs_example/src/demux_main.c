@@ -172,7 +172,7 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 		ISOGetMediaSampleCount(media, &totalSamples);    
 		ISOGetMediaDuration(media, &duration);
 
-		printf("numberofSamples %u, duration: %u\r\n", totalSamples, duration);
+		printf("numberofSamples %u, duration: %llu\r\n", totalSamples, duration);
 
 		err = ISONewHandle(totalSamples*sizeof(u32), &alst_index); if (err) goto bail;
 		err = ISONewHandle(totalSamples*sizeof(u32), &rap_index); if (err) goto bail;
@@ -202,7 +202,7 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 		if (parameters->seek && alst) {
 			/* scale given time in ms to mediatimescale */
 			u64 mediatime = (parameters->seek * mediaTimeScale) / 1000, sampleCTS, sampleDTS;
-			u32 sampleDuration;
+			s32 sampleDuration;
 			s32 i;
 			
 			err = MP4MediaTimeToSampleNum(media, mediatime, &alst_target, &sampleCTS, &sampleDTS, &sampleDuration); if (err) goto bail;

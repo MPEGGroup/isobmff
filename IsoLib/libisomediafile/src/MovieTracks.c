@@ -595,6 +595,7 @@ MP4GetTrackReference(MP4Track theTrack, u32 referenceType, u32 referenceIndex,
   if((dpnd == NULL) || (dpnd->trackIDCount < referenceIndex)) BAILWITHERROR(MP4BadParamErr);
   selectedTrackID = dpnd->trackIDs[referenceIndex - 1];
   if(selectedTrackID == 0) BAILWITHERROR(MP4InvalidMediaErr);
+  /* could not get the track with selectedTrackID == track_group_id */
   err = MP4GetMovieTrack(moov, selectedTrackID, outReferencedTrack);
   if(err) goto bail;
 bail:
