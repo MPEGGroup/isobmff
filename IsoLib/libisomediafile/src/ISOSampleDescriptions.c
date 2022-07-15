@@ -46,23 +46,16 @@ MP4Err MP4ParseAtomUsingProtoList(MP4InputStreamPtr inputStream, u32 *protoList,
                                   MP4AtomPtr *outAtom);
 
 #ifdef ISMACrypt
-u32 MP4SampleEntryProtos[] = {MP4MPEGSampleEntryAtomType,
-                              MP4VisualSampleEntryAtomType,
-                              MP4AudioSampleEntryAtomType,
-                              MP4EncAudioSampleEntryAtomType,
-                              MP4EncVisualSampleEntryAtomType,
-                              MP4XMLMetaSampleEntryAtomType,
-                              MP4TextMetaSampleEntryAtomType,
-                              MP4AMRSampleEntryAtomType,
-                              MP4AWBSampleEntryAtomType,
-                              MP4AMRWPSampleEntryAtomType,
-                              MP4H263SampleEntryAtomType,
-                              MP4RestrictedVideoSampleEntryAtomType,
-                              ISOAVCSampleEntryAtomType,
-                              ISOHEVCSampleEntryAtomType,
-                              ISOVVCSampleEntryAtomType,
-                              ISOVVCSubpicSampleEntryAtomType,
-                              0};
+u32 MP4SampleEntryProtos[] = {
+  MP4MPEGSampleEntryAtomType,      MP4VisualSampleEntryAtomType,
+  MP4AudioSampleEntryAtomType,     MP4EncAudioSampleEntryAtomType,
+  MP4EncVisualSampleEntryAtomType, MP4XMLMetaSampleEntryAtomType,
+  MP4TextMetaSampleEntryAtomType,  MP4AMRSampleEntryAtomType,
+  MP4AWBSampleEntryAtomType,       MP4AMRWPSampleEntryAtomType,
+  MP4H263SampleEntryAtomType,      MP4RestrictedVideoSampleEntryAtomType,
+  ISOAVCSampleEntryAtomType,       ISOHEVCSampleEntryAtomType,
+  ISOVVCSampleEntryAtomTypeInBand, ISOVVCSampleEntryAtomTypeOutOfBand,
+  ISOVVCSubpicSampleEntryAtomType, 0};
 #else
 u32 MP4SampleEntryProtos[] = {MP4MPEGSampleEntryAtomType,
                               MP4VisualSampleEntryAtomType,
@@ -1192,7 +1185,9 @@ ISOAddVVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where)
   err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4GenericSampleEntryAtomType);
   if(err) goto bail;
 
-  if(entry->type != ISOVVCSampleEntryAtomType) BAILWITHERROR(MP4BadParamErr);
+  if(entry->type != ISOVVCSampleEntryAtomTypeOutOfBand &&
+     entry->type != ISOVVCSampleEntryAtomTypeInBand)
+    BAILWITHERROR(MP4BadParamErr);
 
   err = MP4GetListEntryAtom(entry->ExtensionAtomList, ISOVVCConfigAtomType, (MP4AtomPtr *)&config);
   if(err == MP4NotFoundErr)
@@ -1222,7 +1217,9 @@ ISOGetVVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, u3
   err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType);
   if(err) goto bail;
 
-  if(entry->type != ISOVVCSampleEntryAtomType) BAILWITHERROR(MP4BadParamErr);
+  if(entry->type != ISOVVCSampleEntryAtomTypeOutOfBand &&
+     entry->type != ISOVVCSampleEntryAtomTypeInBand)
+    BAILWITHERROR(MP4BadParamErr);
   err = MP4GetListEntryAtom(entry->ExtensionAtomList, ISOVVCConfigAtomType, (MP4AtomPtr *)&config);
   if(err == MP4NotFoundErr)
   {
@@ -1248,7 +1245,9 @@ ISOGetVVCNaluNums(MP4Handle sampleEntryH, u32 where, u32 *num_nalus)
   err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType);
   if(err) goto bail;
 
-  if(entry->type != ISOVVCSampleEntryAtomType) BAILWITHERROR(MP4BadParamErr);
+  if(entry->type != ISOVVCSampleEntryAtomTypeOutOfBand &&
+     entry->type != ISOVVCSampleEntryAtomTypeInBand)
+    BAILWITHERROR(MP4BadParamErr);
   err = MP4GetListEntryAtom(entry->ExtensionAtomList, ISOVVCConfigAtomType, (MP4AtomPtr *)&config);
   if(err == MP4NotFoundErr)
   {
@@ -1325,7 +1324,8 @@ MP4_EXTERN(MP4Err) ISOGetNALUnitLength(MP4Handle sampleEntryH, u32 *out)
 
   if(entry->type != MP4RestrictedVideoSampleEntryAtomType &&
      entry->type != ISOHEVCSampleEntryAtomType && entry->type != ISOAVCSampleEntryAtomType &&
-     entry->type != ISOVVCSampleEntryAtomType)
+     entry->type != ISOVVCSampleEntryAtomTypeOutOfBand &&
+     entry->type != ISOVVCSampleEntryAtomTypeInBand)
     BAILWITHERROR(MP4BadParamErr);
 
   err = MP4GetListEntryAtom(entry->ExtensionAtomList, ISOVVCNALUConfigAtomType,
@@ -1637,7 +1637,7 @@ ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 
   if(err) goto bail;
   entry->super              = NULL;
   entry->dataReferenceIndex = dataReferenceIndex;
-  entry->type               = ISOVVCSampleEntryAtomType;
+  entry->type               = ISOVVCSampleEntryAtomTypeOutOfBand;
 
   /* list vvcC to vvc1 */
   err = MP4CreateVVCConfigAtom(&config);
@@ -2004,7 +2004,9 @@ ISOGetVVCSampleDescription(MP4Handle sampleEntryH, u32 *dataReferenceIndex, u32 
   err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType);
   if(err) goto bail;
 
-  if(entry->type != ISOVVCSampleEntryAtomType) BAILWITHERROR(MP4BadParamErr);
+  if(entry->type != ISOVVCSampleEntryAtomTypeOutOfBand &&
+     entry->type != ISOVVCSampleEntryAtomTypeInBand)
+    BAILWITHERROR(MP4BadParamErr);
   err = MP4GetListEntryAtom(entry->ExtensionAtomList, ISOVVCConfigAtomType, (MP4AtomPtr *)&config);
   if(err == MP4NotFoundErr)
   {

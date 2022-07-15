@@ -87,9 +87,6 @@ static MP4Err setGroupID(struct MP4TrackGroupTypeAtom *self, u32 track_group_id)
   MP4Err err;
   err = MP4NoErr;
 
-  /* if use 'alte' track group, The value of (flags & 1) shall be equal to 1 to indicate the
-   * uniqueness of track_group_id */
-  self->flags          = 1;
   self->track_group_id = track_group_id;
 
   TEST_RETURN(err);
