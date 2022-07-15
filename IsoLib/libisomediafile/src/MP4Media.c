@@ -84,7 +84,7 @@ MP4AddMediaSampleReferencePad(MP4Media media, u64 dataOffset, u32 sampleCount, M
   }
   mdia = (MP4MediaAtomPtr)media;
   err  = mdia->addSampleReference(mdia, dataOffset, sampleCount, durationsH, sizesH, sampleEntryH,
-                                 decodingOffsetsH, syncSamplesH, padsH);
+                                  decodingOffsetsH, syncSamplesH, padsH);
 
 bail:
   TEST_RETURN(err);
@@ -107,7 +107,7 @@ MP4AddMediaSamplesPad(MP4Media media, MP4Handle sampleH, u32 sampleCount, MP4Han
   }
   mdia = (MP4MediaAtomPtr)media;
   err  = mdia->addSamples(mdia, sampleH, sampleCount, durationsH, sizesH, sampleEntryH,
-                         decodingOffsetsH, syncSamplesH, padsH);
+                          decodingOffsetsH, syncSamplesH, padsH);
 
 bail:
   TEST_RETURN(err);
@@ -130,7 +130,7 @@ MP4AddMediaSampleReference(MP4Media media, u64 dataOffset, u32 sampleCount, MP4H
   }
   mdia = (MP4MediaAtomPtr)media;
   err  = mdia->addSampleReference(mdia, dataOffset, sampleCount, durationsH, sizesH, sampleEntryH,
-                                 decodingOffsetsH, syncSamplesH, NULL);
+                                  decodingOffsetsH, syncSamplesH, NULL);
 
 bail:
   TEST_RETURN(err);
@@ -153,7 +153,7 @@ MP4AddMediaSamples(MP4Media media, MP4Handle sampleH, u32 sampleCount, MP4Handle
   }
   mdia = (MP4MediaAtomPtr)media;
   err  = mdia->addSamples(mdia, sampleH, sampleCount, durationsH, sizesH, sampleEntryH,
-                         decodingOffsetsH, syncSamplesH, NULL);
+                          decodingOffsetsH, syncSamplesH, NULL);
 
 bail:
   TEST_RETURN(err);
