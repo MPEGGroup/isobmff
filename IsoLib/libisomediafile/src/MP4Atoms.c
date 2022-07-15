@@ -56,6 +56,7 @@ static MP4Err baseAtomCreateFromInputStream(MP4AtomPtr self, MP4AtomPtr proto,
                                             MP4InputStreamPtr inputStream)
 {
   (void)inputStream;
+  if(proto == NULL) return MP4BadParamErr;
   self->type = proto->type;
   memcpy(self->uuid, proto->uuid, 16);
   self->size         = proto->size;
