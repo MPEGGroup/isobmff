@@ -640,7 +640,7 @@ MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom)
   case MP4AlternativeEntityGroup:
     err = MP4CreateEntityToGroupBox((EntityToGroupBoxPtr *)&newAtom, 0);
     break;
-    
+
   case ISOVVCConfigAtomType:
     err = MP4CreateVVCConfigAtom((ISOVVCConfigAtomPtr *)&newAtom);
     break;
