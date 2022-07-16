@@ -184,7 +184,6 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   MP4Err err;
   u32 i, j;
   u32 entry_count;
-  u32 tmp32;
   u32 association_count;
   MP4ItemPropertyAssociationEntryPtr entry;
   MP4ItemPropertyAssociationEntryPropertyIndexPtr propertyIndex;
@@ -196,9 +195,8 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   if(err) goto bail;
 
   GET32_V(entry_count);
-  tmp32 = entry_count;
 
-  for(i = 0; i < tmp32; i++)
+  for(i = 0; i < entry_count; i++)
   {
     entry = (MP4ItemPropertyAssociationEntryPtr)calloc(1, sizeof(MP4ItemPropertyAssociationEntry));
     TESTMALLOC(entry);
