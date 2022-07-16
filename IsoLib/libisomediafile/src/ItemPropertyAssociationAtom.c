@@ -185,7 +185,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   u32 i, j;
   u32 entry_count;
   u32 tmp32;
-  u8 association_count;
+  u32 association_count;
   MP4ItemPropertyAssociationEntryPtr entry;
   MP4ItemPropertyAssociationEntryPropertyIndexPtr propertyIndex;
   MP4ItemPropertyAssociationAtomPtr self = (MP4ItemPropertyAssociationAtomPtr)s;
