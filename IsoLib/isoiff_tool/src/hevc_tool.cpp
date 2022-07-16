@@ -292,7 +292,7 @@ MP4Err getHEVCImages(ISOIFF_ImageCollection collection, ISOIFF_Image **images,
     u32 numberOfPropertiesFound;
 
     properties = NULL;
-    err        = ISOIFF_GetImageProperties(*images[i], &properties, &numberOfPropertiesFound);
+    err        = ISOIFF_GetImageProperties((*images)[i], &properties, &numberOfPropertiesFound);
     if(err) goto bail;
 
     if(numberOfPropertiesFound == 0) BAILWITHERROR(MP4BadDataErr);
