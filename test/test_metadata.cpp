@@ -29,6 +29,9 @@ TEST_CASE("metadata")
 {
   MP4Err err;
 
+  std::string strTestItem = "test_item.mp4";
+  std::string strTestEntityGroup = "test_meta_entity.mp4";
+
   SECTION("Check writing of Properties and EntityToGroups")
   {
     ISOMovie moov;
@@ -140,7 +143,7 @@ TEST_CASE("metadata")
       }
     }
 
-    err = MP4WriteMovieToFile(moov, "test_metadata.mp4");
+    err = MP4WriteMovieToFile(moov, strTestEntityGroup.c_str());
     CHECK(err == ISONoErr);
   }
 
@@ -193,5 +196,136 @@ TEST_CASE("metadata")
         break;
       }
     }
+  }
+
+  SECTION("Check non-timed item creation")
+  {
+    MP4Movie file;
+    ISOMeta meta;
+    u32 outMetaType;
+
+    err = ISONewMetaMovie(&file, MP4_FOUR_CHAR_CODE('t', 'e', 's', 't'),
+                          MP4_FOUR_CHAR_CODE('f', 'o', 'o', 'o'), 0);
+    REQUIRE(err == MP4NoErr);
+
+    err = ISOSetMovieCompatibleBrand(file, MP4_FOUR_CHAR_CODE('b', 'a', 'a', 'r'));
+    CHECK(err == MP4NoErr);
+
+    err = ISOGetFileMeta(file, &meta, 0, &outMetaType);
+    CHECK(err == MP4NoErr);
+
+    // add 2 items
+    ISOMetaItem item1;
+    ISOMetaItem item2;
+
+    MP4Handle itemDataHandle1;
+    MP4Handle itemDataHandle2;
+    MP4Handle itemDataHandle3;
+    err = createHandleFromBuffer(&itemDataHandle1, TestData::DEADBEEF, sizeof(TestData::DEADBEEF));
+    CHECK(err == MP4NoErr);
+    err = createHandleFromBuffer(&itemDataHandle2, TestData::FACEDECOCD, sizeof(TestData::FACEDECOCD));
+    CHECK(err == MP4NoErr);
+    err = createHandleFromBuffer(&itemDataHandle3, TestData::DECAFCODEDOC, sizeof(TestData::DECAFCODEDOC));
+    CHECK(err == MP4NoErr);
+
+    // item 1
+    ISOAddMetaItem(meta, &item1, 0, 0);
+    CHECK(err == MP4NoErr);
+    err = ISOAddItemExtentUsingItemData(item1, itemDataHandle1);
+    CHECK(err == MP4NoErr);
+    err = ISOSetItemInfo(item1, 0, (char*)"first item", NULL, NULL);
+    CHECK(err == MP4NoErr);
+    err = ISOSetItemInfoItemType(item1, MP4_FOUR_CHAR_CODE('f', 'r', 's', 't'), NULL);
+    CHECK(err == MP4NoErr);
+
+    MP4GenericAtom *pTestProp;
+    err = MP4NewForeignAtom((MP4GenericAtom*)&pTestProp, MP4_FOUR_CHAR_CODE('p', 'r', 'o', 'p'), itemDataHandle3);
+    CHECK(err == MP4NoErr);
+    err = ISOAddMetaItemProperty(item1, pTestProp, 1);
+    CHECK(err == MP4NoErr);
+
+    ISOSetPrimaryItem(meta, item1);
+    CHECK(err == MP4NoErr);
+
+    // item 2
+    ISOAddMetaItem(meta, &item2, 0, 0);
+    CHECK(err == MP4NoErr);
+    err = ISOAddItemExtentUsingItemData(item2, itemDataHandle2);
+    CHECK(err == MP4NoErr);
+    err = ISOSetItemInfo(item2, 0, (char*)"second item", NULL, NULL);
+    CHECK(err == MP4NoErr);
+    err = ISOSetItemInfoItemType(item2, MP4_FOUR_CHAR_CODE('s', 'c', 'n', 'd'), NULL);
+    CHECK(err == MP4NoErr);
+
+    err = ISOAddMetaItemProperty(item2, pTestProp, 0);
+    CHECK(err == MP4NoErr);
+
+    // add relation
+    err = ISOAddItemRelation(item1, item2, MP4_FOUR_CHAR_CODE('p', 't', 'r', '1'));
+    REQUIRE(err == MP4NoErr);
+
+    err = MP4WriteMovieToFile(file, strTestItem.c_str());
+    REQUIRE(err == MP4NoErr);
+  }
+
+  SECTION("Check non-timed item parsing")
+  {
+    MP4Movie moov;
+    ISOMeta meta;
+
+    err = MP4OpenMovieFile(&moov, strTestItem.c_str(), MP4OpenMovieNormal);
+    CHECK(err == MP4NoErr);
+
+    u32 outHandleType;
+    err = ISOGetFileMeta(moov, &meta, MP4_FOUR_CHAR_CODE('t', 'e', 's', 't'), &outHandleType);
+    CHECK(err == MP4NoErr);
+    CHECK(outHandleType == MP4_FOUR_CHAR_CODE('t', 'e', 's', 't'));
+
+    // check first item
+    ISOMetaItem *items;
+    u32 cnt;
+    err = ISOGetAllItemsWithType(meta, MP4_FOUR_CHAR_CODE('f', 'r', 's', 't'), &items, &cnt);
+    CHECK(err == MP4NoErr);
+    CHECK(cnt == 1);
+    MP4GenericAtom *properties;
+    ISOMetaItem item1 = items[0];
+    err = ISOGetProperitesOfMetaItem(item1, &properties, &cnt);
+    CHECK(err == MP4NoErr);
+    CHECK(cnt == 1);
+    MP4UnknownAtomPtr prop = (MP4UnknownAtomPtr)properties[0];
+    CHECK(prop->type == MP4_FOUR_CHAR_CODE('p', 'r', 'o', 'p'));
+    MP4Handle propHandle;
+    MP4NewHandle(prop->dataSize, &propHandle);
+    memcpy(*propHandle, prop->data, prop->dataSize);
+    err = compareData(propHandle, TestData::DECAFCODEDOC, sizeof(TestData::DECAFCODEDOC));
+    CHECK(err == MP4NoErr);
+
+    // check second item
+    err = ISOGetAllItemsWithType(meta, MP4_FOUR_CHAR_CODE('s', 'c', 'n', 'd'), &items, &cnt);
+    CHECK(err == MP4NoErr);
+    CHECK(cnt == 1);
+    ISOMetaItem item2 = items[0];
+    err = ISOGetProperitesOfMetaItem(item2, &properties, &cnt);
+    CHECK(err == MP4NoErr);
+    CHECK(cnt == 1);
+    prop = (MP4UnknownAtomPtr)properties[0];
+    CHECK(prop->type == MP4_FOUR_CHAR_CODE('p', 'r', 'o', 'p'));
+    memcpy(*propHandle, prop->data, prop->dataSize);
+    err = compareData(propHandle, TestData::DECAFCODEDOC, sizeof(TestData::DECAFCODEDOC));
+    CHECK(err == MP4NoErr);
+
+    // check references
+    u16 refCnt;
+    MP4Handle refItemIDsHandle;
+    MP4NewHandle(0, &refItemIDsHandle);
+    err = ISOGetItemReferences(item1, MP4_FOUR_CHAR_CODE('p', 't', 'r', '1'), &refCnt, refItemIDsHandle);
+    CHECK(err == MP4NoErr);
+    CHECK(refCnt == 1);
+    u32 *refItemIDsArray = (u32 *)*refItemIDsHandle;
+    CHECK(refItemIDsArray[0] == 2);
+
+    err = ISOGetItemReferences(item2, MP4_FOUR_CHAR_CODE('p', 't', 'r', '1'), &refCnt, refItemIDsHandle);
+    CHECK(err == MP4NoErr);
+    CHECK(refCnt == 0);
   }
 }

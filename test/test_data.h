@@ -22,6 +22,20 @@
 #pragma once
 #include <MP4OSMacros.h>
 
+
+namespace TestData
+{
+/// 4 bytes of data DEADBEEF
+const unsigned char DEADBEEF[] = {0xDE, 0xAD, 0xBE, 0xEF};
+
+/// 5 bytes of data FACEDEC0CD
+const unsigned char FACEDECOCD[] = {0xFA, 0xCE, 0xDE, 0xC0, 0xCD};
+
+/// 6 bytes of data DECAFC0DED0C
+const unsigned char DECAFCODEDOC[] = {0xDE, 0xCA, 0xFC, 0x0D, 0xED, 0x0C};
+
+}
+
 const u32 TIMESCALE = 30000;
 const u32 FPS       = 30;
 

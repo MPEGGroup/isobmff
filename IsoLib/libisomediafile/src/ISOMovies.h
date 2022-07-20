@@ -1005,6 +1005,13 @@ extern "C"
   ISOAddItemReferences(ISOMetaItem item, u32 reference_type, u16 reference_count,
                        MP4Handle to_item_IDs);
   /**
+   * @param fromItem The relation points from this item to the toItem
+   * @param toItem The relation points to this item from the fromItem
+   * @param relationType The 4cc relation type
+   */
+  MP4_EXTERN(MP4Err)
+  ISOAddItemRelation(ISOMetaItem fromItem, ISOMetaItem toItem, u32 relationType);
+  /**
    * @brief This function collects all item references of the item / reference_type combination.
    */
   ISO_EXTERN(ISOErr)

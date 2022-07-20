@@ -867,6 +867,23 @@ bail:
   return err;
 }
 
+ISO_EXTERN(ISOErr) ISOAddItemRelation(ISOMetaItem fromItem, ISOMetaItem toItem, u32 relationType)
+{
+  MP4Err err;
+  u32 outIndex;
+  u16 toItemID;
+
+  err = ISOGetItemID(toItem, &toItemID);
+  if(err) goto bail;
+
+  err = ISOAddItemReference(fromItem, relationType, toItemID, &outIndex);
+  if(err) goto bail;
+
+bail:
+  TEST_RETURN(err);
+  return err;
+}
+
 ISO_EXTERN(ISOErr) ISOGetPrimaryData(ISOMeta meta, u32 box_type, MP4Handle data, u8 is_full_atom)
 {
   ISOMetaAtomPtr myMeta;
