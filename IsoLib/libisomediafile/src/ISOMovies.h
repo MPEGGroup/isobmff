@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file ISOMovies.h
  * @brief A wrapper for the code defined in the MPEG-4 library.
  * @version 0.1
@@ -184,6 +184,22 @@ extern "C"
     HEVCvps   = 0x20, /**< HEVC Video Parameter Set */
     HEVCsps   = 0x21, /**< HEVC Sequence Parameter Set */
     HEVCpps   = 0x22  /**< HEVC Picture Parameter Set */
+  };
+
+  /**
+   * @brief VVC Parameter Set places
+   * @ingroup Types
+   * @see ISOAddVVCSampleDescriptionPS, ISOGetVVCSampleDescriptionPS,
+   */
+  enum
+  {
+    VVCsps         = 15,
+    VVCpps         = 16,
+    VVCvps         = 14,
+    VVCopi         = 12,
+    VVCdci         = 13,
+    VVC_prefix_aps = 17,
+    VVC_prefix_sei = 23
   };
 
   /**
@@ -715,6 +731,96 @@ extern "C"
 
   ISO_EXTERN(ISOErr)
   ISOGetMebxHandle(struct MP4BoxedMetadataSampleEntry *mebxSE, MP4Handle sampleDescriptionH);
+
+  /*************************************************************************************************
+   * VVC Sample descriptions
+   ************************************************************************************************/
+  /**
+   * @brief Create a new VVC sample entry.
+   * @ingroup SampleDescr
+   *
+   * @note implement me
+   * @param length_size the size of the NAL Unit length field (and must be 1, 2 or 4). The value of
+   * length_size = LengthSizeMinusOne + 1
+   * @param first_sps The sequence parameter set (MUST be passed) used to get the profile, level,
+   * etc. It will only be added to the configuration if a picture parameter set is also present.
+   * @param other ps implement me
+   */
+  ISO_EXTERN(ISOErr)
+  ISONewVVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
+                             u32 dataReferenceIndex, u32 length_size, MP4Handle first_sps,
+                             MP4Handle first_pps);
+  /**
+   * @brief Gets the basic parameters of the VVC sample entry.
+   * @ingroup SampleDescr
+   *
+   * @param sampleEntryH input sample entry handle
+   * @param dataReferenceIndex output dataReferenceIndex
+   * @param length_size output length size: the size of the NAL Unit length field (and must be 1, 2
+   * or 4). The value of length_size = LengthSizeMinusOne + 1
+   * @param naluType input NAL unit type (must be one of 12, 13, 14, 15, 16, 17, 23)
+   * @param count output the number of nalus with type = @param naluType, if there is no nalu,
+   * output 0
+   */
+  MP4_EXTERN(ISOErr)
+  ISOGetVVCSampleDescription(MP4Handle sampleEntryH, u32 *dataReferenceIndex, u32 *length_size,
+                             u32 naluType, u32 *count);
+  /**
+   * @brief Gets a VVC parameter set, placing it in the given handle
+   * @ingroup SampleDescr
+   *
+   * @param sampleEntryH input sample entry handle
+   * @param where can be VVC vps, sps, pps, dci, opi, prefix APS, prefix SEI.
+   * @param num_nalus output the number of nalus in the corresponding parameter set.
+   */
+  ISO_EXTERN(ISOErr)
+  ISOGetVVCNaluNums(MP4Handle sampleEntryH, u32 where, u32 *num_nalus);
+  /**
+   * @brief Gets a VVC parameter set, placing it in the given handle
+   * @ingroup SampleDescr
+   *
+   * @param sampleEntryH input sample entry handle
+   * @param ps output handle which is holding the parameter set.
+   * @param where can be VVC vps, sps, pps, dci, opi, prefix APS, prefix SEI.
+   * @param index the indexes start at 1 (1 is the first parameter set in the indicated array).
+   */
+  ISO_EXTERN(ISOErr)
+  ISOGetVVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where, u32 index);
+  /**
+   * @brief This adds another parameter set (which is not, in fact, inspected), to the
+   * configuration.
+   * @ingroup SampleDescr
+   *
+   * @param ps input handle which is saving the parameter set.
+   * @param where can be VVC vps, sps, pps, dci, opi, prefix APS, prefix SEI.
+   */
+  MP4_EXTERN(ISOErr)
+  ISOAddVVCSampleDescriptionPS(MP4Handle sampleEntryH, MP4Handle ps, u32 where);
+  /**
+   * @brief Create a new VVC subpicture (vvs1) sample entry.
+   * including a NALUconfigAtom (vvnC)
+   * @ingroup SampleDescr
+   *
+   * @param width indicate the width of subpicture
+   * @param height indicate the height of subpicture
+   * @param length_size the size of the NAL Unit length field (and must be 1, 2 or 4). The value of
+   * length_size = LengthSizeMinusOne + 1
+   */
+  MP4_EXTERN(ISOErr)
+  ISONewVVCSubpicSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH,
+                                   u32 dataReferenceIndex, u32 width, u32 height, u32 length_size);
+  /**
+   * @brief Gets the length size of the VVC subpicture sample entry.
+   * @ingroup SampleDescr
+   *
+   * @param sampleEntryH input sample entry handle
+   * @param dataReferenceIndex output dataReferenceIndex
+   * @param length_size output length size: the size of the NAL Unit length field (and must be 1, 2
+   * or 4). The value of length_size = LengthSizeMinusOne + 1
+   */
+  MP4_EXTERN(ISOErr)
+  ISOGetVVCSubpicSampleDescription(MP4Handle sampleEntryH, u32 *dataReferenceIndex,
+                                   u32 *length_size);
 
   /*************************************************************************************************
    * 3GPP media

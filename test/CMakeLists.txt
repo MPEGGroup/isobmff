@@ -30,6 +30,8 @@ add_executable(
   test_metadata.cpp
   test_sample_description.cpp
   test_mebx.cpp
+  test_VVC.cpp
+  ${LIBMD5_FILES}
 )
 
 target_link_libraries(unit_tests LINK_PUBLIC libisomediafile)
