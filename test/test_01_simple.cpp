@@ -263,8 +263,8 @@ TEST_CASE("01_simple.mp4")
     outDuration        = 0;
     outSampleDescIndex = 0;
     err                = ISOGetMediaSample(audioMedia, outSample, &outSize, 3000, &outDecodingTime,
-                            &outCompositionTime, &outDuration, outSampleDescription,
-                            &outSampleDescIndex, &outSampleFlags);
+                                           &outCompositionTime, &outDuration, outSampleDescription,
+                                           &outSampleDescIndex, &outSampleFlags);
     CHECK(err == MP4NoErr);
     CHECK(outDecodingTime == 2048);
     CHECK(outCompositionTime == 2048);

@@ -29,7 +29,7 @@ TEST_CASE("metadata")
 {
   MP4Err err;
 
-  std::string strTestItem = "test_item.mp4";
+  std::string strTestItem        = "test_item.mp4";
   std::string strTestEntityGroup = "test_meta_entity.mp4";
 
   SECTION("Check writing of Properties and EntityToGroups")
@@ -223,9 +223,11 @@ TEST_CASE("metadata")
     MP4Handle itemDataHandle3;
     err = createHandleFromBuffer(&itemDataHandle1, TestData::DEADBEEF, sizeof(TestData::DEADBEEF));
     CHECK(err == MP4NoErr);
-    err = createHandleFromBuffer(&itemDataHandle2, TestData::FACEDECOCD, sizeof(TestData::FACEDECOCD));
+    err =
+      createHandleFromBuffer(&itemDataHandle2, TestData::FACEDECOCD, sizeof(TestData::FACEDECOCD));
     CHECK(err == MP4NoErr);
-    err = createHandleFromBuffer(&itemDataHandle3, TestData::DECAFCODEDOC, sizeof(TestData::DECAFCODEDOC));
+    err = createHandleFromBuffer(&itemDataHandle3, TestData::DECAFCODEDOC,
+                                 sizeof(TestData::DECAFCODEDOC));
     CHECK(err == MP4NoErr);
 
     // item 1
@@ -233,13 +235,14 @@ TEST_CASE("metadata")
     CHECK(err == MP4NoErr);
     err = ISOAddItemExtentUsingItemData(item1, itemDataHandle1);
     CHECK(err == MP4NoErr);
-    err = ISOSetItemInfo(item1, 0, (char*)"first item", NULL, NULL);
+    err = ISOSetItemInfo(item1, 0, (char *)"first item", NULL, NULL);
     CHECK(err == MP4NoErr);
     err = ISOSetItemInfoItemType(item1, MP4_FOUR_CHAR_CODE('f', 'r', 's', 't'), NULL);
     CHECK(err == MP4NoErr);
 
     MP4GenericAtom *pTestProp;
-    err = MP4NewForeignAtom((MP4GenericAtom*)&pTestProp, MP4_FOUR_CHAR_CODE('p', 'r', 'o', 'p'), itemDataHandle3);
+    err = MP4NewForeignAtom((MP4GenericAtom *)&pTestProp, MP4_FOUR_CHAR_CODE('p', 'r', 'o', 'p'),
+                            itemDataHandle3);
     CHECK(err == MP4NoErr);
     err = ISOAddMetaItemProperty(item1, pTestProp, 1);
     CHECK(err == MP4NoErr);
@@ -252,7 +255,7 @@ TEST_CASE("metadata")
     CHECK(err == MP4NoErr);
     err = ISOAddItemExtentUsingItemData(item2, itemDataHandle2);
     CHECK(err == MP4NoErr);
-    err = ISOSetItemInfo(item2, 0, (char*)"second item", NULL, NULL);
+    err = ISOSetItemInfo(item2, 0, (char *)"second item", NULL, NULL);
     CHECK(err == MP4NoErr);
     err = ISOSetItemInfoItemType(item2, MP4_FOUR_CHAR_CODE('s', 'c', 'n', 'd'), NULL);
     CHECK(err == MP4NoErr);
@@ -289,7 +292,7 @@ TEST_CASE("metadata")
     CHECK(cnt == 1);
     MP4GenericAtom *properties;
     ISOMetaItem item1 = items[0];
-    err = ISOGetProperitesOfMetaItem(item1, &properties, &cnt);
+    err               = ISOGetProperitesOfMetaItem(item1, &properties, &cnt);
     CHECK(err == MP4NoErr);
     CHECK(cnt == 1);
     MP4UnknownAtomPtr prop = (MP4UnknownAtomPtr)properties[0];
@@ -305,7 +308,7 @@ TEST_CASE("metadata")
     CHECK(err == MP4NoErr);
     CHECK(cnt == 1);
     ISOMetaItem item2 = items[0];
-    err = ISOGetProperitesOfMetaItem(item2, &properties, &cnt);
+    err               = ISOGetProperitesOfMetaItem(item2, &properties, &cnt);
     CHECK(err == MP4NoErr);
     CHECK(cnt == 1);
     prop = (MP4UnknownAtomPtr)properties[0];
@@ -318,13 +321,15 @@ TEST_CASE("metadata")
     u16 refCnt;
     MP4Handle refItemIDsHandle;
     MP4NewHandle(0, &refItemIDsHandle);
-    err = ISOGetItemReferences(item1, MP4_FOUR_CHAR_CODE('p', 't', 'r', '1'), &refCnt, refItemIDsHandle);
+    err = ISOGetItemReferences(item1, MP4_FOUR_CHAR_CODE('p', 't', 'r', '1'), &refCnt,
+                               refItemIDsHandle);
     CHECK(err == MP4NoErr);
     CHECK(refCnt == 1);
     u32 *refItemIDsArray = (u32 *)*refItemIDsHandle;
     CHECK(refItemIDsArray[0] == 2);
 
-    err = ISOGetItemReferences(item2, MP4_FOUR_CHAR_CODE('p', 't', 'r', '1'), &refCnt, refItemIDsHandle);
+    err = ISOGetItemReferences(item2, MP4_FOUR_CHAR_CODE('p', 't', 'r', '1'), &refCnt,
+                               refItemIDsHandle);
     CHECK(err == MP4NoErr);
     CHECK(refCnt == 0);
   }
