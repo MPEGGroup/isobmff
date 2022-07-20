@@ -71,7 +71,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   u32 i, j;
   u32 entry_count;
   u32 association_count;
-  u16 property_index;
+  u32 property_index;
   MP4ItemPropertyAssociationEntryPtr entry;
   MP4ItemPropertyAssociationEntryPropertyIndexPtr propertyIndex;
   MP4ItemPropertyAssociationAtomPtr self = (MP4ItemPropertyAssociationAtomPtr)s;
