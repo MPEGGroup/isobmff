@@ -17,8 +17,8 @@
 #include <string.h>
 #include "libmd5.h"
 
-
-namespace libmd5{
+namespace libmd5
+{
 
 //! \ingroup libMD5
 //! \{
@@ -26,7 +26,7 @@ namespace libmd5{
 static void MD5Transform(uint32_t buf[4], uint32_t const in[16]);
 
 #ifndef __BIG_ENDIAN__
-# define byteReverse(buf, len)    /* Nothing */
+#define byteReverse(buf, len) /* Nothing */
 #else
 void byteReverse(uint32_t *buf, unsigned len);
 /*
@@ -35,13 +35,13 @@ void byteReverse(uint32_t *buf, unsigned len);
 void byteReverse(uint32_t *buf, unsigned len)
 {
   uint32_t t;
-  do {
-    char* bytes = (char *) buf;
-    t = ((unsigned) bytes[3] << 8 | bytes[2]) << 16 |
-        ((unsigned) bytes[1] << 8 | bytes[0]);
-    *buf = t;
+  do
+  {
+    char *bytes = (char *)buf;
+    t           = ((unsigned)bytes[3] << 8 | bytes[2]) << 16 | ((unsigned)bytes[1] << 8 | bytes[0]);
+    *buf        = t;
     buf++;
-  } while (--len);
+  } while(--len);
 }
 #endif
 
@@ -71,19 +71,20 @@ void MD5Update(context_md5_t *ctx, unsigned char *buf, unsigned len)
   /* Update bitcount */
 
   t = ctx->bits[0];
-  if ((ctx->bits[0] = t + ((uint32_t) len << 3)) < t)
-    ctx->bits[1]++;        /* Carry from low to high */
+  if((ctx->bits[0] = t + ((uint32_t)len << 3)) < t) ctx->bits[1]++; /* Carry from low to high */
   ctx->bits[1] += len >> 29;
 
-  t = (t >> 3) & 0x3f;    /* Bytes already in shsInfo->data */
+  t = (t >> 3) & 0x3f; /* Bytes already in shsInfo->data */
 
   /* Handle any leading odd-sized chunks */
 
-  if (t) {
+  if(t)
+  {
     unsigned char *p = ctx->in.b8 + t;
 
     t = 64 - t;
-    if (len < t) {
+    if(len < t)
+    {
       memcpy(p, buf, len);
       return;
     }
@@ -95,7 +96,8 @@ void MD5Update(context_md5_t *ctx, unsigned char *buf, unsigned len)
   }
   /* Process data in 64-byte chunks */
 
-  while (len >= 64) {
+  while(len >= 64)
+  {
     memcpy(ctx->in.b8, buf, 64);
     byteReverse(ctx->in.b32, 16);
     MD5Transform(ctx->buf, ctx->in.b32);
@@ -103,7 +105,7 @@ void MD5Update(context_md5_t *ctx, unsigned char *buf, unsigned len)
     len -= 64;
   }
 
-    /* Handle any remaining bytes of data. */
+  /* Handle any remaining bytes of data. */
 
   memcpy(ctx->in.b8, buf, len);
 }
@@ -122,14 +124,15 @@ void MD5Final(unsigned char digest[16], context_md5_t *ctx)
 
   /* Set the first char of padding to 0x80.  This is safe since there is
      always at least one byte free */
-  p = ctx->in.b8 + count;
+  p    = ctx->in.b8 + count;
   *p++ = 0x80;
 
   /* Bytes of padding needed to make 64 bytes */
   count = 64 - 1 - count;
 
   /* Pad out to 56 mod 64 */
-  if (count < 8) {
+  if(count < 8)
+  {
     /* Two lots of padding:  Pad the first block to 64 bytes */
     memset(p, 0, count);
     byteReverse(ctx->in.b32, 16);
@@ -137,7 +140,9 @@ void MD5Final(unsigned char digest[16], context_md5_t *ctx)
 
     /* Now fill the next block with 56 bytes */
     memset(ctx->in.b8, 0, 56);
-  } else {
+  }
+  else
+  {
     /* Pad block to 56 bytes */
     memset(p, 0, count - 8);
   }
@@ -148,10 +153,10 @@ void MD5Final(unsigned char digest[16], context_md5_t *ctx)
   ctx->in.b32[15] = ctx->bits[1];
 
   MD5Transform(ctx->buf, ctx->in.b32);
-  byteReverse((uint32_t *) ctx->buf, 4);
+  byteReverse((uint32_t *)ctx->buf, 4);
   memcpy(digest, ctx->buf, 16);
 
-  memset(ctx, 0, sizeof(* ctx));    /* In case it's sensitive */
+  memset(ctx, 0, sizeof(*ctx)); /* In case it's sensitive */
   /* The original version of this code omitted the asterisk. In
      effect, only the first part of ctx was wiped with zeros, not
      the whole thing. Bug found by Derek Jones. Original line: */
@@ -167,8 +172,7 @@ void MD5Final(unsigned char digest[16], context_md5_t *ctx)
 #define F4(x, y, z) (y ^ (x | ~z))
 
 /* This is the central step in the MD5 algorithm. */
-#define MD5STEP(f, w, x, y, z, data, s) \
-    ( w += f(x, y, z) + data,  w = w<<s | w>>(32-s),  w += x )
+#define MD5STEP(f, w, x, y, z, data, s) (w += f(x, y, z) + data, w = w << s | w >> (32 - s), w += x)
 
 /*
  * The core of the MD5 algorithm, this alters an existing MD5 hash to
@@ -258,4 +262,4 @@ static void MD5Transform(uint32_t buf[4], uint32_t const in[16])
   buf[3] += d;
 }
 
-} // namespace
+} // namespace libmd5

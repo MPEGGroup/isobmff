@@ -56,6 +56,7 @@ static MP4Err baseAtomCreateFromInputStream(MP4AtomPtr self, MP4AtomPtr proto,
                                             MP4InputStreamPtr inputStream)
 {
   (void)inputStream;
+  if(proto == NULL) return MP4BadParamErr;
   self->type = proto->type;
   memcpy(self->uuid, proto->uuid, 16);
   self->size         = proto->size;
@@ -631,6 +632,14 @@ MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom)
 
   case ISOHEVCConfigAtomType:
     err = MP4CreateHEVCConfigAtom((ISOHEVCConfigAtomPtr *)&newAtom);
+    break;
+
+  case MP4GroupsListBoxType:
+    err = MP4CreateGroupListBox((GroupListBoxPtr *)&newAtom);
+    break;
+
+  case MP4AlternativeEntityGroup:
+    err = MP4CreateEntityToGroupBox((EntityToGroupBoxPtr *)&newAtom, 0);
     break;
 
   case ISOVVCConfigAtomType:

@@ -4,7 +4,7 @@
  * @brief Testing of the 01_simple.mp4 conformance file
  * @version 0.1
  * @date 2020-11-20
- * 
+ *
  * @copyright This software module was originally developed by Apple Computer, Inc. in the course of
  * development of MPEG-4. This software module is an implementation of a part of one or more MPEG-4
  * tools as specified by MPEG-4. ISO/IEC gives users of MPEG-4 free license to this software module
@@ -32,7 +32,7 @@ const std::string strTestFile = strDataPath + +"/isobmff/01_simple.mp4";
 // isobmff stuff
 ISOMovie cMovieBox;
 
-TEST_CASE("Check isobmff/01_simple.mp4")
+TEST_CASE("01_simple.mp4")
 {
   ISOErr err;
 
@@ -263,8 +263,8 @@ TEST_CASE("Check isobmff/01_simple.mp4")
     outDuration        = 0;
     outSampleDescIndex = 0;
     err                = ISOGetMediaSample(audioMedia, outSample, &outSize, 3000, &outDecodingTime,
-                            &outCompositionTime, &outDuration, outSampleDescription,
-                            &outSampleDescIndex, &outSampleFlags);
+                                           &outCompositionTime, &outDuration, outSampleDescription,
+                                           &outSampleDescIndex, &outSampleFlags);
     CHECK(err == MP4NoErr);
     CHECK(outDecodingTime == 2048);
     CHECK(outCompositionTime == 2048);

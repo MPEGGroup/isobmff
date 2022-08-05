@@ -63,6 +63,7 @@ enum
   MP4GenericSampleEntryAtomType                = MP4_FOUR_CHAR_CODE('!', 'g', 'n', 'r'),
   MP4HandlerAtomType                           = MP4_FOUR_CHAR_CODE('h', 'd', 'l', 'r'),
   MP4HintMediaHeaderAtomType                   = MP4_FOUR_CHAR_CODE('h', 'm', 'h', 'd'),
+  MP4VolumetricVisualMediaHeader               = MP4_FOUR_CHAR_CODE('v', 'v', 'h', 'd'),
   MP4HintTrackReferenceAtomType                = MP4_FOUR_CHAR_CODE('h', 'i', 'n', 't'),
   MP4MPEGMediaHeaderAtomType                   = MP4_FOUR_CHAR_CODE('n', 'm', 'h', 'd'),
   MP4MPEGSampleEntryAtomType                   = MP4_FOUR_CHAR_CODE('m', 'p', '4', 's'),
@@ -159,7 +160,10 @@ enum
   MP4SegmentTypeAtomType                       = MP4_FOUR_CHAR_CODE('s', 't', 'y', 'p'),
   MP4SegmentIndexAtomType                      = MP4_FOUR_CHAR_CODE('s', 'i', 'd', 'x'),
   MP4SubsegmentIndexAtomType                   = MP4_FOUR_CHAR_CODE('s', 's', 'i', 'x'),
-  MP4ProducerReferenceTimeAtomType             = MP4_FOUR_CHAR_CODE('p', 'r', 'f', 't')
+  MP4ProducerReferenceTimeAtomType             = MP4_FOUR_CHAR_CODE('p', 'r', 'f', 't'),
+  MP4GroupsListBoxType                         = MP4_FOUR_CHAR_CODE('g', 'r', 'p', 'l'),
+  MP4AlternativeEntityGroup                    = MP4_FOUR_CHAR_CODE('a', 'l', 't', 'r')
+
 };
 
 #ifdef ISMACrypt
@@ -268,7 +272,7 @@ typedef struct MP4MediaDataAtom
   char *data;
   u64 dataSize;
   u64 dataOffset;
-  u32 allocatedSize;
+  u64 allocatedSize;
 } MP4MediaDataAtom, *MP4MediaDataAtomPtr;
 
 typedef struct MP4UnknownAtom
@@ -858,6 +862,20 @@ typedef struct MP4VisualSampleEntryAtom
   s32 reserved9; /* int(16) = -1 */
 
 } MP4VisualSampleEntryAtom, *MP4VisualSampleEntryAtomPtr;
+
+typedef struct MP4VolumetricVisualSampleEntryAtom
+{
+  MP4_BASE_ATOM
+  COMMON_SAMPLE_ENTRY_FIELDS
+  u32 nameLength;
+  char name31[31];
+} MP4VolumetricVisualSampleEntryAtom, *MP4VolumetricVisualSampleEntryAtomPtr;
+
+typedef struct MP4HapticSampleEntryAtom
+{
+  MP4_BASE_ATOM
+  COMMON_SAMPLE_ENTRY_FIELDS
+} MP4HapticSampleEntryAtom, *MP4HapticSampleEntryAtomPtr;
 
 typedef struct MP4AudioSampleEntryAtom
 {
@@ -1488,8 +1506,8 @@ typedef struct MP4ItemPropertyContainerAtom
 
 typedef struct MP4ItemPropertyAssociationEntryPropertyIndex
 {
-  u8 essential;
-  u16 property_index;
+  u32 essential;
+  u32 property_index;
 } MP4ItemPropertyAssociationEntryPropertyIndex, *MP4ItemPropertyAssociationEntryPropertyIndexPtr;
 
 typedef struct MP4ItemPropertyAssociationEntry
@@ -1859,6 +1877,7 @@ typedef struct ISOMetaAtom
   MP4AtomPtr pitm;
   MP4AtomPtr ipro;
   MP4AtomPtr iprp;
+  MP4AtomPtr grpl;
 
   MP4AtomPtr mdat;
   MP4LinkedList atomList;
@@ -2085,6 +2104,72 @@ typedef struct MP4ProducerReferenceTimeAtom
 
 } MP4ProducerReferenceTimeAtom, *MP4ProducerReferenceTimeAtomPtr;
 
+typedef struct MP4VolumetricVisualMediaHeaderAtom
+{
+  MP4_FULL_ATOM
+} MP4VolumetricVisualMediaHeaderAtom, *MP4VolumetricVisualMediaHeaderAtomPtr;
+
+/**
+ * @brief GroupListBox grpl
+ *
+ * The GroupsListBox includes the entity groups specified for the file. This box contains a set of
+ * full boxes, each called an EntityToGroupBox, with four-character codes denoting a defined
+ * grouping type.
+ *
+ */
+typedef struct GroupListBox
+{
+  MP4_BASE_ATOM
+  /** List containing the boxes */
+  MP4LinkedList atomList;
+
+  MP4Err (*addAtom)(struct GroupListBox *self, MP4AtomPtr atom);
+  MP4Err (*findAtomOfType)(struct GroupListBox *self, u32 groupType, MP4AtomPtr *outAtom);
+
+} GroupListBox, *GroupListBoxPtr;
+
+/**
+ * @brief EntityToGroupBox
+ *
+ * The EntityToGroupBox specifies an entity group.
+ *
+ */
+typedef struct EntityToGroupBox
+{
+  MP4_FULL_ATOM
+
+  /** a non-negative integer assigned to the particular grouping */
+  u32 group_id;
+  /** specifies the number of entity_id values mapped to this entity group */
+  u32 num_entities_in_group;
+  /** List containing the entity ids */
+  MP4LinkedList entity_ids;
+
+  /** ISOBMFF allows extensions to EntityToGroupBox. This buffer holds the data for it */
+  char *remainingData;
+  u32 remainingDataSize;
+
+  /**
+   * @brief Add an entity ID to EntityToGroupBox
+   *
+   * @param self pointer to EntityToGroupBox to which to add the enity ID to
+   * @param entity_id The entity ID to be added
+   */
+  MP4Err (*addEntityId)(struct EntityToGroupBox *self, u32 entity_id);
+
+  /**
+   * @brief Get an entity ID from EntityToGroupBox
+   *
+   * @param self Pointer to EntityToGroupBox from which get entity ID
+   * @param entity_id entity ID value
+   * @param index index of entity ID
+   */
+  MP4Err (*getEntityId)(struct EntityToGroupBox *s, u32 *entity_id, u32 index);
+
+} EntityToGroupBox, *EntityToGroupBoxPtr;
+
+MP4Err MP4CreateGroupListBox(GroupListBoxPtr *outAtom);
+MP4Err MP4CreateEntityToGroupBox(EntityToGroupBoxPtr *pOut, u32 type);
 MP4Err MP4GetListEntryAtom(MP4LinkedList list, u32 atomType, MP4AtomPtr *outItem);
 MP4Err MP4DeleteListEntryAtom(MP4LinkedList list, u32 atomType);
 
@@ -2150,6 +2235,8 @@ MP4Err MP4CreateUnknownAtom(MP4UnknownAtomPtr *outAtom);
 MP4Err MP4CreateUserDataAtom(MP4UserDataAtomPtr *outAtom);
 MP4Err MP4CreateVideoMediaHeaderAtom(MP4VideoMediaHeaderAtomPtr *outAtom);
 MP4Err MP4CreateVisualSampleEntryAtom(MP4VisualSampleEntryAtomPtr *outAtom);
+MP4Err MP4CreateVolumetricVisualSampleEntryAtom(MP4VolumetricVisualSampleEntryAtomPtr *outAtom);
+MP4Err MP4CreateHapticSampleEntryAtom(MP4HapticSampleEntryAtomPtr *outAtom);
 
 MP4Err MP4CreateXMLMetaSampleEntryAtom(MP4XMLMetaSampleEntryAtomPtr *outAtom);
 MP4Err MP4CreateTextMetaSampleEntryAtom(MP4TextMetaSampleEntryAtomPtr *outAtom);
@@ -2225,5 +2312,7 @@ MP4Err MP4CreateAMRSpecificInfoAtom(MP4AMRSpecificInfoAtomPtr *outAtom);
 MP4Err MP4CreateAMRWPSpecificInfoAtom(MP4AMRWPSpecificInfoAtomPtr *outAtom);
 MP4Err MP4CreateH263SpecificInfoAtom(MP4H263SpecificInfoAtomPtr *outAtom);
 MP4Err MP4CreateBitRateAtom(MP4BitRateAtomPtr *outAtom);
+
+MP4Err MP4CreateVisualMediaHeaderAtom(MP4VolumetricVisualMediaHeaderAtomPtr *outAtom);
 
 #endif

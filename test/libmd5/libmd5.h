@@ -33,22 +33,24 @@
 #pragma once
 #include <stdint.h>
 
-
-namespace libmd5 {
+namespace libmd5
+{
 //! \ingroup libMD5
 //! \{
 
-typedef struct _context_md5_t {
+typedef struct _context_md5_t
+{
   uint32_t buf[4];
   uint32_t bits[2];
-  union {
+  union
+  {
     unsigned char b8[64];
     uint32_t b32[16];
   } in;
 } context_md5_t;
 
 //#ifdef __cplusplus
-//extern "C" {
+// extern "C" {
 //#endif
 void MD5Init(context_md5_t *ctx);
 void MD5Update(context_md5_t *ctx, unsigned char *buf, unsigned len);
@@ -58,4 +60,4 @@ void MD5Final(unsigned char digest[16], context_md5_t *ctx);
 //#endif
 
 //! \}
-} // namespace
+} // namespace libmd5
