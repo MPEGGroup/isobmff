@@ -117,12 +117,11 @@ MP4Err MP4CreateMetadataLocaleBox(MP4MetadataLocaleBoxPtr *outAtom, char *locale
 
   if(locale_string != NULL)
   {
-    u32 str_size;
-    str_size            = (u32)strlen(locale_string) + 1;
-    self->locale_string = (char *)calloc(1, str_size);
+    u32 str_size        = (u32)strlen(locale_string);
+    self->locale_string = (char *)calloc(1, str_size + 1);
     TESTMALLOC(self->locale_string);
-    strncpy(self->locale_string, locale_string, str_size);
-    self->locale_string[str_size - 1] = '\0';
+    memcpy(self->locale_string, locale_string, str_size);
+    self->locale_string[str_size] = '\0';
   }
 
   *outAtom = self;
