@@ -9,124 +9,133 @@
  * non MPEG-4 conforming products. Apple Computer, Inc. retains full right to use the code for its
  * own purpose, assign or donate the code to a third party and to inhibit third parties from using
  * the code for non MPEG-4 conforming products. This copyright notice must be included in all copies
- * or derivative works. Copyright (c) 2016.
- */
-/*
- $Id: JPEGConfigurationAtom.c,v 1.1.1.1 2016/12/30 armin Exp $
+ * or derivative works. Copyright (c) 2021.
  */
 
-#include "isoiff_jpeg.h"
-
+#include "MP4Atoms.h"
 #include <stdlib.h>
-#include <string.h>
+
+MP4Err MP4ParseAtomUsingProtoList(MP4InputStreamPtr inputStream, u32 *protoList, u32 defaultAtom,
+                                  MP4AtomPtr *outAtom);
+
+u32 EntityGroupProtos[] = {MP4AlternativeEntityGroup, 0};
 
 static void destroy(MP4AtomPtr s)
 {
   MP4Err err;
-  ISOIFF_JPEGConfigurationAtomPtr self = (ISOIFF_JPEGConfigurationAtomPtr)s;
-  err                                  = MP4NoErr;
+  u32 i;
+  GroupListBoxPtr self;
+  err  = MP4NoErr;
+  self = (GroupListBoxPtr)s;
 
   if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+  DESTROY_ATOM_LIST
 
   if(self->super) self->super->destroy(s);
+
 bail:
   TEST_RETURN(err);
-
   return;
 }
 
 static MP4Err serialize(struct MP4Atom *s, char *buffer)
 {
-  MP4Err err;
-  u32 configSize;
-  ISOIFF_JPEGConfigurationAtomPtr self = (ISOIFF_JPEGConfigurationAtomPtr)s;
-  err                                  = MP4NoErr;
+  MP4Err err           = MP4NoErr;
+  GroupListBoxPtr self = (GroupListBoxPtr)s;
 
-  err = MP4SerializeCommonBaseAtomFields((MP4AtomPtr)s, buffer);
+  err = MP4SerializeCommonBaseAtomFields(s, buffer);
   if(err) goto bail;
+
   buffer += self->bytesWritten;
-
-  err = MP4GetHandleSize(self->jpegPrefix, &configSize);
-  if(err) goto bail;
-
-  PUTBYTES(*self->jpegPrefix, configSize);
-
+  SERIALIZE_ATOM_LIST(atomList);
   assert(self->bytesWritten == self->size);
+
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 
 static MP4Err calculateSize(struct MP4Atom *s)
 {
   MP4Err err;
-  u32 configSize;
-  ISOIFF_JPEGConfigurationAtomPtr self = (ISOIFF_JPEGConfigurationAtomPtr)s;
-  err                                  = MP4NoErr;
+  GroupListBoxPtr self = (GroupListBoxPtr)s;
+  err                  = MP4NoErr;
 
-  err = MP4CalculateBaseAtomFieldSize((MP4AtomPtr)s);
+  err = MP4CalculateBaseAtomFieldSize(s);
   if(err) goto bail;
-
-  err = MP4GetHandleSize(self->jpegPrefix, &configSize);
-  if(err) goto bail;
-  self->size += configSize;
+  ADD_ATOM_LIST_SIZE(atomList);
 
 bail:
   TEST_RETURN(err);
+  return err;
+}
 
+static MP4Err addAtom(GroupListBoxPtr self, MP4AtomPtr atom)
+{
+  MP4Err err;
+  if(self == 0) BAILWITHERROR(MP4BadParamErr);
+  err = MP4AddListEntry(atom, self->atomList);
+bail:
+  TEST_RETURN(err);
   return err;
 }
 
 static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream)
 {
   MP4Err err;
-  long bytesToRead;
-  ISOIFF_JPEGConfigurationAtomPtr self = (ISOIFF_JPEGConfigurationAtomPtr)s;
+  GroupListBoxPtr self = (GroupListBoxPtr)s;
 
+  if(self == NULL) BAILWITHERROR(MP4BadParamErr);
   err = MP4NoErr;
-  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+
   err = self->super->createFromInputStream(s, proto, (char *)inputStream);
   if(err) goto bail;
 
-  bytesToRead = s->size - s->bytesRead;
-  err         = MP4NewHandle(bytesToRead, &self->jpegPrefix);
-  if(err) goto bail;
-  GETBYTES_V(bytesToRead, *self->jpegPrefix);
+  while(self->bytesRead < self->size)
+  {
+    MP4AtomPtr atom;
+    err =
+      MP4ParseAtomUsingProtoList(inputStream, EntityGroupProtos, MP4AlternativeEntityGroup, &atom);
+    if(err) goto bail;
+
+    self->bytesRead += atom->size;
+    if(((atom->type) == MP4FreeSpaceAtomType) || ((atom->type) == MP4SkipAtomType))
+      atom->destroy(atom);
+    else
+    {
+      err = addAtom(self, atom);
+      if(err) goto bail;
+    }
+  }
+
+  if(self->bytesRead != self->size) BAILWITHERROR(MP4BadDataErr)
 
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 
-MP4Err ISOIFF_CreateJPEGConfigurationAtom(ISOIFF_JPEGConfigurationAtomPtr *outAtom,
-                                          MP4Handle jpegPrefix)
+MP4Err MP4CreateGroupListBox(GroupListBoxPtr *outAtom)
 {
   MP4Err err;
-  ISOIFF_JPEGConfigurationAtomPtr self;
-
-  self = (ISOIFF_JPEGConfigurationAtomPtr)calloc(1, sizeof(ISOIFF_JPEGConfigurationAtom));
-  TESTMALLOC(self);
+  GroupListBoxPtr self;
+  self = (GroupListBoxPtr)calloc(1, sizeof(GroupListBox));
+  TESTMALLOC(self)
 
   err = MP4CreateBaseAtom((MP4AtomPtr)self);
   if(err) goto bail;
-
-  self->type                  = ISOIFF_4CC_jpgC;
-  self->name                  = "JPEG Configuration";
+  self->type                  = MP4GroupsListBoxType;
+  self->name                  = "GroupListBox";
   self->createFromInputStream = (cisfunc)createFromInputStream;
   self->destroy               = destroy;
-  self->calculateSize         = calculateSize;
-  self->serialize             = serialize;
-
-  err = MP4NewHandle(0, &self->jpegPrefix);
+  err                         = MP4MakeLinkedList(&self->atomList);
   if(err) goto bail;
-  err = MP4HandleCat(self->jpegPrefix, jpegPrefix);
-  if(err) goto bail;
+  self->calculateSize = calculateSize;
+  self->serialize     = serialize;
+  self->addAtom       = addAtom;
+  *outAtom            = self;
 
-  *outAtom = self;
 bail:
   TEST_RETURN(err);
-
   return err;
 }

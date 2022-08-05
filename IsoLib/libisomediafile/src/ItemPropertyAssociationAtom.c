@@ -1,25 +1,16 @@
-/*
-This software module was originally developed by Apple Computer, Inc.
-in the course of development of MPEG-4.
-This software module is an implementation of a part of one or
-more MPEG-4 tools as specified by MPEG-4.
-ISO/IEC gives users of MPEG-4 free license to this
-software module or modifications thereof for use in hardware
-or software products claiming conformance to MPEG-4.
-Those intending to use this software module in hardware or software
-products are advised that its use may infringe existing patents.
-The original developer of this software module and his/her company,
-the subsequent editors and their companies, and ISO/IEC have no
-liability for use of this software module or modifications thereof
-in an implementation.
-Copyright is not released for non MPEG-4 conforming
-products. Apple Computer, Inc. retains full right to use the code for its own
-purpose, assign or donate the code to a third party and to
-inhibit third parties from using the code for non
-MPEG-4 conforming products.
-This copyright notice must be included in all copies or
-derivative works. Copyright (c) 1999.
-*/
+/* This software module was originally developed by Apple Computer, Inc. in the course of
+ * development of MPEG-4. This software module is an implementation of a part of one or more MPEG-4
+ * tools as specified by MPEG-4. ISO/IEC gives users of MPEG-4 free license to this software module
+ * or modifications thereof for use in hardware or software products claiming conformance to MPEG-4.
+ * Those intending to use this software module in hardware or software products are advised that its
+ * use may infringe existing patents. The original developer of this software module and his/her
+ * company, the subsequent editors and their companies, and ISO/IEC have no liability for use of
+ * this software module or modifications thereof in an implementation. Copyright is not released for
+ * non MPEG-4 conforming products. Apple Computer, Inc. retains full right to use the code for its
+ * own purpose, assign or donate the code to a third party and to inhibit third parties from using
+ * the code for non MPEG-4 conforming products. This copyright notice must be included in all copies
+ * or derivative works. Copyright (c) 1999.
+ */
 /*
   $Id: ItemPropertyContainerAtom.c,v 1.1.1.1 2016/09/14 armin Exp $
 */
@@ -71,7 +62,6 @@ static void destroy(MP4AtomPtr s)
   if(self->super) self->super->destroy(s);
 bail:
   TEST_RETURN(err);
-
   return;
 }
 
@@ -81,7 +71,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   u32 i, j;
   u32 entry_count;
   u32 association_count;
-  u16 property_index;
+  u32 property_index;
   MP4ItemPropertyAssociationEntryPtr entry;
   MP4ItemPropertyAssociationEntryPropertyIndexPtr propertyIndex;
   MP4ItemPropertyAssociationAtomPtr self = (MP4ItemPropertyAssociationAtomPtr)s;
@@ -134,7 +124,6 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   assert(self->bytesWritten == self->size);
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 
@@ -175,7 +164,6 @@ static MP4Err calculateSize(struct MP4Atom *s)
 
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 
@@ -184,8 +172,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   MP4Err err;
   u32 i, j;
   u32 entry_count;
-  u32 tmp32;
-  u8 association_count;
+  u32 association_count;
   MP4ItemPropertyAssociationEntryPtr entry;
   MP4ItemPropertyAssociationEntryPropertyIndexPtr propertyIndex;
   MP4ItemPropertyAssociationAtomPtr self = (MP4ItemPropertyAssociationAtomPtr)s;
@@ -196,9 +183,8 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   if(err) goto bail;
 
   GET32_V(entry_count);
-  tmp32 = entry_count;
 
-  for(i = 0; i < tmp32; i++)
+  for(i = 0; i < entry_count; i++)
   {
     entry = (MP4ItemPropertyAssociationEntryPtr)calloc(1, sizeof(MP4ItemPropertyAssociationEntry));
     TESTMALLOC(entry);
@@ -252,7 +238,6 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
 
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 
@@ -268,7 +253,6 @@ static MP4Err addEntry(MP4ItemPropertyAssociationAtomPtr self,
 
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 
@@ -296,6 +280,5 @@ MP4Err MP4CreateItemPropertyAssociationAtom(MP4ItemPropertyAssociationAtomPtr *o
   *outAtom = self;
 bail:
   TEST_RETURN(err);
-
   return err;
 }

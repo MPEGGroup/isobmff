@@ -230,6 +230,13 @@ static MP4Err addAtom(ISOMetaAtomPtr self, MP4AtomPtr atom)
     }
     self->iprp = atom;
     break;
+  case MP4GroupsListBoxType:
+    if(self->grpl)
+    {
+      BAILWITHERROR(MP4BadParamErr);
+    }
+    self->grpl = atom;
+    break;
   }
   err = MP4AddListEntry(atom, self->atomList);
 bail:
@@ -381,6 +388,7 @@ MP4Err ISOCreateMetaAtom(ISOMetaAtomPtr *outAtom)
   self->relatedMeco      = NULL;
   self->iref             = NULL;
   self->iprp             = NULL;
+  self->grpl             = NULL;
 
   *outAtom = self;
 bail:

@@ -32,7 +32,7 @@ const std::string strTestFile = strDataPath + +"/isobmff/01_simple.mp4";
 // isobmff stuff
 ISOMovie cMovieBox;
 
-TEST_CASE("Check isobmff/01_simple.mp4")
+TEST_CASE("01_simple.mp4")
 {
   ISOErr err;
 

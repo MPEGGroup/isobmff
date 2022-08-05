@@ -55,6 +55,8 @@ extern "C"
 #define ISOVisualHandlerType MP4VisualHandlerType
 #define ISOAudioHandlerType MP4AudioHandlerType
 #define ISOHintHandlerType MP4HintHandlerType
+#define ISOVolumetricHandlerType MP4VolumetricHandlerType
+#define ISOHapticHandlerType MP4HapticHandlerType
 
 #define ISOOpenMovieNormal MP4OpenMovieNormal
 #define ISOOpenMovieDebug MP4OpenMovieDebug
@@ -229,6 +231,18 @@ extern "C"
    * @ingroup Types
    */
   typedef ISOMetaItemRecord *ISOMetaItem;
+
+  /**
+   * @brief Structure which contanis all the common parameters of an EntityGroup
+   * @ingroup Types
+   */
+  typedef struct EntityGroupEntry
+  {
+    u32 grouping_type;
+    u32 group_id;
+    u32 num_entities_in_group;
+    u32 *entity_ids;
+  } EntityGroupEntry, *EntityGroupEntryPtr;
 
 /* These functions are general movie-handling functions and are common to both MPEG-4 and JPEG-2;
    ideally the "ISO" names should be used. */
@@ -915,6 +929,7 @@ extern "C"
    * second meta box.
    *
    * @note Both meta boxes must live on the same level (file, movie, track).
+   * @deprecated This box has been deprecated and is no longer defined in ISOBMFF
    */
   ISO_EXTERN(ISOErr)
   ISOAddMetaBoxRelation(ISOMeta first_meta, ISOMeta second_meta, u8 relation_type);
@@ -1004,6 +1019,13 @@ extern "C"
   ISO_EXTERN(ISOErr)
   ISOAddItemReferences(ISOMetaItem item, u32 reference_type, u16 reference_count,
                        MP4Handle to_item_IDs);
+  /**
+   * @param fromItem The relation points from this item to the toItem
+   * @param toItem The relation points to this item from the fromItem
+   * @param relationType The 4cc relation type
+   */
+  MP4_EXTERN(MP4Err)
+  ISOAddItemRelation(ISOMetaItem fromItem, ISOMetaItem toItem, u32 relationType);
   /**
    * @brief This function collects all item references of the item / reference_type combination.
    */
@@ -1178,6 +1200,42 @@ extern "C"
    */
   ISO_EXTERN(MP4Err)
   ISOGetProperitesOfMetaItem(ISOMetaItem item, MP4GenericAtom **properties, u32 *propertiesFound);
+  /**
+   * @brief Add new EntityToGroupBox (creates grpl if needed)
+   *
+   * @param meta MetaBox where the new EntityToGroupBox should be added to
+   * @param grouping_type grouping type
+   * @param group_id group ID
+   */
+  ISO_EXTERN(ISOErr) ISONewEntityGroup(ISOMeta meta, u32 grouping_type, u32 group_id);
+  /**
+   * @brief Add entity_id to EntityToGroupBox
+   *
+   * @param meta MetaBox on which we are operating
+   * @param group_id unique group ID to which we want to add the entity_id
+   * @param entity_id entity ID value
+   */
+  ISO_EXTERN(ISOErr) ISOAddEntityIDToGroup(ISOMeta meta, u32 group_id, u32 entity_id);
+  /**
+   * @brief Get number of entries in the EntityToGroupBox
+   *
+   * @param meta MetaBox on which we are operating
+   * @param group_id group ID
+   * @param num_entities_in_group [out] number of entities in group
+   */
+  ISO_EXTERN(ISOErr) ISOGetEntityIDCnt(ISOMeta meta, u32 group_id, u32 *num_entities_in_group);
+  /**
+   * @brief Get common data for all EntityToGroup entries.
+   *
+   * @note Each call of this function allocates memory in pEntries and you are responsible to clean.
+   *
+   * @param meta MetaBox on which we are operating
+   * @param pEntries [out] An array of EntityGroup entries with common data (id's, count, etc.)
+   * @param cnt [out] Number of EntityGroup entries (size of EntityGroupEntryPtr array)
+   */
+  ISO_EXTERN(ISOErr)
+  ISOGetEntityGroupEntries(ISOMeta meta, EntityGroupEntryPtr *pEntries, u32 *cnt);
+
   /** @}*/
 
 #ifdef PRAGMA_EXPORT

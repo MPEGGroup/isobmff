@@ -143,7 +143,7 @@ static MP4Err addData(struct MP4MediaDataAtom *self, MP4Handle dataH)
 {
   MP4Err err;
   u32 size;
-  size_t newSize;
+  u64 newSize;
 
   err = MP4NoErr;
   err = MP4GetHandleSize(dataH, &size);
@@ -153,16 +153,24 @@ static MP4Err addData(struct MP4MediaDataAtom *self, MP4Handle dataH)
 #ifdef FORCE_OFFSET
     newSize = self->dataSize + size - FORCE_OFFSET;
 #else
-    newSize = (size_t)(self->dataSize + size);
+    newSize = (u64)(self->dataSize + size);
 #endif
     if(newSize > self->allocatedSize)
     {
       self->allocatedSize += allocation_size;
-      if(newSize > self->allocatedSize) self->allocatedSize = (u32)newSize;
+      if(newSize > self->allocatedSize)
+      {
+        self->allocatedSize = (u64)newSize;
+      }
 
-      if(self->data != NULL) self->data = (char *)realloc(self->data, self->allocatedSize);
+      if(self->data != NULL)
+      {
+        self->data = (char *)realloc(self->data, self->allocatedSize);
+      }
       else
+      {
         self->data = (char *)calloc(self->allocatedSize, 1);
+      }
       TESTMALLOC(self->data);
     }
 #ifdef FORCE_OFFSET
@@ -182,7 +190,7 @@ static MP4Err addMdat(struct MP4MediaDataAtom *self, struct MP4MediaDataAtom *ot
 {
   MP4Err err;
   u32 size;
-  size_t newSize;
+  u64 newSize;
 
   err = MP4NoErr;
   if((other_mdat->dataSize + self->dataSize) >> 32)

@@ -23,9 +23,9 @@
 #include <catch.hpp>
 #include "test_helpers.h"
 
-TEST_CASE("Check Sample Description functions")
+TEST_CASE("sample_descriptions")
 {
-  SECTION("Check HEVC")
+  SECTION("Check HEVC sample description")
   {
     ISOErr err;
     ISOMovie moov;

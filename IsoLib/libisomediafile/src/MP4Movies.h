@@ -74,11 +74,13 @@ extern "C"
    */
   enum
   {
-    MP4NewTrackIsVisual   = (1 << 1), /**< track contains visual media */
-    MP4NewTrackIsAudio    = (1 << 2), /**< track contains audio media */
-    MP4NewTrackIsMetadata = (1 << 3), /**< track contains meta-data */
-    MP4NewTrackIsMebx     = (1 << 4), /**< track contains boxed meta-data */
-    MP4NewTrackIsPrivate  = (1 << 8)  /**< track contains a media type unknown to MPEG-4 */
+    MP4NewTrackIsVisual     = (1 << 1), /**< track contains visual media */
+    MP4NewTrackIsAudio      = (1 << 2), /**< track contains audio media */
+    MP4NewTrackIsMetadata   = (1 << 3), /**< track contains meta-data */
+    MP4NewTrackIsVolumetric = (1 << 4), /**< track contains volumetric media */
+    MP4NewTrackIsHaptic     = (1 << 5), /**< track contains haptic media */
+    MP4NewTrackIsMebx       = (1 << 6), /**< track contains boxed meta-data */
+    MP4NewTrackIsPrivate    = (1 << 8)  /**< track contains a media type unknown to MPEG-4 */
   };
 
   enum
@@ -110,6 +112,8 @@ extern "C"
     MP21HandlerType                = MP4_FOUR_CHAR_CODE('m', 'p', '2', '1'),
     MP4NullHandlerType             = MP4_FOUR_CHAR_CODE('n', 'u', 'l', 'l'),
     MP4MetaHandlerType             = MP4_FOUR_CHAR_CODE('m', 'e', 't', 'a'),
+    MP4VolumetricHandlerType       = MP4_FOUR_CHAR_CODE('v', 'o', 'l', 'v'),
+    MP4HapticHandlerType           = MP4_FOUR_CHAR_CODE('h', 'a', 'p', 't'),
 
     ISOXMLAtomType       = MP4_FOUR_CHAR_CODE('x', 'm', 'l', ' '),
     ISOBinaryXMLAtomType = MP4_FOUR_CHAR_CODE('b', 'x', 'm', 'l')
