@@ -248,10 +248,15 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:ga0411cd49bb5b71852cecd93bcbf0ca2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Modes used by <a class="el" href="group___movie.html#ga30675c4796a326e1104d2f9256dfa3e8" title="Opens a movie file and creates a Movie in memory from this file.">MP4OpenMovieFile()</a>  <a href="group___types.html#ga0411cd49bb5b71852cecd93bcbf0ca2d">More...</a><br /></td></tr>
 <tr class="separator:ga0411cd49bb5b71852cecd93bcbf0ca2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gabed82baf7f470b522273a3e37c24c600"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="group___types.html#ggabed82baf7f470b522273a3e37c24c600a62ae8fa42872f6ea8d2b464b09c26492">MP4NewTrackIsVisual</a> = (1 &lt;&lt; 1)
+<tr class="memitem:gabed82baf7f470b522273a3e37c24c600"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <br />
+&#160;&#160;<a class="el" href="group___types.html#ggabed82baf7f470b522273a3e37c24c600a62ae8fa42872f6ea8d2b464b09c26492">MP4NewTrackIsVisual</a> = (1 &lt;&lt; 1)
 , <a class="el" href="group___types.html#ggabed82baf7f470b522273a3e37c24c600ab36ee108315a5cea544abc3a13b74d35">MP4NewTrackIsAudio</a> = (1 &lt;&lt; 2)
 , <a class="el" href="group___types.html#ggabed82baf7f470b522273a3e37c24c600ae8f97376e6888b297481de112dccbed6">MP4NewTrackIsMetadata</a> = (1 &lt;&lt; 3)
+, <a class="el" href="group___types.html#ggabed82baf7f470b522273a3e37c24c600a0736424e877fb64dc10f9566c39ef931">MP4NewTrackIsVolumetric</a> = (1 &lt;&lt; 4)
+, <br />
+&#160;&#160;<a class="el" href="group___types.html#ggabed82baf7f470b522273a3e37c24c600a80a375b825e7a8bf2336cd5ee2906b2d">MP4NewTrackIsHaptic</a> = (1 &lt;&lt; 5)
 , <a class="el" href="group___types.html#ggabed82baf7f470b522273a3e37c24c600acefc910531c9889c87a28ba635c9fa26">MP4NewTrackIsPrivate</a> = (1 &lt;&lt; 8)
+<br />
  }</td></tr>
 <tr class="memdesc:gabed82baf7f470b522273a3e37c24c600"><td class="mdescLeft">&#160;</td><td class="mdescRight">Track flags.  <a href="group___types.html#gabed82baf7f470b522273a3e37c24c600">More...</a><br /></td></tr>
 <tr class="separator:gabed82baf7f470b522273a3e37c24c600"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -276,7 +281,9 @@ Enumerations</h2></td></tr>
 , <b>MP4NullHandlerType</b> = MP4_FOUR_CHAR_CODE('n', 'u', 'l', 'l')
 , <b>MP4MetaHandlerType</b> = MP4_FOUR_CHAR_CODE('m', 'e', 't', 'a')
 , <br />
-&#160;&#160;<b>ISOXMLAtomType</b> = MP4_FOUR_CHAR_CODE('x', 'm', 'l', ' ')
+&#160;&#160;<b>MP4VolumetricHandlerType</b> = MP4_FOUR_CHAR_CODE('v', 'o', 'l', 'v')
+, <b>MP4HapticHandlerType</b> = MP4_FOUR_CHAR_CODE('h', 'a', 'p', 't')
+, <b>ISOXMLAtomType</b> = MP4_FOUR_CHAR_CODE('x', 'm', 'l', ' ')
 , <b>ISOBinaryXMLAtomType</b> = MP4_FOUR_CHAR_CODE('b', 'x', 'm', 'l')
 <br />
  }</td></tr>

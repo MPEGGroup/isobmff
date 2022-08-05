@@ -145,6 +145,8 @@ Functions</h2></td></tr>
 <tr class="memitem:ga4951301db1b7ca23ee4bce0c7cbbdd4a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___types.html#ga5906075464bd2961deda1ba298e3fea5">MP4Err</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___meta.html#ga4951301db1b7ca23ee4bce0c7cbbdd4a">ISOAddItemReferences</a> (<a class="el" href="group___types.html#gaaa6df7435c0d5dd11232ffa79f1bcd9b">ISOMetaItem</a> item, u32 reference_type, u16 reference_count, <a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> to_item_IDs)</td></tr>
 <tr class="memdesc:ga4951301db1b7ca23ee4bce0c7cbbdd4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function adds multiple item references to the item reference box.  <a href="group___meta.html#ga4951301db1b7ca23ee4bce0c7cbbdd4a">More...</a><br /></td></tr>
 <tr class="separator:ga4951301db1b7ca23ee4bce0c7cbbdd4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1f1a8cf453f1e3545d7835c451395e54"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___types.html#ga5906075464bd2961deda1ba298e3fea5">MP4Err</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___meta.html#ga1f1a8cf453f1e3545d7835c451395e54">ISOAddItemRelation</a> (<a class="el" href="group___types.html#gaaa6df7435c0d5dd11232ffa79f1bcd9b">ISOMetaItem</a> fromItem, <a class="el" href="group___types.html#gaaa6df7435c0d5dd11232ffa79f1bcd9b">ISOMetaItem</a> toItem, u32 relationType)</td></tr>
+<tr class="separator:ga1f1a8cf453f1e3545d7835c451395e54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa377ce0bcc659bd91b63ea5790de7144"><td class="memItemLeft" align="right" valign="top"><a id="gaa377ce0bcc659bd91b63ea5790de7144" name="gaa377ce0bcc659bd91b63ea5790de7144"></a>
 <a class="el" href="group___types.html#ga5906075464bd2961deda1ba298e3fea5">MP4Err</a>&#160;</td><td class="memItemRight" valign="bottom"><b>ISOGetItemReferences</b> (<a class="el" href="group___types.html#gaaa6df7435c0d5dd11232ffa79f1bcd9b">ISOMetaItem</a> item, u32 reference_type, u16 *reference_count, <a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> to_item_IDs)</td></tr>
 <tr class="memdesc:gaa377ce0bcc659bd91b63ea5790de7144"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function collects all item references of the item / reference_type combination. <br /></td></tr>
@@ -244,6 +246,18 @@ Functions</h2></td></tr>
 <tr class="memitem:ga055de6f49e828249ce14b67b170756af"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___types.html#ga5906075464bd2961deda1ba298e3fea5">MP4Err</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___meta.html#ga055de6f49e828249ce14b67b170756af">ISOGetProperitesOfMetaItem</a> (<a class="el" href="group___types.html#gaaa6df7435c0d5dd11232ffa79f1bcd9b">ISOMetaItem</a> item, <a class="el" href="struct_m_p4_generic_atom_record.html">MP4GenericAtom</a> **properties, u32 *propertiesFound)</td></tr>
 <tr class="memdesc:ga055de6f49e828249ce14b67b170756af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retruns an array of MP4GenericAtom pointers, which represent the item properties found for the item given.  <a href="group___meta.html#ga055de6f49e828249ce14b67b170756af">More...</a><br /></td></tr>
 <tr class="separator:ga055de6f49e828249ce14b67b170756af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8528ab4d943eb7eedcd089f1ebb8fd74"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___types.html#ga5906075464bd2961deda1ba298e3fea5">MP4Err</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___meta.html#ga8528ab4d943eb7eedcd089f1ebb8fd74">ISONewEntityGroup</a> (<a class="el" href="group___types.html#gab366f159da25a0c41a948fe67f387c33">ISOMeta</a> meta, u32 grouping_type, u32 group_id)</td></tr>
+<tr class="memdesc:ga8528ab4d943eb7eedcd089f1ebb8fd74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add new EntityToGroupBox (creates grpl if needed)  <a href="group___meta.html#ga8528ab4d943eb7eedcd089f1ebb8fd74">More...</a><br /></td></tr>
+<tr class="separator:ga8528ab4d943eb7eedcd089f1ebb8fd74"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae7ff5901b9aede4e2358293543fac430"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___types.html#ga5906075464bd2961deda1ba298e3fea5">MP4Err</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___meta.html#gae7ff5901b9aede4e2358293543fac430">ISOAddEntityIDToGroup</a> (<a class="el" href="group___types.html#gab366f159da25a0c41a948fe67f387c33">ISOMeta</a> meta, u32 group_id, u32 entity_id)</td></tr>
+<tr class="memdesc:gae7ff5901b9aede4e2358293543fac430"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add entity_id to EntityToGroupBox.  <a href="group___meta.html#gae7ff5901b9aede4e2358293543fac430">More...</a><br /></td></tr>
+<tr class="separator:gae7ff5901b9aede4e2358293543fac430"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9c76172923e5a031c7b9d64503e5c4b6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___types.html#ga5906075464bd2961deda1ba298e3fea5">MP4Err</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___meta.html#ga9c76172923e5a031c7b9d64503e5c4b6">ISOGetEntityIDCnt</a> (<a class="el" href="group___types.html#gab366f159da25a0c41a948fe67f387c33">ISOMeta</a> meta, u32 group_id, u32 *num_entities_in_group)</td></tr>
+<tr class="memdesc:ga9c76172923e5a031c7b9d64503e5c4b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get number of entries in the EntityToGroupBox.  <a href="group___meta.html#ga9c76172923e5a031c7b9d64503e5c4b6">More...</a><br /></td></tr>
+<tr class="separator:ga9c76172923e5a031c7b9d64503e5c4b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga23405c43914b4c4ac540dc45086d4abc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___types.html#ga5906075464bd2961deda1ba298e3fea5">MP4Err</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___meta.html#ga23405c43914b4c4ac540dc45086d4abc">ISOGetEntityGroupEntries</a> (<a class="el" href="group___types.html#gab366f159da25a0c41a948fe67f387c33">ISOMeta</a> meta, <a class="el" href="struct_entity_group_entry.html">EntityGroupEntryPtr</a> *pEntries, u32 *cnt)</td></tr>
+<tr class="memdesc:ga23405c43914b4c4ac540dc45086d4abc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get common data for all EntityToGroup entries.  <a href="group___meta.html#ga23405c43914b4c4ac540dc45086d4abc">More...</a><br /></td></tr>
+<tr class="separator:ga23405c43914b4c4ac540dc45086d4abc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p >These functions allow you to manage meta boxes (atoms) at file, movie, and track level, and the items they contain. </p>
@@ -261,6 +275,50 @@ Functions</h2></td></tr>
 <td class="markdownTableBodyNone">MP4NullHandlerType   </td><td class="markdownTableBodyNone">null   </td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="gae7ff5901b9aede4e2358293543fac430" name="gae7ff5901b9aede4e2358293543fac430"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gae7ff5901b9aede4e2358293543fac430">&#9670;&nbsp;</a></span>ISOAddEntityIDToGroup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group___types.html#ga5906075464bd2961deda1ba298e3fea5">MP4Err</a> ISOAddEntityIDToGroup </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group___types.html#gab366f159da25a0c41a948fe67f387c33">ISOMeta</a>&#160;</td>
+          <td class="paramname"><em>meta</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">u32&#160;</td>
+          <td class="paramname"><em>group_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">u32&#160;</td>
+          <td class="paramname"><em>entity_id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Add entity_id to EntityToGroupBox. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">meta</td><td>MetaBox on which we are operating </td></tr>
+    <tr><td class="paramname">group_id</td><td>unique group ID to which we want to add the entity_id </td></tr>
+    <tr><td class="paramname">entity_id</td><td>entity ID value </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="gaf5dfbc4b207f17906477245e4aac3034" name="gaf5dfbc4b207f17906477245e4aac3034"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gaf5dfbc4b207f17906477245e4aac3034">&#9670;&nbsp;</a></span>ISOAddItemExtent()</h2>
 
@@ -495,6 +553,48 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="ga1f1a8cf453f1e3545d7835c451395e54" name="ga1f1a8cf453f1e3545d7835c451395e54"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga1f1a8cf453f1e3545d7835c451395e54">&#9670;&nbsp;</a></span>ISOAddItemRelation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group___types.html#ga5906075464bd2961deda1ba298e3fea5">MP4Err</a> ISOAddItemRelation </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group___types.html#gaaa6df7435c0d5dd11232ffa79f1bcd9b">ISOMetaItem</a>&#160;</td>
+          <td class="paramname"><em>fromItem</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group___types.html#gaaa6df7435c0d5dd11232ffa79f1bcd9b">ISOMetaItem</a>&#160;</td>
+          <td class="paramname"><em>toItem</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">u32&#160;</td>
+          <td class="paramname"><em>relationType</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">fromItem</td><td>The relation points from this item to the toItem </td></tr>
+    <tr><td class="paramname">toItem</td><td>The relation points to this item from the fromItem </td></tr>
+    <tr><td class="paramname">relationType</td><td>The 4cc relation type </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="ga4660a5a1b800846feeeaf49e43baae7a" name="ga4660a5a1b800846feeeaf49e43baae7a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga4660a5a1b800846feeeaf49e43baae7a">&#9670;&nbsp;</a></span>ISOAddMetaBoxRelation()</h2>
 
@@ -529,6 +629,7 @@ Functions</h2></td></tr>
 
 <p>Adds a meta box relation box to the additional meta data box, related to first and second meta box. </p>
 <dl class="section note"><dt>Note</dt><dd>Both meta boxes must live on the same level (file, movie, track). </dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000001">Deprecated:</a></b></dt><dd>This box has been deprecated and is no longer defined in ISOBMFF </dd></dl>
 
 </div>
 </div>
@@ -760,6 +861,95 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">is_full_atom</td><td>This flag can be used to insert the four bytes of version and flags required in a full atom. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ga23405c43914b4c4ac540dc45086d4abc" name="ga23405c43914b4c4ac540dc45086d4abc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga23405c43914b4c4ac540dc45086d4abc">&#9670;&nbsp;</a></span>ISOGetEntityGroupEntries()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group___types.html#ga5906075464bd2961deda1ba298e3fea5">MP4Err</a> ISOGetEntityGroupEntries </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group___types.html#gab366f159da25a0c41a948fe67f387c33">ISOMeta</a>&#160;</td>
+          <td class="paramname"><em>meta</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_entity_group_entry.html">EntityGroupEntryPtr</a> *&#160;</td>
+          <td class="paramname"><em>pEntries</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">u32 *&#160;</td>
+          <td class="paramname"><em>cnt</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get common data for all EntityToGroup entries. </p>
+<dl class="section note"><dt>Note</dt><dd>Each call of this function allocates memory in pEntries and you are responsible to clean.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">meta</td><td>MetaBox on which we are operating </td></tr>
+    <tr><td class="paramname">pEntries</td><td>[out] An array of EntityGroup entries with common data (id's, count, etc.) </td></tr>
+    <tr><td class="paramname">cnt</td><td>[out] Number of EntityGroup entries (size of EntityGroupEntryPtr array) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ga9c76172923e5a031c7b9d64503e5c4b6" name="ga9c76172923e5a031c7b9d64503e5c4b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga9c76172923e5a031c7b9d64503e5c4b6">&#9670;&nbsp;</a></span>ISOGetEntityIDCnt()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group___types.html#ga5906075464bd2961deda1ba298e3fea5">MP4Err</a> ISOGetEntityIDCnt </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group___types.html#gab366f159da25a0c41a948fe67f387c33">ISOMeta</a>&#160;</td>
+          <td class="paramname"><em>meta</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">u32&#160;</td>
+          <td class="paramname"><em>group_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">u32 *&#160;</td>
+          <td class="paramname"><em>num_entities_in_group</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get number of entries in the EntityToGroupBox. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">meta</td><td>MetaBox on which we are operating </td></tr>
+    <tr><td class="paramname">group_id</td><td>group ID </td></tr>
+    <tr><td class="paramname">num_entities_in_group</td><td>[out] number of entities in group </td></tr>
   </table>
   </dd>
 </dl>
@@ -1195,6 +1385,50 @@ Functions</h2></td></tr>
 
 <p>Gets a reference to the track-level meta data. </p>
 <p >The input parameter meta-type, if non-zero, can be used to check that the associated meta-data is of the given type. The output always supplies the type. </p>
+
+</div>
+</div>
+<a id="ga8528ab4d943eb7eedcd089f1ebb8fd74" name="ga8528ab4d943eb7eedcd089f1ebb8fd74"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga8528ab4d943eb7eedcd089f1ebb8fd74">&#9670;&nbsp;</a></span>ISONewEntityGroup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group___types.html#ga5906075464bd2961deda1ba298e3fea5">MP4Err</a> ISONewEntityGroup </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group___types.html#gab366f159da25a0c41a948fe67f387c33">ISOMeta</a>&#160;</td>
+          <td class="paramname"><em>meta</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">u32&#160;</td>
+          <td class="paramname"><em>grouping_type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">u32&#160;</td>
+          <td class="paramname"><em>group_id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Add new EntityToGroupBox (creates grpl if needed) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">meta</td><td>MetaBox where the new EntityToGroupBox should be added to </td></tr>
+    <tr><td class="paramname">grouping_type</td><td>grouping type </td></tr>
+    <tr><td class="paramname">group_id</td><td>group ID </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

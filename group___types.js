@@ -1,5 +1,6 @@
 var group___types =
 [
+    [ "EntityGroupEntry", "struct_entity_group_entry.html", null ],
     [ "MP4MovieRecord", "struct_m_p4_movie_record.html", null ],
     [ "MP4TrackRecord", "struct_m_p4_track_record.html", null ],
     [ "MP4MediaRecord", "struct_m_p4_media_record.html", null ],
@@ -12,6 +13,7 @@ var group___types =
     [ "GETMOVIEATOM", "group___types.html#ga0948225c42aefdc2aebab92854992dd4", null ],
     [ "GETMOVIEHEADERATOM", "group___types.html#gaa6e084e807e7dec6797711dd0c221bae", null ],
     [ "MP4_FOUR_CHAR_CODE", "group___types.html#gab279c535b06b336c230f97d4375e3da6", null ],
+    [ "EntityGroupEntry", "group___types.html#ga37ca966a1346fb5af27c0ebba8754f91", null ],
     [ "ISOMeta", "group___types.html#gab366f159da25a0c41a948fe67f387c33", null ],
     [ "ISOMetaItem", "group___types.html#gaaa6df7435c0d5dd11232ffa79f1bcd9b", null ],
     [ "MP4Err", "group___types.html#ga5906075464bd2961deda1ba298e3fea5", null ],
@@ -94,6 +96,8 @@ var group___types =
       [ "MP4NewTrackIsVisual", "group___types.html#ggabed82baf7f470b522273a3e37c24c600a62ae8fa42872f6ea8d2b464b09c26492", null ],
       [ "MP4NewTrackIsAudio", "group___types.html#ggabed82baf7f470b522273a3e37c24c600ab36ee108315a5cea544abc3a13b74d35", null ],
       [ "MP4NewTrackIsMetadata", "group___types.html#ggabed82baf7f470b522273a3e37c24c600ae8f97376e6888b297481de112dccbed6", null ],
+      [ "MP4NewTrackIsVolumetric", "group___types.html#ggabed82baf7f470b522273a3e37c24c600a0736424e877fb64dc10f9566c39ef931", null ],
+      [ "MP4NewTrackIsHaptic", "group___types.html#ggabed82baf7f470b522273a3e37c24c600a80a375b825e7a8bf2336cd5ee2906b2d", null ],
       [ "MP4NewTrackIsPrivate", "group___types.html#ggabed82baf7f470b522273a3e37c24c600acefc910531c9889c87a28ba635c9fa26", null ]
     ] ],
     [ "sampleToGroupType_t", "group___types.html#gafd57078a76ff516ef5fc3ebf046e355c", [

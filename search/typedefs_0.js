@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['isometa_0',['ISOMeta',['../group___types.html#gab366f159da25a0c41a948fe67f387c33',1,'ISOMovies.h']]],
-  ['isometaitem_1',['ISOMetaItem',['../group___types.html#gaaa6df7435c0d5dd11232ffa79f1bcd9b',1,'ISOMovies.h']]]
+  ['entitygroupentry_0',['EntityGroupEntry',['../group___types.html#ga37ca966a1346fb5af27c0ebba8754f91',1,'ISOMovies.h']]]
 ];

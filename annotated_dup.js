@@ -1,5 +1,6 @@
 var annotated_dup =
 [
+    [ "EntityGroupEntry", "struct_entity_group_entry.html", null ],
     [ "ISOMatrixRecord", "struct_i_s_o_matrix_record.html", null ],
     [ "ISOMetaItemRecord", "struct_i_s_o_meta_item_record.html", null ],
     [ "ISOMetaRecord", "struct_i_s_o_meta_record.html", null ],

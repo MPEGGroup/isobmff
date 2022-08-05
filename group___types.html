@@ -106,6 +106,9 @@ $(document).ready(function(){initNavTree('group___types.html',''); initResizable
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_entity_group_entry.html">EntityGroupEntry</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure which contanis all the common parameters of an EntityGroup.  <a href="struct_entity_group_entry.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_m_p4_movie_record.html">MP4MovieRecord</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_m_p4_track_record.html">MP4TrackRecord</a></td></tr>
@@ -149,6 +152,13 @@ typedef <a class="el" href="struct_i_s_o_meta_record.html">ISOMetaRecord</a> *&#
 typedef <a class="el" href="struct_i_s_o_meta_item_record.html">ISOMetaItemRecord</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>ISOMetaItem</b></td></tr>
 <tr class="memdesc:gaaa6df7435c0d5dd11232ffa79f1bcd9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is an opaque handle that contains a reference to a rich meta-data item. <br /></td></tr>
 <tr class="separator:gaaa6df7435c0d5dd11232ffa79f1bcd9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga37ca966a1346fb5af27c0ebba8754f91"><td class="memItemLeft" align="right" valign="top"><a id="ga37ca966a1346fb5af27c0ebba8754f91" name="ga37ca966a1346fb5af27c0ebba8754f91"></a>
+typedef struct <a class="el" href="struct_entity_group_entry.html">EntityGroupEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><b>EntityGroupEntry</b></td></tr>
+<tr class="memdesc:ga37ca966a1346fb5af27c0ebba8754f91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure which contanis all the common parameters of an EntityGroup. <br /></td></tr>
+<tr class="separator:ga37ca966a1346fb5af27c0ebba8754f91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaea0277aeccc44e5eeddc7db03880ccbc"><td class="memItemLeft" align="right" valign="top"><a id="gaea0277aeccc44e5eeddc7db03880ccbc" name="gaea0277aeccc44e5eeddc7db03880ccbc"></a>
+typedef struct <a class="el" href="struct_entity_group_entry.html">EntityGroupEntry</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>EntityGroupEntryPtr</b></td></tr>
+<tr class="separator:gaea0277aeccc44e5eeddc7db03880ccbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5906075464bd2961deda1ba298e3fea5"><td class="memItemLeft" align="right" valign="top">typedef int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___types.html#ga5906075464bd2961deda1ba298e3fea5">MP4Err</a></td></tr>
 <tr class="memdesc:ga5906075464bd2961deda1ba298e3fea5"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is a typedef for function error codes.  <a href="group___types.html#ga5906075464bd2961deda1ba298e3fea5">More...</a><br /></td></tr>
 <tr class="separator:ga5906075464bd2961deda1ba298e3fea5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -296,10 +306,15 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:ga0411cd49bb5b71852cecd93bcbf0ca2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Modes used by <a class="el" href="group___movie.html#ga30675c4796a326e1104d2f9256dfa3e8" title="Opens a movie file and creates a Movie in memory from this file.">MP4OpenMovieFile()</a>  <a href="group___types.html#ga0411cd49bb5b71852cecd93bcbf0ca2d">More...</a><br /></td></tr>
 <tr class="separator:ga0411cd49bb5b71852cecd93bcbf0ca2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gabed82baf7f470b522273a3e37c24c600"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="group___types.html#ggabed82baf7f470b522273a3e37c24c600a62ae8fa42872f6ea8d2b464b09c26492">MP4NewTrackIsVisual</a> = (1 &lt;&lt; 1)
+<tr class="memitem:gabed82baf7f470b522273a3e37c24c600"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <br />
+&#160;&#160;<a class="el" href="group___types.html#ggabed82baf7f470b522273a3e37c24c600a62ae8fa42872f6ea8d2b464b09c26492">MP4NewTrackIsVisual</a> = (1 &lt;&lt; 1)
 , <a class="el" href="group___types.html#ggabed82baf7f470b522273a3e37c24c600ab36ee108315a5cea544abc3a13b74d35">MP4NewTrackIsAudio</a> = (1 &lt;&lt; 2)
 , <a class="el" href="group___types.html#ggabed82baf7f470b522273a3e37c24c600ae8f97376e6888b297481de112dccbed6">MP4NewTrackIsMetadata</a> = (1 &lt;&lt; 3)
+, <a class="el" href="group___types.html#ggabed82baf7f470b522273a3e37c24c600a0736424e877fb64dc10f9566c39ef931">MP4NewTrackIsVolumetric</a> = (1 &lt;&lt; 4)
+, <br />
+&#160;&#160;<a class="el" href="group___types.html#ggabed82baf7f470b522273a3e37c24c600a80a375b825e7a8bf2336cd5ee2906b2d">MP4NewTrackIsHaptic</a> = (1 &lt;&lt; 5)
 , <a class="el" href="group___types.html#ggabed82baf7f470b522273a3e37c24c600acefc910531c9889c87a28ba635c9fa26">MP4NewTrackIsPrivate</a> = (1 &lt;&lt; 8)
+<br />
  }</td></tr>
 <tr class="memdesc:gabed82baf7f470b522273a3e37c24c600"><td class="mdescLeft">&#160;</td><td class="mdescRight">Track flags.  <a href="group___types.html#gabed82baf7f470b522273a3e37c24c600">More...</a><br /></td></tr>
 <tr class="separator:gabed82baf7f470b522273a3e37c24c600"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -324,7 +339,9 @@ Enumerations</h2></td></tr>
 , <b>MP4NullHandlerType</b> = MP4_FOUR_CHAR_CODE('n', 'u', 'l', 'l')
 , <b>MP4MetaHandlerType</b> = MP4_FOUR_CHAR_CODE('m', 'e', 't', 'a')
 , <br />
-&#160;&#160;<b>ISOXMLAtomType</b> = MP4_FOUR_CHAR_CODE('x', 'm', 'l', ' ')
+&#160;&#160;<b>MP4VolumetricHandlerType</b> = MP4_FOUR_CHAR_CODE('v', 'o', 'l', 'v')
+, <b>MP4HapticHandlerType</b> = MP4_FOUR_CHAR_CODE('h', 'a', 'p', 't')
+, <b>ISOXMLAtomType</b> = MP4_FOUR_CHAR_CODE('x', 'm', 'l', ' ')
 , <b>ISOBinaryXMLAtomType</b> = MP4_FOUR_CHAR_CODE('b', 'x', 'm', 'l')
 <br />
  }</td></tr>
@@ -952,6 +969,10 @@ Enumerations</h2></td></tr>
 <tr><td class="fieldname"><a id="ggabed82baf7f470b522273a3e37c24c600ab36ee108315a5cea544abc3a13b74d35" name="ggabed82baf7f470b522273a3e37c24c600ab36ee108315a5cea544abc3a13b74d35"></a>MP4NewTrackIsAudio&#160;</td><td class="fielddoc"><p >track contains audio media </p>
 </td></tr>
 <tr><td class="fieldname"><a id="ggabed82baf7f470b522273a3e37c24c600ae8f97376e6888b297481de112dccbed6" name="ggabed82baf7f470b522273a3e37c24c600ae8f97376e6888b297481de112dccbed6"></a>MP4NewTrackIsMetadata&#160;</td><td class="fielddoc"><p >track contains meta-data </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggabed82baf7f470b522273a3e37c24c600a0736424e877fb64dc10f9566c39ef931" name="ggabed82baf7f470b522273a3e37c24c600a0736424e877fb64dc10f9566c39ef931"></a>MP4NewTrackIsVolumetric&#160;</td><td class="fielddoc"><p >track contains volumetric media </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggabed82baf7f470b522273a3e37c24c600a80a375b825e7a8bf2336cd5ee2906b2d" name="ggabed82baf7f470b522273a3e37c24c600a80a375b825e7a8bf2336cd5ee2906b2d"></a>MP4NewTrackIsHaptic&#160;</td><td class="fielddoc"><p >track contains haptic media </p>
 </td></tr>
 <tr><td class="fieldname"><a id="ggabed82baf7f470b522273a3e37c24c600acefc910531c9889c87a28ba635c9fa26" name="ggabed82baf7f470b522273a3e37c24c600acefc910531c9889c87a28ba635c9fa26"></a>MP4NewTrackIsPrivate&#160;</td><td class="fielddoc"><p >track contains a media type unknown to MPEG-4 </p>
 </td></tr>
