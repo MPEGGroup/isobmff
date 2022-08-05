@@ -71,7 +71,7 @@ ISO_EXTERN(ISOErr) ISONewFileMeta(ISOMovie theMovie, u32 metaType, ISOMeta *outM
   {
     if(moov->meta->type == metaType) BAILWITHERROR(MP4BadParamErr);
 
-    printf("WARNING: adding additional meta box to 'meco' container is depricated!\n");
+    printf("WARNING: adding additional meta box to 'meco' container is deprecated!\n");
     if(moov->meco == NULL)
     {
       err = ISOCreateAdditionalMetaDataContainerAtom(
