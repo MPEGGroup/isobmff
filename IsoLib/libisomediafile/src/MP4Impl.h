@@ -27,9 +27,7 @@ derivative works. Copyright (c) 1999.
 #define INCLUDED_MP4IMPL_H
 #include <assert.h>
 #include <stdio.h>
-#ifdef __linux
 #include <string.h>
-#endif
 
 #ifndef NULL
 #define NULL 0
