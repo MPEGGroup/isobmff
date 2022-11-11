@@ -24,10 +24,13 @@ sources = \
 	ESUpdateCommand.c \
 	EditAtom.c \
 	EditListAtom.c \
+	EntityToGroupBox.c \
 	FileMappingDataHandler.c \
 	FreeSpaceAtom.c \
 	GenericSampleEntryAtom.c \
+	GroupsListBox.c \
 	HandlerAtom.c \
+	HapticSampleEntryAtom.c \
 	HEVCConfigAtom.c \
 	HintMediaHeaderAtom.c \
 	IPMPToolUpdateCommand.c \
@@ -148,6 +151,10 @@ sources = \
 	PrimaryItemAtom.c \
 	ISOSampleDescriptions.c \
 	VCConfigAtom.c \
+	VVCConfigAtom.c \
+	VVCNALUConfigAtom.c \
+	VolumetricVisualMediaHeaderAtom.c \
+	VolumetricVisualSampleEntryAtom.c \
 	TextMetaSampleEntry.c \
 	XMLMetaSampleEntry.c \
 	BitRateAtom.c \
