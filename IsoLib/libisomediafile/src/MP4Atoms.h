@@ -1848,6 +1848,8 @@ typedef struct MP4SampleGroupDescriptionAtom
 
   u32 default_length; /* we only handle version 1 */
 
+  u32 default_group_description_index; /* only after version 2 */
+
   u32 groupCount;
 
   sampleGroupEntry *groups;
