@@ -199,7 +199,7 @@ TEST_CASE("mebx")
       MP4Handle key_value, setupInfo;
       MP4NewHandle(0, &key_value);
       MP4NewHandle(0, &setupInfo);
-      char *locale_string;
+      char *locale_string = nullptr;
       err = ISOGetMebxMetadataConfig(sampleEntryH, i, &local_key_id, &key_namespace, key_value, &locale_string, setupInfo);
       CHECK(err == MP4NoErr);
       switch (i)
@@ -213,7 +213,7 @@ TEST_CASE("mebx")
         CHECK(key_namespace == MP4KeyNamespace_me4c);
         err = compareData(key_value, key_val);
         CHECK(err == MP4NoErr);
-        CHECK(NULL == locale_string);
+        CHECK(nullptr == locale_string);
         err = compareData(redSetupH, setupInfo);
         CHECK(err == MP4NoErr);
         break;
@@ -227,7 +227,7 @@ TEST_CASE("mebx")
         CHECK(key_namespace == MP4KeyNamespace_me4c);
         err = compareData(key_value, key_val);
         CHECK(err == MP4NoErr);
-        CHECK(NULL == locale_string);
+        CHECK(nullptr == locale_string);
         err = compareData(blueSetupH, setupInfo);
         CHECK(err == MP4NoErr);
         break;
