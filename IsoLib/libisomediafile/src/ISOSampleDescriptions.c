@@ -1660,6 +1660,7 @@ ISOAddMebxMetadataToSampleEntry(MP4BoxedMetadataSampleEntryPtr mebx, u32 desired
   keytable = mebx->keyTable;
 
   /* search for an unused key */
+  keyb = NULL;
   for(n = desired_local_key_id; n < 0xFFFFFFFF; n++)
   {
     keyb = keytable->getMetadataKeyBox(keytable, n);
@@ -1671,6 +1672,7 @@ ISOAddMebxMetadataToSampleEntry(MP4BoxedMetadataSampleEntryPtr mebx, u32 desired
       break;
     }
   }
+  if(keyb == NULL) BAILWITHERROR(MP4BadDataErr);
 
   /* in case key_value is not set, set it based on the namespace and key */
   if(key_value == NULL)
