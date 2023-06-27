@@ -223,6 +223,12 @@ derivative works. Copyright (c) 1999.
     while(self->bytesRead < self->size)                                             \
     {                                                                               \
       MP4AtomPtr atm;                                                               \
+      u32 remainingBytes = self->size - self->bytesRead;                            \
+      if(remainingBytes < 8)                                                        \
+      {                                                                             \
+        self->bytesRead += remainingBytes;                                          \
+        break;                                                                      \
+      }                                                                             \
       err = MP4ParseAtom(inputStream, &atm);                                        \
       if(err) goto bail;                                                            \
       self->bytesRead += atm->size;                                                 \

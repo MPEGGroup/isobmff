@@ -141,6 +141,7 @@ add_library(
     src/MP4MovieFile.c
     src/MP4Movies.c
     src/MP4ObjectDescriptor.c
+    src/MP4MebxTrackReader.c
     src/MP4ODTrackReader.c
     src/MP4OrdinaryTrackReader.c
     src/MP4SLPacket.c
@@ -208,6 +209,12 @@ add_library(
     src/VolumetricVisualSampleEntryAtom.c
     src/HapticSampleEntryAtom.c
     src/XMLMetaSampleEntry.c
+    src/BoxedMetadataSampleEntry.c
+    src/MetadataKeyDeclarationBox.c
+    src/MetadataKeyTableBox.c
+    src/MetadataKeyBox.c
+    src/MetadataLocaleBox.c
+    src/MetadataSetupBox.c
     src/GroupsListBox.c
     src/EntityToGroupBox.c
 

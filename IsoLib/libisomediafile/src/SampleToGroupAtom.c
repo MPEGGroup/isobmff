@@ -712,6 +712,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
     entryCount++;
 
     assert(entryCount == self->entryCount);
+    (void)entryCount; /* remove the release build warning */
   }
   else
   {

@@ -10,5 +10,5 @@ jobs:
     - name: Run clang-format style check for C/C++ programs.
       uses: jidicula/clang-format-action@v4.4.1
       with:
-        clang-format-version: '13'
+        clang-format-version: '15'
         check-path: 'IsoLib/libisomediafile'

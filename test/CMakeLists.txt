@@ -19,7 +19,6 @@ include_directories(
   $<$<PLATFORM_ID:Darwin>:${CMAKE_CURRENT_LIST_DIR}/../IsoLib/libisomediafile/macosx>
 )
 
-file(GLOB LIBMD5_FILES "libmd5/*.cpp" )
 file(GLOB TEST_FILES "*.cpp" )
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
@@ -27,7 +26,6 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 add_executable(
   unit_tests
   ${TEST_FILES}
-  ${LIBMD5_FILES}
 )
 
 target_link_libraries(unit_tests LINK_PUBLIC libisomediafile)
