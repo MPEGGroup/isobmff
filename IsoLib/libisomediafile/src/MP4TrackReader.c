@@ -30,6 +30,7 @@ derivative works. Copyright (c) 1999.
 
 MP4Err MP4CreateOrdinaryTrackReader(MP4Movie theMovie, MP4Track theTrack,
                                     MP4TrackReaderPtr *outReader);
+MP4Err MP4CreateMebxTrackReader(MP4Movie theMovie, MP4Track theTrack, MP4TrackReaderPtr *outReader);
 MP4Err MP4CreateODTrackReader(MP4Movie theMovie, MP4Track theTrack, MP4TrackReaderPtr *outReader);
 /* Guido : inserted to clean-up resources */
 MP4Err MP4DisposeOrdinaryTrackReader(MP4TrackReaderPtr theReader);
@@ -40,6 +41,11 @@ MP4CreateTrackReader(MP4Track theTrack, MP4TrackReader *outReader)
   MP4Err err;
   MP4Movie theMovie;
   MP4Media theMedia;
+  MP4MediaInformationAtomPtr minf;
+  MP4SampleTableAtomPtr stbl;
+  MP4SampleDescriptionAtomPtr stsd;
+  GenericSampleEntryAtomPtr entry;
+
   u32 handlerType;
   MP4TrackReaderPtr reader;
   err = MP4NoErr;
@@ -55,6 +61,44 @@ MP4CreateTrackReader(MP4Track theTrack, MP4TrackReader *outReader)
   case MP4ObjectDescriptorHandlerType:
     err = MP4CreateODTrackReader(theMovie, theTrack, &reader);
     if(err) goto bail;
+    break;
+
+  case MP4MetaHandlerType:
+    minf = (MP4MediaInformationAtomPtr)((MP4MediaAtomPtr)theMedia)->information;
+    if(minf == NULL)
+    {
+      BAILWITHERROR(MP4InvalidMediaErr);
+    }
+    stbl = (MP4SampleTableAtomPtr)minf->sampleTable;
+    if(stbl == NULL)
+    {
+      BAILWITHERROR(MP4InvalidMediaErr);
+    }
+    stsd = (MP4SampleDescriptionAtomPtr)stbl->SampleDescription;
+    if(stsd == NULL)
+    {
+      BAILWITHERROR(MP4InvalidMediaErr);
+    }
+    if(stsd->getEntryCount(stsd) == 0)
+    {
+      BAILWITHERROR(MP4BadParamErr);
+    }
+    err = stsd->getEntry(stsd, 1, &entry);
+    if(err) goto bail;
+    if(entry == NULL)
+    {
+      BAILWITHERROR(MP4InvalidMediaErr);
+    }
+    if(entry->type == MP4BoxedMetadataSampleEntryType)
+    {
+      err = MP4CreateMebxTrackReader(theMovie, theTrack, &reader);
+      if(err) goto bail;
+    }
+    else
+    {
+      err = MP4CreateOrdinaryTrackReader(theMovie, theTrack, &reader);
+      if(err) goto bail;
+    }
     break;
 
   default:
@@ -204,6 +248,23 @@ MP4TrackReaderGetCurrentSampleNumber(MP4TrackReader theReader, u32 *sampleNumber
   *sampleNumber = reader->currentSampleNumber;
 
 bail:
+  return err;
+}
+
+MP4_EXTERN(MP4Err)
+MP4SetMebxTrackReader(MP4TrackReader theReader, u32 local_key)
+{
+  MP4Err err;
+  MP4TrackReaderPtr reader;
+
+  err = MP4NoErr;
+  if(theReader == 0) BAILWITHERROR(MP4BadParamErr)
+  reader = (MP4TrackReaderPtr)theReader;
+
+  reader->mebx_local_key = local_key;
+
+bail:
+  TEST_RETURN(err);
   return err;
 }
 

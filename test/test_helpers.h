@@ -313,6 +313,26 @@ inline MP4Err compareData(MP4Handle dataH, const u8 *comparePtr, u32 compareSize
 }
 
 /**
+ * @brief Compare data of two MP4Handles
+ *
+ * @param dataH1 MP4handle holding some data
+ * @param dataH2 MP4handle holding some data
+ * @return MP4Err MP4NoErr if data is the same
+ */
+inline MP4Err compareData(MP4Handle dataH1, MP4Handle dataH2)
+{
+  MP4Err err = MP4NoErr;
+  u32 handleSize1, handleSize2;
+  MP4GetHandleSize(dataH1, &handleSize1);
+  MP4GetHandleSize(dataH2, &handleSize2);
+  if(handleSize1 != handleSize2) return MP4BadDataErr;
+
+  int compareVal = std::memcmp(*dataH1, *dataH2, handleSize1);
+  if(compareVal != 0) return MP4BadDataErr;
+  return err;
+}
+
+/**
  * @brief Compare the payload of a sample with the data in a buffer.
  *
  * lengthSize bytes of the sample payload are skipped for comparison. Single NALU in a sample only.
@@ -407,7 +427,7 @@ inline MP4Err createHandleFromString(MP4Handle *dataH, const std::string str)
 
 inline MP4Err addMebxSamples(MP4Media media, std::string strPattern, u32 repeatPattern = 1,
                              MP4Handle sampleEntryH = 0, u32 lk_r = 0, u32 lk_b = 0, u32 lk_y = 0,
-                             u32 lk_w = 0, u32 lk_k = 0, u32 lk_g = 0, u32 lk_en = 0, u32 lk_de = 0)
+                             u32 lk_w = 0, u32 lk_k = 0, u32 lk_g = 0)
 {
   MP4Err err;
   u32 sampleCount = 0;
@@ -574,5 +594,80 @@ inline MP4Err addMebxSamples(MP4Media media, std::string strPattern, u32 repeatP
   CHECK(err == MP4NoErr);
   err = MP4DisposeHandle(sizesH);
   CHECK(err == MP4NoErr);
+  return err;
+}
+
+inline MP4Err checkRedMebxSamples(std::string strPattern, u32 repeatPattern, MP4Handle auData, u32 n)
+{
+  MP4Err err;
+  std::string fullPattern = strPattern;
+  for(u32 n = 1; n < repeatPattern; ++n)
+  {
+    fullPattern += strPattern;
+  }
+  if(n>= strPattern.size()) return MP4BadParamErr;
+
+  
+  switch(strPattern[n])
+  {
+  case 'r':
+  {
+    auto metaSampleRed = getMetaSample(0, 0, 64, 48);
+    err = compareData(auData, metaSampleRed.data(), metaSampleRed.size());
+    CHECK(err == MP4NoErr);
+    break;
+  }
+  case 'b':
+  case 'g':
+  case 'y':
+  case 'w':
+  case 'k':
+  case 'U':
+  {
+    u32 redSize = 0;
+    err = MP4GetHandleSize(auData, &redSize);
+    CHECK(err == MP4NoErr);
+    CHECK(0 == redSize);
+    break;
+  }
+  case 'R':
+  {
+    auto metaSampleRed = getMetaSample(0, 32, 64, 16);
+    err = compareData(auData, metaSampleRed.data(), metaSampleRed.size());
+    CHECK(err == MP4NoErr);
+    break;
+  }
+  case 'D':
+  {
+    auto metaSampleRed = getMetaSample(0, 16, 64, 16);
+    err = compareData(auData, metaSampleRed.data(), metaSampleRed.size());
+    CHECK(err == MP4NoErr);
+    break;
+  }
+  case 'F':
+  {
+    auto metaSampleRed   = getMetaSample(44, 0, 20, 48);
+    err = compareData(auData, metaSampleRed.data(), metaSampleRed.size());
+    CHECK(err == MP4NoErr);
+    break;
+  }
+  case 'N':
+  {
+    auto metaSampleRed   = getMetaSample(0, 0, 64, 16);
+    err = compareData(auData, metaSampleRed.data(), metaSampleRed.size());
+    CHECK(err == MP4NoErr);
+    break;
+  }
+  case 'I':
+  {
+    auto metaSampleRed    = getMetaSample(0, 0, 64, 24);
+    err = compareData(auData, metaSampleRed.data(), metaSampleRed.size());
+    CHECK(err == MP4NoErr);
+    break;
+  }
+  default:
+    break;
+  }
+
   return err;
 }

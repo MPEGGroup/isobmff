@@ -1708,6 +1708,10 @@ extern "C"
    */
   MP4_EXTERN(MP4Err) MP4CreateTrackReader(MP4Track theTrack, MP4TrackReader *outReader);
   /**
+   * @brief Select local_key for reading. Demux mebx track.
+   */
+  MP4_EXTERN(MP4Err) MP4SetMebxTrackReader(MP4TrackReader theReader, u32 local_key);
+  /**
    * @brief Frees up resources associated with a track reader.
    */
   MP4_EXTERN(MP4Err) MP4DisposeTrackReader(MP4TrackReader theReader);

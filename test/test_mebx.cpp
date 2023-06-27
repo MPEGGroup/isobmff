@@ -56,13 +56,12 @@ TEST_CASE("mebx")
     MP4Media mediaV;
     MP4Media mediaM;
 
-    u32 local_key_id_red      = 0;
-    u32 local_key_id_blu      = 0;
-    u32 local_key_id_ylw      = 0;
-    u32 local_key_id_wht      = 0;
-    u32 local_key_id_blk      = 0;
-    u32 local_key_id_lable_en = 0;
-    u32 local_key_id_lable_de = 0;
+    u32 local_key_id;
+    u32 local_key_id_red      = MP4_FOUR_CHAR_CODE('r', 'e', 'd', 'd');
+    u32 local_key_id_blu      = MP4_FOUR_CHAR_CODE('b', 'l', 'u', 'e');
+    u32 local_key_id_ylw      = MP4_FOUR_CHAR_CODE('y', 'l', 'o', 'w');
+    u32 local_key_id_wht      = MP4_FOUR_CHAR_CODE('w', 'h', 't', 'e');
+    u32 local_key_id_blk      = MP4_FOUR_CHAR_CODE('b', 'l', 'c', 'k');
 
     MP4Handle spsHandle, ppsHandle, vpsHandle, sampleEntryVH, sampleEntryMH;
     err = MP4NewHandle(sizeof(HEVC::SPS), &spsHandle);
@@ -94,53 +93,63 @@ TEST_CASE("mebx")
 
     // create mebx sample entry
     MP4BoxedMetadataSampleEntryPtr mebx;
-    MP4Handle redKeyH, redSetupH;
-    err = createHandleFromString(&redKeyH, "redd");
-    err = createHandleFromString(&redSetupH, "Config RED");
-    err = ISONewMebxSampleDescription(&mebx, 1, MP4KeyNamespace_me4c, redKeyH, 0, redSetupH,
-                                      &local_key_id_red);
+    err = ISONewMebxSampleDescription(&mebx, 1);
     CHECK(err == MP4NoErr);
 
-    // add other keys to mebx sample entry
-    // make sure we can not add dups
-    err = ISOAddMebxMetadataToSampleEntry(mebx, MP4KeyNamespace_me4c, redKeyH, 0, redSetupH,
-                                          &local_key_id_red);
-    CHECK(err == MP4BadParamErr);
+    MP4Handle redSetupH;
+    err = createHandleFromString(&redSetupH, "Config RED");
+    err = ISOAddMebxMetadataToSampleEntry(mebx, local_key_id_red, &local_key_id, MP4KeyNamespace_me4c, 0, 0, redSetupH);
+    CHECK(err == MP4NoErr);
+    CHECK(local_key_id_red == local_key_id);
+
+    // add the same key again. It should be added with a different local_key_id
+    err = ISOAddMebxMetadataToSampleEntry(mebx, local_key_id_red, &local_key_id, MP4KeyNamespace_me4c, 0, 0, redSetupH);
+    CHECK(err == MP4NoErr);
+    CHECK(local_key_id_red != local_key_id);
+
+    // add one more with the different namespace
+    MP4Handle revAddress;
+    err = createHandleFromString(&revAddress, "com.foo.bar.zoo");
+    err = ISOAddMebxMetadataToSampleEntry(mebx, local_key_id_red, &local_key_id, QTKeyNamespace_mdta, revAddress, 0, 0);
+    CHECK(err == MP4NoErr);
+    CHECK(local_key_id_red != local_key_id);
+
     MP4Handle bluKeyH, bluSetupH;
     err = createHandleFromString(&bluKeyH, "blue");
     err = createHandleFromString(&bluSetupH, "Config BLUE");
-    err = ISOAddMebxMetadataToSampleEntry(mebx, MP4KeyNamespace_me4c, bluKeyH, 0, bluSetupH,
-                                          &local_key_id_blu);
+    err = ISOAddMebxMetadataToSampleEntry(mebx, local_key_id_blu, &local_key_id, MP4KeyNamespace_me4c, bluKeyH, 0, bluSetupH);
     CHECK(err == MP4NoErr);
+    CHECK(local_key_id_blu == local_key_id);
+
     MP4Handle ylwKeyH, ylwSetupH;
     err = createHandleFromString(&ylwKeyH, "ylow");
     err = createHandleFromString(&ylwSetupH, "Config YELLOW");
-    err = ISOAddMebxMetadataToSampleEntry(mebx, MP4KeyNamespace_me4c, ylwKeyH, 0, ylwSetupH,
-                                          &local_key_id_ylw);
+    err = ISOAddMebxMetadataToSampleEntry(mebx, local_key_id_ylw, &local_key_id, MP4KeyNamespace_me4c, ylwKeyH, 0, ylwSetupH);
     CHECK(err == MP4NoErr);
+    CHECK(local_key_id_ylw == local_key_id);
+
     MP4Handle whtKeyH, whtSetupH;
     err = createHandleFromString(&whtKeyH, "whte");
     err = createHandleFromString(&whtSetupH, "Config WHITE");
-    err = ISOAddMebxMetadataToSampleEntry(mebx, MP4KeyNamespace_me4c, whtKeyH, 0, whtSetupH,
-                                          &local_key_id_wht);
+    err = ISOAddMebxMetadataToSampleEntry(mebx, local_key_id_wht, &local_key_id, MP4KeyNamespace_me4c, whtKeyH, 0, whtSetupH);
     CHECK(err == MP4NoErr);
+    CHECK(local_key_id_wht == local_key_id);
+
     MP4Handle blkKeyH, blkSetupH;
     err = createHandleFromString(&blkKeyH, "blck");
     err = createHandleFromString(&blkSetupH, "Config BLACK");
-    err = ISOAddMebxMetadataToSampleEntry(mebx, MP4KeyNamespace_me4c, blkKeyH, 0, blkSetupH,
-                                          &local_key_id_blk);
+    err = ISOAddMebxMetadataToSampleEntry(mebx, local_key_id_blk, &local_key_id, MP4KeyNamespace_me4c, blkKeyH, 0, blkSetupH);
     CHECK(err == MP4NoErr);
-    MP4Handle lblKeyH, lblEnSetupH;
-    err = createHandleFromString(&lblKeyH, "labl");
-    err = createHandleFromString(&lblEnSetupH, "Config lable ENGLISH");
-    err = ISOAddMebxMetadataToSampleEntry(mebx, MP4KeyNamespace_me4c, lblKeyH, localeEN,
-                                          lblEnSetupH, &local_key_id_lable_en);
-    CHECK(err == MP4NoErr);
-    MP4Handle lblDeSetupH;
-    err = createHandleFromString(&lblDeSetupH, "Config lable GERMAN");
-    err = ISOAddMebxMetadataToSampleEntry(mebx, MP4KeyNamespace_me4c, lblKeyH, localeDE,
-                                          lblDeSetupH, &local_key_id_lable_de);
-    CHECK(err == MP4NoErr);
+    CHECK(local_key_id_blk == local_key_id);
+    // MP4Handle lblKeyH, lblEnSetupH;
+    // err = createHandleFromString(&lblKeyH, "labl");
+    // err = createHandleFromString(&lblEnSetupH, "Config lable ENGLISH");
+    // err = ISOAddMebxMetadataToSampleEntry(mebx, local_key_id_lable_en, MP4KeyNamespace_me4c, lblKeyH, localeEN, lblEnSetupH);
+    // CHECK(err == MP4NoErr);
+    // MP4Handle lblDeSetupH;
+    // err = createHandleFromString(&lblDeSetupH, "Config lable GERMAN");
+    // err = ISOAddMebxMetadataToSampleEntry(mebx, local_key_id_lable_de, MP4KeyNamespace_me4c, lblKeyH, localeDE, lblDeSetupH);
+    // CHECK(err == MP4NoErr);
 
     // add mebx sample entry to track's media
     err = ISOGetMebxHandle(mebx, sampleEntryMH);
@@ -150,8 +159,7 @@ TEST_CASE("mebx")
 
     // add samples using local key ids and pattern
     err = addMebxSamples(mediaM, strPattern, repeatPattern, 0, local_key_id_red, local_key_id_blu,
-                         local_key_id_ylw, local_key_id_wht, local_key_id_blk, 0,
-                         local_key_id_lable_en, local_key_id_lable_de);
+                         local_key_id_ylw, local_key_id_wht, local_key_id_blk, 0);
     CHECK(err == MP4NoErr);
 
     // write file
@@ -161,10 +169,10 @@ TEST_CASE("mebx")
     CHECK(err == MP4NoErr);
   }
 
-  SECTION("Un mebx")
+  SECTION("Read")
   {
     MP4Movie moov;
-    err = MP4OpenMovieFile(&moov, strMebxMe4cFile.c_str(), MP4OpenMovieDebug);
+    err = MP4OpenMovieFile(&moov, strMebxMe4cFile.c_str(), MP4OpenMovieNormal);
     REQUIRE(err == MP4NoErr);
 
     MP4Track trak;
@@ -180,17 +188,79 @@ TEST_CASE("mebx")
     err = MP4TrackReaderGetCurrentSampleDescription(reader, sampleEntryH);
     CHECK(err == MP4NoErr);
 
-    // TODO: check getters
-    // call a function to unmebx mebx track into multiple timed meta tracks
-
-    // write file
-    err = MP4WriteMovieToFile(moov, strUnMebxFile.c_str());
+    u32 key_cnt = 0;
+    err = ISOGetMebxMetadataCount(sampleEntryH, &key_cnt);
     CHECK(err == MP4NoErr);
+    CHECK(7 == key_cnt);
+
+    for(u32 i = 0; i < key_cnt; i++)
+    {
+      u32 local_key_id, key_namespace;
+      MP4Handle key_value, setupInfo;
+      MP4NewHandle(0, &key_value);
+      MP4NewHandle(0, &setupInfo);
+      char *locale_string;
+      err = ISOGetMebxMetadataConfig(sampleEntryH, i, &local_key_id, &key_namespace, key_value, &locale_string, setupInfo);
+      CHECK(err == MP4NoErr);
+      switch (i)
+      {
+      case 0:
+      {
+        MP4Handle redSetupH, key_val;
+        err = createHandleFromString(&redSetupH, "Config RED");
+        err = createHandleFromString(&key_val, "redd");
+        CHECK(local_key_id == MP4_FOUR_CHAR_CODE('r', 'e', 'd', 'd'));
+        CHECK(key_namespace == MP4KeyNamespace_me4c);
+        err = compareData(key_value, key_val);
+        CHECK(err == MP4NoErr);
+        CHECK(NULL == locale_string);
+        err = compareData(redSetupH, setupInfo);
+        CHECK(err == MP4NoErr);
+        break;
+      }
+      case 3:
+      {
+        MP4Handle blueSetupH, key_val;
+        err = createHandleFromString(&blueSetupH, "Config BLUE");
+        err = createHandleFromString(&key_val, "blue");
+        CHECK(local_key_id == MP4_FOUR_CHAR_CODE('b', 'l', 'u', 'e'));
+        CHECK(key_namespace == MP4KeyNamespace_me4c);
+        err = compareData(key_value, key_val);
+        CHECK(err == MP4NoErr);
+        CHECK(NULL == locale_string);
+        err = compareData(blueSetupH, setupInfo);
+        CHECK(err == MP4NoErr);
+        break;
+      }
+      
+      default:
+        break;
+      }
+      MP4DisposeHandle(key_value);
+      MP4DisposeHandle(setupInfo);
+    }
+
+
+    err = MP4SetMebxTrackReader(reader, MP4_FOUR_CHAR_CODE('r', 'e', 'd', 'd'));
+    CHECK(err == MP4NoErr);
+    
+    u32 n = 0;
+    do
+    {
+      MP4Handle outAccessUnit;
+      MP4NewHandle(0, &outAccessUnit);
+      u32 outSize, outSampleFlags;
+      s32 outCTS, outDTS;
+      err = MP4TrackReaderGetNextAccessUnit(reader, outAccessUnit, &outSize, &outSampleFlags, &outCTS, &outDTS);
+
+      if(!err)
+      {
+        checkRedMebxSamples(strPattern, repeatPattern, outAccessUnit, n);
+        n++;
+      } 
+    } while (err == MP4NoErr);
+    CHECK(strPattern.size()*repeatPattern == n);
+    
   }
 
-  SECTION("Re mebx")
-  {
-    // TODO: convert multiple metadata tracks back to a single mebx track
-    // compare with
-  }
 }

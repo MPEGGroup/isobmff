@@ -129,11 +129,49 @@ static MP4Err getNextAccessUnit(struct MP4TrackReaderStruct *self, MP4Handle out
     BAILWITHERROR(MP4EOF)
   }
 
-  /* first get the sample */
-  err = MP4GetIndMediaSampleWithPad(self->media, self->nextSampleNumber, outAccessUnit, outSize,
-                                    &sampleDTS, &sampleCTSOffset, &duration, &sampleFlags,
-                                    &self->sampleDescIndex, outPad);
-  if(err) goto bail;
+  if(self->isMebxTrack)
+  {
+    u32 auSize;
+    MP4Handle auH;
+    char *data;
+    char *end;
+    err = MP4NewHandle(0, &auH);
+    if(err) goto bail;
+
+    /* first get the sample */
+    err = MP4GetIndMediaSampleWithPad(self->media, self->nextSampleNumber, auH, &auSize, &sampleDTS,
+                                      &sampleCTSOffset, &duration, &sampleFlags,
+                                      &self->sampleDescIndex, outPad);
+    if(err) goto bail;
+    data = *auH;
+    end  = data + auSize;
+    while(data + 4 <= end)
+    {
+      u32 length, type;
+      length = (unsigned char)data[0] << 24 | (unsigned char)data[1] << 16 |
+               (unsigned char)data[2] << 8 | (unsigned char)data[3];
+      if(length == 0) break;
+      type = (unsigned char)data[4] << 24 | (unsigned char)data[5] << 16 |
+             (unsigned char)data[6] << 8 | (unsigned char)data[7];
+      if(type == self->mebx_local_key)
+      {
+        *outSize = length - 8;
+        err      = MP4SetHandleSize(outAccessUnit, *outSize);
+        if(err) goto bail;
+        memcpy(*outAccessUnit, data + 8, *outSize);
+      }
+      data += length;
+    }
+  }
+  else
+  {
+    /* first get the sample */
+    err = MP4GetIndMediaSampleWithPad(self->media, self->nextSampleNumber, outAccessUnit, outSize,
+                                      &sampleDTS, &sampleCTSOffset, &duration, &sampleFlags,
+                                      &self->sampleDescIndex, outPad);
+    if(err) goto bail;
+  }
+
   self->currentSampleNumber = self->nextSampleNumber;
 
   if(self->isODTrack)

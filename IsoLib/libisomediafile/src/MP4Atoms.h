@@ -935,7 +935,6 @@ typedef struct MP4MetadataKeyTableBox
   MP4MetadataKeyBoxPtr (*getMetadataKeyBox)(struct MP4MetadataKeyTableBox *self, u32 local_key_id);
   MP4Err (*addMetaDataKeyBox)(struct MP4MetadataKeyTableBox *self, MP4AtomPtr atom);
   MP4LinkedList metadataKeyBoxList;
-  u32 next_availiable_local_key_id;
 } MP4MetadataKeyTableBox, *MP4MetadataKeyTableBoxPtr;
 
 typedef struct MP4BoxedMetadataSampleEntry

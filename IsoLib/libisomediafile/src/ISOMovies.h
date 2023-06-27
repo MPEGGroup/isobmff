@@ -311,6 +311,7 @@ extern "C"
 #define ISOGetUserDataTypeCount MP4GetUserDataTypeCount
 #define ISONewUserData MP4NewUserData
 #define ISOCreateTrackReader MP4CreateTrackReader
+#define ISOSetMebxTrackReader MP4SetMebxTrackReader
 #define ISODisposeTrackReader MP4DisposeTrackReader
 #define ISONewHandle MP4NewHandle
 #define ISOSetHandleSize MP4SetHandleSize
@@ -733,18 +734,49 @@ extern "C"
                               u32 dataReferenceIndex, u32 length_size, MP4Handle first_sps,
                               MP4Handle first_pps, MP4Handle first_vps);
 
+  /**
+   * @brief Construct a new mebx sample entry
+   * @ingroup SampleDescr
+   *
+   * @param outSE output sample entry object
+   * @param dataReferenceIndex data reference index
+   */
   ISO_EXTERN(ISOErr)
-  ISONewMebxSampleDescription(struct MP4BoxedMetadataSampleEntry **outSE, u32 dataReferenceIndex,
-                              u32 key_namespace, MP4Handle key_value, char *locale_string,
-                              MP4Handle setupInfo, u32 *out_local_key_id);
+  ISONewMebxSampleDescription(struct MP4BoxedMetadataSampleEntry **outSE, u32 dataReferenceIndex);
 
+  /**
+   * @brief Add a new metadata type to mebx sample entry
+   *
+   * @param mebxSE input mebx sample entry
+   * @param desired_local_key_id local key ID which you would like to have
+   * @param out_local_key_id assigned local key ID. If available it will be the same as desired.
+   * @param key_namespace Metadata key declaration box namespace
+   * @param key_value Metadata key declaration box key value. Can be 0 if
+   * key_namespace=MP4KeyNamespace_me4c
+   * @param locale_string Metadata locale box string. If 0 then no 'loca' box is present.
+   * @param setupInfo Metadata setup box data. If 0 then no 'setu' box is present.
+   */
   ISO_EXTERN(ISOErr)
-  ISOAddMebxMetadataToSampleEntry(struct MP4BoxedMetadataSampleEntry *mebxSE, u32 key_namespace,
-                                  MP4Handle key_value, char *locale_string, MP4Handle setupInfo,
-                                  u32 *out_local_key_id);
+  ISOAddMebxMetadataToSampleEntry(struct MP4BoxedMetadataSampleEntry *mebxSE,
+                                  u32 desired_local_key_id, u32 *out_local_key_id,
+                                  u32 key_namespace, MP4Handle key_value, char *locale_string,
+                                  MP4Handle setupInfo);
 
   ISO_EXTERN(ISOErr)
   ISOGetMebxHandle(struct MP4BoxedMetadataSampleEntry *mebxSE, MP4Handle sampleDescriptionH);
+
+  /**
+   * @brief Get the number of entries in the mebx sample entry
+   *
+   * @param sampleEntryH input sample entry of the mebx track
+   * @param key_cnt number of local_key_id's
+   */
+  ISO_EXTERN(ISOErr)
+  ISOGetMebxMetadataCount(MP4Handle sampleEntryH, u32 *key_cnt);
+
+  ISO_EXTERN(ISOErr)
+  ISOGetMebxMetadataConfig(MP4Handle sampleEntryH, u32 cnt, u32 *local_key_id, u32 *key_namespace,
+                           MP4Handle key_value, char **locale_string, MP4Handle setupInfo);
 
   /*************************************************************************************************
    * VVC Sample descriptions
