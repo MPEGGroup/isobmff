@@ -1648,8 +1648,6 @@ typedef struct MP4RestrictedVideoSampleEntryAtom
   MP4_BASE_ATOM
   COMMON_SAMPLE_ENTRY_FIELDS
 
-  // MP4AtomPtr MP4RestrictedSchemeInfo;
-
   u32 restriction_type;
 
   MP4Err (*addSchemeInfoAtom)(struct MP4Atom *self, struct MP4Atom *theAtom);
