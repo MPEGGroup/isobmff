@@ -110,7 +110,7 @@ static MP4Err addAtom(MP4RestrictedVideoSampleEntryAtomPtr self, MP4AtomPtr atom
   if(atom == NULL) BAILWITHERROR(MP4BadParamErr);
   err = MP4AddListEntry(atom, self->ExtensionAtomList);
   if(err) goto bail;
-  
+
 bail:
   TEST_RETURN(err);
 
@@ -223,12 +223,12 @@ static MP4Err untransform(struct MP4Atom *s)
   MP4OriginalFormatAtomPtr fmt;
   MP4RestrictedSchemeInfoAtomPtr rinf;
 
-  err = MP4NoErr;
+  err  = MP4NoErr;
   rinf = NULL;
 
   err = MP4GetListEntryCount(self->ExtensionAtomList, &atomListSize);
   if(err) goto bail;
-  for(i = 0; i < atomListSize; i++) 
+  for(i = 0; i < atomListSize; i++)
   {
     MP4AtomPtr a;
     err = MP4GetListEntry(self->ExtensionAtomList, i, (char **)&a);
@@ -236,7 +236,7 @@ static MP4Err untransform(struct MP4Atom *s)
     if(a->type == MP4RestrictedSchemeInfoAtomType)
     {
       index = i;
-      rinf = (MP4RestrictedSchemeInfoAtomPtr)a;
+      rinf  = (MP4RestrictedSchemeInfoAtomPtr)a;
       break;
     }
   }
@@ -357,10 +357,10 @@ static MP4Err getRinf(struct MP4Atom *s, struct MP4Atom **theAtom)
   u32 atomListSize;
   u32 i;
   MP4RestrictedVideoSampleEntryAtomPtr self = (MP4RestrictedVideoSampleEntryAtomPtr)s;
-  
+
   err = MP4GetListEntryCount(self->ExtensionAtomList, &atomListSize);
   if(err) goto bail;
-  for(i = 0; i < atomListSize; i++) 
+  for(i = 0; i < atomListSize; i++)
   {
     MP4AtomPtr a;
     err = MP4GetListEntry(self->ExtensionAtomList, i, (char **)&a);
