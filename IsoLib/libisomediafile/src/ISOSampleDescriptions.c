@@ -1381,7 +1381,8 @@ MP4_EXTERN(MP4Err) ISOGetRESVOriginalFormat(MP4Handle sampleEntryH, u32 *outOrig
 
   if(entry->type != MP4RestrictedVideoSampleEntryAtomType) BAILWITHERROR(MP4BadParamErr);
 
-  rinf = (MP4RestrictedSchemeInfoAtomPtr)entry->MP4RestrictedSchemeInfo;
+  err = entry->getRinf((MP4AtomPtr)entry, (MP4AtomPtr *)&rinf);
+  if(err) goto bail;
   if(!rinf)
   {
     BAILWITHERROR(MP4BadParamErr);
