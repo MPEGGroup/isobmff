@@ -58,7 +58,7 @@ typedef struct MP4TrackReaderStruct
 {
   TRACK_READER_ENTRIES
   u32 isODTrack;
-} * MP4TrackReaderPtr;
+} *MP4TrackReaderPtr;
 
 MP4Err MP4CreateODTrackReader(MP4Movie theMovie, MP4Track theTrack, MP4TrackReaderPtr *outReader);
 MP4Err MP4CreateOrdinaryTrackReader(MP4Movie theMovie, MP4Track theTrack,

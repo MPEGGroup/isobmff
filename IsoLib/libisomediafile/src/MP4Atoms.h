@@ -1493,7 +1493,7 @@ enum
 typedef struct MP4TrackFragmentDecodeTimeAtom
 {
   MP4_FULL_ATOM
-  u32 baseMediaDecodeTime;
+  u64 baseMediaDecodeTime;
 } MP4TrackFragmentDecodeTimeAtom, *MP4TrackFragmentDecodeTimeAtomPtr;
 
 typedef struct MP4ItemPropertyContainerAtom

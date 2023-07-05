@@ -378,7 +378,7 @@ MP4OpenMovieFile(MP4Movie *theMovie, const char *movieURL, int openMovieFlags)
   moov->prepend_handle = NULL;
   moov->moovAtomPtr    = NULL;
   err                  = MP4CreateFileMappingObject((char *)movieURL,
-                                   (struct FileMappingObjectRecord **)&moov->fileMappingObject);
+                                                    (struct FileMappingObjectRecord **)&moov->fileMappingObject);
   if(err) goto bail;
   err = MP4CreateFileMappingInputStream(moov->fileMappingObject, &moov->inputStream);
   if(err) goto bail;
