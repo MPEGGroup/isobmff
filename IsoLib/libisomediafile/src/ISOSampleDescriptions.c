@@ -403,8 +403,16 @@ ISOGetSampleDescriptionDimensions(MP4Handle sampleEntryH, u16 *width, u16 *heigh
   err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType);
   if(err) goto bail;
 
-  *width  = (u16)entry->width;
-  *height = (u16)entry->height;
+  if(entry->type == MP4RestrictedVideoSampleEntryAtomType)
+  {
+    *width  = (u16)((MP4RestrictedVideoSampleEntryAtomPtr)entry)->width;
+    *height = (u16)((MP4RestrictedVideoSampleEntryAtomPtr)entry)->height;
+  }
+  else
+  {
+    *width  = (u16)entry->width;
+    *height = (u16)entry->height;
+  }
 
 bail:
   if(entry) entry->destroy((MP4AtomPtr)entry);
