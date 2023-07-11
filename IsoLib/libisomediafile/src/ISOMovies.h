@@ -716,6 +716,26 @@ extern "C"
    */
   ISO_EXTERN(ISOErr) ISOGetRESVOriginalFormat(MP4Handle sampleEntryH, u32 *outOrigFmt);
   /**
+   * @brief Get scheme_type and scheme_version from the SchemeTypeBox in resv
+   * @ingroup SampleDescr
+   * @param sampleEntryH resv sample entry data
+   * @param schemeType [out] scheme_type 4CC
+   * @param schemeVersion [out] scheme_version
+   * @param schemeURI [out] scheme_uri
+   */
+  ISO_EXTERN(ISOErr)
+  ISOGetRESVSchemeType(MP4Handle sampleEntryH, u32 *schemeType, u32 *schemeVersion,
+                       char **schemeURI);
+  /**
+   * @brief Get the box from the SchemeInformationBox in resv
+   * @ingroup SampleDescr
+   * @param sampleEntryH resv sample entry data
+   * @param atomType type of the atom inside SchemeInformationBox
+   * @param outAtom [out] data of the found box
+   */
+  ISO_EXTERN(ISOErr)
+  ISOGetRESVSchemeInfoAtom(MP4Handle sampleEntryH, u32 atomType, MP4Handle outAtom);
+  /**
    * @brief Create a new HEVC sample entry.
    * @ingroup SampleDescr
    *

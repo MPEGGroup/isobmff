@@ -1408,6 +1408,50 @@ bail:
   return err;
 }
 
+ISO_EXTERN(ISOErr)
+ISOGetRESVSchemeType(MP4Handle sampleEntryH, u32 *schemeType, u32 *schemeVersion, char **schemeURI)
+{
+  MP4Err err;
+  MP4RestrictedVideoSampleEntryAtomPtr entry = NULL;
+
+  err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType);
+  if(err) goto bail;
+
+  if(entry->type != MP4RestrictedVideoSampleEntryAtomType) BAILWITHERROR(MP4BadParamErr);
+
+  err = entry->getScheme((MP4AtomPtr)entry, schemeType, schemeVersion, schemeURI);
+  if(err) goto bail;
+
+bail:
+  if(entry) entry->destroy((MP4AtomPtr)entry);
+  return err;
+}
+
+ISO_EXTERN(ISOErr)
+ISOGetRESVSchemeInfoAtom(MP4Handle sampleEntryH, u32 atomType, MP4Handle outAtom)
+{
+  MP4Err err;
+  MP4RestrictedVideoSampleEntryAtomPtr entry = NULL;
+  MP4AtomPtr found;
+
+  if(outAtom == NULL) BAILWITHERROR(MP4BadParamErr);
+
+  err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType);
+  if(err) goto bail;
+
+  if(entry->type != MP4RestrictedVideoSampleEntryAtomType) BAILWITHERROR(MP4BadParamErr);
+
+  err = entry->getSchemeInfoAtom((MP4AtomPtr)entry, atomType, &found);
+  if(err) goto bail;
+
+  err = atomPtrToSampleEntryH(outAtom, found);
+  if(err) goto bail;
+
+bail:
+  if(entry) entry->destroy((MP4AtomPtr)entry);
+  return err;
+}
+
 MP4_EXTERN(MP4Err)
 ISONewHEVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32 dataReferenceIndex,
                             u32 length_size, MP4Handle first_sps, MP4Handle first_pps,
