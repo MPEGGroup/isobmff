@@ -676,7 +676,8 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
       (self->compressedGroup.index_msb_indicates_fragment_local_description ? 0x80 : 0) |
       (self->compressedGroup.grouping_type_parameter_present ? 0x40 : 0);
   }
-  else {
+  else
+  {
     self->flags = 0;
   }
 
