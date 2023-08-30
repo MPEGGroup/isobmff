@@ -218,7 +218,7 @@ static MP4Err untransform(struct MP4Atom *s)
 {
   MP4Err err;
   u32 atomListSize;
-  u32 index, i;
+  u32 i, index = 0;
   MP4RestrictedVideoSampleEntryAtomPtr self = (MP4RestrictedVideoSampleEntryAtomPtr)s;
   MP4OriginalFormatAtomPtr fmt;
   MP4RestrictedSchemeInfoAtomPtr rinf;
