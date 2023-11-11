@@ -168,6 +168,10 @@ static MP4Err addEntry(MP4SubSampleInformationAtom *s, u32 sample_delta, u32 sub
   self->subsample_count[current_entry] = subsample_count;
   for(i = 0; i < subsample_count; i++)
   {
+    if(((u32 *)*subsample_size_array)[i] > 0xFFFF)
+    {
+      self->version = 1;
+    }
     self->subsample_size[current_entry][i]     = ((u32 *)*subsample_size_array)[i];
     self->subsample_priority[current_entry][i] = ((u32 *)*subsample_priority_array)[i];
     self->discardable[current_entry][i]        = ((u32 *)*subsample_discardable_array)[i];
