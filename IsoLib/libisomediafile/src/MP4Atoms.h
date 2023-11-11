@@ -1230,7 +1230,7 @@ typedef struct MP4SubSampleInformationAtom
   u32 **subsample_size;
   u32 **subsample_priority;
   u32 **discardable;
-  u32 **reserved;
+  u32 **codec_specific_parameters;
 } MP4SubSampleInformationAtom, *MP4SubSampleInformationAtomPtr;
 
 typedef struct MP4SyncSampleAtom
