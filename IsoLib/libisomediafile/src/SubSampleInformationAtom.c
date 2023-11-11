@@ -1,5 +1,16 @@
-/* This software module was originally developed by Apple Computer, Inc. in the course of development of MPEG-4. This software module is an implementation of a part of one or more MPEG-4 tools as specified by MPEG-4. ISO/IEC gives users of MPEG-4 free license to this software module or modifications thereof for use in hardware or software products claiming conformance to MPEG-4. Those intending to use this software module in hardware or software products are advised that its use may infringe existing patents. The original developer of this software module and his/her company, the subsequent editors and their companies, and ISO/IEC have no liability for use of this software module or modifications thereof in an implementation. Copyright is not released for non MPEG-4 conforming products. Apple Computer, Inc. retains full right to use the code for its own purpose, assign or donate the code to a third party and to inhibit third parties from using the code for non MPEG-4 conforming products. This copyright notice must be included in all copies or derivative works. Copyright (c) 1999.
-*/
+/* This software module was originally developed by Apple Computer, Inc. in the course of
+ * development of MPEG-4. This software module is an implementation of a part of one or more MPEG-4
+ * tools as specified by MPEG-4. ISO/IEC gives users of MPEG-4 free license to this software module
+ * or modifications thereof for use in hardware or software products claiming conformance to MPEG-4.
+ * Those intending to use this software module in hardware or software products are advised that its
+ * use may infringe existing patents. The original developer of this software module and his/her
+ * company, the subsequent editors and their companies, and ISO/IEC have no liability for use of
+ * this software module or modifications thereof in an implementation. Copyright is not released for
+ * non MPEG-4 conforming products. Apple Computer, Inc. retains full right to use the code for its
+ * own purpose, assign or donate the code to a third party and to inhibit third parties from using
+ * the code for non MPEG-4 conforming products. This copyright notice must be included in all copies
+ * or derivative works. Copyright (c) 1999.
+ */
 
 /* Created for Nokia FAVS project by Tampere University of Technology */
 
@@ -140,7 +151,8 @@ static MP4Err addEntry(MP4SubSampleInformationAtom *s, u32 sample_delta, u32 sub
   self->discardable[current_entry] = (u32 *)calloc(subsample_count, sizeof(u32));
   TESTMALLOC(self->discardable[current_entry]);
 
-  self->codec_specific_parameters = (u32 **)realloc(self->codec_specific_parameters, (self->entry_count + 1) * sizeof(u32 *));
+  self->codec_specific_parameters =
+    (u32 **)realloc(self->codec_specific_parameters, (self->entry_count + 1) * sizeof(u32 *));
   TESTMALLOC(self->codec_specific_parameters);
   self->codec_specific_parameters[current_entry] = (u32 *)calloc(subsample_count, sizeof(u32));
   TESTMALLOC(self->codec_specific_parameters[current_entry]);
@@ -153,10 +165,75 @@ static MP4Err addEntry(MP4SubSampleInformationAtom *s, u32 sample_delta, u32 sub
     {
       self->version = 1;
     }
-    self->subsample_size[current_entry][i]     = ((u32 *)*subsample_size_array)[i];
-    self->subsample_priority[current_entry][i] = ((u32 *)*subsample_priority_array)[i];
-    self->discardable[current_entry][i]        = ((u32 *)*subsample_discardable_array)[i];
+    self->subsample_size[current_entry][i]            = ((u32 *)*subsample_size_array)[i];
+    self->subsample_priority[current_entry][i]        = ((u32 *)*subsample_priority_array)[i];
+    self->discardable[current_entry][i]               = ((u32 *)*subsample_discardable_array)[i];
     self->codec_specific_parameters[current_entry][i] = 0;
+  }
+
+  self->entry_count++;
+
+bail:
+  TEST_RETURN(err);
+  return err;
+}
+
+static MP4Err addEntry2(MP4SubSampleInformationAtom *s, u32 sample_delta, u32 subsample_count,
+                       MP4Handle subsample_size_array, MP4Handle subsample_priority_array,
+                       MP4Handle subsample_discardable_array, MP4Handle codec_specific_parameters_array)
+{
+  MP4Err err;
+  MP4SubSampleInformationAtomPtr self;
+  u32 i;
+  u32 current_entry;
+
+  err = MP4NoErr;
+  if(s == NULL) BAILWITHERROR(MP4BadParamErr);
+  self          = (MP4SubSampleInformationAtomPtr)s;
+  current_entry = self->entry_count;
+
+  /* re-allocate basic structures */
+  self->sample_delta = (u32 *)realloc(self->sample_delta, (self->entry_count + 1) * sizeof(u32));
+  TESTMALLOC(self->sample_delta);
+  self->subsample_count =
+    (u32 *)realloc(self->subsample_count, (self->entry_count + 1) * sizeof(u32));
+  TESTMALLOC(self->subsample_count);
+
+  self->subsample_size =
+    (u32 **)realloc(self->subsample_size, (self->entry_count + 1) * sizeof(u32 *));
+  TESTMALLOC(self->subsample_size);
+  self->subsample_size[current_entry] = (u32 *)calloc(subsample_count, sizeof(u32));
+  TESTMALLOC(self->subsample_size[current_entry]);
+
+  self->subsample_priority =
+    (u32 **)realloc(self->subsample_priority, (self->entry_count + 1) * sizeof(u32 *));
+  TESTMALLOC(self->subsample_priority);
+  self->subsample_priority[current_entry] = (u32 *)calloc(subsample_count, sizeof(u32));
+  TESTMALLOC(self->subsample_priority[current_entry]);
+
+  self->discardable = (u32 **)realloc(self->discardable, (self->entry_count + 1) * sizeof(u32 *));
+  TESTMALLOC(self->discardable);
+  self->discardable[current_entry] = (u32 *)calloc(subsample_count, sizeof(u32));
+  TESTMALLOC(self->discardable[current_entry]);
+
+  self->codec_specific_parameters =
+    (u32 **)realloc(self->codec_specific_parameters, (self->entry_count + 1) * sizeof(u32 *));
+  TESTMALLOC(self->codec_specific_parameters);
+  self->codec_specific_parameters[current_entry] = (u32 *)calloc(subsample_count, sizeof(u32));
+  TESTMALLOC(self->codec_specific_parameters[current_entry]);
+
+  self->sample_delta[current_entry]    = sample_delta;
+  self->subsample_count[current_entry] = subsample_count;
+  for(i = 0; i < subsample_count; i++)
+  {
+    if(((u32 *)*subsample_size_array)[i] > 0xFFFF)
+    {
+      self->version = 1;
+    }
+    self->subsample_size[current_entry][i]            = ((u32 *)*subsample_size_array)[i];
+    self->subsample_priority[current_entry][i]        = ((u32 *)*subsample_priority_array)[i];
+    self->discardable[current_entry][i]               = ((u32 *)*subsample_discardable_array)[i];
+    self->codec_specific_parameters[current_entry][i] = ((u32 *)*codec_specific_parameters_array)[i];
   }
 
   self->entry_count++;
@@ -243,6 +320,7 @@ MP4Err MP4CreateSubSampleInformationAtom(MP4SubSampleInformationAtomPtr *outAtom
   self->calculateSize         = calculateSize;
   self->serialize             = serialize;
   self->addEntry              = addEntry;
+  self->addEntry2             = addEntry2;
   *outAtom                    = self;
   self->entry_count           = 0;
 
