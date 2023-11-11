@@ -1225,8 +1225,9 @@ typedef struct MP4SubSampleInformationAtom
                      u32 subsample_count, MP4Handle subsample_size_array,
                      MP4Handle subsample_priority_array, MP4Handle subsample_discardable_array);
   MP4Err (*addEntry2)(struct MP4SubSampleInformationAtom *self, u32 sample_delta,
-                     u32 subsample_count, MP4Handle subsample_size_array,
-                     MP4Handle subsample_priority_array, MP4Handle subsample_discardable_array, MP4Handle codec_specific_parameters_array);
+                      u32 subsample_count, MP4Handle subsample_size_array,
+                      MP4Handle subsample_priority_array, MP4Handle subsample_discardable_array,
+                      MP4Handle codec_specific_parameters_array);
   u32 entry_count;
   u32 *sample_delta;
   u32 *subsample_count;

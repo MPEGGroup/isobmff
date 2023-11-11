@@ -179,8 +179,9 @@ bail:
 }
 
 static MP4Err addEntry2(MP4SubSampleInformationAtom *s, u32 sample_delta, u32 subsample_count,
-                       MP4Handle subsample_size_array, MP4Handle subsample_priority_array,
-                       MP4Handle subsample_discardable_array, MP4Handle codec_specific_parameters_array)
+                        MP4Handle subsample_size_array, MP4Handle subsample_priority_array,
+                        MP4Handle subsample_discardable_array,
+                        MP4Handle codec_specific_parameters_array)
 {
   MP4Err err;
   MP4SubSampleInformationAtomPtr self;
@@ -230,10 +231,11 @@ static MP4Err addEntry2(MP4SubSampleInformationAtom *s, u32 sample_delta, u32 su
     {
       self->version = 1;
     }
-    self->subsample_size[current_entry][i]            = ((u32 *)*subsample_size_array)[i];
-    self->subsample_priority[current_entry][i]        = ((u32 *)*subsample_priority_array)[i];
-    self->discardable[current_entry][i]               = ((u32 *)*subsample_discardable_array)[i];
-    self->codec_specific_parameters[current_entry][i] = ((u32 *)*codec_specific_parameters_array)[i];
+    self->subsample_size[current_entry][i]     = ((u32 *)*subsample_size_array)[i];
+    self->subsample_priority[current_entry][i] = ((u32 *)*subsample_priority_array)[i];
+    self->discardable[current_entry][i]        = ((u32 *)*subsample_discardable_array)[i];
+    self->codec_specific_parameters[current_entry][i] =
+      ((u32 *)*codec_specific_parameters_array)[i];
   }
 
   self->entry_count++;

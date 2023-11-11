@@ -694,7 +694,8 @@ extern "C"
                                   MP4Handle subsample_priority_array,
                                   MP4Handle subsample_discardable_array);
   /**
-   * @brief Same as MP4AddSubSampleInformationEntry but also allows to add the codec specific parameters
+   * @brief Same as MP4AddSubSampleInformationEntry but also allows to add the codec specific
+   * parameters
    *
    * @param subsample
    * @param sample_delta
@@ -707,10 +708,10 @@ extern "C"
    */
   MP4_EXTERN(MP4Err)
   MP4AddSubSampleInformationEntry2(MP4GenericAtom subsample, u32 sample_delta, u32 subsample_count,
-                                  MP4Handle subsample_size_array,
-                                  MP4Handle subsample_priority_array,
-                                  MP4Handle subsample_discardable_array,
-                                  MP4Handle codec_specific_parameters_array);
+                                   MP4Handle subsample_size_array,
+                                   MP4Handle subsample_priority_array,
+                                   MP4Handle subsample_discardable_array,
+                                   MP4Handle codec_specific_parameters_array);
   /**
    * @brief Add track to a track group ID.
    *
