@@ -75,7 +75,7 @@ static MP4Err addReference(struct MP4SegmentIndexAtom *self, u8 referenceType, u
     p->startsWithSAP      = startsWithSAP;
     p->SAPType            = SAPType;
     p->SAPDeltaTime       = SAPDeltaTime;
-
+    self->referenceCount++;
     /* add reference to linked list */
     err = MP4AddListEntry(p, self->referencesList);
     if(err) goto bail;
@@ -170,6 +170,7 @@ bail:
 static MP4Err calculateSize(struct MP4Atom *s)
 {
   MP4Err err;
+  u32 i;
   MP4SegmentIndexAtomPtr self = (MP4SegmentIndexAtomPtr)s;
   err                         = MP4NoErr;
 
@@ -179,7 +180,11 @@ static MP4Err calculateSize(struct MP4Atom *s)
   self->size += (4 * 2) + (4 * 2) + (2 * 2);
 
   self->size += (4 * self->referenceCount);
-
+  
+  for (i=0; i < self->referenceCount; i++)
+  {
+    self->size += 12;
+  }
 bail:
   TEST_RETURN(err);
 
