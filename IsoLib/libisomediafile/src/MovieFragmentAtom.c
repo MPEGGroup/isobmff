@@ -34,7 +34,8 @@ static void destroy(MP4AtomPtr s)
 
   self = (MP4MovieFragmentAtomPtr)s;
   if(self == NULL) BAILWITHERROR(MP4BadParamErr)
-  DESTROY_ATOM_LIST_F(atomList);
+  err = MP4DeleteLinkedList(self->atomList);
+  if(err) goto bail;
   (self->mfhd)->destroy((MP4AtomPtr)(self->mfhd));
   if(self->super) self->super->destroy(s);
 

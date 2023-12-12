@@ -74,6 +74,20 @@ MP4_EXTERN(MP4Err) MP4DisposeMovie(MP4Movie theMovie)
 
     dh->close(dh);
   }
+  
+  if(moov->moovAtomPtr->type == MP4MovieFragmentAtomType)
+  {
+    MP4MovieFragmentAtomPtr moof;
+    MP4TrackFragmentAtomPtr traf;
+    u32 i;
+    moof = (MP4MovieFragmentAtomPtr)moov->moovAtomPtr;
+    for (i=0; i<moof->atomList->entryCount; i++)
+    {
+        err = MP4GetListEntry(moof->atomList, i, (char **)&traf);
+        if (err) goto bail;
+        traf->destroy((MP4AtomPtr)traf);
+    }
+  }
 
   if(moov->moovAtomPtr) moov->moovAtomPtr->destroy(moov->moovAtomPtr);
 
