@@ -74,7 +74,7 @@ MP4_EXTERN(MP4Err) MP4DisposeMovie(MP4Movie theMovie)
 
     dh->close(dh);
   }
-  
+
   if(moov->moovAtomPtr->type == MP4MovieFragmentAtomType)
   {
     MP4MovieFragmentAtomPtr moof;
@@ -85,22 +85,22 @@ MP4_EXTERN(MP4Err) MP4DisposeMovie(MP4Movie theMovie)
     u32 trackTotalCount;
 
     moof = (MP4MovieFragmentAtomPtr)moov->moovAtomPtr;
-    for (i = 0; i < moof->atomList->entryCount; i++)
+    for(i = 0; i < moof->atomList->entryCount; i++)
     {
-        err = MP4GetListEntry(moof->atomList, i, (char **)&traf);
-        if (err) goto bail;
-        traf->destroy((MP4AtomPtr)traf);
+      err = MP4GetListEntry(moof->atomList, i, (char **)&traf);
+      if(err) goto bail;
+      traf->destroy((MP4AtomPtr)traf);
     }
 
-    movieAtom = (MP4MovieAtomPtr)moov->true_moov;
+    movieAtom       = (MP4MovieAtomPtr)moov->true_moov;
     trackTotalCount = movieAtom->getTrackCount(movieAtom);
-    if (trackTotalCount != 0)
+    if(trackTotalCount != 0)
     {
-        for (i = 1; i <= trackTotalCount; i++)
-        {
-            movieAtom->getTrackExtendsAtom(movieAtom, i, (MP4AtomPtr*)&trex);
-            trex->destroy((MP4AtomPtr)trex);
-        }
+      for(i = 1; i <= trackTotalCount; i++)
+      {
+        movieAtom->getTrackExtendsAtom(movieAtom, i, (MP4AtomPtr *)&trex);
+        trex->destroy((MP4AtomPtr)trex);
+      }
     }
   }
 

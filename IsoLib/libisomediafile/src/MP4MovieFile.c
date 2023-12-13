@@ -381,11 +381,11 @@ ISOStartMovieFragment(MP4Movie theMovie)
     moof              = (MP4MovieFragmentAtomPtr)movie->moovAtomPtr;
     mfhd              = (MP4MovieFragmentHeaderAtomPtr)moof->mfhd;
     fragment_sequence = mfhd->sequence_number + 1;
-    for (i=0; i<moof->atomList->entryCount; i++)
+    for(i = 0; i < moof->atomList->entryCount; i++)
     {
-        err = MP4GetListEntry(moof->atomList, i, (char **)&traf);
-        if (err) goto bail;
-        traf->destroy((MP4AtomPtr)traf);
+      err = MP4GetListEntry(moof->atomList, i, (char **)&traf);
+      if(err) goto bail;
+      traf->destroy((MP4AtomPtr)traf);
     }
     moof->destroy(movie->moovAtomPtr); /* the old moof */
   }
