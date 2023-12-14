@@ -180,8 +180,8 @@ static MP4Err calculateSize(struct MP4Atom *s)
   self->size += (4 * 2) + (4 * 2) + (2 * 2);
 
   self->size += (4 * self->referenceCount);
-  
-  for (i=0; i < self->referenceCount; i++)
+
+  for(i = 0; i < self->referenceCount; i++)
   {
     self->size += 12;
   }
