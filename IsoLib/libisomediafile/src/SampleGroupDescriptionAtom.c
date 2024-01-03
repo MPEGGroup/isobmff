@@ -222,14 +222,13 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   sprintf(msgString, " grouping type is '%s'", typeString);
   inputStream->msg(inputStream, msgString);
 
-  if(self->version == 1)
+  if(self->version >= 1)
   {
     GET32(default_length);
   }
-  else
+  if(self->version >= 2)
   {
-    err = MP4NotImplementedErr;
-    goto bail;
+    GET32(default_group_description_index);
   }
 
   GET32(groupCount);
@@ -240,12 +239,22 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   for(i = 0; i < self->groupCount; i++)
   {
     u32 count;
-    if(self->default_length == 0)
+    if(self->version >= 1)
     {
-      GET32_V_MSG(count, NULL);
+      if(self->default_length == 0)
+      {
+        GET32_V_MSG(count, NULL);
+      }
+      else
+      {
+        count = self->default_length;
+      }
     }
     else
-      count = self->default_length;
+    {
+      assert(self->size > self->bytesRead);
+      count = self->size - self->bytesRead;
+    }
 
     sprintf(msgString, " entry %d, size %d", i + 1, count);
     inputStream->msg(inputStream, msgString);
@@ -286,6 +295,8 @@ MP4Err MP4CreateSampleGroupDescriptionAtom(MP4SampleGroupDescriptionAtomPtr *out
   self->default_length          = 0;
   self->groupCount              = 0;
   self->groups                  = NULL;
+
+  self->default_group_description_index = 0;
 
   *outAtom = self;
 bail:

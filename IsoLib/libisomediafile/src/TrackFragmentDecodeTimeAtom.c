@@ -44,7 +44,17 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   err = MP4SerializeCommonFullAtomFields((MP4FullAtomPtr)s, buffer);
   if(err) goto bail;
   buffer += self->bytesWritten;
-  PUT32(baseMediaDecodeTime);
+
+  if(self->version == 1)
+  {
+    PUT64(baseMediaDecodeTime);
+  }
+  else if(self->version == 0)
+  {
+    PUT32(baseMediaDecodeTime);
+  }
+  else
+    BAILWITHERROR(MP4NotImplementedErr);
 
   assert(self->bytesWritten == self->size);
 bail:
@@ -61,7 +71,17 @@ static MP4Err calculateSize(struct MP4Atom *s)
 
   err = MP4CalculateFullAtomFieldSize((MP4FullAtomPtr)s);
   if(err) goto bail;
-  self->size += 4;
+  if(self->version == 1)
+  {
+    self->size += 8;
+  }
+  else if(self->version == 0)
+  {
+    self->size += 4;
+  }
+  else
+    BAILWITHERROR(MP4NotImplementedErr);
+
 bail:
   TEST_RETURN(err);
 
@@ -77,7 +97,17 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   if(self == NULL) BAILWITHERROR(MP4BadParamErr)
   err = self->super->createFromInputStream(s, proto, (char *)inputStream);
   if(err) goto bail;
-  GET32(baseMediaDecodeTime);
+  if(self->version == 1)
+  {
+    GET64(baseMediaDecodeTime);
+  }
+  else if(self->version == 0)
+  {
+    GET32(baseMediaDecodeTime);
+  }
+  else
+    BAILWITHERROR(MP4NotImplementedErr);
+
   assert(self->bytesRead == self->size);
 
 bail:

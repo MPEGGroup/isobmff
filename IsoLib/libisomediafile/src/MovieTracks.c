@@ -323,6 +323,28 @@ bail:
   return err;
 }
 
+MP4_EXTERN(MP4Err)
+MP4AddSubSampleInformationEntry2(MP4GenericAtom subsample, u32 sample_delta, u32 subsample_count,
+                                 MP4Handle subsample_size_array, MP4Handle subsample_priority_array,
+                                 MP4Handle subsample_discardable_array,
+                                 MP4Handle codec_specific_parameters_array)
+{
+  MP4Err err;
+  MP4SubSampleInformationAtomPtr subs;
+
+  err = MP4NoErr;
+  if(subsample == NULL) BAILWITHERROR(MP4BadParamErr);
+  subs = (MP4SubSampleInformationAtomPtr)subsample;
+
+  err = subs->addEntry2(subs, sample_delta, subsample_count, subsample_size_array,
+                        subsample_priority_array, subsample_discardable_array,
+                        codec_specific_parameters_array);
+
+bail:
+  TEST_RETURN(err);
+  return err;
+}
+
 MP4_EXTERN(MP4Err) MP4AddTrackGroup(MP4Track theTrack, u32 groupID, u32 dependencyType)
 {
   MP4Err err;
