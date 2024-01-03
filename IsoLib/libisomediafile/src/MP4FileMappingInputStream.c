@@ -158,6 +158,29 @@ bail:
   return err;
 }
 
+static MP4Err rewindData(struct MP4InputStreamRecord *s, u64 bytes, char *msg)
+{
+  MP4Err err;
+  MP4FileMappingInputStreamPtr self = (MP4FileMappingInputStreamPtr)s;
+
+  err = MP4NoErr;
+
+  CHECK_AVAIL(bytes)
+  self->available += bytes;
+  self->current_offset -= bytes;
+
+  if(msg && self->debugging)
+  {
+    doIndent(s);
+    fprintf(stdout, "%s = [%lld bytes of data rewinded]\n", msg, bytes);
+  }
+
+bail:
+  TEST_RETURN(err);
+
+  return err;
+}
+
 static MP4Err readData(struct MP4InputStreamRecord *s, u64 bytes, char *outData, char *msg)
 {
   MP4Err err;
@@ -223,6 +246,7 @@ MP4Err MP4CreateFileMappingInputStream(struct FileMappingObjectRecord *mapping,
   is->read32               = read32;
   is->readData             = readData;
   is->skipData             = skipData;
+  is->rewindData           = rewindData;
   is->getStreamOffset      = getStreamOffset;
   is->getFileMappingObject = getFileMappingObject;
   is->mapping              = mapping;
