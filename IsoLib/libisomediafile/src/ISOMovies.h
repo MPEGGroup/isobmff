@@ -1102,6 +1102,17 @@ extern "C"
    */
   ISO_EXTERN(ISOErr) ISOSetItemInfoItemType(ISOMetaItem item, u32 item_type, char *item_uri_type);
   /**
+   * @brief Hide item by setting the (flags & 1) = 1
+   * @param item Item to hide
+   */
+  ISO_EXTERN(ISOErr) ISOHideItem(ISOMetaItem item);
+  /**
+   * @brief Check if item is hiden
+   * @param item Item to check
+   * @return MP4NoErr if item is hidden, MP4NotFoundErr if not, MP4InvalidMediaErr otherwise
+   */
+  ISO_EXTERN(ISOErr) ISOIsItemHidden(ISOMetaItem item);
+  /**
    * @brief Gets an item info item type from an existing item info entry.
    * @param item_uri_type could be NULL, if the item_type is not ‘uri ‘.
    */

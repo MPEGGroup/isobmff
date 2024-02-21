@@ -251,6 +251,10 @@ TEST_CASE("metadata")
     err = ISOSetPrimaryItem(meta, item1);
     CHECK(err == MP4NoErr);
 
+    // it is not allowed to hide a primary item
+    err = ISOHideItem(item1);
+    CHECK(err == MP4InvalidMediaErr);
+
     // item 2
     ISOAddMetaItem(meta, &item2, 0, 0);
     err = ISOAddItemExtentUsingItemData(item2, itemDataHandle2);
@@ -258,6 +262,8 @@ TEST_CASE("metadata")
     err = ISOSetItemInfo(item2, 0, (char *)"second item", NULL, NULL);
     CHECK(err == MP4NoErr);
     err = ISOSetItemInfoItemType(item2, MP4_FOUR_CHAR_CODE('s', 'c', 'n', 'd'), NULL);
+    CHECK(err == MP4NoErr);
+    err = ISOHideItem(item2);
     CHECK(err == MP4NoErr);
 
     // item 3
@@ -316,6 +322,8 @@ TEST_CASE("metadata")
     memcpy(*propHandle, prop->data, prop->dataSize);
     err = compareData(propHandle, TestData::DECAFCODEDOC, sizeof(TestData::DECAFCODEDOC));
     CHECK(err == MP4NoErr);
+    err = ISOIsItemHidden(item1);
+    CHECK(err == MP4NotFoundErr);
 
     // check second item
     err = ISOGetAllItemsWithType(meta, MP4_FOUR_CHAR_CODE('s', 'c', 'n', 'd'), &items, &cnt);
@@ -329,6 +337,8 @@ TEST_CASE("metadata")
     CHECK(prop->type == MP4_FOUR_CHAR_CODE('p', 'r', 'o', 'p'));
     memcpy(*propHandle, prop->data, prop->dataSize);
     err = compareData(propHandle, TestData::DECAFCODEDOC, sizeof(TestData::DECAFCODEDOC));
+    CHECK(err == MP4NoErr);
+    err = ISOIsItemHidden(item2);
     CHECK(err == MP4NoErr);
 
     // check tirhd item

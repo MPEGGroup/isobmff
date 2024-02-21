@@ -1176,6 +1176,67 @@ bail:
   return err;
 }
 
+ISO_EXTERN(ISOErr) ISOHideItem(ISOMetaItem item)
+{
+  MP4Err err;
+  ISOMetaAtomPtr myMeta;
+  MetaItemLocationPtr myItem;
+  ISOItemInfoAtomPtr iinf;
+  ISOPrimaryItemAtomPtr pitm;
+  ISOItemInfoEntryAtomPtr infe;
+
+  err    = MP4NoErr;
+  myItem = (MetaItemLocationPtr)item;
+  myMeta = (ISOMetaAtomPtr)myItem->meta;
+  iinf   = (ISOItemInfoAtomPtr)myMeta->iinf;
+  pitm   = (ISOPrimaryItemAtomPtr)myMeta->pitm;
+
+  if(!iinf) BAILWITHERROR(MP4InvalidMediaErr);
+
+  if(pitm->item_ID == myItem->item_ID) BAILWITHERROR(MP4InvalidMediaErr);
+
+  infe = NULL;
+  err  = iinf->getEntry(iinf, myItem->item_ID, &infe);
+  if(err) goto bail;
+
+  if(infe == NULL) BAILWITHERROR(MP4InvalidMediaErr);
+
+  infe->flags |= 1U;
+
+bail:
+  TEST_RETURN(err);
+  return err;
+}
+
+ISO_EXTERN(ISOErr) ISOIsItemHidden(ISOMetaItem item)
+{
+  MP4Err err;
+  ISOMetaAtomPtr myMeta;
+  MetaItemLocationPtr myItem;
+  ISOItemInfoAtomPtr iinf;
+  ISOItemInfoEntryAtomPtr infe;
+
+  err    = MP4NoErr;
+  myItem = (MetaItemLocationPtr)item;
+  myMeta = (ISOMetaAtomPtr)myItem->meta;
+  iinf   = (ISOItemInfoAtomPtr)myMeta->iinf;
+
+  if(!iinf) BAILWITHERROR(MP4InvalidMediaErr);
+
+  infe = NULL;
+  err  = iinf->getEntry(iinf, myItem->item_ID, &infe);
+  if(err) goto bail;
+
+  if(infe == NULL) BAILWITHERROR(MP4InvalidMediaErr);
+
+  err = MP4NotFoundErr;
+  if(infe->flags & 1U) err = MP4NoErr;
+
+bail:
+  TEST_RETURN(err);
+  return err;
+}
+
 ISO_EXTERN(ISOErr) ISOGetItemInfoItemType(ISOMetaItem item, u32 *item_type, char **item_uri_type)
 {
   MP4Err err;
