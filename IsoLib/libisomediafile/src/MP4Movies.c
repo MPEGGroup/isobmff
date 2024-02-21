@@ -792,6 +792,33 @@ bail:
 }
 
 MP4_EXTERN(MP4Err)
+MP4GetMovieIndTrackSampleEntryType(MP4Movie theMovie, u32 idx, u32* SEType)
+{
+  MP4Err err;
+  MP4Track trak;
+  MP4TrackReader reader;
+  MP4Handle sampleEntryH;
+
+  MP4NewHandle(0, &sampleEntryH);
+
+  err = MP4GetMovieIndTrack(theMovie, idx, &trak);
+  if(err) goto bail;
+
+  err = MP4CreateTrackReader(trak, &reader);
+  if(err) goto bail;
+
+  err = MP4TrackReaderGetCurrentSampleDescription(reader, sampleEntryH);
+  if(err) goto bail;
+
+  err = ISOGetSampleDescriptionType(sampleEntryH, SEType);
+
+bail:
+  TEST_RETURN(err);
+  MP4DisposeHandle(sampleEntryH);
+  return err;
+}
+
+MP4_EXTERN(MP4Err)
 MP4GetMovieTrack(MP4Movie theMovie, u32 trackID, MP4Track *outTrack)
 {
   u32 i;

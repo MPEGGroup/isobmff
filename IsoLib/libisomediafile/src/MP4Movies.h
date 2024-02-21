@@ -745,6 +745,15 @@ extern "C"
    * @return MP4Err error code
    */
   MP4_EXTERN(MP4Err) MP4GetMovieIndTrack(MP4Movie theMovie, u32 trackIndex, MP4Track *outTrack);
+  /**
+   * @brief Get sample entry type of a track.
+   *
+   * @note This function only returns the first sample entry type.
+   * @param theMovie input movie object
+   * @param idx index of the track ranges between 1 and the number of tracks in theMovie.
+   * @param SEType [out] sample entry type (4CC)
+   */
+  MP4_EXTERN(MP4Err) MP4GetMovieIndTrackSampleEntryType(MP4Movie theMovie, u32 idx, u32* SEType);
 
   /*
   MP4_EXTERN ( MP4Err )
