@@ -1201,11 +1201,14 @@ ISO_EXTERN(ISOErr) ISOGetItemInfoItemType(ISOMetaItem item, u32 *item_type, char
 
   *item_type = infe->item_type;
 
-  if(infe->item_uri_type)
+  if(item_uri_type)
   {
-    u32 sz         = (u32)strlen(infe->item_uri_type);
-    *item_uri_type = (char *)calloc(1, sz);
-    memcpy(*item_uri_type, infe->item_uri_type, sz);
+    if(infe->item_uri_type)
+    {
+      u32 sz         = (u32)strlen(infe->item_uri_type);
+      *item_uri_type = (char *)calloc(1, sz);
+      memcpy(*item_uri_type, infe->item_uri_type, sz);
+    }
   }
 bail:
   TEST_RETURN(err);
