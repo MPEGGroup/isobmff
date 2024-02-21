@@ -792,7 +792,7 @@ bail:
 }
 
 MP4_EXTERN(MP4Err)
-MP4GetMovieIndTrackSampleEntryType(MP4Movie theMovie, u32 idx, u32* SEType)
+MP4GetMovieIndTrackSampleEntryType(MP4Movie theMovie, u32 idx, u32 *SEType)
 {
   MP4Err err;
   MP4Track trak;
