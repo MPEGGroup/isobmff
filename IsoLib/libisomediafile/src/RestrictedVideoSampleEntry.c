@@ -42,11 +42,6 @@ static void destroy(MP4AtomPtr s)
   self = (MP4RestrictedVideoSampleEntryAtomPtr)s;
   if(self == NULL) BAILWITHERROR(MP4BadParamErr)
 
-  if(self->MP4RestrictedSchemeInfo)
-  {
-    self->MP4RestrictedSchemeInfo->destroy(self->MP4RestrictedSchemeInfo);
-    self->MP4RestrictedSchemeInfo = NULL;
-  }
   DESTROY_ATOM_LIST_F(ExtensionAtomList)
 
   if(self->super) self->super->destroy(s);
@@ -81,7 +76,6 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   PUT16(reserved8);
   PUT16(reserved9);
 
-  SERIALIZE_ATOM(MP4RestrictedSchemeInfo);
   SERIALIZE_ATOM_LIST(ExtensionAtomList);
 
   assert(self->bytesWritten == self->size);
@@ -102,7 +96,6 @@ static MP4Err calculateSize(struct MP4Atom *s)
   if(err) goto bail;
   self->size +=
     (6 + 16 + 31 + (4 * 2) + (1 * 1) + (4 * 4)); /* TODO this probably includes restriction_type */
-  ADD_ATOM_SIZE(MP4RestrictedSchemeInfo);
   ADD_ATOM_LIST_SIZE(ExtensionAtomList);
 bail:
   TEST_RETURN(err);
@@ -115,12 +108,9 @@ static MP4Err addAtom(MP4RestrictedVideoSampleEntryAtomPtr self, MP4AtomPtr atom
   MP4Err err;
   err = MP4NoErr;
   if(atom == NULL) BAILWITHERROR(MP4BadParamErr);
-  if(atom->type == MP4RestrictedSchemeInfoAtomType) self->MP4RestrictedSchemeInfo = atom;
-  else
-  {
-    err = MP4AddListEntry(atom, self->ExtensionAtomList);
-    if(err) goto bail;
-  }
+  err = MP4AddListEntry(atom, self->ExtensionAtomList);
+  if(err) goto bail;
+
 bail:
   TEST_RETURN(err);
 
@@ -151,7 +141,6 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   GETBYTES(31, name31);
   GET16(reserved8);
   GET16(reserved9);
-  GETATOM(MP4RestrictedSchemeInfo);
   GETATOM_LIST(ExtensionAtomList);
 
   if(self->bytesRead != self->size) BAILWITHERROR(MP4BadDataErr);
@@ -228,14 +217,30 @@ bail:
 static MP4Err untransform(struct MP4Atom *s)
 {
   MP4Err err;
-
+  u32 atomListSize;
+  u32 i, index = 0;
   MP4RestrictedVideoSampleEntryAtomPtr self = (MP4RestrictedVideoSampleEntryAtomPtr)s;
   MP4OriginalFormatAtomPtr fmt;
   MP4RestrictedSchemeInfoAtomPtr rinf;
 
-  err = MP4NoErr;
+  err  = MP4NoErr;
+  rinf = NULL;
 
-  rinf = (MP4RestrictedSchemeInfoAtomPtr)self->MP4RestrictedSchemeInfo;
+  err = MP4GetListEntryCount(self->ExtensionAtomList, &atomListSize);
+  if(err) goto bail;
+  for(i = 0; i < atomListSize; i++)
+  {
+    MP4AtomPtr a;
+    err = MP4GetListEntry(self->ExtensionAtomList, i, (char **)&a);
+    if(err) goto bail;
+    if(a->type == MP4RestrictedSchemeInfoAtomType)
+    {
+      index = i;
+      rinf  = (MP4RestrictedSchemeInfoAtomPtr)a;
+      break;
+    }
+  }
+
   if(!rinf)
   {
     err = MP4BadParamErr;
@@ -249,10 +254,10 @@ static MP4Err untransform(struct MP4Atom *s)
     goto bail;
   }
 
-  self->type                    = fmt->original_format;
-  self->MP4RestrictedSchemeInfo = NULL;
-
+  self->type = fmt->original_format;
   rinf->destroy((MP4AtomPtr)rinf);
+
+  err = MP4DeleteListEntry(self->ExtensionAtomList, index);
 
 bail:
   TEST_RETURN(err);
@@ -268,7 +273,8 @@ static MP4Err addSchemeInfoAtom(struct MP4Atom *s, struct MP4Atom *theAtom)
   MP4SchemeInfoAtomPtr schi;
   MP4RestrictedSchemeInfoAtomPtr rinf;
 
-  rinf = (MP4RestrictedSchemeInfoAtomPtr)self->MP4RestrictedSchemeInfo;
+  err = self->getRinf((MP4AtomPtr)self, (MP4AtomPtr *)&rinf);
+  if(err) goto bail;
   if(!rinf)
   {
     err = MP4BadParamErr;
@@ -301,7 +307,8 @@ static MP4Err getSchemeInfoAtom(struct MP4Atom *s, u32 theType, struct MP4Atom *
 
   err = MP4NoErr;
 
-  rinf = (MP4RestrictedSchemeInfoAtomPtr)self->MP4RestrictedSchemeInfo;
+  err = self->getRinf((MP4AtomPtr)self, (MP4AtomPtr *)&rinf);
+  if(err) goto bail;
   if(!rinf)
   {
     err = MP4BadParamErr;
@@ -344,6 +351,32 @@ bail:
   return err;
 }
 
+static MP4Err getRinf(struct MP4Atom *s, struct MP4Atom **theAtom)
+{
+  MP4Err err;
+  u32 atomListSize;
+  u32 i;
+  MP4RestrictedVideoSampleEntryAtomPtr self = (MP4RestrictedVideoSampleEntryAtomPtr)s;
+
+  err = MP4GetListEntryCount(self->ExtensionAtomList, &atomListSize);
+  if(err) goto bail;
+  for(i = 0; i < atomListSize; i++)
+  {
+    MP4AtomPtr a;
+    err = MP4GetListEntry(self->ExtensionAtomList, i, (char **)&a);
+    if(err) goto bail;
+    if(a->type == MP4RestrictedSchemeInfoAtomType)
+    {
+      *theAtom = a;
+      return MP4NoErr;
+    }
+  }
+
+bail:
+  TEST_RETURN(err);
+  return err;
+}
+
 static MP4Err getScheme(struct MP4Atom *s, u32 *sch_type, u32 *sch_version, char **sch_url)
 {
   MP4Err err;
@@ -355,7 +388,8 @@ static MP4Err getScheme(struct MP4Atom *s, u32 *sch_type, u32 *sch_version, char
 
   err = MP4NoErr;
 
-  rinf = (MP4RestrictedSchemeInfoAtomPtr)self->MP4RestrictedSchemeInfo;
+  err = self->getRinf((MP4AtomPtr)self, (MP4AtomPtr *)&rinf);
+  if(err) goto bail;
   if(!rinf)
   {
     err = MP4BadParamErr;
@@ -400,6 +434,7 @@ MP4Err MP4CreateRestrictedVideoSampleEntryAtom(MP4RestrictedVideoSampleEntryAtom
   self->untransform       = untransform;
   self->addSchemeInfoAtom = addSchemeInfoAtom;
   self->getSchemeInfoAtom = getSchemeInfoAtom;
+  self->getRinf           = getRinf;
   self->getScheme         = getScheme;
   self->transform         = transform;
   self->addAtom           = addAtom;

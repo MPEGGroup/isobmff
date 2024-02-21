@@ -395,6 +395,7 @@ MP4_EXTERN(MP4Err)
 MP4GetMovieTrackCount(MP4Movie theMovie, u32 *outTrackCount)
 {
   GETMOVIEATOM(theMovie);
+  if(movieAtom == NULL) BAILWITHERROR(MP4BadDataErr);
   *outTrackCount = movieAtom->getTrackCount(movieAtom);
 bail:
   TEST_RETURN(err);
@@ -787,6 +788,33 @@ MP4GetMovieIndTrack(MP4Movie theMovie, u32 trackIndex, MP4Track *outTrack)
 bail:
   TEST_RETURN(err);
 
+  return err;
+}
+
+MP4_EXTERN(MP4Err)
+MP4GetMovieIndTrackSampleEntryType(MP4Movie theMovie, u32 idx, u32 *SEType)
+{
+  MP4Err err;
+  MP4Track trak;
+  MP4TrackReader reader;
+  MP4Handle sampleEntryH;
+
+  MP4NewHandle(0, &sampleEntryH);
+
+  err = MP4GetMovieIndTrack(theMovie, idx, &trak);
+  if(err) goto bail;
+
+  err = MP4CreateTrackReader(trak, &reader);
+  if(err) goto bail;
+
+  err = MP4TrackReaderGetCurrentSampleDescription(reader, sampleEntryH);
+  if(err) goto bail;
+
+  err = ISOGetSampleDescriptionType(sampleEntryH, SEType);
+
+bail:
+  TEST_RETURN(err);
+  MP4DisposeHandle(sampleEntryH);
   return err;
 }
 

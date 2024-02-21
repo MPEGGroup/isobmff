@@ -162,8 +162,10 @@ static MP4Err mergeFragments(struct MP4MovieFragmentAtom *self, MP4MovieAtomPtr 
       if(tfdt->baseMediaDecodeTime < initialMediaDuration) BAILWITHERROR(MP4InvalidMediaErr);
 
       if(tfdt->baseMediaDecodeTime > initialMediaDuration)
-        err = mdia->extendLastSampleDuration(mdia,
-                                             tfdt->baseMediaDecodeTime - (u32)initialMediaDuration);
+      {
+        u32 duration = (tfdt->baseMediaDecodeTime - initialMediaDuration) & 0xffffffff;
+        err          = mdia->extendLastSampleDuration(mdia, duration);
+      }
       if(err) goto bail;
     }
 

@@ -28,7 +28,7 @@
 TEST_CASE("metadata")
 {
   MP4Err err;
-
+  char test_uri[] = "test_uri";
   std::string strTestItem        = "test_item.mp4";
   std::string strTestEntityGroup = "test_meta_entity.mp4";
 
@@ -217,6 +217,7 @@ TEST_CASE("metadata")
     // add 2 items
     ISOMetaItem item1;
     ISOMetaItem item2;
+    ISOMetaItem item3; // URI item
 
     MP4Handle itemDataHandle1;
     MP4Handle itemDataHandle2;
@@ -231,7 +232,7 @@ TEST_CASE("metadata")
     CHECK(err == MP4NoErr);
 
     // item 1
-    ISOAddMetaItem(meta, &item1, 0, 0);
+    err = ISOAddMetaItem(meta, &item1, 0, 0);
     CHECK(err == MP4NoErr);
     err = ISOAddItemExtentUsingItemData(item1, itemDataHandle1);
     CHECK(err == MP4NoErr);
@@ -247,17 +248,31 @@ TEST_CASE("metadata")
     err = ISOAddMetaItemProperty(item1, pTestProp, 1);
     CHECK(err == MP4NoErr);
 
-    ISOSetPrimaryItem(meta, item1);
+    err = ISOSetPrimaryItem(meta, item1);
     CHECK(err == MP4NoErr);
+
+    // it is not allowed to hide a primary item
+    err = ISOHideItem(item1);
+    CHECK(err == MP4InvalidMediaErr);
 
     // item 2
     ISOAddMetaItem(meta, &item2, 0, 0);
-    CHECK(err == MP4NoErr);
     err = ISOAddItemExtentUsingItemData(item2, itemDataHandle2);
     CHECK(err == MP4NoErr);
     err = ISOSetItemInfo(item2, 0, (char *)"second item", NULL, NULL);
     CHECK(err == MP4NoErr);
     err = ISOSetItemInfoItemType(item2, MP4_FOUR_CHAR_CODE('s', 'c', 'n', 'd'), NULL);
+    CHECK(err == MP4NoErr);
+    err = ISOHideItem(item2);
+    CHECK(err == MP4NoErr);
+
+    // item 3
+    ISOAddMetaItem(meta, &item3, 0, 0);
+    err = ISOAddItemExtentUsingItemData(item3, itemDataHandle3);
+    CHECK(err == MP4NoErr);
+    err = ISOSetItemInfo(item3, 0, (char *)"third item (URI)", NULL, NULL);
+    CHECK(err == MP4NoErr);
+    err = ISOSetItemInfoItemType(item3, MP4_FOUR_CHAR_CODE('u', 'r', 'i', ' '), test_uri);
     CHECK(err == MP4NoErr);
 
     err = ISOAddMetaItemProperty(item2, pTestProp, 0);
@@ -292,7 +307,12 @@ TEST_CASE("metadata")
     CHECK(cnt == 1);
     MP4GenericAtom *properties;
     ISOMetaItem item1 = items[0];
-    err               = ISOGetProperitesOfMetaItem(item1, &properties, &cnt);
+
+    u32 item_type = 0;
+    err = ISOGetItemInfoItemType(item1, &item_type, NULL);
+    CHECK(err == MP4NoErr);
+    CHECK(item_type == MP4_FOUR_CHAR_CODE('f', 'r', 's', 't'));
+    err = ISOGetProperitesOfMetaItem(item1, &properties, &cnt);
     CHECK(err == MP4NoErr);
     CHECK(cnt == 1);
     MP4UnknownAtomPtr prop = (MP4UnknownAtomPtr)properties[0];
@@ -302,6 +322,8 @@ TEST_CASE("metadata")
     memcpy(*propHandle, prop->data, prop->dataSize);
     err = compareData(propHandle, TestData::DECAFCODEDOC, sizeof(TestData::DECAFCODEDOC));
     CHECK(err == MP4NoErr);
+    err = ISOIsItemHidden(item1);
+    CHECK(err == MP4NotFoundErr);
 
     // check second item
     err = ISOGetAllItemsWithType(meta, MP4_FOUR_CHAR_CODE('s', 'c', 'n', 'd'), &items, &cnt);
@@ -316,6 +338,24 @@ TEST_CASE("metadata")
     memcpy(*propHandle, prop->data, prop->dataSize);
     err = compareData(propHandle, TestData::DECAFCODEDOC, sizeof(TestData::DECAFCODEDOC));
     CHECK(err == MP4NoErr);
+    err = ISOIsItemHidden(item2);
+    CHECK(err == MP4NoErr);
+
+    // check tirhd item
+    err = ISOGetAllItemsWithType(meta, MP4_FOUR_CHAR_CODE('u', 'r', 'i', ' '), &items, &cnt);
+    CHECK(err == MP4NoErr);
+    CHECK(cnt == 1);
+    item_type = 0;
+    err = ISOGetItemInfoItemType(items[0], &item_type, NULL);
+    CHECK(err == MP4NoErr);
+    CHECK(item_type == MP4_FOUR_CHAR_CODE('u', 'r', 'i', ' '));
+    char *item_uri_type;
+    item_uri_type = NULL;
+    err = ISOGetItemInfoItemType(items[0], &item_type, &item_uri_type);
+    CHECK(err == MP4NoErr);
+    std::string str_test_uri(test_uri);
+    std::string str_item_uri_type(item_uri_type);
+    CHECK(str_item_uri_type == str_test_uri);
 
     // check references
     u16 refCnt;

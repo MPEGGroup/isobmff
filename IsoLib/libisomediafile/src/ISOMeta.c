@@ -1163,7 +1163,7 @@ ISO_EXTERN(ISOErr) ISOSetItemInfoItemType(ISOMetaItem item, u32 item_type, char 
   if(item_uri_type)
   {
     u32 sz              = (u32)strlen(item_uri_type);
-    infe->item_uri_type = (char *)calloc(1, sz);
+    infe->item_uri_type = (char *)calloc(1, sz + 1);
     memcpy(infe->item_uri_type, item_uri_type, sz);
   }
   else
@@ -1171,6 +1171,67 @@ ISO_EXTERN(ISOErr) ISOSetItemInfoItemType(ISOMetaItem item, u32 item_type, char 
     infe->item_uri_type      = (char *)calloc(1, 1);
     (infe->item_uri_type)[0] = '\0';
   }
+bail:
+  TEST_RETURN(err);
+  return err;
+}
+
+ISO_EXTERN(ISOErr) ISOHideItem(ISOMetaItem item)
+{
+  MP4Err err;
+  ISOMetaAtomPtr myMeta;
+  MetaItemLocationPtr myItem;
+  ISOItemInfoAtomPtr iinf;
+  ISOPrimaryItemAtomPtr pitm;
+  ISOItemInfoEntryAtomPtr infe;
+
+  err    = MP4NoErr;
+  myItem = (MetaItemLocationPtr)item;
+  myMeta = (ISOMetaAtomPtr)myItem->meta;
+  iinf   = (ISOItemInfoAtomPtr)myMeta->iinf;
+  pitm   = (ISOPrimaryItemAtomPtr)myMeta->pitm;
+
+  if(!iinf) BAILWITHERROR(MP4InvalidMediaErr);
+
+  if(pitm->item_ID == myItem->item_ID) BAILWITHERROR(MP4InvalidMediaErr);
+
+  infe = NULL;
+  err  = iinf->getEntry(iinf, myItem->item_ID, &infe);
+  if(err) goto bail;
+
+  if(infe == NULL) BAILWITHERROR(MP4InvalidMediaErr);
+
+  infe->flags |= 1U;
+
+bail:
+  TEST_RETURN(err);
+  return err;
+}
+
+ISO_EXTERN(ISOErr) ISOIsItemHidden(ISOMetaItem item)
+{
+  MP4Err err;
+  ISOMetaAtomPtr myMeta;
+  MetaItemLocationPtr myItem;
+  ISOItemInfoAtomPtr iinf;
+  ISOItemInfoEntryAtomPtr infe;
+
+  err    = MP4NoErr;
+  myItem = (MetaItemLocationPtr)item;
+  myMeta = (ISOMetaAtomPtr)myItem->meta;
+  iinf   = (ISOItemInfoAtomPtr)myMeta->iinf;
+
+  if(!iinf) BAILWITHERROR(MP4InvalidMediaErr);
+
+  infe = NULL;
+  err  = iinf->getEntry(iinf, myItem->item_ID, &infe);
+  if(err) goto bail;
+
+  if(infe == NULL) BAILWITHERROR(MP4InvalidMediaErr);
+
+  err = MP4NotFoundErr;
+  if(infe->flags & 1U) err = MP4NoErr;
+
 bail:
   TEST_RETURN(err);
   return err;
@@ -1201,11 +1262,14 @@ ISO_EXTERN(ISOErr) ISOGetItemInfoItemType(ISOMetaItem item, u32 *item_type, char
 
   *item_type = infe->item_type;
 
-  if(infe->item_uri_type)
+  if(item_uri_type)
   {
-    u32 sz         = (u32)strlen(infe->item_uri_type);
-    *item_uri_type = (char *)calloc(1, sz);
-    memcpy(*item_uri_type, infe->item_uri_type, sz);
+    if(infe->item_uri_type)
+    {
+      u32 sz         = (u32)strlen(infe->item_uri_type);
+      *item_uri_type = (char *)calloc(1, sz + 1);
+      memcpy(*item_uri_type, infe->item_uri_type, sz);
+    }
   }
 bail:
   TEST_RETURN(err);

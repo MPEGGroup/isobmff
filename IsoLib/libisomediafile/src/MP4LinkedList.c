@@ -37,6 +37,7 @@ MP4Err MP4MakeLinkedList(MP4LinkedList *outList)
   newList = (MP4LinkedList)calloc(1, sizeof(MP4List));
   TESTMALLOC(newList)
   newList->foundEntryNumber = -1;
+  newList->entryCount       = 0;
   *outList                  = newList;
 bail:
   return err;

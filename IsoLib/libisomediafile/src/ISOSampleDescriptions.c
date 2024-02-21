@@ -403,8 +403,16 @@ ISOGetSampleDescriptionDimensions(MP4Handle sampleEntryH, u16 *width, u16 *heigh
   err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType);
   if(err) goto bail;
 
-  *width  = (u16)entry->width;
-  *height = (u16)entry->height;
+  if(entry->type == MP4RestrictedVideoSampleEntryAtomType)
+  {
+    *width  = (u16)((MP4RestrictedVideoSampleEntryAtomPtr)entry)->width;
+    *height = (u16)((MP4RestrictedVideoSampleEntryAtomPtr)entry)->height;
+  }
+  else
+  {
+    *width  = (u16)entry->width;
+    *height = (u16)entry->height;
+  }
 
 bail:
   if(entry) entry->destroy((MP4AtomPtr)entry);
@@ -1381,7 +1389,8 @@ MP4_EXTERN(MP4Err) ISOGetRESVOriginalFormat(MP4Handle sampleEntryH, u32 *outOrig
 
   if(entry->type != MP4RestrictedVideoSampleEntryAtomType) BAILWITHERROR(MP4BadParamErr);
 
-  rinf = (MP4RestrictedSchemeInfoAtomPtr)entry->MP4RestrictedSchemeInfo;
+  err = entry->getRinf((MP4AtomPtr)entry, (MP4AtomPtr *)&rinf);
+  if(err) goto bail;
   if(!rinf)
   {
     BAILWITHERROR(MP4BadParamErr);
@@ -1394,6 +1403,50 @@ MP4_EXTERN(MP4Err) ISOGetRESVOriginalFormat(MP4Handle sampleEntryH, u32 *outOrig
   }
 
   *outOrigFmt = fmt->original_format;
+bail:
+  if(entry) entry->destroy((MP4AtomPtr)entry);
+  return err;
+}
+
+ISO_EXTERN(ISOErr)
+ISOGetRESVSchemeType(MP4Handle sampleEntryH, u32 *schemeType, u32 *schemeVersion, char **schemeURI)
+{
+  MP4Err err;
+  MP4RestrictedVideoSampleEntryAtomPtr entry = NULL;
+
+  err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType);
+  if(err) goto bail;
+
+  if(entry->type != MP4RestrictedVideoSampleEntryAtomType) BAILWITHERROR(MP4BadParamErr);
+
+  err = entry->getScheme((MP4AtomPtr)entry, schemeType, schemeVersion, schemeURI);
+  if(err) goto bail;
+
+bail:
+  if(entry) entry->destroy((MP4AtomPtr)entry);
+  return err;
+}
+
+ISO_EXTERN(ISOErr)
+ISOGetRESVSchemeInfoAtom(MP4Handle sampleEntryH, u32 atomType, MP4Handle outAtom)
+{
+  MP4Err err;
+  MP4RestrictedVideoSampleEntryAtomPtr entry = NULL;
+  MP4AtomPtr found;
+
+  if(outAtom == NULL) BAILWITHERROR(MP4BadParamErr);
+
+  err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType);
+  if(err) goto bail;
+
+  if(entry->type != MP4RestrictedVideoSampleEntryAtomType) BAILWITHERROR(MP4BadParamErr);
+
+  err = entry->getSchemeInfoAtom((MP4AtomPtr)entry, atomType, &found);
+  if(err) goto bail;
+
+  err = atomPtrToSampleEntryH(outAtom, found);
+  if(err) goto bail;
+
 bail:
   if(entry) entry->destroy((MP4AtomPtr)entry);
   return err;

@@ -22,6 +22,7 @@
 
 #include <catch.hpp>
 #include <ISOMovies.h>
+#include <MP4Atoms.h>
 #include "testdataPath.h"
 
 #include <string>
@@ -117,6 +118,30 @@ TEST_CASE("01_simple.mp4")
     err                 = ISOGetMovieTrackCount(cMovieBox, &uiTrackCnt);
     CHECK(err == MP4NoErr);
     CHECK(uiTrackCnt == 4);
+
+    for(uint32_t i=1; i<=uiTrackCnt; i++)
+    {
+      uint32_t type = 0; 
+      err = MP4GetMovieIndTrackSampleEntryType(cMovieBox, i, &type);
+      CHECK(err == MP4NoErr);
+      switch (i)
+      {
+      case 1:
+        CHECK(type == MP4MPEGSampleEntryAtomType);
+        break;
+      case 2:
+        CHECK(type == MP4MPEGSampleEntryAtomType);
+        break;
+      case 3:
+        CHECK(type == MP4VisualSampleEntryAtomType);
+        break;
+      case 4:
+        CHECK(type == MP4AudioSampleEntryAtomType);
+        break;
+      default:
+        break;
+      }
+    }
 
     // ISOGetTrackEnabled
     u32 outEnabled;
