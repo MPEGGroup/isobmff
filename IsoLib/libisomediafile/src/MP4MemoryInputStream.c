@@ -173,9 +173,9 @@ static MP4Err rewindData(struct MP4InputStreamRecord *s, u64 bytes, char *msg)
   MP4Err err;
   MP4FileMappingInputStreamPtr self = (MP4FileMappingInputStreamPtr)s;
 
+  if(bytes > self->current_offset) BAILWITHERROR(MP4BadParamErr);
   err = MP4NoErr;
 
-  CHECK_AVAIL(bytes)
   self->available += bytes;
   self->current_offset -= bytes;
 
