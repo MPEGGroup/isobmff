@@ -1267,7 +1267,7 @@ ISO_EXTERN(ISOErr) ISOGetItemInfoItemType(ISOMetaItem item, u32 *item_type, char
     if(infe->item_uri_type)
     {
       u32 sz         = (u32)strlen(infe->item_uri_type);
-      *item_uri_type = (char *)calloc(1, sz);
+      *item_uri_type = (char *)calloc(1, sz + 1);
       memcpy(*item_uri_type, infe->item_uri_type, sz);
     }
   }
