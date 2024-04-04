@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['ismacrypt_20support_0',['ISMACrypt Support',['../group___i_s_m_a.html',1,'']]]
+  ['auxiliary_20information_0',['Sample Auxiliary Information',['../group___sample_aux.html',1,'']]]
 ];
