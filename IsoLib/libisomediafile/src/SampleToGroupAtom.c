@@ -676,6 +676,10 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
       (self->compressedGroup.index_msb_indicates_fragment_local_description ? 0x80 : 0) |
       (self->compressedGroup.grouping_type_parameter_present ? 0x40 : 0);
   }
+  else
+  {
+    self->flags = 0;
+  }
 
   err = MP4SerializeCommonFullAtomFields((MP4FullAtomPtr)s, buffer);
   if(err) goto bail;
@@ -712,6 +716,7 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
     entryCount++;
 
     assert(entryCount == self->entryCount);
+    (void)entryCount; /* remove the release build warning */
   }
   else
   {

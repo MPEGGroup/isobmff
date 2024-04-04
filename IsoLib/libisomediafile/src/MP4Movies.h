@@ -694,6 +694,25 @@ extern "C"
                                   MP4Handle subsample_priority_array,
                                   MP4Handle subsample_discardable_array);
   /**
+   * @brief Same as MP4AddSubSampleInformationEntry but also allows to add the codec specific
+   * parameters
+   *
+   * @param subsample
+   * @param sample_delta
+   * @param subsample_count
+   * @param subsample_size_array
+   * @param subsample_priority_array
+   * @param subsample_discardable_array
+   * @param codec_specific_parameters_array
+   * @return MP4Err error code
+   */
+  MP4_EXTERN(MP4Err)
+  MP4AddSubSampleInformationEntry2(MP4GenericAtom subsample, u32 sample_delta, u32 subsample_count,
+                                   MP4Handle subsample_size_array,
+                                   MP4Handle subsample_priority_array,
+                                   MP4Handle subsample_discardable_array,
+                                   MP4Handle codec_specific_parameters_array);
+  /**
    * @brief Add track to a track group ID.
    *
    * If no track group with the dependency type is found in the track one is created and added to
@@ -726,6 +745,15 @@ extern "C"
    * @return MP4Err error code
    */
   MP4_EXTERN(MP4Err) MP4GetMovieIndTrack(MP4Movie theMovie, u32 trackIndex, MP4Track *outTrack);
+  /**
+   * @brief Get sample entry type of a track.
+   *
+   * @note This function only returns the first sample entry type.
+   * @param theMovie input movie object
+   * @param idx index of the track ranges between 1 and the number of tracks in theMovie.
+   * @param SEType [out] sample entry type (4CC)
+   */
+  MP4_EXTERN(MP4Err) MP4GetMovieIndTrackSampleEntryType(MP4Movie theMovie, u32 idx, u32 *SEType);
 
   /*
   MP4_EXTERN ( MP4Err )
