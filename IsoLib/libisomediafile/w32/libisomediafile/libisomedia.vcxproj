@@ -291,12 +291,15 @@
     <ClCompile Include="..\..\src\DegradationPriorityAtom.c" />
     <ClCompile Include="..\..\src\EditAtom.c" />
     <ClCompile Include="..\..\src\EditListAtom.c" />
+    <ClCompile Include="..\..\src\EntityToGroupBox.c" />
     <ClCompile Include="..\..\src\ESDAtom.c" />
     <ClCompile Include="..\..\src\ESUpdateCommand.c" />
     <ClCompile Include="..\..\src\FileMappingDataHandler.c" />
     <ClCompile Include="..\..\src\FreeSpaceAtom.c" />
     <ClCompile Include="..\..\src\GenericSampleEntryAtom.c" />
+    <ClCompile Include="..\..\src\GroupsListBox.c" />
     <ClCompile Include="..\..\src\HandlerAtom.c" />
+    <ClCompile Include="..\..\src\HapticSampleEntryAtom.c" />
     <ClCompile Include="..\..\src\HEVCConfigAtom.c" />
     <ClCompile Include="..\..\src\HintMediaHeaderAtom.c" />
     <ClCompile Include="..\..\src\IPMPToolUpdateCommand.c" />
@@ -407,6 +410,10 @@
     <ClCompile Include="..\..\src\PrimaryItemAtom.c" />
     <ClCompile Include="..\..\src\ISOSampleDescriptions.c" />
     <ClCompile Include="..\..\src\VCConfigAtom.c" />
+    <ClCompile Include="..\..\src\VVCConfigAtom.c" />
+    <ClCompile Include="..\..\src\VVCNALUConfigAtom.c" />
+    <ClCompile Include="..\..\src\VolumetricVisualMediaHeaderAtom.c" />
+    <ClCompile Include="..\..\src\VolumetricVisualSampleEntryAtom.c" />
     <ClCompile Include="..\..\src\TextMetaSampleEntry.c" />
     <ClCompile Include="..\..\src\XMLMetaSampleEntry.c" />
     <ClCompile Include="..\..\src\BitRateAtom.c" />

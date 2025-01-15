@@ -1116,6 +1116,46 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\..\src\EntityToGroupBox.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\..\..\src\ESDAtom.c"
 				>
 				<FileConfiguration
@@ -1320,6 +1360,46 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\..\src\GroupsListBox.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\..\..\src\H263SpecificInfoAtom.c"
 				>
 				<FileConfiguration
@@ -1361,6 +1441,46 @@
 			</File>
 			<File
 				RelativePath="..\..\..\src\HandlerAtom.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\src\HapticSampleEntryAtom.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -4504,6 +4624,46 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\..\src\ProducerReferenceTimeAtom.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\..\..\src\QTMovies.c"
 				>
 				<FileConfiguration
@@ -5004,6 +5164,86 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\..\src\SegmentIndexAtom.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\src\SegmentTypeAtom.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\..\..\src\ShadowSyncAtom.c"
 				>
 				<FileConfiguration
@@ -5138,6 +5378,46 @@
 			<File
 				RelativePath="..\..\..\src\SubSampleInformationAtom.c"
 				>
+			</File>
+			<File
+				RelativePath="..\..\..\src\SubsegmentIndexAtom.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\..\src\SyncSampleAtom.c"
@@ -5681,6 +5961,166 @@
 			</File>
 			<File
 				RelativePath="..\..\..\src\VCConfigAtom.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\src\VVCConfigAtom.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\src\VVCNALUConfigAtom.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\src\VolumetricVisualMediaHeaderAtom.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\src\VolumetricVisualSampleEntryAtom.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
