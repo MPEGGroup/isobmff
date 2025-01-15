@@ -25,6 +25,7 @@ var group___sample_descr =
     [ "ISONewGeneralSampleDescription", "group___sample_descr.html#ga21e0466bddfdc0d8005de6a5abb68fcf", null ],
     [ "ISONewH263SampleDescription", "group___sample_descr.html#ga632c13d288e1ad5bbdde5ca302634607", null ],
     [ "ISONewHEVCSampleDescription", "group___sample_descr.html#ga23216288bfdfd9a15b922bb51c758c15", null ],
+    [ "ISONewMebxSampleDescription", "group___sample_descr.html#gad1170076ef5ecaf9a28e7357b5ba2825", null ],
     [ "ISONewTextMetaDataSampleDescription", "group___sample_descr.html#ga50277ed52c567d9b8ea084f1217e24e4", null ],
     [ "ISONewVVCSampleDescription", "group___sample_descr.html#gac62875bc4ac012ee5ee11c7eef1b6597", null ],
     [ "ISONewVVCSubpicSampleDescription", "group___sample_descr.html#gaa24167619e44361d1ee18d4fcb6a27e3", null ],

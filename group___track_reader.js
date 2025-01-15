@@ -2,6 +2,7 @@ var group___track_reader =
 [
     [ "MP4CreateTrackReader", "group___track_reader.html#ga9e77ba59559c8e117178e076f5d08b7f", null ],
     [ "MP4DisposeTrackReader", "group___track_reader.html#ga36d848ae3dafd2eab3c0d44ec5fa3bbf", null ],
+    [ "MP4SetMebxTrackReader", "group___track_reader.html#gaf897cd7099d49793caeed09bfbd61f03", null ],
     [ "MP4TrackReaderGetCurrentDecoderConfig", "group___track_reader.html#ga0ba9743ec41779d5ae52678be0d59642", null ],
     [ "MP4TrackReaderGetCurrentSampleDescription", "group___track_reader.html#ga58954ca726f74664ec8d0e8bc9362edb", null ],
     [ "MP4TrackReaderGetCurrentSampleDescriptionIndex", "group___track_reader.html#gae5fd1f4520e6b0a0bc1a6682a6b32591", null ],

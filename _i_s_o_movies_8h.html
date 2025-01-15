@@ -432,6 +432,9 @@ Macros</h2></td></tr>
 <tr class="memitem:a8477e5b1468c9062bff90b24e8d1114b" id="r_a8477e5b1468c9062bff90b24e8d1114b"><td class="memItemLeft" align="right" valign="top"><a id="a8477e5b1468c9062bff90b24e8d1114b" name="a8477e5b1468c9062bff90b24e8d1114b"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>ISOCreateTrackReader</b>&#160;&#160;&#160;<a class="el" href="group___track_reader.html#ga9e77ba59559c8e117178e076f5d08b7f">MP4CreateTrackReader</a></td></tr>
 <tr class="separator:a8477e5b1468c9062bff90b24e8d1114b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11a502e5d07bd2102c962ba218b1e759" id="r_a11a502e5d07bd2102c962ba218b1e759"><td class="memItemLeft" align="right" valign="top"><a id="a11a502e5d07bd2102c962ba218b1e759" name="a11a502e5d07bd2102c962ba218b1e759"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>ISOSetMebxTrackReader</b>&#160;&#160;&#160;<a class="el" href="group___track_reader.html#gaf897cd7099d49793caeed09bfbd61f03">MP4SetMebxTrackReader</a></td></tr>
+<tr class="separator:a11a502e5d07bd2102c962ba218b1e759"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4fdb353ff1fadb5aed817f955ed60548" id="r_a4fdb353ff1fadb5aed817f955ed60548"><td class="memItemLeft" align="right" valign="top"><a id="a4fdb353ff1fadb5aed817f955ed60548" name="a4fdb353ff1fadb5aed817f955ed60548"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>ISODisposeTrackReader</b>&#160;&#160;&#160;<a class="el" href="group___track_reader.html#ga36d848ae3dafd2eab3c0d44ec5fa3bbf">MP4DisposeTrackReader</a></td></tr>
 <tr class="separator:a4fdb353ff1fadb5aed817f955ed60548"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -743,6 +746,21 @@ ISOErr&#160;</td><td class="memItemRight" valign="bottom"><b>ISOGetNALUnitLength
 <tr class="memitem:ga23216288bfdfd9a15b922bb51c758c15" id="r_ga23216288bfdfd9a15b922bb51c758c15"><td class="memItemLeft" align="right" valign="top">ISOErr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___sample_descr.html#ga23216288bfdfd9a15b922bb51c758c15">ISONewHEVCSampleDescription</a> (<a class="el" href="group___types.html#ga9dc1f38be42a4f54442ddb8783d435fc">MP4Track</a> theTrack, <a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> sampleDescriptionH, u32 dataReferenceIndex, u32 length_size, <a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> first_sps, <a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> first_pps, <a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> first_vps)</td></tr>
 <tr class="memdesc:ga23216288bfdfd9a15b922bb51c758c15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new HEVC sample entry.  <br /></td></tr>
 <tr class="separator:ga23216288bfdfd9a15b922bb51c758c15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad1170076ef5ecaf9a28e7357b5ba2825" id="r_gad1170076ef5ecaf9a28e7357b5ba2825"><td class="memItemLeft" align="right" valign="top">ISOErr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___sample_descr.html#gad1170076ef5ecaf9a28e7357b5ba2825">ISONewMebxSampleDescription</a> (struct MP4BoxedMetadataSampleEntry **outSE, u32 dataReferenceIndex)</td></tr>
+<tr class="memdesc:gad1170076ef5ecaf9a28e7357b5ba2825"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new mebx sample entry.  <br /></td></tr>
+<tr class="separator:gad1170076ef5ecaf9a28e7357b5ba2825"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f258554788733ea2975beed2f4a64f4" id="r_a4f258554788733ea2975beed2f4a64f4"><td class="memItemLeft" align="right" valign="top">ISOErr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_i_s_o_movies_8h.html#a4f258554788733ea2975beed2f4a64f4">ISOAddMebxMetadataToSampleEntry</a> (struct MP4BoxedMetadataSampleEntry *mebxSE, u32 desired_local_key_id, u32 *out_local_key_id, u32 key_namespace, <a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> key_value, char *locale_string, <a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> setupInfo)</td></tr>
+<tr class="memdesc:a4f258554788733ea2975beed2f4a64f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a new metadata type to mebx sample entry.  <br /></td></tr>
+<tr class="separator:a4f258554788733ea2975beed2f4a64f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a547a3ec2f2069f9c74eeadeb59b4925d" id="r_a547a3ec2f2069f9c74eeadeb59b4925d"><td class="memItemLeft" align="right" valign="top"><a id="a547a3ec2f2069f9c74eeadeb59b4925d" name="a547a3ec2f2069f9c74eeadeb59b4925d"></a>
+ISOErr&#160;</td><td class="memItemRight" valign="bottom"><b>ISOGetMebxHandle</b> (struct MP4BoxedMetadataSampleEntry *mebxSE, <a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> sampleDescriptionH)</td></tr>
+<tr class="separator:a547a3ec2f2069f9c74eeadeb59b4925d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40d38aa2695dff4731c422563c23f756" id="r_a40d38aa2695dff4731c422563c23f756"><td class="memItemLeft" align="right" valign="top">ISOErr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_i_s_o_movies_8h.html#a40d38aa2695dff4731c422563c23f756">ISOGetMebxMetadataCount</a> (<a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> sampleEntryH, u32 *key_cnt)</td></tr>
+<tr class="memdesc:a40d38aa2695dff4731c422563c23f756"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of entries in the mebx sample entry.  <br /></td></tr>
+<tr class="separator:a40d38aa2695dff4731c422563c23f756"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a004a6b0257489b62505f6248c08fbed9" id="r_a004a6b0257489b62505f6248c08fbed9"><td class="memItemLeft" align="right" valign="top"><a id="a004a6b0257489b62505f6248c08fbed9" name="a004a6b0257489b62505f6248c08fbed9"></a>
+ISOErr&#160;</td><td class="memItemRight" valign="bottom"><b>ISOGetMebxMetadataConfig</b> (<a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> sampleEntryH, u32 cnt, u32 *local_key_id, u32 *key_namespace, <a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> key_value, char **locale_string, <a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> setupInfo)</td></tr>
+<tr class="separator:a004a6b0257489b62505f6248c08fbed9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac62875bc4ac012ee5ee11c7eef1b6597" id="r_gac62875bc4ac012ee5ee11c7eef1b6597"><td class="memItemLeft" align="right" valign="top">ISOErr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___sample_descr.html#gac62875bc4ac012ee5ee11c7eef1b6597">ISONewVVCSampleDescription</a> (<a class="el" href="group___types.html#ga9dc1f38be42a4f54442ddb8783d435fc">MP4Track</a> theTrack, <a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> sampleDescriptionH, u32 dataReferenceIndex, u32 length_size, <a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> first_sps, <a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> first_pps)</td></tr>
 <tr class="memdesc:gac62875bc4ac012ee5ee11c7eef1b6597"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new VVC sample entry.  <br /></td></tr>
 <tr class="separator:gac62875bc4ac012ee5ee11c7eef1b6597"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -965,6 +983,115 @@ ISOErr&#160;</td><td class="memItemRight" valign="bottom"><b>ISOFindItemByID</b>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a4f258554788733ea2975beed2f4a64f4" name="a4f258554788733ea2975beed2f4a64f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f258554788733ea2975beed2f4a64f4">&#9670;&#160;</a></span>ISOAddMebxMetadataToSampleEntry()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ISOErr ISOAddMebxMetadataToSampleEntry </td>
+          <td>(</td>
+          <td class="paramtype">struct MP4BoxedMetadataSampleEntry *&#160;</td>
+          <td class="paramname"><em>mebxSE</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">u32&#160;</td>
+          <td class="paramname"><em>desired_local_key_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">u32 *&#160;</td>
+          <td class="paramname"><em>out_local_key_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">u32&#160;</td>
+          <td class="paramname"><em>key_namespace</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a>&#160;</td>
+          <td class="paramname"><em>key_value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>locale_string</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a>&#160;</td>
+          <td class="paramname"><em>setupInfo</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Add a new metadata type to mebx sample entry. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mebxSE</td><td>input mebx sample entry </td></tr>
+    <tr><td class="paramname">desired_local_key_id</td><td>local key ID which you would like to have </td></tr>
+    <tr><td class="paramname">out_local_key_id</td><td>assigned local key ID. If available it will be the same as desired. </td></tr>
+    <tr><td class="paramname">key_namespace</td><td>Metadata key declaration box namespace </td></tr>
+    <tr><td class="paramname">key_value</td><td>Metadata key declaration box key value. Can be 0 if key_namespace=MP4KeyNamespace_me4c </td></tr>
+    <tr><td class="paramname">locale_string</td><td>Metadata locale box string. If 0 then no 'loca' box is present. </td></tr>
+    <tr><td class="paramname">setupInfo</td><td>Metadata setup box data. If 0 then no 'setu' box is present. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a40d38aa2695dff4731c422563c23f756" name="a40d38aa2695dff4731c422563c23f756"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40d38aa2695dff4731c422563c23f756">&#9670;&#160;</a></span>ISOGetMebxMetadataCount()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ISOErr ISOGetMebxMetadataCount </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a>&#160;</td>
+          <td class="paramname"><em>sampleEntryH</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">u32 *&#160;</td>
+          <td class="paramname"><em>key_cnt</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the number of entries in the mebx sample entry. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sampleEntryH</td><td>input sample entry of the mebx track </td></tr>
+    <tr><td class="paramname">key_cnt</td><td>number of local_key_id's </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a548cd5b90d750773da4ceb675bc081ea" name="a548cd5b90d750773da4ceb675bc081ea"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a548cd5b90d750773da4ceb675bc081ea">&#9670;&#160;</a></span>MJ2SetMediaGraphicsMode()</h2>
 

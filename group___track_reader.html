@@ -111,6 +111,9 @@ Functions</h2></td></tr>
 <a class="el" href="group___types.html#ga5906075464bd2961deda1ba298e3fea5">MP4Err</a>&#160;</td><td class="memItemRight" valign="bottom"><b>MP4CreateTrackReader</b> (<a class="el" href="group___types.html#ga9dc1f38be42a4f54442ddb8783d435fc">MP4Track</a> theTrack, <a class="el" href="group___types.html#ga00df1768b4bbc6a5ae4e29435dc2e919">MP4TrackReader</a> *outReader)</td></tr>
 <tr class="memdesc:ga9e77ba59559c8e117178e076f5d08b7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a track reader for a movie track. <br /></td></tr>
 <tr class="separator:ga9e77ba59559c8e117178e076f5d08b7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf897cd7099d49793caeed09bfbd61f03" id="r_gaf897cd7099d49793caeed09bfbd61f03"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___types.html#ga5906075464bd2961deda1ba298e3fea5">MP4Err</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___track_reader.html#gaf897cd7099d49793caeed09bfbd61f03">MP4SetMebxTrackReader</a> (<a class="el" href="group___types.html#ga00df1768b4bbc6a5ae4e29435dc2e919">MP4TrackReader</a> theReader, u32 local_key)</td></tr>
+<tr class="memdesc:gaf897cd7099d49793caeed09bfbd61f03"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select local_key for reading.  <br /></td></tr>
+<tr class="separator:gaf897cd7099d49793caeed09bfbd61f03"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga36d848ae3dafd2eab3c0d44ec5fa3bbf" id="r_ga36d848ae3dafd2eab3c0d44ec5fa3bbf"><td class="memItemLeft" align="right" valign="top"><a id="ga36d848ae3dafd2eab3c0d44ec5fa3bbf" name="ga36d848ae3dafd2eab3c0d44ec5fa3bbf"></a>
 <a class="el" href="group___types.html#ga5906075464bd2961deda1ba298e3fea5">MP4Err</a>&#160;</td><td class="memItemRight" valign="bottom"><b>MP4DisposeTrackReader</b> (<a class="el" href="group___types.html#ga00df1768b4bbc6a5ae4e29435dc2e919">MP4TrackReader</a> theReader)</td></tr>
 <tr class="memdesc:ga36d848ae3dafd2eab3c0d44ec5fa3bbf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees up resources associated with a track reader. <br /></td></tr>
@@ -150,6 +153,37 @@ Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Track readers are objects that allow you to easily read sequential samples or access units from a movie track. </p>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="gaf897cd7099d49793caeed09bfbd61f03" name="gaf897cd7099d49793caeed09bfbd61f03"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaf897cd7099d49793caeed09bfbd61f03">&#9670;&#160;</a></span>MP4SetMebxTrackReader()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group___types.html#ga5906075464bd2961deda1ba298e3fea5">MP4Err</a> MP4SetMebxTrackReader </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group___types.html#ga00df1768b4bbc6a5ae4e29435dc2e919">MP4TrackReader</a>&#160;</td>
+          <td class="paramname"><em>theReader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">u32&#160;</td>
+          <td class="paramname"><em>local_key</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Select local_key for reading. </p>
+<p>Demux mebx track. </p>
+
+</div>
+</div>
 <a id="gae4c75baea81e8e941453059bca2335c2" name="gae4c75baea81e8e941453059bca2335c2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gae4c75baea81e8e941453059bca2335c2">&#9670;&#160;</a></span>MP4TrackReaderGetCurrentSampleNumber()</h2>
 

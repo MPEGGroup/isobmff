@@ -157,6 +157,7 @@ var _m_p4_movies_8h =
     [ "MP4SampleNumToMediaTime", "group___media.html#ga2b8aed918328e685f4abba74d380258b", null ],
     [ "MP4SetHandleOffset", "group___utility.html#ga2b729dbff951bb78854340dbd62782bc", null ],
     [ "MP4SetHandleSize", "group___utility.html#ga0a49be073009f6a95bfd922f40fe6846", null ],
+    [ "MP4SetMebxTrackReader", "group___track_reader.html#gaf897cd7099d49793caeed09bfbd61f03", null ],
     [ "MP4SetMediaExtendedLanguageTag", "group___media.html#ga855188719d2976645be143f2f5347e06", null ],
     [ "MP4SetMediaLanguage", "group___media.html#ga75e985cf31cf8ee9377aac1e6ed48f9b", null ],
     [ "MP4SetMovieIODInlineProfileFlag", "group___movie.html#ga18d25c5fab4b308d8af5f60301f69367", null ],

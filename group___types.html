@@ -317,12 +317,19 @@ Enumerations</h2></td></tr>
 , <a class="el" href="group___types.html#ggabed82baf7f470b522273a3e37c24c600a0736424e877fb64dc10f9566c39ef931">MP4NewTrackIsVolumetric</a> = (1 &lt;&lt; 4)
 , <br />
 &#160;&#160;<a class="el" href="group___types.html#ggabed82baf7f470b522273a3e37c24c600a80a375b825e7a8bf2336cd5ee2906b2d">MP4NewTrackIsHaptic</a> = (1 &lt;&lt; 5)
+, <a class="el" href="group___types.html#ggabed82baf7f470b522273a3e37c24c600a0bb16be3d03dfc76b718d566569ac967">MP4NewTrackIsMebx</a> = (1 &lt;&lt; 6)
 , <a class="el" href="group___types.html#ggabed82baf7f470b522273a3e37c24c600acefc910531c9889c87a28ba635c9fa26">MP4NewTrackIsPrivate</a> = (1 &lt;&lt; 8)
 <br />
  }</td></tr>
 <tr class="memdesc:gabed82baf7f470b522273a3e37c24c600"><td class="mdescLeft">&#160;</td><td class="mdescRight">Track flags.  <a href="group___types.html#gabed82baf7f470b522273a3e37c24c600">More...</a><br /></td></tr>
 <tr class="separator:gabed82baf7f470b522273a3e37c24c600"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab04a0655cd1e3bcac5e8f48c18df1a57" id="r_gab04a0655cd1e3bcac5e8f48c18df1a57"><td class="memItemLeft" align="right" valign="top"><a id="gab04a0655cd1e3bcac5e8f48c18df1a57" name="gab04a0655cd1e3bcac5e8f48c18df1a57"></a>enum &#160;</td><td class="memItemRight" valign="bottom">{ <br />
+<tr class="memitem:gab04a0655cd1e3bcac5e8f48c18df1a57" id="r_gab04a0655cd1e3bcac5e8f48c18df1a57"><td class="memItemLeft" align="right" valign="top"><a id="gab04a0655cd1e3bcac5e8f48c18df1a57" name="gab04a0655cd1e3bcac5e8f48c18df1a57"></a>enum &#160;</td><td class="memItemRight" valign="bottom">{ <b>MP4KeyNamespace_uiso</b> = MP4_FOUR_CHAR_CODE('u', 'i', 's', 'o')
+, <b>MP4KeyNamespace_me4c</b> = MP4_FOUR_CHAR_CODE('m', 'e', '4', 'c')
+, <b>QTKeyNamespace_mdta</b> = MP4_FOUR_CHAR_CODE('m', 'd', 't', 'a')
+, <b>QTKeyNamespace_udta</b> = MP4_FOUR_CHAR_CODE('u', 'd', 't', 'a')
+ }</td></tr>
+<tr class="separator:gab04a0655cd1e3bcac5e8f48c18df1a57"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga385c44f6fb256e5716a2302a5b940388" id="r_ga385c44f6fb256e5716a2302a5b940388"><td class="memItemLeft" align="right" valign="top"><a id="ga385c44f6fb256e5716a2302a5b940388" name="ga385c44f6fb256e5716a2302a5b940388"></a>enum &#160;</td><td class="memItemRight" valign="bottom">{ <br />
 &#160;&#160;<b>MP4ObjectDescriptorHandlerType</b> = MP4_FOUR_CHAR_CODE('o', 'd', 's', 'm')
 , <b>MP4ClockReferenceHandlerType</b> = MP4_FOUR_CHAR_CODE('c', 'r', 's', 'm')
 , <b>MP4SceneDescriptionHandlerType</b> = MP4_FOUR_CHAR_CODE('s', 'd', 's', 'm')
@@ -349,9 +356,9 @@ Enumerations</h2></td></tr>
 , <b>ISOBinaryXMLAtomType</b> = MP4_FOUR_CHAR_CODE('b', 'x', 'm', 'l')
 <br />
  }</td></tr>
-<tr class="memdesc:gab04a0655cd1e3bcac5e8f48c18df1a57"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handler types. <br /></td></tr>
-<tr class="separator:gab04a0655cd1e3bcac5e8f48c18df1a57"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga385c44f6fb256e5716a2302a5b940388" id="r_ga385c44f6fb256e5716a2302a5b940388"><td class="memItemLeft" align="right" valign="top"><a id="ga385c44f6fb256e5716a2302a5b940388" name="ga385c44f6fb256e5716a2302a5b940388"></a>enum &#160;</td><td class="memItemRight" valign="bottom">{ <br />
+<tr class="memdesc:ga385c44f6fb256e5716a2302a5b940388"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handler types. <br /></td></tr>
+<tr class="separator:ga385c44f6fb256e5716a2302a5b940388"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabc5c98fcc1211af2b80116dd6e0a035d" id="r_gabc5c98fcc1211af2b80116dd6e0a035d"><td class="memItemLeft" align="right" valign="top"><a id="gabc5c98fcc1211af2b80116dd6e0a035d" name="gabc5c98fcc1211af2b80116dd6e0a035d"></a>enum &#160;</td><td class="memItemRight" valign="bottom">{ <br />
 &#160;&#160;<b>MP4IPMP_NoControlPoint</b> = 0x00
 , <b>MP4IPMP_DB_Decoder_ControlPoint</b> = 0x01
 , <b>MP4IPMP_Decoder_CB_ControlPoint</b> = 0x02
@@ -360,56 +367,56 @@ Enumerations</h2></td></tr>
 &#160;&#160;<b>MP4IPMP_BIFSTree_ControlPoint</b> = 0x04
 <br />
  }</td></tr>
-<tr class="separator:ga385c44f6fb256e5716a2302a5b940388"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gabc5c98fcc1211af2b80116dd6e0a035d" id="r_gabc5c98fcc1211af2b80116dd6e0a035d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <br />
-&#160;&#160;<a class="el" href="group___types.html#ggabc5c98fcc1211af2b80116dd6e0a035da2aaa7588718299197bd494e8e916c5c9">is_leading_dependency</a> = 0x40
-, <a class="el" href="group___types.html#ggabc5c98fcc1211af2b80116dd6e0a035da5a51d0768878f66f393d8ded3a6062b2">is_no_leading</a> = 0x80
-, <a class="el" href="group___types.html#ggabc5c98fcc1211af2b80116dd6e0a035daf92ca72be4f60165fde8912938c76711">is_leading_no_dependency</a> = 0xC0
-, <a class="el" href="group___types.html#ggabc5c98fcc1211af2b80116dd6e0a035da54473b5618e23be917c8bcb088a2479a">does_depend_on</a> = 0x10
+<tr class="separator:gabc5c98fcc1211af2b80116dd6e0a035d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac36f475ca5b446f4fde4c9b90bec77c8" id="r_gac36f475ca5b446f4fde4c9b90bec77c8"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <br />
+&#160;&#160;<a class="el" href="group___types.html#ggac36f475ca5b446f4fde4c9b90bec77c8a2aaa7588718299197bd494e8e916c5c9">is_leading_dependency</a> = 0x40
+, <a class="el" href="group___types.html#ggac36f475ca5b446f4fde4c9b90bec77c8a5a51d0768878f66f393d8ded3a6062b2">is_no_leading</a> = 0x80
+, <a class="el" href="group___types.html#ggac36f475ca5b446f4fde4c9b90bec77c8af92ca72be4f60165fde8912938c76711">is_leading_no_dependency</a> = 0xC0
+, <a class="el" href="group___types.html#ggac36f475ca5b446f4fde4c9b90bec77c8a54473b5618e23be917c8bcb088a2479a">does_depend_on</a> = 0x10
 , <br />
-&#160;&#160;<a class="el" href="group___types.html#ggabc5c98fcc1211af2b80116dd6e0a035da449386e844aabb699b7fa25a2bbde366">does_not_depend_on</a> = 0x20
-, <a class="el" href="group___types.html#ggabc5c98fcc1211af2b80116dd6e0a035daaecf603dea34ee700fdbb4b412804afd">is_depended_on</a> = 0x4
-, <a class="el" href="group___types.html#ggabc5c98fcc1211af2b80116dd6e0a035da9423121a4784eaa592f26276782c53b4">is_not_depended_on</a> = 0x8
-, <a class="el" href="group___types.html#ggabc5c98fcc1211af2b80116dd6e0a035da9afd2c655549c581ba51748f34066267">has_redundancy</a> = 1
+&#160;&#160;<a class="el" href="group___types.html#ggac36f475ca5b446f4fde4c9b90bec77c8a449386e844aabb699b7fa25a2bbde366">does_not_depend_on</a> = 0x20
+, <a class="el" href="group___types.html#ggac36f475ca5b446f4fde4c9b90bec77c8aaecf603dea34ee700fdbb4b412804afd">is_depended_on</a> = 0x4
+, <a class="el" href="group___types.html#ggac36f475ca5b446f4fde4c9b90bec77c8a9423121a4784eaa592f26276782c53b4">is_not_depended_on</a> = 0x8
+, <a class="el" href="group___types.html#ggac36f475ca5b446f4fde4c9b90bec77c8a9afd2c655549c581ba51748f34066267">has_redundancy</a> = 1
 , <br />
-&#160;&#160;<a class="el" href="group___types.html#ggabc5c98fcc1211af2b80116dd6e0a035da0e7dfbe886c78394663640ad7391a3ef">has_no_redundancy</a> = 2
+&#160;&#160;<a class="el" href="group___types.html#ggac36f475ca5b446f4fde4c9b90bec77c8a0e7dfbe886c78394663640ad7391a3ef">has_no_redundancy</a> = 2
 <br />
  }</td></tr>
-<tr class="memdesc:gabc5c98fcc1211af2b80116dd6e0a035d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sample dependency types.  <a href="group___types.html#gabc5c98fcc1211af2b80116dd6e0a035d">More...</a><br /></td></tr>
-<tr class="separator:gabc5c98fcc1211af2b80116dd6e0a035d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memdesc:gac36f475ca5b446f4fde4c9b90bec77c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sample dependency types.  <a href="group___types.html#gac36f475ca5b446f4fde4c9b90bec77c8">More...</a><br /></td></tr>
+<tr class="separator:gac36f475ca5b446f4fde4c9b90bec77c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gafd57078a76ff516ef5fc3ebf046e355c" id="r_gafd57078a76ff516ef5fc3ebf046e355c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___types.html#gafd57078a76ff516ef5fc3ebf046e355c">sampleToGroupType_t</a> { <a class="el" href="group___types.html#ggafd57078a76ff516ef5fc3ebf046e355cadfc060232e6fb240c4f11e10b098d9d0">SAMPLE_GROUP_NORMAL</a> = 0
 , <a class="el" href="group___types.html#ggafd57078a76ff516ef5fc3ebf046e355cab15834075f549d2846a9cc9b5bd0ab32">SAMPLE_GROUP_COMPACT</a>
 , <a class="el" href="group___types.html#ggafd57078a76ff516ef5fc3ebf046e355ca968cda62b477325e8d8f0c364629e54b">SAMPLE_GROUP_AUTO</a>
  }</td></tr>
 <tr class="memdesc:gafd57078a76ff516ef5fc3ebf046e355c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sample grouping types.  <a href="group___types.html#gafd57078a76ff516ef5fc3ebf046e355c">More...</a><br /></td></tr>
 <tr class="separator:gafd57078a76ff516ef5fc3ebf046e355c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga05589fbab0657f08285ebdfe93f5ec9e" id="r_ga05589fbab0657f08285ebdfe93f5ec9e"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="group___types.html#gga05589fbab0657f08285ebdfe93f5ec9eaec1f9ed41fadbabffbdd255061745b73">MP4DataRefSelfReferenceMask</a> = (1 &lt;&lt; 0)
+<tr class="memitem:ga16af7b253440dadd46a80a4b9fddba4d" id="r_ga16af7b253440dadd46a80a4b9fddba4d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="group___types.html#gga16af7b253440dadd46a80a4b9fddba4daec1f9ed41fadbabffbdd255061745b73">MP4DataRefSelfReferenceMask</a> = (1 &lt;&lt; 0)
  }</td></tr>
-<tr class="memdesc:ga05589fbab0657f08285ebdfe93f5ec9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data reference attributes.  <a href="group___types.html#ga05589fbab0657f08285ebdfe93f5ec9e">More...</a><br /></td></tr>
-<tr class="separator:ga05589fbab0657f08285ebdfe93f5ec9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga16af7b253440dadd46a80a4b9fddba4d" id="r_ga16af7b253440dadd46a80a4b9fddba4d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="group___types.html#gga16af7b253440dadd46a80a4b9fddba4dab758a7509a808da3f8f8f2460f0a7bbc">MP4URLDataReferenceType</a> = MP4_FOUR_CHAR_CODE('u', 'r', 'l', ' ')
-, <a class="el" href="group___types.html#gga16af7b253440dadd46a80a4b9fddba4dad95137c56935f974d06de9c672858bf6">MP4URNDataReferenceType</a> = MP4_FOUR_CHAR_CODE('u', 'r', 'n', ' ')
- }</td></tr>
-<tr class="memdesc:ga16af7b253440dadd46a80a4b9fddba4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data reference types.  <a href="group___types.html#ga16af7b253440dadd46a80a4b9fddba4d">More...</a><br /></td></tr>
+<tr class="memdesc:ga16af7b253440dadd46a80a4b9fddba4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data reference attributes.  <a href="group___types.html#ga16af7b253440dadd46a80a4b9fddba4d">More...</a><br /></td></tr>
 <tr class="separator:ga16af7b253440dadd46a80a4b9fddba4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaba01db17f4a2bfbc3db60dc172972a25" id="r_gaba01db17f4a2bfbc3db60dc172972a25"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <br />
-&#160;&#160;<a class="el" href="group___types.html#ggaba01db17f4a2bfbc3db60dc172972a25a199dad7da660febde87e25b7aca9e957">MP4NextTimeSearchForward</a> = 0
-, <a class="el" href="group___types.html#ggaba01db17f4a2bfbc3db60dc172972a25a2d47e5e3d80812d6a0b440b870b193c7">MP4NextTimeSearchBackward</a> = -1
-, <a class="el" href="group___types.html#ggaba01db17f4a2bfbc3db60dc172972a25ae513ed58fa53d1fd8454454e9e02ffac">MP4NextTimeMediaSample</a> = (1 &lt;&lt; 0)
-, <a class="el" href="group___types.html#ggaba01db17f4a2bfbc3db60dc172972a25a53867eedf36724ee697dc1ac94d6be19">MP4NextTimeMediaEdit</a> = (1 &lt;&lt; 1)
+<tr class="memitem:gaba01db17f4a2bfbc3db60dc172972a25" id="r_gaba01db17f4a2bfbc3db60dc172972a25"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="group___types.html#ggaba01db17f4a2bfbc3db60dc172972a25ab758a7509a808da3f8f8f2460f0a7bbc">MP4URLDataReferenceType</a> = MP4_FOUR_CHAR_CODE('u', 'r', 'l', ' ')
+, <a class="el" href="group___types.html#ggaba01db17f4a2bfbc3db60dc172972a25ad95137c56935f974d06de9c672858bf6">MP4URNDataReferenceType</a> = MP4_FOUR_CHAR_CODE('u', 'r', 'n', ' ')
+ }</td></tr>
+<tr class="memdesc:gaba01db17f4a2bfbc3db60dc172972a25"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data reference types.  <a href="group___types.html#gaba01db17f4a2bfbc3db60dc172972a25">More...</a><br /></td></tr>
+<tr class="separator:gaba01db17f4a2bfbc3db60dc172972a25"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaaf105ae5beaca1dee30ae54530691fce" id="r_gaaf105ae5beaca1dee30ae54530691fce"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <br />
+&#160;&#160;<a class="el" href="group___types.html#ggaaf105ae5beaca1dee30ae54530691fcea199dad7da660febde87e25b7aca9e957">MP4NextTimeSearchForward</a> = 0
+, <a class="el" href="group___types.html#ggaaf105ae5beaca1dee30ae54530691fcea2d47e5e3d80812d6a0b440b870b193c7">MP4NextTimeSearchBackward</a> = -1
+, <a class="el" href="group___types.html#ggaaf105ae5beaca1dee30ae54530691fceae513ed58fa53d1fd8454454e9e02ffac">MP4NextTimeMediaSample</a> = (1 &lt;&lt; 0)
+, <a class="el" href="group___types.html#ggaaf105ae5beaca1dee30ae54530691fcea53867eedf36724ee697dc1ac94d6be19">MP4NextTimeMediaEdit</a> = (1 &lt;&lt; 1)
 , <br />
-&#160;&#160;<a class="el" href="group___types.html#ggaba01db17f4a2bfbc3db60dc172972a25acd85d2b38e7ac06e6ccfb90631933963">MP4NextTimeTrackEdit</a> = (1 &lt;&lt; 2)
-, <a class="el" href="group___types.html#ggaba01db17f4a2bfbc3db60dc172972a25af87700f221033a2bc3bd210756766d0e">MP4NextTimeSyncSample</a> = (1 &lt;&lt; 3)
-, <a class="el" href="group___types.html#ggaba01db17f4a2bfbc3db60dc172972a25ace6d2f5ba30ebcbc23e2782df846719a">MP4NextTimeEdgeOK</a> = (1 &lt;&lt; 4)
+&#160;&#160;<a class="el" href="group___types.html#ggaaf105ae5beaca1dee30ae54530691fceacd85d2b38e7ac06e6ccfb90631933963">MP4NextTimeTrackEdit</a> = (1 &lt;&lt; 2)
+, <a class="el" href="group___types.html#ggaaf105ae5beaca1dee30ae54530691fceaf87700f221033a2bc3bd210756766d0e">MP4NextTimeSyncSample</a> = (1 &lt;&lt; 3)
+, <a class="el" href="group___types.html#ggaaf105ae5beaca1dee30ae54530691fceace6d2f5ba30ebcbc23e2782df846719a">MP4NextTimeEdgeOK</a> = (1 &lt;&lt; 4)
 <br />
  }</td></tr>
-<tr class="memdesc:gaba01db17f4a2bfbc3db60dc172972a25"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flags for NextInterestingTime.  <a href="group___types.html#gaba01db17f4a2bfbc3db60dc172972a25">More...</a><br /></td></tr>
-<tr class="separator:gaba01db17f4a2bfbc3db60dc172972a25"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaaf105ae5beaca1dee30ae54530691fce" id="r_gaaf105ae5beaca1dee30ae54530691fce"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="group___types.html#ggaaf105ae5beaca1dee30ae54530691fcea002238f4086f36ffdcdca64f87746e50">MP4MediaSampleNotSync</a> = (1 &lt;&lt; 0)
-, <a class="el" href="group___types.html#ggaaf105ae5beaca1dee30ae54530691fcea6bb7670cbdf03cd33172ace5bb0af6d6">MP4MediaSampleHasCTSOffset</a> = (1 &lt;&lt; 1)
- }</td></tr>
-<tr class="memdesc:gaaf105ae5beaca1dee30ae54530691fce"><td class="mdescLeft">&#160;</td><td class="mdescRight">flags for <a class="el" href="group___media.html#gaeb6dfa0361d08730c650bfde17332932" title="Returns a closest sample from the media, given the desired decoding time.">MP4GetMediaSample()</a>, <a class="el" href="group___media.html#gab9ffa5ccd8d364b89eb78baa0b1b5fcc" title="Returns a sample with padding bits from the media, given the sample&#39;s index.">MP4GetIndMediaSampleWithPad()</a>, <a class="el" href="group___media.html#ga929841c76b8575225197735d97bfcc8c" title="Returns a sample from the media, given the sample&#39;s index.">MP4GetIndMediaSample()</a> ...  <a href="group___types.html#gaaf105ae5beaca1dee30ae54530691fce">More...</a><br /></td></tr>
+<tr class="memdesc:gaaf105ae5beaca1dee30ae54530691fce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flags for NextInterestingTime.  <a href="group___types.html#gaaf105ae5beaca1dee30ae54530691fce">More...</a><br /></td></tr>
 <tr class="separator:gaaf105ae5beaca1dee30ae54530691fce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga80155586fa275b28773c9b203f52caba" id="r_ga80155586fa275b28773c9b203f52caba"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="group___types.html#gga80155586fa275b28773c9b203f52cabaa002238f4086f36ffdcdca64f87746e50">MP4MediaSampleNotSync</a> = (1 &lt;&lt; 0)
+, <a class="el" href="group___types.html#gga80155586fa275b28773c9b203f52cabaa6bb7670cbdf03cd33172ace5bb0af6d6">MP4MediaSampleHasCTSOffset</a> = (1 &lt;&lt; 1)
+ }</td></tr>
+<tr class="memdesc:ga80155586fa275b28773c9b203f52caba"><td class="mdescLeft">&#160;</td><td class="mdescRight">flags for <a class="el" href="group___media.html#gaeb6dfa0361d08730c650bfde17332932" title="Returns a closest sample from the media, given the desired decoding time.">MP4GetMediaSample()</a>, <a class="el" href="group___media.html#gab9ffa5ccd8d364b89eb78baa0b1b5fcc" title="Returns a sample with padding bits from the media, given the sample&#39;s index.">MP4GetIndMediaSampleWithPad()</a>, <a class="el" href="group___media.html#ga929841c76b8575225197735d97bfcc8c" title="Returns a sample from the media, given the sample&#39;s index.">MP4GetIndMediaSample()</a> ...  <a href="group___types.html#ga80155586fa275b28773c9b203f52caba">More...</a><br /></td></tr>
+<tr class="separator:ga80155586fa275b28773c9b203f52caba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Data types used within the API. </p>
@@ -631,8 +638,8 @@ Enumerations</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="gabc5c98fcc1211af2b80116dd6e0a035d" name="gabc5c98fcc1211af2b80116dd6e0a035d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gabc5c98fcc1211af2b80116dd6e0a035d">&#9670;&#160;</a></span>anonymous enum</h2>
+<a id="gac36f475ca5b446f4fde4c9b90bec77c8" name="gac36f475ca5b446f4fde4c9b90bec77c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac36f475ca5b446f4fde4c9b90bec77c8">&#9670;&#160;</a></span>anonymous enum</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -646,44 +653,23 @@ Enumerations</h2></td></tr>
 <p>Sample dependency types. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="group___media.html#ga903424fb06e04ae4cc8d82cbd93daca3" title="Sets the sample dependency of a set of samples, after having added the samples.">ISOSetSampleDependency</a>, <a class="el" href="group___media.html#ga219164a9cf0288eaf6d80079106b7023" title="Returns in dependency the sample dependency associated with the given sample number.">ISOGetSampleDependency</a> </dd></dl>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggabc5c98fcc1211af2b80116dd6e0a035da2aaa7588718299197bd494e8e916c5c9" name="ggabc5c98fcc1211af2b80116dd6e0a035da2aaa7588718299197bd494e8e916c5c9"></a>is_leading_dependency&#160;</td><td class="fielddoc"><p>this sample is a leading sample that has a dependency before the referenced I-picture (and is therefore not decodable) </p>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggac36f475ca5b446f4fde4c9b90bec77c8a2aaa7588718299197bd494e8e916c5c9" name="ggac36f475ca5b446f4fde4c9b90bec77c8a2aaa7588718299197bd494e8e916c5c9"></a>is_leading_dependency&#160;</td><td class="fielddoc"><p>this sample is a leading sample that has a dependency before the referenced I-picture (and is therefore not decodable) </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ggabc5c98fcc1211af2b80116dd6e0a035da5a51d0768878f66f393d8ded3a6062b2" name="ggabc5c98fcc1211af2b80116dd6e0a035da5a51d0768878f66f393d8ded3a6062b2"></a>is_no_leading&#160;</td><td class="fielddoc"><p>this sample is not a leading sample </p>
+<tr><td class="fieldname"><a id="ggac36f475ca5b446f4fde4c9b90bec77c8a5a51d0768878f66f393d8ded3a6062b2" name="ggac36f475ca5b446f4fde4c9b90bec77c8a5a51d0768878f66f393d8ded3a6062b2"></a>is_no_leading&#160;</td><td class="fielddoc"><p>this sample is not a leading sample </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ggabc5c98fcc1211af2b80116dd6e0a035daf92ca72be4f60165fde8912938c76711" name="ggabc5c98fcc1211af2b80116dd6e0a035daf92ca72be4f60165fde8912938c76711"></a>is_leading_no_dependency&#160;</td><td class="fielddoc"><p>this sample is a leading sample that has no dependency before the referenced I-picture (and is therefore decodable) </p>
+<tr><td class="fieldname"><a id="ggac36f475ca5b446f4fde4c9b90bec77c8af92ca72be4f60165fde8912938c76711" name="ggac36f475ca5b446f4fde4c9b90bec77c8af92ca72be4f60165fde8912938c76711"></a>is_leading_no_dependency&#160;</td><td class="fielddoc"><p>this sample is a leading sample that has no dependency before the referenced I-picture (and is therefore decodable) </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ggabc5c98fcc1211af2b80116dd6e0a035da54473b5618e23be917c8bcb088a2479a" name="ggabc5c98fcc1211af2b80116dd6e0a035da54473b5618e23be917c8bcb088a2479a"></a>does_depend_on&#160;</td><td class="fielddoc"><p>this sample does depend on others (not an I picture) </p>
+<tr><td class="fieldname"><a id="ggac36f475ca5b446f4fde4c9b90bec77c8a54473b5618e23be917c8bcb088a2479a" name="ggac36f475ca5b446f4fde4c9b90bec77c8a54473b5618e23be917c8bcb088a2479a"></a>does_depend_on&#160;</td><td class="fielddoc"><p>this sample does depend on others (not an I picture) </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ggabc5c98fcc1211af2b80116dd6e0a035da449386e844aabb699b7fa25a2bbde366" name="ggabc5c98fcc1211af2b80116dd6e0a035da449386e844aabb699b7fa25a2bbde366"></a>does_not_depend_on&#160;</td><td class="fielddoc"><p>this sample does not depend on others (I picture) </p>
+<tr><td class="fieldname"><a id="ggac36f475ca5b446f4fde4c9b90bec77c8a449386e844aabb699b7fa25a2bbde366" name="ggac36f475ca5b446f4fde4c9b90bec77c8a449386e844aabb699b7fa25a2bbde366"></a>does_not_depend_on&#160;</td><td class="fielddoc"><p>this sample does not depend on others (I picture) </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ggabc5c98fcc1211af2b80116dd6e0a035daaecf603dea34ee700fdbb4b412804afd" name="ggabc5c98fcc1211af2b80116dd6e0a035daaecf603dea34ee700fdbb4b412804afd"></a>is_depended_on&#160;</td><td class="fielddoc"><p>other samples may depend on this one (not disposable) </p>
+<tr><td class="fieldname"><a id="ggac36f475ca5b446f4fde4c9b90bec77c8aaecf603dea34ee700fdbb4b412804afd" name="ggac36f475ca5b446f4fde4c9b90bec77c8aaecf603dea34ee700fdbb4b412804afd"></a>is_depended_on&#160;</td><td class="fielddoc"><p>other samples may depend on this one (not disposable) </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ggabc5c98fcc1211af2b80116dd6e0a035da9423121a4784eaa592f26276782c53b4" name="ggabc5c98fcc1211af2b80116dd6e0a035da9423121a4784eaa592f26276782c53b4"></a>is_not_depended_on&#160;</td><td class="fielddoc"><p>no other sample depends on this one (disposable) </p>
+<tr><td class="fieldname"><a id="ggac36f475ca5b446f4fde4c9b90bec77c8a9423121a4784eaa592f26276782c53b4" name="ggac36f475ca5b446f4fde4c9b90bec77c8a9423121a4784eaa592f26276782c53b4"></a>is_not_depended_on&#160;</td><td class="fielddoc"><p>no other sample depends on this one (disposable) </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ggabc5c98fcc1211af2b80116dd6e0a035da9afd2c655549c581ba51748f34066267" name="ggabc5c98fcc1211af2b80116dd6e0a035da9afd2c655549c581ba51748f34066267"></a>has_redundancy&#160;</td><td class="fielddoc"><p>there is redundant coding in this sample </p>
+<tr><td class="fieldname"><a id="ggac36f475ca5b446f4fde4c9b90bec77c8a9afd2c655549c581ba51748f34066267" name="ggac36f475ca5b446f4fde4c9b90bec77c8a9afd2c655549c581ba51748f34066267"></a>has_redundancy&#160;</td><td class="fielddoc"><p>there is redundant coding in this sample </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ggabc5c98fcc1211af2b80116dd6e0a035da0e7dfbe886c78394663640ad7391a3ef" name="ggabc5c98fcc1211af2b80116dd6e0a035da0e7dfbe886c78394663640ad7391a3ef"></a>has_no_redundancy&#160;</td><td class="fielddoc"><p>there is no redundant coding in this sample </p>
-</td></tr>
-</table>
-
-</div>
-</div>
-<a id="ga05589fbab0657f08285ebdfe93f5ec9e" name="ga05589fbab0657f08285ebdfe93f5ec9e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga05589fbab0657f08285ebdfe93f5ec9e">&#9670;&#160;</a></span>anonymous enum</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">anonymous enum</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Data reference attributes. </p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group___media.html#ga97dcd29b93bae62cce93e03d4d4cca5e" title="Use this to get information about a specific data reference to a media container.">MP4GetMediaDataReference()</a> </dd></dl>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga05589fbab0657f08285ebdfe93f5ec9eaec1f9ed41fadbabffbdd255061745b73" name="gga05589fbab0657f08285ebdfe93f5ec9eaec1f9ed41fadbabffbdd255061745b73"></a>MP4DataRefSelfReferenceMask&#160;</td><td class="fielddoc"><p>samples are in the same file as the movie </p>
+<tr><td class="fieldname"><a id="ggac36f475ca5b446f4fde4c9b90bec77c8a0e7dfbe886c78394663640ad7391a3ef" name="ggac36f475ca5b446f4fde4c9b90bec77c8a0e7dfbe886c78394663640ad7391a3ef"></a>has_no_redundancy&#160;</td><td class="fielddoc"><p>there is no redundant coding in this sample </p>
 </td></tr>
 </table>
 
@@ -701,12 +687,10 @@ Enumerations</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Data reference types. </p>
+<p>Data reference attributes. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="group___media.html#ga97dcd29b93bae62cce93e03d4d4cca5e" title="Use this to get information about a specific data reference to a media container.">MP4GetMediaDataReference()</a> </dd></dl>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga16af7b253440dadd46a80a4b9fddba4dab758a7509a808da3f8f8f2460f0a7bbc" name="gga16af7b253440dadd46a80a4b9fddba4dab758a7509a808da3f8f8f2460f0a7bbc"></a>MP4URLDataReferenceType&#160;</td><td class="fielddoc"><p>URL. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga16af7b253440dadd46a80a4b9fddba4dad95137c56935f974d06de9c672858bf6" name="gga16af7b253440dadd46a80a4b9fddba4dad95137c56935f974d06de9c672858bf6"></a>MP4URNDataReferenceType&#160;</td><td class="fielddoc"><p>URN. </p>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga16af7b253440dadd46a80a4b9fddba4daec1f9ed41fadbabffbdd255061745b73" name="gga16af7b253440dadd46a80a4b9fddba4daec1f9ed41fadbabffbdd255061745b73"></a>MP4DataRefSelfReferenceMask&#160;</td><td class="fielddoc"><p>samples are in the same file as the movie </p>
 </td></tr>
 </table>
 
@@ -724,22 +708,12 @@ Enumerations</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Flags for NextInterestingTime. </p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="group___media.html#gab27b6f4e9765eb44d6b5a4dd0af0e736" title="Search for interesging time.">MP4GetMediaNextInterestingTime()</a> </dd></dl>
+<p>Data reference types. </p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group___media.html#ga97dcd29b93bae62cce93e03d4d4cca5e" title="Use this to get information about a specific data reference to a media container.">MP4GetMediaDataReference()</a> </dd></dl>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggaba01db17f4a2bfbc3db60dc172972a25a199dad7da660febde87e25b7aca9e957" name="ggaba01db17f4a2bfbc3db60dc172972a25a199dad7da660febde87e25b7aca9e957"></a>MP4NextTimeSearchForward&#160;</td><td class="fielddoc"><p>Forward search. </p>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggaba01db17f4a2bfbc3db60dc172972a25ab758a7509a808da3f8f8f2460f0a7bbc" name="ggaba01db17f4a2bfbc3db60dc172972a25ab758a7509a808da3f8f8f2460f0a7bbc"></a>MP4URLDataReferenceType&#160;</td><td class="fielddoc"><p>URL. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ggaba01db17f4a2bfbc3db60dc172972a25a2d47e5e3d80812d6a0b440b870b193c7" name="ggaba01db17f4a2bfbc3db60dc172972a25a2d47e5e3d80812d6a0b440b870b193c7"></a>MP4NextTimeSearchBackward&#160;</td><td class="fielddoc"><p>Backward search. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggaba01db17f4a2bfbc3db60dc172972a25ae513ed58fa53d1fd8454454e9e02ffac" name="ggaba01db17f4a2bfbc3db60dc172972a25ae513ed58fa53d1fd8454454e9e02ffac"></a>MP4NextTimeMediaSample&#160;</td><td class="fielddoc"><p>Media sample time. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggaba01db17f4a2bfbc3db60dc172972a25a53867eedf36724ee697dc1ac94d6be19" name="ggaba01db17f4a2bfbc3db60dc172972a25a53867eedf36724ee697dc1ac94d6be19"></a>MP4NextTimeMediaEdit&#160;</td><td class="fielddoc"><p>Media edit time. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggaba01db17f4a2bfbc3db60dc172972a25acd85d2b38e7ac06e6ccfb90631933963" name="ggaba01db17f4a2bfbc3db60dc172972a25acd85d2b38e7ac06e6ccfb90631933963"></a>MP4NextTimeTrackEdit&#160;</td><td class="fielddoc"><p>Track edit time. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggaba01db17f4a2bfbc3db60dc172972a25af87700f221033a2bc3bd210756766d0e" name="ggaba01db17f4a2bfbc3db60dc172972a25af87700f221033a2bc3bd210756766d0e"></a>MP4NextTimeSyncSample&#160;</td><td class="fielddoc"><p>Sync sample time. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="ggaba01db17f4a2bfbc3db60dc172972a25ace6d2f5ba30ebcbc23e2782df846719a" name="ggaba01db17f4a2bfbc3db60dc172972a25ace6d2f5ba30ebcbc23e2782df846719a"></a>MP4NextTimeEdgeOK&#160;</td><td class="fielddoc"><p>Time edge is ok. </p>
+<tr><td class="fieldname"><a id="ggaba01db17f4a2bfbc3db60dc172972a25ad95137c56935f974d06de9c672858bf6" name="ggaba01db17f4a2bfbc3db60dc172972a25ad95137c56935f974d06de9c672858bf6"></a>MP4URNDataReferenceType&#160;</td><td class="fielddoc"><p>URN. </p>
 </td></tr>
 </table>
 
@@ -757,11 +731,44 @@ Enumerations</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Flags for NextInterestingTime. </p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="group___media.html#gab27b6f4e9765eb44d6b5a4dd0af0e736" title="Search for interesging time.">MP4GetMediaNextInterestingTime()</a> </dd></dl>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggaaf105ae5beaca1dee30ae54530691fcea199dad7da660febde87e25b7aca9e957" name="ggaaf105ae5beaca1dee30ae54530691fcea199dad7da660febde87e25b7aca9e957"></a>MP4NextTimeSearchForward&#160;</td><td class="fielddoc"><p>Forward search. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggaaf105ae5beaca1dee30ae54530691fcea2d47e5e3d80812d6a0b440b870b193c7" name="ggaaf105ae5beaca1dee30ae54530691fcea2d47e5e3d80812d6a0b440b870b193c7"></a>MP4NextTimeSearchBackward&#160;</td><td class="fielddoc"><p>Backward search. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggaaf105ae5beaca1dee30ae54530691fceae513ed58fa53d1fd8454454e9e02ffac" name="ggaaf105ae5beaca1dee30ae54530691fceae513ed58fa53d1fd8454454e9e02ffac"></a>MP4NextTimeMediaSample&#160;</td><td class="fielddoc"><p>Media sample time. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggaaf105ae5beaca1dee30ae54530691fcea53867eedf36724ee697dc1ac94d6be19" name="ggaaf105ae5beaca1dee30ae54530691fcea53867eedf36724ee697dc1ac94d6be19"></a>MP4NextTimeMediaEdit&#160;</td><td class="fielddoc"><p>Media edit time. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggaaf105ae5beaca1dee30ae54530691fceacd85d2b38e7ac06e6ccfb90631933963" name="ggaaf105ae5beaca1dee30ae54530691fceacd85d2b38e7ac06e6ccfb90631933963"></a>MP4NextTimeTrackEdit&#160;</td><td class="fielddoc"><p>Track edit time. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggaaf105ae5beaca1dee30ae54530691fceaf87700f221033a2bc3bd210756766d0e" name="ggaaf105ae5beaca1dee30ae54530691fceaf87700f221033a2bc3bd210756766d0e"></a>MP4NextTimeSyncSample&#160;</td><td class="fielddoc"><p>Sync sample time. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggaaf105ae5beaca1dee30ae54530691fceace6d2f5ba30ebcbc23e2782df846719a" name="ggaaf105ae5beaca1dee30ae54530691fceace6d2f5ba30ebcbc23e2782df846719a"></a>MP4NextTimeEdgeOK&#160;</td><td class="fielddoc"><p>Time edge is ok. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<a id="ga80155586fa275b28773c9b203f52caba" name="ga80155586fa275b28773c9b203f52caba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga80155586fa275b28773c9b203f52caba">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
 <p>flags for <a class="el" href="group___media.html#gaeb6dfa0361d08730c650bfde17332932" title="Returns a closest sample from the media, given the desired decoding time.">MP4GetMediaSample()</a>, <a class="el" href="group___media.html#gab9ffa5ccd8d364b89eb78baa0b1b5fcc" title="Returns a sample with padding bits from the media, given the sample&#39;s index.">MP4GetIndMediaSampleWithPad()</a>, <a class="el" href="group___media.html#ga929841c76b8575225197735d97bfcc8c" title="Returns a sample from the media, given the sample&#39;s index.">MP4GetIndMediaSample()</a> ... </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ggaaf105ae5beaca1dee30ae54530691fcea002238f4086f36ffdcdca64f87746e50" name="ggaaf105ae5beaca1dee30ae54530691fcea002238f4086f36ffdcdca64f87746e50"></a>MP4MediaSampleNotSync&#160;</td><td class="fielddoc"><p>the sample is not a sync sample </p>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga80155586fa275b28773c9b203f52cabaa002238f4086f36ffdcdca64f87746e50" name="gga80155586fa275b28773c9b203f52cabaa002238f4086f36ffdcdca64f87746e50"></a>MP4MediaSampleNotSync&#160;</td><td class="fielddoc"><p>the sample is not a sync sample </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ggaaf105ae5beaca1dee30ae54530691fcea6bb7670cbdf03cd33172ace5bb0af6d6" name="ggaaf105ae5beaca1dee30ae54530691fcea6bb7670cbdf03cd33172ace5bb0af6d6"></a>MP4MediaSampleHasCTSOffset&#160;</td><td class="fielddoc"><p>the sample’s DTS differs from its CTS </p>
+<tr><td class="fieldname"><a id="gga80155586fa275b28773c9b203f52cabaa6bb7670cbdf03cd33172ace5bb0af6d6" name="gga80155586fa275b28773c9b203f52cabaa6bb7670cbdf03cd33172ace5bb0af6d6"></a>MP4MediaSampleHasCTSOffset&#160;</td><td class="fielddoc"><p>the sample’s DTS differs from its CTS </p>
 </td></tr>
 </table>
 
@@ -978,6 +985,8 @@ Enumerations</h2></td></tr>
 <tr><td class="fieldname"><a id="ggabed82baf7f470b522273a3e37c24c600a0736424e877fb64dc10f9566c39ef931" name="ggabed82baf7f470b522273a3e37c24c600a0736424e877fb64dc10f9566c39ef931"></a>MP4NewTrackIsVolumetric&#160;</td><td class="fielddoc"><p>track contains volumetric media </p>
 </td></tr>
 <tr><td class="fieldname"><a id="ggabed82baf7f470b522273a3e37c24c600a80a375b825e7a8bf2336cd5ee2906b2d" name="ggabed82baf7f470b522273a3e37c24c600a80a375b825e7a8bf2336cd5ee2906b2d"></a>MP4NewTrackIsHaptic&#160;</td><td class="fielddoc"><p>track contains haptic media </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggabed82baf7f470b522273a3e37c24c600a0bb16be3d03dfc76b718d566569ac967" name="ggabed82baf7f470b522273a3e37c24c600a0bb16be3d03dfc76b718d566569ac967"></a>MP4NewTrackIsMebx&#160;</td><td class="fielddoc"><p>track contains boxed meta-data </p>
 </td></tr>
 <tr><td class="fieldname"><a id="ggabed82baf7f470b522273a3e37c24c600acefc910531c9889c87a28ba635c9fa26" name="ggabed82baf7f470b522273a3e37c24c600acefc910531c9889c87a28ba635c9fa26"></a>MP4NewTrackIsPrivate&#160;</td><td class="fielddoc"><p>track contains a media type unknown to MPEG-4 </p>
 </td></tr>

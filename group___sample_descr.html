@@ -142,6 +142,9 @@ ISOErr&#160;</td><td class="memItemRight" valign="bottom"><b>ISOGetNALUnitLength
 <tr class="memitem:ga23216288bfdfd9a15b922bb51c758c15" id="r_ga23216288bfdfd9a15b922bb51c758c15"><td class="memItemLeft" align="right" valign="top">ISOErr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___sample_descr.html#ga23216288bfdfd9a15b922bb51c758c15">ISONewHEVCSampleDescription</a> (<a class="el" href="group___types.html#ga9dc1f38be42a4f54442ddb8783d435fc">MP4Track</a> theTrack, <a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> sampleDescriptionH, u32 dataReferenceIndex, u32 length_size, <a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> first_sps, <a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> first_pps, <a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> first_vps)</td></tr>
 <tr class="memdesc:ga23216288bfdfd9a15b922bb51c758c15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new HEVC sample entry.  <br /></td></tr>
 <tr class="separator:ga23216288bfdfd9a15b922bb51c758c15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad1170076ef5ecaf9a28e7357b5ba2825" id="r_gad1170076ef5ecaf9a28e7357b5ba2825"><td class="memItemLeft" align="right" valign="top">ISOErr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___sample_descr.html#gad1170076ef5ecaf9a28e7357b5ba2825">ISONewMebxSampleDescription</a> (struct MP4BoxedMetadataSampleEntry **outSE, u32 dataReferenceIndex)</td></tr>
+<tr class="memdesc:gad1170076ef5ecaf9a28e7357b5ba2825"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new mebx sample entry.  <br /></td></tr>
+<tr class="separator:gad1170076ef5ecaf9a28e7357b5ba2825"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac62875bc4ac012ee5ee11c7eef1b6597" id="r_gac62875bc4ac012ee5ee11c7eef1b6597"><td class="memItemLeft" align="right" valign="top">ISOErr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___sample_descr.html#gac62875bc4ac012ee5ee11c7eef1b6597">ISONewVVCSampleDescription</a> (<a class="el" href="group___types.html#ga9dc1f38be42a4f54442ddb8783d435fc">MP4Track</a> theTrack, <a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> sampleDescriptionH, u32 dataReferenceIndex, u32 length_size, <a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> first_sps, <a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> first_pps)</td></tr>
 <tr class="memdesc:gac62875bc4ac012ee5ee11c7eef1b6597"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new VVC sample entry.  <br /></td></tr>
 <tr class="separator:gac62875bc4ac012ee5ee11c7eef1b6597"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1051,6 +1054,43 @@ ISOErr&#160;</td><td class="memItemRight" valign="bottom"><b>ISOGetNALUnitLength
     <tr><td class="paramname">first_sps</td><td>The sequence parameter set (MUST be passed) used to get the profile, level, etc. </td></tr>
     <tr><td class="paramname">first_pps</td><td>picture parameter set. </td></tr>
     <tr><td class="paramname">first_vps</td><td>video parameter set. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="gad1170076ef5ecaf9a28e7357b5ba2825" name="gad1170076ef5ecaf9a28e7357b5ba2825"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gad1170076ef5ecaf9a28e7357b5ba2825">&#9670;&#160;</a></span>ISONewMebxSampleDescription()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ISOErr ISONewMebxSampleDescription </td>
+          <td>(</td>
+          <td class="paramtype">struct MP4BoxedMetadataSampleEntry **&#160;</td>
+          <td class="paramname"><em>outSE</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">u32&#160;</td>
+          <td class="paramname"><em>dataReferenceIndex</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Construct a new mebx sample entry. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">outSE</td><td>output sample entry object </td></tr>
+    <tr><td class="paramname">dataReferenceIndex</td><td>data reference index </td></tr>
   </table>
   </dd>
 </dl>
