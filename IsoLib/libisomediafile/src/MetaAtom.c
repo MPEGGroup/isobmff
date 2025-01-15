@@ -11,6 +11,7 @@
  * the code for non MPEG-4 conforming products. This copyright notice must be included in all copies
  * or derivative works. Copyright (c) 1999.
  */
+
 /*
   $Id: MetaAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
 */
@@ -290,11 +291,52 @@ bail:
 
 static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream)
 {
-  PARSE_ATOM_LIST(ISOMetaAtom)
+  MP4Err err;
+  ISOMetaAtomPtr self = (ISOMetaAtomPtr)s;
+  err                 = MP4NoErr;
+  if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+
+  err = self->super->createFromInputStream(s, proto, (char *)inputStream);
+  if(err) goto bail;
+
+  while(self->bytesRead < self->size)
+  {
+    MP4AtomPtr atom;
+    u64 currentOffset               = 0;
+    u64 available                   = inputStream->available;
+    u32 indent                      = inputStream->indent;
+    MP4FileMappingInputStreamPtr fm = (MP4FileMappingInputStreamPtr)inputStream;
+    currentOffset                   = fm->current_offset;
+    err                             = MP4ParseAtom((MP4InputStreamPtr)inputStream, &atom);
+
+    if(err == MP4BadDataErr && self->bytesRead == 12)
+    {
+      /* most likely we are parsing QTFF MetaBox which is a Box and not a FullBox */
+      inputStream->available = available + 4;
+      inputStream->indent    = indent;
+      fm->current_offset     = currentOffset - 4;
+      self->bytesRead        = 8;
+      self->flags            = 0;
+      self->version          = 0;
+
+      err = MP4ParseAtom((MP4InputStreamPtr)inputStream, &atom);
+    }
+    if(err) goto bail;
+
+    self->bytesRead += atom->size;
+    if(((atom->type) == MP4FreeSpaceAtomType) || ((atom->type) == MP4SkipAtomType))
+      atom->destroy(atom);
+    else
+    {
+      err = addAtom(self, atom);
+      if(err) goto bail;
+    }
+  }
+  if(self->bytesRead != self->size) BAILWITHERROR(MP4BadDataErr)
+
   self->inputStream = inputStream;
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 

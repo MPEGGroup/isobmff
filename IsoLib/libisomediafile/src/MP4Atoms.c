@@ -634,6 +634,30 @@ MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom)
     err = MP4CreateHEVCConfigAtom((ISOHEVCConfigAtomPtr *)&newAtom);
     break;
 
+  case MP4BoxedMetadataSampleEntryType:
+    err = MP4CreateMP4BoxedMetadataSampleEntry((MP4BoxedMetadataSampleEntryPtr *)&newAtom);
+    break;
+
+  case MP4MetadataKeyTableBoxType:
+    err = MP4CreateMetadataKeyTableBox((MP4MetadataKeyTableBoxPtr *)&newAtom);
+    break;
+
+  case MP4MetadataKeyDeclarationBoxType:
+    err = MP4CreateMetadataKeyDeclarationBox((MP4MetadataKeyDeclarationBoxPtr *)&newAtom, 0, 0);
+    break;
+
+  case MP4MetadataLocaleBoxType:
+    err = MP4CreateMetadataLocaleBox((MP4MetadataLocaleBoxPtr *)&newAtom, 0);
+    break;
+
+  case MP4MetadataSetupBoxType:
+    err = MP4CreateMetadataSetupBox((MP4MetadataSetupBoxPtr *)&newAtom, 0);
+    break;
+
+  case MP4MetadataGenericKeyBoxType:
+    err = MP4CreateMetadataKeyBox((MP4MetadataKeyBoxPtr *)&newAtom, 0);
+    break;
+
   case MP4GroupsListBoxType:
     err = MP4CreateGroupListBox((GroupListBoxPtr *)&newAtom);
     break;
@@ -798,7 +822,7 @@ MP4Err MP4ParseAtomUsingProtoList(MP4InputStreamPtr inputStream, u32 *protoList,
   if(err) goto bail;
   bytesParsed += 4L;
   MP4TypeToString(atomProto->type, typeString);
-  sprintf(msgString, "atom type is '%s'", typeString);
+  sprintf(msgString, "atom type is '%s' (%u)", typeString, atomProto->type);
   inputStream->msg(inputStream, msgString);
   if(atomProto->type == MP4ExtendedAtomType)
   {

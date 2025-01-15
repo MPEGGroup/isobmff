@@ -161,6 +161,12 @@ enum
   MP4SegmentIndexAtomType                      = MP4_FOUR_CHAR_CODE('s', 'i', 'd', 'x'),
   MP4SubsegmentIndexAtomType                   = MP4_FOUR_CHAR_CODE('s', 's', 'i', 'x'),
   MP4ProducerReferenceTimeAtomType             = MP4_FOUR_CHAR_CODE('p', 'r', 'f', 't'),
+  MP4BoxedMetadataSampleEntryType              = MP4_FOUR_CHAR_CODE('m', 'e', 'b', 'x'),
+  MP4MetadataKeyTableBoxType                   = MP4_FOUR_CHAR_CODE('k', 'e', 'y', 's'),
+  MP4MetadataGenericKeyBoxType                 = MP4_FOUR_CHAR_CODE('!', 'k', 'e', 'y'), /* hack */
+  MP4MetadataKeyDeclarationBoxType             = MP4_FOUR_CHAR_CODE('k', 'e', 'y', 'd'),
+  MP4MetadataLocaleBoxType                     = MP4_FOUR_CHAR_CODE('l', 'o', 'c', 'a'),
+  MP4MetadataSetupBoxType                      = MP4_FOUR_CHAR_CODE('s', 'e', 't', 'u'),
   MP4GroupsListBoxType                         = MP4_FOUR_CHAR_CODE('g', 'r', 'p', 'l'),
   MP4AlternativeEntityGroup                    = MP4_FOUR_CHAR_CODE('a', 'l', 't', 'r')
 
@@ -881,14 +887,63 @@ typedef struct MP4AudioSampleEntryAtom
 {
   MP4_BASE_ATOM
   COMMON_SAMPLE_ENTRY_FIELDS
-  char reserved2[8]; /* uint(32)[2] */
-  u32 reserved3;     /* uint(16) = 2 */
-  u32 reserved4;     /* uint(16) = 16 */
-  u32 reserved5;     /* uint(32) = 0 */
-  u32 timeScale;     /* uint(16) copied from track! */
-  u32 reserved6;     /* uint(16) = 0 */
+  char reserved2[8];      /* uint(32)[2] */
+  u32 reserved3;          /* uint(16) = 2 */
+  u32 reserved4;          /* uint(16) = 16 */
+  u32 reserved5;          /* uint(32) = 0 */
+  u32 timeScale;          /* uint(16) copied from track! */
+  u32 reserved6;          /* uint(16) = 0 */
+  u32 qtSamplesPerPacket; /* from SoundDescriptionV1 in QTFF */
+  u32 qtbytesPerPacket;   /* from SoundDescriptionV1 in QTFF */
+  u32 qtbytesPerFrame;    /* from SoundDescriptionV1 in QTFF */
+  u32 qtbytesPerSample;   /* from SoundDescriptionV1 in QTFF */
 
 } MP4AudioSampleEntryAtom, *MP4AudioSampleEntryAtomPtr;
+
+typedef struct MP4MetadataSetupBox
+{
+  MP4_BASE_ATOM
+  MP4Handle setup_data;
+} MP4MetadataSetupBox, *MP4MetadataSetupBoxPtr;
+
+typedef struct MP4MetadataLocaleBox
+{
+  MP4_BASE_ATOM
+  char *locale_string;
+} MP4MetadataLocaleBox, *MP4MetadataLocaleBoxPtr;
+
+typedef struct MP4MetadataKeyDeclarationBox
+{
+  MP4_BASE_ATOM
+  u32 key_namespace;
+  MP4Handle key_value;
+} MP4MetadataKeyDeclarationBox, *MP4MetadataKeyDeclarationBoxPtr;
+
+typedef struct MP4MetadataKeyBox
+{
+  MP4_BASE_ATOM
+  MP4Err (*addAtom)(struct MP4MetadataKeyBox *self, MP4AtomPtr atom);
+  MP4MetadataKeyDeclarationBoxPtr keyDeclarationBox;
+  MP4MetadataLocaleBoxPtr localeBox;
+  MP4MetadataSetupBoxPtr setupBox;
+  MP4LinkedList atomList;
+} MP4MetadataKeyBox, *MP4MetadataKeyBoxPtr;
+
+typedef struct MP4MetadataKeyTableBox
+{
+  MP4_BASE_ATOM
+  MP4MetadataKeyBoxPtr (*getMetadataKeyBox)(struct MP4MetadataKeyTableBox *self, u32 local_key_id);
+  MP4Err (*addMetaDataKeyBox)(struct MP4MetadataKeyTableBox *self, MP4AtomPtr atom);
+  MP4LinkedList metadataKeyBoxList;
+} MP4MetadataKeyTableBox, *MP4MetadataKeyTableBoxPtr;
+
+typedef struct MP4BoxedMetadataSampleEntry
+{
+  MP4_BASE_ATOM
+  COMMON_SAMPLE_ENTRY_FIELDS
+  MP4Err (*addAtom)(struct MP4BoxedMetadataSampleEntry *self, MP4AtomPtr atom);
+  MP4MetadataKeyTableBoxPtr keyTable;
+} MP4BoxedMetadataSampleEntry, *MP4BoxedMetadataSampleEntryPtr;
 
 typedef struct MP4PCMConfigAtom
 {
@@ -2243,6 +2298,15 @@ MP4Err MP4CreateVideoMediaHeaderAtom(MP4VideoMediaHeaderAtomPtr *outAtom);
 MP4Err MP4CreateVisualSampleEntryAtom(MP4VisualSampleEntryAtomPtr *outAtom);
 MP4Err MP4CreateVolumetricVisualSampleEntryAtom(MP4VolumetricVisualSampleEntryAtomPtr *outAtom);
 MP4Err MP4CreateHapticSampleEntryAtom(MP4HapticSampleEntryAtomPtr *outAtom);
+
+/* mebx stuff */
+MP4Err MP4CreateMP4BoxedMetadataSampleEntry(MP4BoxedMetadataSampleEntryPtr *outAtom);
+MP4Err MP4CreateMetadataKeyTableBox(MP4MetadataKeyTableBoxPtr *outAtom);
+MP4Err MP4CreateMetadataKeyDeclarationBox(MP4MetadataKeyDeclarationBoxPtr *outAtom, u32 key_ns,
+                                          MP4Handle key_val);
+MP4Err MP4CreateMetadataLocaleBox(MP4MetadataLocaleBoxPtr *outAtom, char *locale_string);
+MP4Err MP4CreateMetadataSetupBox(MP4MetadataSetupBoxPtr *outAtom, MP4Handle setupH);
+MP4Err MP4CreateMetadataKeyBox(MP4MetadataKeyBoxPtr *outAtom, u32 local_key_id);
 
 MP4Err MP4CreateXMLMetaSampleEntryAtom(MP4XMLMetaSampleEntryAtomPtr *outAtom);
 MP4Err MP4CreateTextMetaSampleEntryAtom(MP4TextMetaSampleEntryAtomPtr *outAtom);

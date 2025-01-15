@@ -46,16 +46,25 @@ MP4Err MP4ParseAtomUsingProtoList(MP4InputStreamPtr inputStream, u32 *protoList,
                                   MP4AtomPtr *outAtom);
 
 #ifdef ISMACrypt
-u32 MP4SampleEntryProtos[] = {
-  MP4MPEGSampleEntryAtomType,      MP4VisualSampleEntryAtomType,
-  MP4AudioSampleEntryAtomType,     MP4EncAudioSampleEntryAtomType,
-  MP4EncVisualSampleEntryAtomType, MP4XMLMetaSampleEntryAtomType,
-  MP4TextMetaSampleEntryAtomType,  MP4AMRSampleEntryAtomType,
-  MP4AWBSampleEntryAtomType,       MP4AMRWPSampleEntryAtomType,
-  MP4H263SampleEntryAtomType,      MP4RestrictedVideoSampleEntryAtomType,
-  ISOAVCSampleEntryAtomType,       ISOHEVCSampleEntryAtomType,
-  ISOVVCSampleEntryAtomTypeInBand, ISOVVCSampleEntryAtomTypeOutOfBand,
-  ISOVVCSubpicSampleEntryAtomType, 0};
+u32 MP4SampleEntryProtos[] = {MP4MPEGSampleEntryAtomType,
+                              MP4VisualSampleEntryAtomType,
+                              MP4AudioSampleEntryAtomType,
+                              MP4EncAudioSampleEntryAtomType,
+                              MP4EncVisualSampleEntryAtomType,
+                              MP4XMLMetaSampleEntryAtomType,
+                              MP4TextMetaSampleEntryAtomType,
+                              MP4AMRSampleEntryAtomType,
+                              MP4AWBSampleEntryAtomType,
+                              MP4AMRWPSampleEntryAtomType,
+                              MP4H263SampleEntryAtomType,
+                              MP4RestrictedVideoSampleEntryAtomType,
+                              MP4BoxedMetadataSampleEntryType,
+                              ISOAVCSampleEntryAtomType,
+                              ISOHEVCSampleEntryAtomType,
+                              ISOVVCSampleEntryAtomTypeInBand,
+                              ISOVVCSampleEntryAtomTypeOutOfBand,
+                              ISOVVCSubpicSampleEntryAtomType,
+                              0};
 #else
 u32 MP4SampleEntryProtos[] = {MP4MPEGSampleEntryAtomType,
                               MP4VisualSampleEntryAtomType,
@@ -67,6 +76,12 @@ u32 MP4SampleEntryProtos[] = {MP4MPEGSampleEntryAtomType,
                               MP4AMRWPSampleEntryAtomType,
                               MP4H263SampleEntryAtomType,
                               MP4RestrictedVideoSampleEntryAtomType,
+                              MP4BoxedMetadataSampleEntryType,
+                              ISOAVCSampleEntryAtomType,
+                              ISOHEVCSampleEntryAtomType,
+                              ISOVVCSampleEntryAtomTypeInBand,
+                              ISOVVCSampleEntryAtomTypeOutOfBand,
+                              ISOVVCSubpicSampleEntryAtomType,
                               0};
 #endif
 
@@ -1653,9 +1668,204 @@ ISONewHEVCSampleDescription(MP4Track theTrack, MP4Handle sampleDescriptionH, u32
   if(err) goto bail;
 
 bail:
-
   TEST_RETURN(err);
+  return err;
+}
 
+MP4_EXTERN(MP4Err)
+ISONewMebxSampleDescription(MP4BoxedMetadataSampleEntryPtr *outSE, u32 dataReferenceIndex)
+{
+  MP4Err err;
+  MP4BoxedMetadataSampleEntryPtr mebx;
+  MP4MetadataKeyTableBoxPtr keytable;
+
+  err = MP4CreateMP4BoxedMetadataSampleEntry(&mebx);
+  if(err) goto bail;
+  mebx->dataReferenceIndex = dataReferenceIndex;
+
+  err = MP4CreateMetadataKeyTableBox(&keytable);
+  if(err) goto bail;
+
+  err = mebx->addAtom(mebx, (MP4AtomPtr)keytable);
+  if(err) goto bail;
+
+  *outSE = mebx;
+
+bail:
+  TEST_RETURN(err);
+  return err;
+}
+
+ISO_EXTERN(ISOErr)
+ISOAddMebxMetadataToSampleEntry(MP4BoxedMetadataSampleEntryPtr mebx, u32 desired_local_key_id,
+                                u32 *out_local_key_id, u32 key_namespace, MP4Handle key_value,
+                                char *locale_string, MP4Handle setupInfo)
+{
+  MP4Err err;
+  u32 valueSize, n;
+  MP4MetadataKeyTableBoxPtr keytable;
+  MP4MetadataKeyBoxPtr keyb;
+  MP4MetadataKeyDeclarationBoxPtr keyd;
+
+  if(mebx == NULL) BAILWITHERROR(MP4BadParamErr);
+  if(mebx->keyTable == NULL) BAILWITHERROR(MP4BadDataErr);
+
+  keytable = mebx->keyTable;
+
+  /* search for an unused key */
+  keyb = NULL;
+  for(n = desired_local_key_id; n < 0xFFFFFFFF; n++)
+  {
+    keyb = keytable->getMetadataKeyBox(keytable, n);
+    if(keyb == NULL)
+    {
+      err = MP4CreateMetadataKeyBox(&keyb, n);
+      if(err) goto bail;
+      *out_local_key_id = n;
+      break;
+    }
+  }
+  if(keyb == NULL) BAILWITHERROR(MP4BadDataErr);
+
+  /* in case key_value is not set, set it based on the namespace and key */
+  if(key_value == NULL)
+  {
+    if(key_namespace != MP4KeyNamespace_me4c && key_namespace != MP4KeyNamespace_uiso)
+    {
+      BAILWITHERROR(MP4BadParamErr);
+    }
+    else
+    {
+      err = MP4NewHandle(4, &key_value);
+      if(err) return err;
+      (*key_value)[0] = (desired_local_key_id >> 24) & 0xFF;
+      (*key_value)[1] = (desired_local_key_id >> 16) & 0xFF;
+      (*key_value)[2] = (desired_local_key_id >> 8) & 0xFF;
+      (*key_value)[3] = desired_local_key_id & 0xFF;
+    }
+  }
+  else
+  {
+    err = MP4GetHandleSize(key_value, &valueSize);
+    if(err) BAILWITHERROR(MP4BadParamErr);
+    if(key_namespace == MP4KeyNamespace_me4c || key_namespace == MP4KeyNamespace_uiso)
+    {
+      if(desired_local_key_id != (u32)MP4_FOUR_CHAR_CODE((*key_value)[0], (*key_value)[1],
+                                                         (*key_value)[2], (*key_value)[3]) ||
+         valueSize != 4)
+      {
+        BAILWITHERROR(MP4BadParamErr);
+      }
+    }
+  }
+
+  /* keyd - MetadataKeyDeclarationBox */
+  err = MP4CreateMetadataKeyDeclarationBox(&keyd, key_namespace, key_value);
+  if(err) goto bail;
+  err = keyb->addAtom(keyb, (MP4AtomPtr)keyd);
+  if(err) goto bail;
+
+  /* loca - MetadataLocaleBox */
+  if(locale_string != NULL)
+  {
+    MP4MetadataLocaleBoxPtr loca;
+    err = MP4CreateMetadataLocaleBox(&loca, locale_string);
+    if(err) goto bail;
+    err = keyb->addAtom(keyb, (MP4AtomPtr)loca);
+    if(err) goto bail;
+  }
+
+  /* setu - MetadataSetupBox */
+  if(setupInfo != NULL)
+  {
+    MP4MetadataSetupBoxPtr setu;
+    if(key_namespace == MP4KeyNamespace_uiso) BAILWITHERROR(MP4BadParamErr); /* setu not allowed */
+    err = MP4CreateMetadataSetupBox(&setu, setupInfo);
+    if(err) goto bail;
+    err = keyb->addAtom(keyb, (MP4AtomPtr)setu);
+    if(err) goto bail;
+  }
+
+  keytable->addMetaDataKeyBox(keytable, (MP4AtomPtr)keyb);
+  if(err) goto bail;
+
+bail:
+  TEST_RETURN(err);
+  return err;
+}
+
+ISO_EXTERN(ISOErr)
+ISOGetMebxHandle(MP4BoxedMetadataSampleEntryPtr mebxSE, MP4Handle sampleDescriptionH)
+{
+  MP4Err err = atomPtrToSampleEntryH(sampleDescriptionH, (MP4AtomPtr)mebxSE);
+  if(err) goto bail;
+
+bail:
+  TEST_RETURN(err);
+  return err;
+}
+
+ISO_EXTERN(ISOErr)
+ISOGetMebxMetadataCount(MP4Handle sampleEntryH, u32 *key_cnt)
+{
+  MP4Err err;
+  MP4BoxedMetadataSampleEntryPtr entry = NULL;
+
+  err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, 0);
+  if(err) goto bail;
+
+  if(entry->keyTable == NULL) BAILWITHERROR(MP4BadDataErr);
+
+  err = MP4GetListEntryCount(entry->keyTable->metadataKeyBoxList, key_cnt);
+
+bail:
+  TEST_RETURN(err);
+  return err;
+}
+
+ISO_EXTERN(ISOErr)
+ISOGetMebxMetadataConfig(MP4Handle sampleEntryH, u32 cnt, u32 *local_key_id, u32 *key_namespace,
+                         MP4Handle key_value, char **locale_string, MP4Handle setupInfo)
+{
+  MP4Err err;
+  MP4MetadataKeyBoxPtr key;
+  u32 size;
+  MP4BoxedMetadataSampleEntryPtr entry = NULL;
+
+  err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, 0);
+  if(err) goto bail;
+
+  if(entry->keyTable == NULL) BAILWITHERROR(MP4BadDataErr);
+
+  err = MP4GetListEntry(entry->keyTable->metadataKeyBoxList, cnt, (char **)&key);
+  if(err) goto bail;
+
+  /* set output values */
+  *local_key_id  = key->type;
+  *key_namespace = key->keyDeclarationBox->key_namespace;
+  if(key->keyDeclarationBox->key_value != NULL && key_value != NULL)
+  {
+    err = MP4GetHandleSize(key->keyDeclarationBox->key_value, &size);
+    if(err) goto bail;
+    err = MP4SetHandleSize(key_value, size);
+    if(err) goto bail;
+    memcpy(*key_value, *(key->keyDeclarationBox->key_value), size);
+  }
+  if(key->localeBox != NULL && locale_string != NULL)
+  {
+    *locale_string = key->localeBox->locale_string;
+  }
+  if(key->setupBox != NULL && setupInfo != NULL)
+  {
+    err = MP4GetHandleSize(key->setupBox->setup_data, &size);
+    if(err) goto bail;
+    err = MP4SetHandleSize(setupInfo, size);
+    if(err) goto bail;
+    memcpy(*setupInfo, *(key->setupBox->setup_data), size);
+  }
+
+bail:
+  TEST_RETURN(err);
   return err;
 }
 

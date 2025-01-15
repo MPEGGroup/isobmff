@@ -27,7 +27,7 @@
 #include "test_helpers.h"
 #include <MP4LinkedList.c>
 
-TEST_CASE("Test VVC related stuff")
+TEST_CASE("vvc")
 {
   MP4Err err = MP4NoErr;
 

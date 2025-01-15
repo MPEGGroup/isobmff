@@ -112,7 +112,11 @@ MP4AddTrackReferenceWithID(MP4Track theTrack, u32 dependsOnID, u32 dependencyTyp
   }
   err = dpnd->addTrackID(dpnd, dependsOnID);
   if(err) goto bail;
-  *outReferenceIndex = dpnd->trackIDCount;
+  if(outReferenceIndex != NULL)
+  {
+    *outReferenceIndex = dpnd->trackIDCount;
+  }
+
 bail:
   TEST_RETURN(err);
   return err;

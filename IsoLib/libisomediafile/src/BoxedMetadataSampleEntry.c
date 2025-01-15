@@ -9,12 +9,8 @@
  * non MPEG-4 conforming products. Apple Computer, Inc. retains full right to use the code for its
  * own purpose, assign or donate the code to a third party and to inhibit third parties from using
  * the code for non MPEG-4 conforming products. This copyright notice must be included in all copies
- * or derivative works. Copyright (c) 1999.
+ * or derivative works. Copyright (c) 2022.
  */
-
-/*
-  $Id: AudioSampleEntryAtom.c,v 1.1.1.1 2002/09/20 08:53:34 julien Exp $
-*/
 
 #include "MP4Atoms.h"
 #include <stdlib.h>
@@ -22,145 +18,126 @@
 
 static void destroy(MP4AtomPtr s)
 {
-  MP4Err err;
-  MP4AudioSampleEntryAtomPtr self;
-  err  = MP4NoErr;
-  self = (MP4AudioSampleEntryAtomPtr)s;
+  MP4Err err                          = MP4NoErr;
+  MP4BoxedMetadataSampleEntryPtr self = (MP4BoxedMetadataSampleEntryPtr)s;
   if(self == NULL) BAILWITHERROR(MP4BadParamErr)
+
   DESTROY_ATOM_LIST_F(ExtensionAtomList)
+
   if(self->super) self->super->destroy(s);
 bail:
   TEST_RETURN(err);
-
   return;
 }
 
 static MP4Err serialize(struct MP4Atom *s, char *buffer)
 {
   MP4Err err;
-  MP4AudioSampleEntryAtomPtr self = (MP4AudioSampleEntryAtomPtr)s;
-  err                             = MP4NoErr;
+  MP4BoxedMetadataSampleEntryPtr self = (MP4BoxedMetadataSampleEntryPtr)s;
 
   err = MP4SerializeCommonBaseAtomFields(s, buffer);
   if(err) goto bail;
   buffer += self->bytesWritten;
+
   PUTBYTES(self->reserved, 6);
   PUT16(dataReferenceIndex);
-  PUTBYTES(self->reserved2, 8);
-  PUT16(reserved3);
-  PUT16(reserved4);
-  PUT32(reserved5);
-  PUT16(timeScale);
-  PUT16(reserved6);
   SERIALIZE_ATOM_LIST(ExtensionAtomList);
+
   assert(self->bytesWritten == self->size);
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 
 static MP4Err calculateSize(struct MP4Atom *s)
 {
   MP4Err err;
-  MP4AudioSampleEntryAtomPtr self = (MP4AudioSampleEntryAtomPtr)s;
-  err                             = MP4NoErr;
+  MP4BoxedMetadataSampleEntryPtr self = (MP4BoxedMetadataSampleEntryPtr)s;
 
   err = MP4CalculateBaseAtomFieldSize(s);
   if(err) goto bail;
-  self->size += 14 + (1 * 4) + (5 * 2);
+  self->size += (6 + 2);
   ADD_ATOM_LIST_SIZE(ExtensionAtomList);
 bail:
   TEST_RETURN(err);
+  return err;
+}
 
+static MP4Err addAtom(MP4BoxedMetadataSampleEntryPtr self, MP4AtomPtr atom)
+{
+  MP4Err err;
+  if(atom == NULL) BAILWITHERROR(MP4BadParamErr);
+  if(atom->type == MP4MetadataKeyTableBoxType)
+  {
+    if(self->keyTable != 0) BAILWITHERROR(MP4BadParamErr);
+    self->keyTable = (MP4MetadataKeyTableBoxPtr)atom;
+  }
+
+  err = MP4AddListEntry(atom, self->ExtensionAtomList);
+  if(err) goto bail;
+
+bail:
+  TEST_RETURN(err);
   return err;
 }
 
 static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStreamPtr inputStream)
 {
   MP4Err err;
-  MP4AudioSampleEntryAtomPtr self = (MP4AudioSampleEntryAtomPtr)s;
+  MP4BoxedMetadataSampleEntryPtr self = (MP4BoxedMetadataSampleEntryPtr)s;
 
-  err = MP4NoErr;
   if(self == NULL) BAILWITHERROR(MP4BadParamErr)
   err = self->super->createFromInputStream(s, proto, (char *)inputStream);
   if(err) goto bail;
 
   GETBYTES(6, reserved);
   GET16(dataReferenceIndex);
-  GETBYTES(8, reserved2);
-  GET16(reserved3);
-  GET16(reserved4);
-  GET32(reserved5);
-  GET16(timeScale);
-  GET16(reserved6);
 
-  /* parse boxes and check if we encounter QTFF sample description */
   while(self->bytesRead < self->size)
   {
-    MP4AtomPtr atm;
-    u64 currentOffset               = 0;
-    u64 available                   = inputStream->available;
-    u32 indent                      = inputStream->indent;
-    MP4FileMappingInputStreamPtr fm = (MP4FileMappingInputStreamPtr)inputStream;
-    currentOffset                   = fm->current_offset;
-    err                             = MP4ParseAtom(inputStream, &atm);
-
-    if(self->bytesRead + atm->size > self->size && self->reserved2[1] == 1)
+    MP4AtomPtr atom;
+    err = MP4ParseAtom((MP4InputStreamPtr)inputStream, &atom);
+    if(err) goto bail;
+    self->bytesRead += atom->size;
+    if(((atom->type) == MP4FreeSpaceAtomType) || ((atom->type) == MP4SkipAtomType))
+      atom->destroy(atom);
+    else
     {
-      /* most likely we are parsing QTFF SoundDescriptionV1, rewind and parse 16 more bytes */
-      atm->destroy(atm);
-      inputStream->available = available;
-      inputStream->indent    = indent;
-      fm->current_offset     = currentOffset;
-
-      GET32(qtSamplesPerPacket);
-      GET32(qtbytesPerPacket);
-      GET32(qtbytesPerFrame);
-      GET32(qtbytesPerSample);
-    }
-    else if(err == MP4NoErr)
-    {
-      self->bytesRead += atm->size;
-      if(((atm->type) == MP4FreeSpaceAtomType) || ((atm->type) == MP4SkipAtomType))
-        atm->destroy(atm);
-      else
-      {
-        err = MP4AddListEntry((void *)atm, self->ExtensionAtomList);
-        if(err) goto bail;
-      }
+      err = self->addAtom(self, atom);
+      if(err) goto bail;
     }
   }
+
+  if(self->bytesRead != self->size) BAILWITHERROR(MP4BadDataErr)
 
 bail:
   TEST_RETURN(err);
   return err;
 }
 
-MP4Err MP4CreateAudioSampleEntryAtom(MP4AudioSampleEntryAtomPtr *outAtom)
+MP4Err MP4CreateMP4BoxedMetadataSampleEntry(MP4BoxedMetadataSampleEntryPtr *outAtom)
 {
   MP4Err err;
-  MP4AudioSampleEntryAtomPtr self;
+  MP4BoxedMetadataSampleEntryPtr self;
 
-  self = (MP4AudioSampleEntryAtomPtr)calloc(1, sizeof(MP4AudioSampleEntryAtom));
-  TESTMALLOC(self);
+  self = (MP4BoxedMetadataSampleEntryPtr)calloc(1, sizeof(MP4BoxedMetadataSampleEntry));
+  TESTMALLOC(self)
 
   err = MP4CreateBaseAtom((MP4AtomPtr)self);
   if(err) goto bail;
-  self->type = MP4AudioSampleEntryAtomType;
-  self->name = "audio sample entry";
-  err        = MP4MakeLinkedList(&self->ExtensionAtomList);
+  err = MP4MakeLinkedList(&self->ExtensionAtomList);
   if(err) goto bail;
+
+  self->type                  = MP4BoxedMetadataSampleEntryType;
+  self->name                  = "BoxedMetadataSampleEntryType (mebx)";
   self->createFromInputStream = (cisfunc)createFromInputStream;
   self->destroy               = destroy;
   self->calculateSize         = calculateSize;
   self->serialize             = serialize;
-  self->reserved3             = 2;
-  self->reserved4             = 16;
-  self->timeScale             = 44100;
-  *outAtom                    = self;
+  self->addAtom               = addAtom;
+
+  *outAtom = self;
 bail:
   TEST_RETURN(err);
-
   return err;
 }

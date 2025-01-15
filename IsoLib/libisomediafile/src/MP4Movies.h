@@ -79,7 +79,16 @@ extern "C"
     MP4NewTrackIsMetadata   = (1 << 3), /**< track contains meta-data */
     MP4NewTrackIsVolumetric = (1 << 4), /**< track contains volumetric media */
     MP4NewTrackIsHaptic     = (1 << 5), /**< track contains haptic media */
+    MP4NewTrackIsMebx       = (1 << 6), /**< track contains boxed meta-data */
     MP4NewTrackIsPrivate    = (1 << 8)  /**< track contains a media type unknown to MPEG-4 */
+  };
+
+  enum
+  {
+    MP4KeyNamespace_uiso = MP4_FOUR_CHAR_CODE('u', 'i', 's', 'o'),
+    MP4KeyNamespace_me4c = MP4_FOUR_CHAR_CODE('m', 'e', '4', 'c'),
+    QTKeyNamespace_mdta  = MP4_FOUR_CHAR_CODE('m', 'd', 't', 'a'),
+    QTKeyNamespace_udta  = MP4_FOUR_CHAR_CODE('u', 'd', 't', 'a')
   };
 
   /**
@@ -1726,6 +1735,10 @@ extern "C"
    * @brief Create a track reader for a movie track.
    */
   MP4_EXTERN(MP4Err) MP4CreateTrackReader(MP4Track theTrack, MP4TrackReader *outReader);
+  /**
+   * @brief Select local_key for reading. Demux mebx track.
+   */
+  MP4_EXTERN(MP4Err) MP4SetMebxTrackReader(MP4TrackReader theReader, u32 local_key);
   /**
    * @brief Frees up resources associated with a track reader.
    */
