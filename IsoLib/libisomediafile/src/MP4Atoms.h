@@ -1279,13 +1279,17 @@ typedef struct MP4SubSampleInformationAtom
   MP4Err (*addEntry)(struct MP4SubSampleInformationAtom *self, u32 sample_delta,
                      u32 subsample_count, MP4Handle subsample_size_array,
                      MP4Handle subsample_priority_array, MP4Handle subsample_discardable_array);
+  MP4Err (*addEntry2)(struct MP4SubSampleInformationAtom *self, u32 sample_delta,
+                      u32 subsample_count, MP4Handle subsample_size_array,
+                      MP4Handle subsample_priority_array, MP4Handle subsample_discardable_array,
+                      MP4Handle codec_specific_parameters_array);
   u32 entry_count;
   u32 *sample_delta;
   u32 *subsample_count;
   u32 **subsample_size;
   u32 **subsample_priority;
   u32 **discardable;
-  u32 **reserved;
+  u32 **codec_specific_parameters;
 } MP4SubSampleInformationAtom, *MP4SubSampleInformationAtomPtr;
 
 typedef struct MP4SyncSampleAtom
@@ -1548,7 +1552,7 @@ enum
 typedef struct MP4TrackFragmentDecodeTimeAtom
 {
   MP4_FULL_ATOM
-  u32 baseMediaDecodeTime;
+  u64 baseMediaDecodeTime;
 } MP4TrackFragmentDecodeTimeAtom, *MP4TrackFragmentDecodeTimeAtomPtr;
 
 typedef struct MP4ItemPropertyContainerAtom
@@ -1703,11 +1707,11 @@ typedef struct MP4RestrictedVideoSampleEntryAtom
   MP4_BASE_ATOM
   COMMON_SAMPLE_ENTRY_FIELDS
 
-  MP4AtomPtr MP4RestrictedSchemeInfo;
   u32 restriction_type;
 
   MP4Err (*addSchemeInfoAtom)(struct MP4Atom *self, struct MP4Atom *theAtom);
   MP4Err (*getSchemeInfoAtom)(struct MP4Atom *self, u32 theType, struct MP4Atom **theAtom);
+  MP4Err (*getRinf)(struct MP4Atom *self, struct MP4Atom **theAtom);
   MP4Err (*getScheme)(struct MP4Atom *self, u32 *sch_type, u32 *sch_version, char **sch_url);
 
   MP4Err (*transform)(struct MP4Atom *self, u32 sch_type, u32 sch_version, char *sch_url);

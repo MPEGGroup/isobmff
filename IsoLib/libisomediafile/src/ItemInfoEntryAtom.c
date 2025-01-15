@@ -231,7 +231,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   char inputstr[4096];
   char *str;
   u32 i;
-  char msgString[4400];
+  char msgString[8192];
   char typeString[8];
 
   ISOItemInfoEntryAtomPtr self = (ISOItemInfoEntryAtomPtr)s;

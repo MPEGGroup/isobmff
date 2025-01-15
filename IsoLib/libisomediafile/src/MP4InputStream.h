@@ -41,7 +41,8 @@ derivative works. Copyright (c) 1999.
   MP4Err (*read32)(struct MP4InputStreamRecord * self, u32 * outVal, char *msg);               \
   MP4Err (*readData)(struct MP4InputStreamRecord * self, u64 bytes, char *outData, char *msg); \
   u64 (*getStreamOffset)(struct MP4InputStreamRecord * self);                                  \
-  MP4Err (*skipData)(struct MP4InputStreamRecord * self, u64 bytes, char *msg);
+  MP4Err (*skipData)(struct MP4InputStreamRecord * self, u64 bytes, char *msg);                \
+  MP4Err (*rewindData)(struct MP4InputStreamRecord * self, u64 bytes, char *msg);
 
 typedef struct MP4InputStreamRecord
 {

@@ -242,6 +242,11 @@ derivative works. Copyright (c) 1999.
     }                                                                               \
   }
 
+#define REWIND_DATA(length, var)                           \
+  err = inputStream->rewindData(inputStream, length, var); \
+  if(err) goto bail;                                       \
+  self->bytesRead -= length;
+
 #define PUTBYTES(src, len)                    \
   if((self->bytesWritten + len) > self->size) \
   {                                           \

@@ -125,7 +125,7 @@ static MP4Err readstring(char **b, MP4TextMetaSampleEntryAtomPtr self,
   u32 byte;
   MP4Err err;
   char temp[1024];
-  char msgString[1200];
+  char msgString[8192];
   char *p;
 
   err = MP4NoErr;

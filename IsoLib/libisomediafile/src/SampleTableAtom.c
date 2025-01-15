@@ -144,14 +144,14 @@ bail:
 static MP4Err calculateDuration(struct MP4SampleTableAtom *self, u32 *outDuration)
 {
   MP4Err err;
-  MP4TimeToSampleAtomPtr ctts;
+  MP4TimeToSampleAtomPtr stts;
 
   err = MP4NoErr;
   if(outDuration == NULL) BAILWITHERROR(MP4BadParamErr)
 
-  ctts = (MP4TimeToSampleAtomPtr)self->TimeToSample;
-  if(ctts == NULL) BAILWITHERROR(MP4InvalidMediaErr)
-  err = ctts->getTotalDuration(ctts, outDuration);
+  stts = (MP4TimeToSampleAtomPtr)self->TimeToSample;
+  if(stts == NULL) BAILWITHERROR(MP4InvalidMediaErr)
+  err = stts->getTotalDuration(stts, outDuration);
   if(err) goto bail;
 
 bail:
