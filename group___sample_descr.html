@@ -127,6 +127,9 @@ ISOErr&#160;</td><td class="memItemRight" valign="bottom"><b>ISOGetAVCSampleDesc
 <tr class="memitem:gab638dce8596647c54cf5c6f6359f7464" id="r_gab638dce8596647c54cf5c6f6359f7464"><td class="memItemLeft" align="right" valign="top">ISOErr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gab638dce8596647c54cf5c6f6359f7464">ISOGetHEVCSampleDescriptionPS</a> (<a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> sampleEntryH, <a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> ps, u32 where, u32 index)</td></tr>
 <tr class="memdesc:gab638dce8596647c54cf5c6f6359f7464"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a HEVC parameter set, placing it in the given handle.  <br /></td></tr>
 <tr class="separator:gab638dce8596647c54cf5c6f6359f7464"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga183ee7a19b76a9cb2501f349c8472b4f" id="r_ga183ee7a19b76a9cb2501f349c8472b4f"><td class="memItemLeft" align="right" valign="top">ISOErr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga183ee7a19b76a9cb2501f349c8472b4f">ISOGetHEVCNALUs</a> (<a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> sampleEntryH, <a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> nalus, u32 extraction_mode)</td></tr>
+<tr class="memdesc:ga183ee7a19b76a9cb2501f349c8472b4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets all NAL Units from the HEVC sample entry in Annex B format.  <br /></td></tr>
+<tr class="separator:ga183ee7a19b76a9cb2501f349c8472b4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga16442bd4b7ce32976e98949296403ba8" id="r_ga16442bd4b7ce32976e98949296403ba8"><td class="memItemLeft" align="right" valign="top">ISOErr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga16442bd4b7ce32976e98949296403ba8">ISOGetRESVSampleDescriptionPS</a> (<a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> sampleEntryH, <a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> ps, u32 where, u32 index)</td></tr>
 <tr class="memdesc:ga16442bd4b7ce32976e98949296403ba8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a restricted video parameter set (AVC or HEVC), placing it in the given handle.  <br /></td></tr>
 <tr class="separator:ga16442bd4b7ce32976e98949296403ba8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -134,9 +137,10 @@ ISOErr&#160;</td><td class="memItemRight" valign="bottom"><b>ISOGetAVCSampleDesc
 ISOErr&#160;</td><td class="memItemRight" valign="bottom"><b>ISOGetNALUnitLength</b> (<a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> sampleEntryH, u32 *out)</td></tr>
 <tr class="memdesc:ga91b28e7d527c75983a36447d51f12bc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the NALUnitLength size in bytes. <br /></td></tr>
 <tr class="separator:ga91b28e7d527c75983a36447d51f12bc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga1f72f6b62db9473904d7b12cd78585f0" id="r_ga1f72f6b62db9473904d7b12cd78585f0"><td class="memItemLeft" align="right" valign="top">ISOErr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga1f72f6b62db9473904d7b12cd78585f0">ISOGetRESVOriginalFormat</a> (<a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> sampleEntryH, u32 *outOrigFmt)</td></tr>
-<tr class="memdesc:ga1f72f6b62db9473904d7b12cd78585f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the four character code of the original un-transformed sample entry.  <br /></td></tr>
-<tr class="separator:ga1f72f6b62db9473904d7b12cd78585f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0bba6818cc5026259057da3d8e37522e" id="r_ga0bba6818cc5026259057da3d8e37522e"><td class="memItemLeft" align="right" valign="top"><a id="ga0bba6818cc5026259057da3d8e37522e" name="ga0bba6818cc5026259057da3d8e37522e"></a>
+ISOErr&#160;</td><td class="memItemRight" valign="bottom"><b>ISOGetOriginalFormat</b> (<a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> sampleEntryH, u32 *outOrigFmt)</td></tr>
+<tr class="memdesc:ga0bba6818cc5026259057da3d8e37522e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the four character code of the original un-transformed sample entry. <br /></td></tr>
+<tr class="separator:ga0bba6818cc5026259057da3d8e37522e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5a82b3b634941d82bfe56ac0df712d3f" id="r_ga5a82b3b634941d82bfe56ac0df712d3f"><td class="memItemLeft" align="right" valign="top">ISOErr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga5a82b3b634941d82bfe56ac0df712d3f">ISOGetRESVSchemeType</a> (<a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a> sampleEntryH, u32 *schemeType, u32 *schemeVersion, char **schemeURI)</td></tr>
 <tr class="memdesc:ga5a82b3b634941d82bfe56ac0df712d3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get scheme_type and scheme_version from the SchemeTypeBox in resv.  <br /></td></tr>
 <tr class="separator:ga5a82b3b634941d82bfe56ac0df712d3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -358,6 +362,42 @@ ISOErr&#160;</td><td class="memItemRight" valign="bottom"><b>ISOGetNALUnitLength
 
 </div>
 </div>
+<a id="ga183ee7a19b76a9cb2501f349c8472b4f" name="ga183ee7a19b76a9cb2501f349c8472b4f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga183ee7a19b76a9cb2501f349c8472b4f">&#9670;&#160;</a></span>ISOGetHEVCNALUs()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ISOErr ISOGetHEVCNALUs </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a></td>          <td class="paramname"><span class="paramname"><em>sampleEntryH</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a></td>          <td class="paramname"><span class="paramname"><em>nalus</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">u32</td>          <td class="paramname"><span class="paramname"><em>extraction_mode</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets all NAL Units from the HEVC sample entry in Annex B format. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sampleEntryH</td><td>input sample entry handle </td></tr>
+    <tr><td class="paramname">nalus</td><td>output handle which is holding all the NAL Units in Annex B fromat </td></tr>
+    <tr><td class="paramname">extraction_mode</td><td>if set to 0 - get them all; 1 - hvcC only; 2 - lhvC only </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="gab638dce8596647c54cf5c6f6359f7464" name="gab638dce8596647c54cf5c6f6359f7464"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gab638dce8596647c54cf5c6f6359f7464">&#9670;&#160;</a></span>ISOGetHEVCSampleDescriptionPS()</h2>
 
@@ -397,30 +437,6 @@ ISOErr&#160;</td><td class="memItemRight" valign="bottom"><b>ISOGetNALUnitLength
   </table>
   </dd>
 </dl>
-
-</div>
-</div>
-<a id="ga1f72f6b62db9473904d7b12cd78585f0" name="ga1f72f6b62db9473904d7b12cd78585f0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga1f72f6b62db9473904d7b12cd78585f0">&#9670;&#160;</a></span>ISOGetRESVOriginalFormat()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">ISOErr ISOGetRESVOriginalFormat </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group___types.html#gaa530307d8785f9bd3375ea070c06ce05">MP4Handle</a></td>          <td class="paramname"><span class="paramname"><em>sampleEntryH</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">u32 *</td>          <td class="paramname"><span class="paramname"><em>outOrigFmt</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Get the four character code of the original un-transformed sample entry. </p>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo</a></b></dt><dd>rename the function to ISOGetOriginalFormat and parse the cinf and sinf as well </dd></dl>
 
 </div>
 </div>
