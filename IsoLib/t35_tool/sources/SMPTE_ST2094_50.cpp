@@ -651,7 +651,7 @@ void SMPTE_ST2094_50::convertMetadataItemsToSyntaxElements(){
               if (sumCoefficients != Q_COMPONENT_MIXING_COEFFICIENT) { logMsg(LOGLEVEL_WARNING, "Sum component mixing coefficient for alternate %d is not equal to 1.0, they will be scaled to 1.0 at decoding", iAlt); }
           }
           if (elm.component_mixing_type[0] != elm.component_mixing_type[iAlt]) {
-            elm.component_mixing_type = false;
+            elm.has_common_curve_params_flag = false;
           }
 
           // Create syntax elements for the gain curve function
