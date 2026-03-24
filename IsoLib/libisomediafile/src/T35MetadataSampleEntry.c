@@ -146,7 +146,7 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
     }
 
     /* Description: bytes [0 .. nullPos] (including the null terminator) */
-    u32 descLen = nullPos + 1; /* length including null */
+    u32 descLen       = nullPos + 1; /* length including null */
     self->description = (char *)calloc(descLen, 1);
     TESTMALLOC(self->description);
     memcpy(self->description, buf, descLen);
