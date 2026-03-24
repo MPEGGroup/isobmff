@@ -13,7 +13,7 @@ MP4Err hevc_parse_pps_minimal(BitBuffer *bb, struct hevc_pps* pps);
 MP4Err hevc_parse_slice_header_minimal(BitBuffer *bb, struct hevc_poc* poc, struct hevc_slice_header* header,
 struct hevc_sps* sps, struct hevc_pps* pps);
 u8* stripNALEmulation(u8* buffer, u32* bufferLen);
-int parseHEVCNal(FILE* input, u8** data, int* data_len);
+u32 parseHEVCNal(FILE* input, u8** data, u32* data_len);
 ISOErr analyze_hevc_stream(FILE* input, struct hevc_stream* stream);
 
 #endif

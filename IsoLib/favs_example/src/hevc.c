@@ -756,7 +756,7 @@ u8* stripNALEmulation(u8* buffer, u32* bufferLen) {
 	return outBuffer;
 }
 
-int parseHEVCNal(FILE* input, u8** data, int* data_len) {
+u32 parseHEVCNal(FILE* input, u8** data, u32* data_len) {
 	size_t startPos;
 	size_t NALStart = 0;
 	size_t NALEnd = 0;
