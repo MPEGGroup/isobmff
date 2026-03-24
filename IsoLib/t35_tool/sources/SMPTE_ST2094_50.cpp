@@ -3,8 +3,13 @@
 #include "SMPTE_ST2094_50.hpp"
 #include <cstdarg>
 #include <cstdio>
+#include <cmath>
 #include <bitset>
 #include <numeric>
+
+#ifndef M_PI
+#define M_PI 3.1415926535897932384626433832
+#endif
 
 /* *********************************** LOCAL LOGGING FUNCTIONS
  * *******************************************************************************************/
