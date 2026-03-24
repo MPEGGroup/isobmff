@@ -1040,7 +1040,8 @@ void SMPTE_ST2094_50::convertSyntaxElementsToMetadataItems(){
                 sumComponent = float(elm.component_mixing_coefficient[iAlt][k]);
               }
               if (sumComponent != Q_COMPONENT_MIXING_COEFFICIENT){
-                logMsg(LOGLEVEL_WARNING, "Sum component mixing coefficient for alternate %d is not equal to 1.0, they will be scaled to 1.0.", iAlt); }
+                logMsg(LOGLEVEL_WARNING, "Sum component mixing coefficient for alternate %d is not equal to 1.0, they will be scaled to 1.0.", iAlt);
+              }
               for (int k = 0; k < MAX_NB_COMPONENT_MIXING_COEFFICIENT; k++) {
                   float value = 0.0f;
                   if (elm.has_component_mixing_coefficient_flag[iAlt][k]) {
