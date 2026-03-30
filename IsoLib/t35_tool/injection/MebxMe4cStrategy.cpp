@@ -9,6 +9,7 @@ extern "C"
 
 #include <algorithm>
 #include <cstring>
+#include <numeric>
 #include <vector>
 
 namespace t35
@@ -143,12 +144,7 @@ static MP4Err buildMetadataDurationsAndSizes(const MetadataMap &items,
   {
     u32 startFrame = item.frame_start;
     u32 endFrame   = startFrame + item.frame_duration;
-    u32 totalDur   = 0;
-
-    for(u32 f = startFrame; f < endFrame; ++f)
-    {
-      totalDur += videoDurations[f];
-    }
+    u32 totalDur = std::accumulate(videoDurations.begin() + startFrame, videoDurations.begin() + endFrame, 0u);
 
     metadataDurations.push_back(totalDur);
     metadataSizes.push_back(static_cast<u32>(item.payload.size()));
