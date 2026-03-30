@@ -117,35 +117,43 @@ static MP4Err buildMetadataDurationsAndSizes(const MetadataMap &items,
 
   if(items.empty())
   {
-    return MP4NoErr;
+    LOG_ERROR("No metadata items provided");
+    return MP4BadParamErr;
   }
 
-  // Sort by frame number
-  sortedItems.reserve(items.size());
-  for(const auto &kv : items)
+  // Sort items by frame_start (already sorted in map, but make vector)
+  for(const auto &[start, item] : items)
   {
-    sortedItems.push_back(kv.second);
+    sortedItems.push_back(item);
   }
-  std::sort(sortedItems.begin(), sortedItems.end(), [](const MetadataItem &a, const MetadataItem &b)
-            { return a.frame_start < b.frame_start; });
 
-  // Build durations and sizes
-  metadataDurations.reserve(sortedItems.size());
-  metadataSizes.reserve(sortedItems.size());
+  // Validate coverage
+  const auto &last = sortedItems.back();
+  u32 maxFrame     = last.frame_start + last.frame_duration;
+  if(maxFrame > videoDurations.size())
+  {
+    LOG_ERROR("Metadata covers up to frame {} but video only has {} samples", maxFrame,
+              videoDurations.size());
+    return MP4BadParamErr;
+  }
 
+  // Compute metadata sample durations and sizes
   for(const auto &item : sortedItems)
   {
-    // Frame numbers are 0-based
-    if(item.frame_start >= videoDurations.size())
+    u32 startFrame = item.frame_start;
+    u32 endFrame   = startFrame + item.frame_duration;
+    u32 totalDur   = 0;
+
+    for(u32 f = startFrame; f < endFrame; ++f)
     {
-      LOG_ERROR("Frame number {} out of range (max {})", item.frame_start,
-                videoDurations.size() - 1);
-      return MP4BadParamErr;
+      totalDur += videoDurations[f];
     }
 
-    u32 duration = videoDurations[item.frame_start];
-    metadataDurations.push_back(duration);
+    metadataDurations.push_back(totalDur);
     metadataSizes.push_back(static_cast<u32>(item.payload.size()));
+
+    LOG_DEBUG("Metadata item covers frames [{}-{}] totalDur={} size={} bytes", startFrame,
+              endFrame - 1, totalDur, item.payload.size());
   }
 
   return MP4NoErr;
