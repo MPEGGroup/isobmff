@@ -143,7 +143,8 @@ static MP4Err buildMetadataDurationsAndSizes(const MetadataMap &items,
   {
     u32 startFrame = item.frame_start;
     u32 endFrame   = startFrame + item.frame_duration;
-    u32 totalDur   = std::accumulate(videoDurations.begin() + startFrame, videoDurations.begin() + endFrame, 0u);
+    u32 totalDur =
+      std::accumulate(videoDurations.begin() + startFrame, videoDurations.begin() + endFrame, 0u);
 
     metadataDurations.push_back(totalDur);
     metadataSizes.push_back(static_cast<u32>(item.payload.size()));

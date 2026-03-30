@@ -128,7 +128,8 @@ We use clang-format to enforce consistent coding style in the libisomediafile li
 To format all `.c` and `.h` files under IsoLib/libisomediafile, run:
 
 ```sh
-find IsoLib/libisomediafile -name "*.h" -o -name "*.cpp" -o -name "*.c" | xargs clang-format -style=file -i
+find IsoLib/libisomediafile -name "*.h" -o -name "*.cpp" -o -name "*.c" | xargs clang-format-18 -style=file -i
+find IsoLib/t35_tool -name "*.h" -o -name "*.cpp" -o -name "*.c" | xargs clang-format-18 -style=file -i
 ```
 
 > 💡 Make sure clang-format is installed and available in your `PATH`.
