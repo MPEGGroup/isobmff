@@ -70,7 +70,13 @@ MP4Err getVideoSampleDurations(MP4Media mediaV, std::vector<u32> &durations)
   err = MP4GetMediaSampleCount(mediaV, &sampleCount);
   if(err) return err;
 
-  durations.reserve(sampleCount);
+  struct SampleInfo
+  {
+    u64 cts;
+    u32 duration;
+  };
+  std::vector<SampleInfo> samples;
+  samples.reserve(sampleCount);
 
   for(u32 i = 1; i <= sampleCount; ++i)
   {
@@ -88,9 +94,24 @@ MP4Err getVideoSampleDurations(MP4Media mediaV, std::vector<u32> &durations)
       return err;
     }
 
-    durations.push_back(static_cast<u32>(outDuration));
+    u64 cts = outDTS;
+    if(outSampleFlags & MP4MediaSampleHasCTSOffset)
+    {
+      cts = static_cast<u64>(static_cast<s64>(outDTS) + outCTSOffset);
+    }
+    samples.push_back({cts, static_cast<u32>(outDuration)});
 
     if(sampleH) MP4DisposeHandle(sampleH);
+  }
+
+  // Sort by CTS
+  std::sort(samples.begin(), samples.end(),
+            [](const SampleInfo &a, const SampleInfo &b) { return a.cts < b.cts; });
+
+  durations.reserve(sampleCount);
+  for(const auto &s : samples)
+  {
+    durations.push_back(s.duration);
   }
 
   LOG_DEBUG("Collected {} video sample durations", durations.size());
