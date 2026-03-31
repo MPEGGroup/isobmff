@@ -70,6 +70,7 @@ add_executable(
   sources/GenericJsonSource.cpp
   sources/SMPTEFolderSource.cpp
   injection/InjectionStrategy.cpp
+  injection/StrategyHelpers.cpp
   injection/MebxMe4cStrategy.cpp
   injection/DedicatedIt35Strategy.cpp
   injection/SampleGroupStrategy.cpp

@@ -1,4 +1,5 @@
 #include "SampleGroupStrategy.hpp"
+#include "StrategyHelpers.hpp"
 #include "../common/Logger.hpp"
 #include "../common/T35Prefix.hpp"
 #include "../common/MetadataTypes.hpp"
@@ -14,41 +15,6 @@ extern "C"
 
 namespace t35
 {
-
-// Helper: Find first video track
-static MP4Err findFirstVideoTrack(MP4Movie moov, MP4Track *outTrack)
-{
-  MP4Err err     = MP4NoErr;
-  u32 trackCount = 0;
-  *outTrack      = nullptr;
-
-  err = MP4GetMovieTrackCount(moov, &trackCount);
-  if(err) return err;
-
-  for(u32 i = 1; i <= trackCount; ++i)
-  {
-    MP4Track trak   = nullptr;
-    MP4Media media  = nullptr;
-    u32 handlerType = 0;
-
-    err = MP4GetMovieIndTrack(moov, i, &trak);
-    if(err) continue;
-
-    err = MP4GetTrackMedia(trak, &media);
-    if(err) continue;
-
-    err = MP4GetMediaHandlerDescription(media, &handlerType, nullptr);
-    if(err) continue;
-
-    if(handlerType == MP4VisualHandlerType)
-    {
-      *outTrack = trak;
-      return MP4NoErr;
-    }
-  }
-
-  return MP4NotFoundErr;
-}
 
 bool SampleGroupStrategy::isApplicable(const MetadataMap &items, const InjectionConfig &config,
                                        std::string &reason) const
