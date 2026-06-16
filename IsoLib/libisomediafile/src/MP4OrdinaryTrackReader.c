@@ -153,7 +153,7 @@ static MP4Err getNextAccessUnit(struct MP4TrackReaderStruct *self, MP4Handle out
       if(length == 0) break;
       type = (unsigned char)data[4] << 24 | (unsigned char)data[5] << 16 |
              (unsigned char)data[6] << 8 | (unsigned char)data[7];
-      if(type == self->mebx_local_key)
+      if(type == self->mebx_local_key_id)
       {
         *outSize = length - 8;
         err      = MP4SetHandleSize(outAccessUnit, *outSize);

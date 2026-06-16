@@ -63,6 +63,7 @@ extern "C"
 #define ISOOpenMovieInPlace MP4OpenMovieInPlace
 
   struct MP4BoxedMetadataSampleEntry;
+  struct MP4T35MetadataSampleEntry;
 
   /**
    * @brief constants for the graphics modes (e.g. for MJ2SetMediaGraphicsMode)
@@ -311,7 +312,8 @@ extern "C"
 #define ISOGetUserDataTypeCount MP4GetUserDataTypeCount
 #define ISONewUserData MP4NewUserData
 #define ISOCreateTrackReader MP4CreateTrackReader
-#define ISOSetMebxTrackReader MP4SetMebxTrackReader
+#define ISOSetMebxTrackReaderLocalKeyId MP4SetMebxTrackReaderLocalKeyId
+#define ISOSelectFirstMebxTrackReaderKey MP4SelectFirstMebxTrackReaderKey
 #define ISODisposeTrackReader MP4DisposeTrackReader
 #define ISONewHandle MP4NewHandle
 #define ISOSetHandleSize MP4SetHandleSize
@@ -800,12 +802,91 @@ extern "C"
    * @param sampleEntryH input sample entry of the mebx track
    * @param key_cnt number of local_key_id's
    */
-  ISO_EXTERN(ISOErr)
-  ISOGetMebxMetadataCount(MP4Handle sampleEntryH, u32 *key_cnt);
+  ISO_EXTERN(ISOErr) ISOGetMebxMetadataCount(MP4Handle sampleEntryH, u32 *key_cnt);
 
+  /**
+   * @brief Get metadata key configuration from a 'mebx' sample entry.
+   *
+   * Retrieves the key information at index @p idx from the MetadataKeyTableBox. Returns namespace,
+   * value, locale, setup data, and the local_key_id for this entry.
+   *
+   * @param sampleEntryH Handle containing the 'mebx' sample entry.
+   * @param idx Zero-based index of the key entry to query.
+   * @param local_key_id Output; receives the local_key_id for this key.
+   * @param key_namespace Output; receives the namespace FourCC.
+   * @param key_value Optional handle to receive the key value data.
+   * @param locale_string Optional; receives locale string if present.
+   * @param setupInfo Optional handle to receive setup information if present.
+   *
+   * @return ISOErr code: MP4NoErr on success, MP4BadDataErr if no key table, MP4NotFoundErr if not
+   * found, or other error codes.
+   */
   ISO_EXTERN(ISOErr)
-  ISOGetMebxMetadataConfig(MP4Handle sampleEntryH, u32 cnt, u32 *local_key_id, u32 *key_namespace,
+  ISOGetMebxMetadataConfig(MP4Handle sampleEntryH, u32 idx, u32 *local_key_id, u32 *key_namespace,
                            MP4Handle key_value, char **locale_string, MP4Handle setupInfo);
+
+  /*************************************************************************************************
+   * T.35 Metadata Track Functions
+   ************************************************************************************************/
+
+  /**
+   * @brief Create a new T.35 metadata sample entry.
+   * @ingroup SampleDescr
+   *
+   * Creates a T35MetadataSampleEntry ('it35') with a T35CommonHeaderBox ('t35C') containing
+   * the specified T.35 prefix text.
+   *
+   * @param outSE Output; receives the created T35MetadataSampleEntry.
+   * @param dataReferenceIndex Data reference index (typically 1 for self-contained media).
+   * @param t35_prefix_text UTF-8 string conforming to format: T35Prefix[:T35Description]
+   *                        where T35Prefix is even number of uppercase hex digits (0-9, A-F).
+   *                        Example: "B500900001:SMPTE-ST2094-50"
+   * @return MP4Err code: MP4NoErr on success, MP4BadParamErr if validation fails.
+   */
+  MP4_EXTERN(MP4Err)
+  ISONewT35SampleDescription(struct MP4T35MetadataSampleEntry **outSE, u32 dataReferenceIndex,
+                             const char *t35_prefix_text);
+
+  /**
+   * @brief Create a complete T.35 timed metadata track.
+   * @ingroup Tracks
+   *
+   * Convenience function that creates a metadata track with MP4MetaHandlerType,
+   * adds a T35MetadataSampleEntry with the specified T.35 prefix, and optionally
+   * adds a track reference to a video track using the 'rndr' reference type.
+   *
+   * After calling this function, use MP4AddMediaSample() or similar functions to
+   * add T.35 metadata samples to the track.
+   *
+   * @param theMovie Input movie object.
+   * @param timescale Media timescale (typically matches video track timescale).
+   * @param t35_prefix_text UTF-8 T.35 prefix string (e.g., "B500900001:SMPTE-ST2094-50").
+   * @param videoTrack Optional video track for track reference (NULL if not needed).
+   * @param trackReferenceType Track reference type or 0 for no reference.
+   * @param outTrack Output; receives the created metadata track.
+   * @param outMedia Optional output; receives the created media (NULL if not needed).
+   * @return ISOErr code: MP4NoErr on success, error code otherwise.
+   */
+  ISO_EXTERN(ISOErr)
+  ISONewT35MetadataTrack(MP4Movie theMovie, u32 timescale, const char *t35_prefix_text,
+                         MP4Track videoTrack, u32 trackReferenceType, MP4Track *outTrack,
+                         MP4Media *outMedia);
+
+  /**
+   * @brief Read the t35_identifier and description from a serialized T.35 sample entry handle.
+   * @ingroup SampleDescr
+   *
+   * Properly deserializes the handle returned by MP4GetMediaSampleDescription() and extracts
+   * the T.35 identifier bytes. The caller is responsible for freeing *outIdentifier with free().
+   *
+   * @param sampleEntryH  Handle containing the serialized 'it35' sample entry.
+   * @param outIdentifier Output; receives a newly allocated copy of the t35_identifier bytes.
+   * @param outIdentifierLength Output; receives the number of bytes in *outIdentifier.
+   * @return MP4NoErr on success, MP4NotFoundErr if no identifier is present, MP4BadParamErr on
+   *         invalid input.
+   */
+  ISO_EXTERN(ISOErr)
+  ISOGetT35SampleEntryFields(MP4Handle sampleEntryH, u8 **outIdentifier, u32 *outIdentifierLength);
 
   /*************************************************************************************************
    * VVC Sample descriptions

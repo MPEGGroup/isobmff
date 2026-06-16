@@ -71,6 +71,7 @@ add_library(
     src/H263SpecificInfoAtom.c
     src/HandlerAtom.c
     src/HEVCConfigAtom.c
+    src/HumanReadableStreamDescriptionAtom.c
     src/LHEVCConfigAtom.c
     src/VVCConfigAtom.c
     src/VVCNALUConfigAtom.c
@@ -103,6 +104,7 @@ add_library(
     src/MetaboxRelationAtom.c
     src/MJ2BitsPerComponentAtom.c
     src/MJ2ColorSpecificationAtom.c
+    src/MP4ColourInformationAtom.c
     src/MJ2FileTypeAtom.c
     src/MJ2HeaderAtom.c
     src/MJ2ImageHeaderAtom.c
@@ -186,6 +188,7 @@ add_library(
     src/SubSampleInformationAtom.c
     src/SubsegmentIndexAtom.c
     src/SyncSampleAtom.c
+    src/T35MetadataSampleEntry.c
     src/TextMetaSampleEntry.c
     src/TimeToSampleAtom.c
     src/TrackAtom.c

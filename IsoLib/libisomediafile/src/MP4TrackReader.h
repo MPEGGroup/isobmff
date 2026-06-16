@@ -59,7 +59,7 @@ typedef struct MP4TrackReaderStruct
   TRACK_READER_ENTRIES
   u32 isODTrack;
   u32 isMebxTrack;
-  u32 mebx_local_key;
+  u32 mebx_local_key_id;
 } *MP4TrackReaderPtr;
 
 MP4Err MP4CreateMebxTrackReader(MP4Movie theMovie, MP4Track theTrack, MP4TrackReaderPtr *outReader);

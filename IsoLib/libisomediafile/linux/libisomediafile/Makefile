@@ -158,6 +158,7 @@ sources = \
 	TextMetaSampleEntry.c \
 	XMLMetaSampleEntry.c \
 	BitRateAtom.c \
+	HumanReadableStreamDescriptionAtom.c \
 	AMRWPSpecificInfoAtom.c \
 	AMRSpecificInfoAtom.c \
 	H263SpecificInfoAtom.c \

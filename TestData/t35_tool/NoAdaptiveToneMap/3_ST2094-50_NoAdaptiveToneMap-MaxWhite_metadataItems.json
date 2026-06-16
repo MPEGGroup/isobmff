@@ -1,0 +1,10 @@
+ {
+  "SMPTEST2094_50": {
+    "frameStart": 3,
+    "frameDuration": 1,
+    "windowNumber": 1,
+    "ColorVolumeTransform": {
+      "hdrReferenceWhite": 10000
+    }
+  }
+}

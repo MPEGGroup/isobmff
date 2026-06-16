@@ -87,6 +87,21 @@ static MP4Err serialize(struct MP4Atom *s, char *buffer)
   if(err) goto bail;
   buffer += self->bytesWritten;
 
+  /* Apple QTFF style: write version/flags and entry_count */
+  if(self->isAppleStyle)
+  {
+    u32 versionFlags = (self->version << 24) | (self->flags & 0xFFFFFF);
+    u32 count        = 0;
+    PUT32_V(versionFlags);
+    if(self->metadataKeyBoxList)
+    {
+      err = MP4GetListEntryCount(self->metadataKeyBoxList, &count);
+      if(err) goto bail;
+    }
+    PUT32_V(count);
+  }
+
+  /* Serialize child boxes/entries */
   if(self->metadataKeyBoxList)
   {
     u32 count, i;
@@ -126,6 +141,12 @@ static MP4Err calculateSize(struct MP4Atom *s)
 
   err = MP4CalculateBaseAtomFieldSize(s);
   if(err) goto bail;
+
+  /* Apple QTFF style: add 8 bytes for version/flags + entry_count */
+  if(self->isAppleStyle)
+  {
+    self->size += 8;
+  }
 
   if(self->metadataKeyBoxList)
   {
@@ -182,8 +203,14 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
       inputStream->available = available;
       inputStream->indent    = indent;
       fm->current_offset     = currentOffset;
+
+      /* Mark this as Apple-style and read version/flags + entry_count */
+      self->isAppleStyle = 1;
       GET32_V_MSG(temp, "QTFF: version+flags");
+      self->version = (temp >> 24) & 0xFF;
+      self->flags   = temp & 0xFFFFFF;
       GET32_V_MSG(cnt, "QTFF: Entry_count");
+
       for(i = 0; i < cnt; i++)
       {
         MP4Handle key_valH;
@@ -197,6 +224,8 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
     }
     else if(err == MP4NoErr)
     {
+      /* Standard MEBX format */
+      self->isAppleStyle = 0;
       self->bytesRead += atom->size;
       err = self->addMetaDataKeyBox(self, atom);
       if(err) goto bail;

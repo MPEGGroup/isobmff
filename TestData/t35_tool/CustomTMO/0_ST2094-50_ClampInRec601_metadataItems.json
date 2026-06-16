@@ -1,0 +1,25 @@
+ {
+  "SMPTEST2094_50": {
+    "frameStart": 0,
+    "frameDuration": 1,
+    "windowNumber": 1,
+    "ColorVolumeTransform": {
+      "hdrReferenceWhite": 100,
+      "HeadroomAdaptiveToneMapping": {
+        "baselineHdrHeadroom": 2,
+        "numAlternateImages": 0,
+        "gainApplicationSpaceChromaticities": [
+          0.64,
+          0.33,
+          0.29,
+          0.6,
+          0.15,
+          0.06,
+          0.3127,
+          0.329
+        ],
+        "alternateHdrHeadroom": []
+      }
+    }
+  }
+}

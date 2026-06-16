@@ -424,6 +424,10 @@ MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom)
     err = MP4CreateExtendedLanguageTagAtom((MP4ExtendedLanguageTagAtomPtr *)&newAtom);
     break;
 
+  case MP4T35MetadataSampleEntryType:
+    err = MP4CreateT35MetadataSampleEntry((MP4T35MetadataSampleEntryPtr *)&newAtom);
+    break;
+
   case MP4PaddingBitsAtomType:
     err = MP4CreatePaddingBitsAtom((MP4PaddingBitsAtomPtr *)&newAtom);
     break;
@@ -445,8 +449,13 @@ MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom)
     err = MJ2CreateBitsPerComponentAtom((MJ2BitsPerComponentAtomPtr *)&newAtom);
     break;
 
+  /* Remove MJ2 for now
   case MJ2ColorSpecificationAtomType:
     err = MJ2CreateColorSpecificationAtom((MJ2ColorSpecificationAtomPtr *)&newAtom);
+    break;
+  */
+  case MP4ColorInformationAtomType:
+    err = MP4CreateColorInformationAtom((MP4ColorInformationAtomPtr *)&newAtom);
     break;
 
   case MJ2JP2HeaderAtomType:
@@ -617,6 +626,11 @@ MP4Err MP4CreateAtom(u32 atomType, MP4AtomPtr *outAtom)
   case MP4BitRateAtomType:
   case TGPPBitRateAtomType:
     err = MP4CreateBitRateAtom((MP4BitRateAtomPtr *)&newAtom);
+    break;
+
+  case MP4HumanReadableStreamDescriptionAtomType:
+    err = MP4CreateHumanReadableStreamDescriptionAtom(
+      (MP4HumanReadableStreamDescriptionAtomPtr *)&newAtom);
     break;
 
   case MP4ItemPropertiesAtomType:

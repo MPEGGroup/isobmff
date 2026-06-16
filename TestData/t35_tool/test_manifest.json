@@ -1,0 +1,20 @@
+{
+  "t35_prefix": "B500900001",
+  "items": [
+    {
+      "frame_start": 0,
+      "frame_duration": 24,
+      "binary_file": "meta_001.bin"
+    },
+    {
+      "frame_start": 24,
+      "frame_duration": 24,
+      "binary_file": "meta_002.bin"
+    },
+    {
+      "frame_start": 48,
+      "frame_duration": 24,
+      "binary_file": "meta_003.bin"
+    }
+  ]
+}

@@ -70,7 +70,7 @@ MP4Err addIPMPToolDescriptorUpdateToODAccessUnit( MP4Handle odAccessUnitH,
 /
 / main function
 /
-/*=====*/
+/ =====*/
 
 int main( int argc, char **argv )
 {
@@ -100,7 +100,7 @@ int main( int argc, char **argv )
 / protectMyAudioMovie
 / Protect the audio media track using an IPMP Tool specified by its IPMP_ToolID
 /
-/*=====*/
+/ =====*/
 
 MP4Err protectMyAudioMovie( char *inFilename, char *outFilename, u64 ipmpToolID )
 {
@@ -355,7 +355,7 @@ bail:
 / associateSampleDescWithIPMPToolPtr
 / Create the IPMP_ToolDecriptorPointer and add it to the media Sample Description
 /
-/*=====*/
+/ =====*/
 
 MP4Err associateSampleDescWithIPMPToolPtr( MP4Handle outMediaSampleDescrH, 
 										   u16 theIPMP_ToolDescriptorID) {
@@ -384,7 +384,7 @@ bail:
 / addIPMPToolDescriptorUpdateToODAccessUnit
 / Create the IPMP_ToolDecriptorUpdate command and add it to an OD access unit
 /
-/*=====*/
+/ =====*/
 
 MP4Err addIPMPToolDescriptorUpdateToODAccessUnit( MP4Handle odAccessUnitH,
                                                   u16 ipmpToolDescriptorId,
@@ -437,7 +437,7 @@ bail:
 / protectSample
 / Protect one media access unit (or sample)
 /
-/*=====*/
+/ =====*/
 
 MP4Err protectSample(MP4Handle sampleH, u64 ipmpToolID) {
 
@@ -452,7 +452,7 @@ MP4Err protectSample(MP4Handle sampleH, u64 ipmpToolID) {
 / putToolListInIOD
 / Create the IPMP Tool List and put it in the IOD 
 /
-/*=====*/
+/ =====*/
 
 MP4Err putToolListInIOD( MP4Movie theMovie, u64 theIpmpToolID) {
 	

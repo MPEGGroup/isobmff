@@ -77,6 +77,7 @@ enum
   MP4ObjectDescriptorAtomType                  = MP4_FOUR_CHAR_CODE('i', 'o', 'd', 's'),
   MP4ObjectDescriptorMediaHeaderAtomType       = MP4_FOUR_CHAR_CODE('o', 'd', 'h', 'd'),
   MP4ODTrackReferenceAtomType                  = MP4_FOUR_CHAR_CODE('m', 'p', 'o', 'd'),
+  MP4RndrTrackReferenceAtomType                = MP4_FOUR_CHAR_CODE('r', 'n', 'd', 'r'),
   MP4SampleDescriptionAtomType                 = MP4_FOUR_CHAR_CODE('s', 't', 's', 'd'),
   MP4SampleSizeAtomType                        = MP4_FOUR_CHAR_CODE('s', 't', 's', 'z'),
   MP4CompactSampleSizeAtomType                 = MP4_FOUR_CHAR_CODE('s', 't', 'z', '2'),
@@ -92,6 +93,7 @@ enum
   MP4SubSampleInformationAtomType              = MP4_FOUR_CHAR_CODE('s', 'u', 'b', 's'),
   MP4SyncSampleAtomType                        = MP4_FOUR_CHAR_CODE('s', 't', 's', 's'),
   MP4SyncTrackReferenceAtomType                = MP4_FOUR_CHAR_CODE('s', 'y', 'n', 'c'),
+  MP4T35MetadataSampleEntryType                = MP4_FOUR_CHAR_CODE('i', 't', '3', '5'),
   MP4TimeToSampleAtomType                      = MP4_FOUR_CHAR_CODE('s', 't', 't', 's'),
   MP4TrackAtomType                             = MP4_FOUR_CHAR_CODE('t', 'r', 'a', 'k'),
   MP4TrackHeaderAtomType                       = MP4_FOUR_CHAR_CODE('t', 'k', 'h', 'd'),
@@ -148,6 +150,7 @@ enum
   MP4H263SampleEntryAtomType                   = MP4_FOUR_CHAR_CODE('s', '2', '6', '3'),
   MP4H263SpecificInfoAtomType                  = MP4_FOUR_CHAR_CODE('d', '2', '6', '3'),
   MP4BitRateAtomType                           = MP4_FOUR_CHAR_CODE('b', 't', 'r', 't'),
+  MP4HumanReadableStreamDescriptionAtomType    = MP4_FOUR_CHAR_CODE('h', 'r', 's', 'd'),
   TGPPBitRateAtomType                          = MP4_FOUR_CHAR_CODE('b', 'i', 't', 'r'),
   MP4OriginalFormatAtomType                    = MP4_FOUR_CHAR_CODE('f', 'r', 'm', 'a'),
   MP4SchemeTypeAtomType                        = MP4_FOUR_CHAR_CODE('s', 'c', 'h', 'm'),
@@ -169,8 +172,19 @@ enum
   MP4MetadataLocaleBoxType                     = MP4_FOUR_CHAR_CODE('l', 'o', 'c', 'a'),
   MP4MetadataSetupBoxType                      = MP4_FOUR_CHAR_CODE('s', 'e', 't', 'u'),
   MP4GroupsListBoxType                         = MP4_FOUR_CHAR_CODE('g', 'r', 'p', 'l'),
-  MP4AlternativeEntityGroup                    = MP4_FOUR_CHAR_CODE('a', 'l', 't', 'r')
+  MP4AlternativeEntityGroup                    = MP4_FOUR_CHAR_CODE('a', 'l', 't', 'r'),
+  MP4T35SampleGroupEntry                       = MP4_FOUR_CHAR_CODE('i', 't', '3', '5'),
+  MP4ColorInformationAtomType                  = MP4_FOUR_CHAR_CODE('c', 'o', 'l', 'r')
 
+};
+
+/* Colour Types */
+enum
+{
+  MP4ColorParameterTypeNCLX = MP4_FOUR_CHAR_CODE('n', 'c', 'l', 'x'),
+  MP4ColorParameterTypeRICC = MP4_FOUR_CHAR_CODE('r', 'I', 'C', 'C'),
+  MP4ColorParameterTypePROF = MP4_FOUR_CHAR_CODE('p', 'r', 'o', 'f'),
+  QTColorParameterTypeNCLC  = MP4_FOUR_CHAR_CODE('n', 'c', 'l', 'c')
 };
 
 #ifdef ISMACrypt
@@ -851,6 +865,14 @@ typedef struct MP4MPEGSampleEntryAtom
   COMMON_SAMPLE_ENTRY_FIELDS
 } MP4MPEGSampleEntryAtom, *MP4MPEGSampleEntryAtomPtr;
 
+typedef struct MP4T35MetadataSampleEntry
+{
+  MP4_BASE_ATOM
+  COMMON_SAMPLE_ENTRY_FIELDS
+  u32 t35_identifier_length; /* Size of t35_identifier in bytes */
+  u8 *t35_identifier;        /* Variable-length byte array */
+} MP4T35MetadataSampleEntry, *MP4T35MetadataSampleEntryPtr;
+
 typedef struct MP4VisualSampleEntryAtom
 {
   MP4_BASE_ATOM
@@ -936,6 +958,9 @@ typedef struct MP4MetadataKeyTableBox
   MP4MetadataKeyBoxPtr (*getMetadataKeyBox)(struct MP4MetadataKeyTableBox *self, u32 local_key_id);
   MP4Err (*addMetaDataKeyBox)(struct MP4MetadataKeyTableBox *self, MP4AtomPtr atom);
   MP4LinkedList metadataKeyBoxList;
+  u8 isAppleStyle; /* 1 if Apple QTFF format (FullAtom with entry_count), 0 if mebx format */
+  u8 version;
+  u32 flags;
 } MP4MetadataKeyTableBox, *MP4MetadataKeyTableBoxPtr;
 
 typedef struct MP4BoxedMetadataSampleEntry
@@ -1078,6 +1103,13 @@ typedef struct MP4BitRateAtom
   u32 max_bitrate; /* uint(32) */
 
 } MP4BitRateAtom, *MP4BitRateAtomPtr;
+
+typedef struct MP4HumanReadableStreamDescriptionAtom
+{
+  MP4_BASE_ATOM
+  char *description; /* UTF-8 string */
+
+} MP4HumanReadableStreamDescriptionAtom, *MP4HumanReadableStreamDescriptionAtomPtr;
 
 typedef struct MP4SampleDescriptionAtom
 {
@@ -2261,6 +2293,19 @@ typedef struct EntityToGroupBox
 
 } EntityToGroupBox, *EntityToGroupBoxPtr;
 
+typedef struct MP4ColorInformationAtom
+{
+  MP4_BASE_ATOM
+
+  u32 colour_type;
+  u32 colour_primaries;
+  u32 transfer_characteristics;
+  u32 matrix_coefficients;
+  u32 full_range_flag;
+  char *profile;
+  u32 profileSize;
+} MP4ColorInformationAtom, *MP4ColorInformationAtomPtr;
+
 MP4Err MP4CreateGroupListBox(GroupListBoxPtr *outAtom);
 MP4Err MP4CreateEntityToGroupBox(EntityToGroupBoxPtr *pOut, u32 type);
 MP4Err MP4GetListEntryAtom(MP4LinkedList list, u32 atomType, MP4AtomPtr *outItem);
@@ -2317,6 +2362,7 @@ MP4Err MP4CreateShadowSyncAtom(MP4ShadowSyncAtomPtr *outAtom);
 MP4Err MP4CreateSoundMediaHeaderAtom(MP4SoundMediaHeaderAtomPtr *outAtom);
 MP4Err MP4CreateSubSampleInformationAtom(MP4SubSampleInformationAtomPtr *outAtom);
 MP4Err MP4CreateSyncSampleAtom(MP4SyncSampleAtomPtr *outAtom);
+MP4Err MP4CreateT35MetadataSampleEntry(MP4T35MetadataSampleEntryPtr *outAtom);
 MP4Err MP4CreateTimeToSampleAtom(MP4TimeToSampleAtomPtr *outAtom);
 MP4Err MP4CreateTrackAtom(MP4TrackAtomPtr *outAtom);
 MP4Err MP4CreateTrackHeaderAtom(MP4TrackHeaderAtomPtr *outAtom);
@@ -2415,7 +2461,11 @@ MP4Err MP4CreateAMRSpecificInfoAtom(MP4AMRSpecificInfoAtomPtr *outAtom);
 MP4Err MP4CreateAMRWPSpecificInfoAtom(MP4AMRWPSpecificInfoAtomPtr *outAtom);
 MP4Err MP4CreateH263SpecificInfoAtom(MP4H263SpecificInfoAtomPtr *outAtom);
 MP4Err MP4CreateBitRateAtom(MP4BitRateAtomPtr *outAtom);
+MP4Err
+MP4CreateHumanReadableStreamDescriptionAtom(MP4HumanReadableStreamDescriptionAtomPtr *outAtom);
 
 MP4Err MP4CreateVisualMediaHeaderAtom(MP4VolumetricVisualMediaHeaderAtomPtr *outAtom);
+
+MP4Err MP4CreateColorInformationAtom(MP4ColorInformationAtomPtr *outAtom);
 
 #endif

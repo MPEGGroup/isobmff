@@ -315,8 +315,9 @@ TEST_CASE("sample_groups")
 
     u32 temp = 0;
     err      = addGroupDescription(media, FOURCC_COLOR, "Red frames", temp);
-    // this must fail because "Red frames" payload is already added with the same type
-    CHECK(err != ISONoErr);
+    // this must succeed - find-or-add behavior reuses existing entry with same type and payload
+    CHECK(err == ISONoErr);
+    CHECK(temp == groupIdRed); // should return the existing group ID
 
     // just add sample entry, call addHEVCSamples with sample count = 0
     err = addHEVCSamples(media, "r", 0, sampleEntryH);
@@ -342,8 +343,10 @@ TEST_CASE("sample_groups")
                             // (but it shall not be in defragmented file)
     err = addGroupDescription(media, FOURCC_TEST, "Test", temp);
     CHECK(err == ISONoErr);
-    err = addGroupDescription(media, FOURCC_TEST, "Test", temp);
-    CHECK(err != ISONoErr); // this must fail because same type and payload already added
+    u32 temp2 = 0;
+    err = addGroupDescription(media, FOURCC_TEST, "Test", temp2);
+    CHECK(err == ISONoErr); // this must succeed - find-or-add behavior reuses existing entry
+    CHECK(temp2 == temp);   // should return the same group ID
     err = mapSamplesToGroups(media, "rb", groupIdRed, groupIdBlue, groupIdGreen, groupIdYellow, 3);
     CHECK(err == ISONoErr);
 

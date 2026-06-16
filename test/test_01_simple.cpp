@@ -28,7 +28,7 @@
 #include <string>
 
 const std::string strDataPath = TESTDATA_PATH;
-const std::string strTestFile = strDataPath + +"/isobmff/01_simple.mp4";
+const std::string strTestFile = strDataPath + "/isobmff/01_simple.mp4";
 
 // isobmff stuff
 ISOMovie cMovieBox;

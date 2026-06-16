@@ -1,0 +1,41 @@
+ {
+  "SMPTEST2094_50": {
+    "frameStart": 2,
+    "frameDuration": 1,
+    "windowNumber": 1,
+    "ColorVolumeTransform": {
+      "hdrReferenceWhite": 203,
+      "HeadroomAdaptiveToneMapping": {
+        "baselineHdrHeadroom": 6,
+        "numAlternateImages": 1,
+        "gainApplicationSpaceChromaticities": [
+          0.708,
+          0.292,
+          0.17,
+          0.797,
+          0.131,
+          0.046,
+          0.3127,
+          0.329
+        ],
+        "alternateHdrHeadroom": 0,
+        "ColorGainFunction": {
+          "ComponentMix": {
+            "componentMixRed": 0,
+            "componentMixGreen": 0,
+            "componentMixBlue": 0,
+            "componentMixMax": 1,
+            "componentMixMin": 0,
+            "componentMixComponent": 0
+          },
+          "GainCurve": {
+            "gainCurveNumControlPoints": 1,
+            "gainCurveControlPointX": 64,
+            "gainCurveControlPointY": -6,
+            "gainCurveControlPointM": 0
+          }
+        }
+      }
+    }
+  }
+}

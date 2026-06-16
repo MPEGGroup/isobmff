@@ -11,7 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: configure
-      run: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release ..
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
     - name: build
       run: cmake --build build
     - name: test
@@ -22,7 +22,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: configure
-      run: mkdir build && cd build && cmake ..
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
     - name: build
       run: cmake --build build
     - name: test
@@ -33,7 +33,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: configure
-      run: mkdir build && cd build && cmake ..
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
     - name: build
       run: cmake --build build --config Debug
     - name: test

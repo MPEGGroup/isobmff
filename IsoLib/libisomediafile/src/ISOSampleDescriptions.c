@@ -35,6 +35,7 @@
 #include "MP4DataHandler.h"
 #include <stdlib.h>
 #include <string.h>
+#include <memory.h>
 
 MP4Err MP4GetMediaESD(MP4Media theMedia, u32 index, MP4ES_DescriptorPtr *outESD,
                       u32 *outDataReferenceIndex);
@@ -46,43 +47,28 @@ MP4Err MP4ParseAtomUsingProtoList(MP4InputStreamPtr inputStream, u32 *protoList,
                                   MP4AtomPtr *outAtom);
 
 #ifdef ISMACrypt
-u32 MP4SampleEntryProtos[] = {MP4MPEGSampleEntryAtomType,
-                              MP4VisualSampleEntryAtomType,
-                              MP4AudioSampleEntryAtomType,
-                              MP4EncAudioSampleEntryAtomType,
-                              MP4EncVisualSampleEntryAtomType,
-                              MP4XMLMetaSampleEntryAtomType,
-                              MP4TextMetaSampleEntryAtomType,
-                              MP4AMRSampleEntryAtomType,
-                              MP4AWBSampleEntryAtomType,
-                              MP4AMRWPSampleEntryAtomType,
-                              MP4H263SampleEntryAtomType,
-                              MP4RestrictedVideoSampleEntryAtomType,
-                              MP4BoxedMetadataSampleEntryType,
-                              ISOAVCSampleEntryAtomType,
-                              ISOHEVCSampleEntryAtomType,
-                              ISOVVCSampleEntryAtomTypeInBand,
-                              ISOVVCSampleEntryAtomTypeOutOfBand,
-                              ISOVVCSubpicSampleEntryAtomType,
-                              0};
+u32 MP4SampleEntryProtos[] = {
+  MP4MPEGSampleEntryAtomType,      MP4VisualSampleEntryAtomType,
+  MP4AudioSampleEntryAtomType,     MP4EncAudioSampleEntryAtomType,
+  MP4EncVisualSampleEntryAtomType, MP4XMLMetaSampleEntryAtomType,
+  MP4TextMetaSampleEntryAtomType,  MP4AMRSampleEntryAtomType,
+  MP4AWBSampleEntryAtomType,       MP4AMRWPSampleEntryAtomType,
+  MP4H263SampleEntryAtomType,      MP4RestrictedVideoSampleEntryAtomType,
+  MP4BoxedMetadataSampleEntryType, MP4T35SampleGroupEntry,
+  ISOAVCSampleEntryAtomType,       ISOHEVCSampleEntryAtomType,
+  ISOVVCSampleEntryAtomTypeInBand, ISOVVCSampleEntryAtomTypeOutOfBand,
+  ISOVVCSubpicSampleEntryAtomType, 0};
 #else
-u32 MP4SampleEntryProtos[] = {MP4MPEGSampleEntryAtomType,
-                              MP4VisualSampleEntryAtomType,
-                              MP4AudioSampleEntryAtomType,
-                              MP4XMLMetaSampleEntryAtomType,
-                              MP4TextMetaSampleEntryAtomType,
-                              MP4AMRSampleEntryAtomType,
-                              MP4AWBSampleEntryAtomType,
-                              MP4AMRWPSampleEntryAtomType,
-                              MP4H263SampleEntryAtomType,
-                              MP4RestrictedVideoSampleEntryAtomType,
-                              MP4BoxedMetadataSampleEntryType,
-                              ISOAVCSampleEntryAtomType,
-                              ISOHEVCSampleEntryAtomType,
-                              ISOVVCSampleEntryAtomTypeInBand,
-                              ISOVVCSampleEntryAtomTypeOutOfBand,
-                              ISOVVCSubpicSampleEntryAtomType,
-                              0};
+u32 MP4SampleEntryProtos[] = {
+  MP4MPEGSampleEntryAtomType,      MP4VisualSampleEntryAtomType,
+  MP4AudioSampleEntryAtomType,     MP4XMLMetaSampleEntryAtomType,
+  MP4TextMetaSampleEntryAtomType,  MP4AMRSampleEntryAtomType,
+  MP4AWBSampleEntryAtomType,       MP4AMRWPSampleEntryAtomType,
+  MP4H263SampleEntryAtomType,      MP4RestrictedVideoSampleEntryAtomType,
+  MP4BoxedMetadataSampleEntryType, MP4T35SampleGroupEntry,
+  ISOAVCSampleEntryAtomType,       ISOHEVCSampleEntryAtomType,
+  ISOVVCSampleEntryAtomTypeInBand, ISOVVCSampleEntryAtomTypeOutOfBand,
+  ISOVVCSubpicSampleEntryAtomType, 0};
 #endif
 
 MP4Err sampleEntryHToAtomPtr(MP4Handle sampleEntryH, MP4AtomPtr *entryPtr, u32 defaultType)
@@ -443,6 +429,41 @@ MP4_EXTERN(MP4Err) ISOGetSampleDescriptionType(MP4Handle sampleEntryH, u32 *type
   if(err) goto bail;
 
   *type = entry->type;
+
+bail:
+  if(entry) entry->destroy((MP4AtomPtr)entry);
+  return err;
+}
+
+MP4_EXTERN(MP4Err)
+ISOGetFirstHumanReadableStreamDescription(MP4Handle sampleEntryH, char **description)
+{
+  MP4Err err                        = MP4NoErr;
+  MP4VisualSampleEntryAtomPtr entry = NULL;
+  u32 i;
+
+  if(sampleEntryH == NULL || description == NULL) BAILWITHERROR(MP4BadParamErr);
+
+  *description = NULL;
+
+  err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4GenericSampleEntryAtomType);
+  if(err) goto bail;
+
+  for(i = 0; i < entry->ExtensionAtomList->entryCount; i++)
+  {
+    MP4AtomPtr atom;
+    MP4GetListEntry(entry->ExtensionAtomList, i, (char **)&atom);
+    if(atom->type == MP4HumanReadableStreamDescriptionAtomType)
+    {
+      const char *hrsd_description = ((MP4HumanReadableStreamDescriptionAtomPtr)atom)->description;
+      if(hrsd_description == NULL || hrsd_description[0] == '\0') continue;
+      assert(strlen(hrsd_description) + 1 <= atom->size - 8);
+      *description = (char *)calloc(strlen(hrsd_description) + 1, 1);
+      TESTMALLOC(*description);
+      strcpy(*description, hrsd_description);
+      break;
+    }
+  }
 
 bail:
   if(entry) entry->destroy((MP4AtomPtr)entry);
@@ -1211,17 +1232,6 @@ ISOGetHEVCNALUs(MP4Handle sampleEntryH, MP4Handle nalus, u32 extraction_mode)
   err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType);
   if(err) goto bail;
 
-  if(entry->type == MP4EncVisualSampleEntryAtomType ||
-     entry->type == MP4RestrictedVideoSampleEntryAtomType)
-  {
-    u32 origFmt = 0;
-    err         = ISOGetOriginalFormat(sampleEntryH, &origFmt);
-    if(origFmt != ISOHEVCSampleEntryAtomType && origFmt != ISOLHEVCSampleEntryAtomType)
-      BAILWITHERROR(MP4BadParamErr);
-  }
-  else if(entry->type != ISOHEVCSampleEntryAtomType && entry->type != ISOLHEVCSampleEntryAtomType)
-    BAILWITHERROR(MP4BadParamErr);
-
   MP4GetListEntryAtom(entry->ExtensionAtomList, ISOHEVCConfigAtomType, (MP4AtomPtr *)&hvcC);
   MP4GetListEntryAtom(entry->ExtensionAtomList, ISOLHEVCConfigAtomType, (MP4AtomPtr *)&lhvC);
 
@@ -1882,7 +1892,7 @@ ISOAddMebxMetadataToSampleEntry(MP4BoxedMetadataSampleEntryPtr mebx, u32 desired
     if(err) goto bail;
   }
 
-  keytable->addMetaDataKeyBox(keytable, (MP4AtomPtr)keyb);
+  err = keytable->addMetaDataKeyBox(keytable, (MP4AtomPtr)keyb);
   if(err) goto bail;
 
 bail:
@@ -1920,7 +1930,7 @@ bail:
 }
 
 ISO_EXTERN(ISOErr)
-ISOGetMebxMetadataConfig(MP4Handle sampleEntryH, u32 cnt, u32 *local_key_id, u32 *key_namespace,
+ISOGetMebxMetadataConfig(MP4Handle sampleEntryH, u32 idx, u32 *local_key_id, u32 *key_namespace,
                          MP4Handle key_value, char **locale_string, MP4Handle setupInfo)
 {
   MP4Err err;
@@ -1933,7 +1943,7 @@ ISOGetMebxMetadataConfig(MP4Handle sampleEntryH, u32 cnt, u32 *local_key_id, u32
 
   if(entry->keyTable == NULL) BAILWITHERROR(MP4BadDataErr);
 
-  err = MP4GetListEntry(entry->keyTable->metadataKeyBoxList, cnt, (char **)&key);
+  err = MP4GetListEntry(entry->keyTable->metadataKeyBoxList, idx, (char **)&key);
   if(err) goto bail;
 
   /* set output values */
@@ -2417,5 +2427,249 @@ ISOGetVVCSubpicSampleDescription(MP4Handle sampleEntryH, u32 *dataReferenceIndex
 
 bail:
   if(entry) entry->destroy((MP4AtomPtr)entry);
+  return err;
+}
+
+/* ==================== T.35 Metadata Track Functions ==================== */
+
+/* Helper: Parse T.35 prefix string into hex identifier and description
+ * Format: "HEXSTRING:Description"
+ * Example: "B500900001:SMPTE-ST2094-50"
+ */
+static MP4Err parseT35PrefixString(const char *t35_prefix_text, u8 **outIdentifier,
+                                   u32 *outIdentifierSize, char **outDescription)
+{
+  MP4Err err;
+  const char *colon;
+  const char *hexStart;
+  size_t hexLen;
+  u32 identifierSize;
+  u8 *identifier;
+  char *description;
+
+  if(t35_prefix_text == NULL || outIdentifier == NULL || outIdentifierSize == NULL ||
+     outDescription == NULL)
+    BAILWITHERROR(MP4BadParamErr);
+
+  /* Find colon separator */
+  colon = strchr(t35_prefix_text, ':');
+  if(colon)
+  {
+    hexLen = colon - t35_prefix_text;
+  }
+  else
+  {
+    hexLen = strlen(t35_prefix_text);
+  }
+
+  /* Check if hex length is even */
+  if(hexLen % 2 != 0) BAILWITHERROR(MP4BadParamErr);
+
+  identifierSize = (u32)(hexLen / 2);
+  if(identifierSize == 0) BAILWITHERROR(MP4BadParamErr);
+
+  /* Allocate identifier buffer */
+  identifier = (u8 *)calloc(identifierSize, 1);
+  if(identifier == NULL) BAILWITHERROR(MP4NoMemoryErr);
+
+  /* Parse hex string */
+  hexStart = t35_prefix_text;
+  for(u32 i = 0; i < identifierSize; i++)
+  {
+    char hexByte[3];
+    hexByte[0] = hexStart[i * 2];
+    hexByte[1] = hexStart[i * 2 + 1];
+    hexByte[2] = '\0';
+
+    char *endPtr;
+    unsigned long value = strtoul(hexByte, &endPtr, 16);
+    if(*endPtr != '\0' || value > 255)
+    {
+      free(identifier);
+      BAILWITHERROR(MP4BadParamErr);
+    }
+    identifier[i] = (u8)value;
+  }
+
+  /* Parse description (after colon) */
+  if(colon && colon[1] != '\0')
+  {
+    size_t descLen = strlen(colon + 1);
+    description    = (char *)calloc(descLen + 1, 1);
+    if(description == NULL)
+    {
+      free(identifier);
+      BAILWITHERROR(MP4NoMemoryErr);
+    }
+    strcpy(description, colon + 1);
+  }
+  else
+  {
+    /* Empty description */
+    description = NULL;
+  }
+
+  *outIdentifier     = identifier;
+  *outIdentifierSize = identifierSize;
+  *outDescription    = description;
+
+  return MP4NoErr;
+
+bail:
+  TEST_RETURN(err);
+  return err;
+}
+
+MP4_EXTERN(MP4Err)
+ISONewT35SampleDescription(MP4T35MetadataSampleEntryPtr *outSE, u32 dataReferenceIndex,
+                           const char *t35_prefix_text)
+{
+  MP4Err err                                    = MP4NoErr;
+  MP4T35MetadataSampleEntryPtr it35             = NULL;
+  MP4HumanReadableStreamDescriptionAtomPtr hrsd = NULL;
+  u8 *identifier                                = NULL;
+  u32 identifierSize                            = 0;
+  char *description                             = NULL;
+
+  if(outSE == NULL || t35_prefix_text == NULL) BAILWITHERROR(MP4BadParamErr);
+
+  /* Parse t35_prefix_text into identifier and description */
+  err = parseT35PrefixString(t35_prefix_text, &identifier, &identifierSize, &description);
+  if(err) goto bail;
+
+  /* Create T35 sample entry */
+  err = MP4CreateT35MetadataSampleEntry(&it35);
+  if(err) goto bail;
+  it35->dataReferenceIndex = dataReferenceIndex;
+
+  /* Set t35_identifier_length and t35_identifier fields */
+  it35->t35_identifier_length = identifierSize;
+  it35->t35_identifier        = identifier;
+  identifier                  = NULL; /* Transfer ownership */
+
+  if(description != NULL && description[0] != '\0')
+  {
+    err = MP4MakeLinkedList(&it35->ExtensionAtomList);
+    if(err) goto bail;
+
+    err = MP4CreateHumanReadableStreamDescriptionAtom(&hrsd);
+    if(err) goto bail;
+    hrsd->description = description;
+    description       = NULL; /* Transfer ownership */
+
+    err = MP4AddListEntry((void *)hrsd, it35->ExtensionAtomList);
+    if(err) goto bail;
+    hrsd = NULL; /* Transfer ownership */
+  }
+
+  *outSE = it35;
+  it35   = NULL; /* Transfer ownership */
+
+bail:
+  if(identifier) free(identifier);
+  if(description) free(description);
+  if(hrsd) hrsd->destroy((MP4AtomPtr)hrsd);
+  if(it35) it35->destroy((MP4AtomPtr)it35);
+  TEST_RETURN(err);
+  return err;
+}
+
+ISO_EXTERN(ISOErr)
+ISONewT35MetadataTrack(MP4Movie theMovie, u32 timescale, const char *t35_prefix_text,
+                       MP4Track videoTrack, u32 trackReferenceType, MP4Track *outTrack,
+                       MP4Media *outMedia)
+{
+  MP4Err err;
+  MP4Track trakM                    = NULL;
+  MP4Media mediaM                   = NULL;
+  MP4T35MetadataSampleEntryPtr it35 = NULL;
+  MP4Handle sampleEntryH            = NULL;
+  MP4PrivateMovieRecordPtr moov     = NULL;
+  MP4TrackAtomPtr trakAtom          = NULL;
+
+  if(theMovie == NULL || t35_prefix_text == NULL || outTrack == NULL) BAILWITHERROR(MP4BadParamErr);
+
+  moov = (MP4PrivateMovieRecordPtr)theMovie;
+
+  /* Create metadata track */
+  err = MP4NewMovieTrack(theMovie, MP4NewTrackIsMetadata, &trakM);
+  if(err) goto bail;
+
+  /* Create media with MP4MetaHandlerType */
+  err = MP4NewTrackMedia(trakM, &mediaM, MP4MetaHandlerType, timescale, NULL);
+  if(err) goto bail;
+
+  /* Add track reference if both videoTrack and trackReferenceType are provided */
+  if(videoTrack != NULL && trackReferenceType != 0)
+  {
+    err = MP4AddTrackReference(trakM, videoTrack, trackReferenceType, 0);
+    if(err) goto bail;
+  }
+
+  /* Create T35 sample entry with description and t35_identifier */
+  err = ISONewT35SampleDescription(&it35, 1, t35_prefix_text);
+  if(err) goto bail;
+
+  /* Convert sample entry to handle */
+  err = MP4NewHandle(0, &sampleEntryH);
+  if(err) goto bail;
+
+  /* Use atomPtrToSampleEntryH helper */
+  err = atomPtrToSampleEntryH(sampleEntryH, (MP4AtomPtr)it35);
+  if(err) goto bail;
+
+  /* Add sample entry to media (index 0 means add to sample description table) */
+  err = MP4AddMediaSamples(mediaM, 0, 0, 0, 0, sampleEntryH, 0, 0);
+  if(err) goto bail;
+
+  /* Dispose the handle after adding */
+  MP4DisposeHandle(sampleEntryH);
+  sampleEntryH = NULL;
+
+  /* Set the mdat reference for the track */
+  trakAtom = (MP4TrackAtomPtr)trakM;
+  if(trakAtom && moov->mdat)
+  {
+    err = trakAtom->setMdat(trakAtom, moov->mdat);
+    if(err) goto bail;
+  }
+
+  *outTrack = trakM;
+  if(outMedia) *outMedia = mediaM;
+
+bail:
+  if(sampleEntryH) MP4DisposeHandle(sampleEntryH);
+  if(it35) it35->destroy((MP4AtomPtr)it35);
+
+  TEST_RETURN(err);
+  return err;
+}
+
+ISO_EXTERN(ISOErr)
+ISOGetT35SampleEntryFields(MP4Handle sampleEntryH, u8 **outIdentifier, u32 *outIdentifierSize)
+{
+  MP4Err err;
+  MP4T35MetadataSampleEntryPtr it35 = NULL;
+
+  if(sampleEntryH == NULL || outIdentifier == NULL || outIdentifierSize == NULL)
+    BAILWITHERROR(MP4BadParamErr);
+
+  *outIdentifier     = NULL;
+  *outIdentifierSize = 0;
+
+  err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&it35, MP4T35MetadataSampleEntryType);
+  if(err) goto bail;
+
+  if(it35->t35_identifier == NULL || it35->t35_identifier_length == 0)
+    BAILWITHERROR(MP4NotFoundErr);
+
+  *outIdentifier = (u8 *)calloc(it35->t35_identifier_length, 1);
+  TESTMALLOC(*outIdentifier);
+  memcpy(*outIdentifier, it35->t35_identifier, it35->t35_identifier_length);
+  *outIdentifierSize = it35->t35_identifier_length;
+
+bail:
+  if(it35) it35->destroy((MP4AtomPtr)it35);
+  TEST_RETURN(err);
   return err;
 }

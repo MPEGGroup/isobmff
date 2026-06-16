@@ -1,0 +1,135 @@
+ {
+  "SMPTEST2094_50": {
+    "frameStart": 3,
+    "frameDuration": 1,
+    "windowNumber": 1,
+    "ColorVolumeTransform": {
+      "hdrReferenceWhite": 400,
+      "HeadroomAdaptiveToneMapping": {
+        "baselineHdrHeadroom": 2,
+        "numAlternateImages": 4,
+        "gainApplicationSpaceChromaticities": [
+          0.68,
+          0.32,
+          0.265,
+          0.69,
+          0.15,
+          0.06,
+          0.3127,
+          0.329
+        ],
+        "alternateHdrHeadroom": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "ColorGainFunction": [
+          {
+            "ComponentMix": {
+              "componentMixRed": 0,
+              "componentMixGreen": 0,
+              "componentMixBlue": 0,
+              "componentMixMax": 0.75,
+              "componentMixMin": 0.25,
+              "componentMixComponent": 0
+            },
+            "GainCurve": {
+              "gainCurveNumControlPoints": 1,
+              "gainCurveControlPointX": 64,
+              "gainCurveControlPointY": -6,
+              "gainCurveControlPointM": 0
+            }
+          },
+          {
+            "ComponentMix": {
+              "componentMixRed": 0,
+              "componentMixGreen": 0,
+              "componentMixBlue": 0,
+              "componentMixMax": 1,
+              "componentMixMin": 0,
+              "componentMixComponent": 0
+            },
+            "GainCurve": {
+              "gainCurveNumControlPoints": 4,
+              "gainCurveControlPointX": [
+                0,
+                1,
+                2,
+                3
+              ],
+              "gainCurveControlPointY": [
+                -1,
+                -0.5,
+                -0.4,
+                -0.3
+              ],
+              "gainCurveControlPointM": [
+                0,
+                0.1,
+                0.2,
+                0.3
+              ]
+            }
+          },
+          {
+            "ComponentMix": {
+              "componentMixRed": 0,
+              "componentMixGreen": 0,
+              "componentMixBlue": 0,
+              "componentMixMax": 0,
+              "componentMixMin": 0,
+              "componentMixComponent": 1
+            },
+            "GainCurve": {
+              "gainCurveNumControlPoints": 2,
+              "gainCurveControlPointX": [
+                0,
+                1
+              ],
+              "gainCurveControlPointY": [
+                1,
+                0.5
+              ],
+              "gainCurveControlPointM": [
+                0,
+                0.1
+              ]
+            }
+          },
+          {
+            "ComponentMix": {
+              "componentMixRed": 0.3,
+              "componentMixGreen": 0.6,
+              "componentMixBlue": 0.1,
+              "componentMixMax": 0,
+              "componentMixMin": 0,
+              "componentMixComponent": 0
+            },
+            "GainCurve": {
+              "gainCurveNumControlPoints": 4,
+              "gainCurveControlPointX": [
+                0,
+                1,
+                2,
+                2
+              ],
+              "gainCurveControlPointY": [
+                1,
+                0.5,
+                0.4,
+                0.4
+              ],
+              "gainCurveControlPointM": [
+                0,
+                0.1,
+                0.5,
+                0.7
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+ {
+  "SMPTEST2094_50": {
+    "frameStart": 1,
+    "frameDuration": 1,
+    "windowNumber": 1,
+    "ColorVolumeTransform": {
+      "hdrReferenceWhite": 203,
+      "HeadroomAdaptiveToneMapping": {
+        "baselineHdrHeadroom": 3
+      }
+    }
+  }
+}

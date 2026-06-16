@@ -32,6 +32,7 @@ TEST_CASE("mebx")
   std::string strPattern       = "NIbFD";
   u32 repeatPattern            = 6;
   std::string strMebxMe4cFile  = "test_mebx_me4c.mp4";
+  std::string strMebxT35File   = "test_mebx_t35.mp4";
   std::string strUnMebxFile    = "test_unmebx.mp4";
   std::string strReMebxFile    = "test_remebx.mp4";
 
@@ -241,7 +242,7 @@ TEST_CASE("mebx")
     }
 
 
-    err = MP4SetMebxTrackReader(reader, MP4_FOUR_CHAR_CODE('r', 'e', 'd', 'd'));
+    err = MP4SetMebxTrackReaderLocalKeyId(reader, MP4_FOUR_CHAR_CODE('r', 'e', 'd', 'd'));
     CHECK(err == MP4NoErr);
     
     u32 n = 0;
@@ -263,4 +264,76 @@ TEST_CASE("mebx")
     
   }
 
+
+  SECTION("T.35")
+  {
+    MP4Movie moov;
+    MP4Track trakV;
+    MP4Track trakM;
+    MP4Media mediaV;
+    MP4Media mediaM;
+
+    MP4Handle spsHandle, ppsHandle, vpsHandle, sampleEntryVH, sampleEntryMH;
+    err = MP4NewHandle(sizeof(HEVC::SPS), &spsHandle);
+    std::memcpy((*spsHandle), HEVC::SPS, sizeof(HEVC::SPS));
+    err = MP4NewHandle(sizeof(HEVC::PPS), &ppsHandle);
+    std::memcpy((*ppsHandle), HEVC::PPS, sizeof(HEVC::PPS));
+    err = MP4NewHandle(sizeof(HEVC::VPS), &vpsHandle);
+    std::memcpy((*vpsHandle), HEVC::VPS, sizeof(HEVC::VPS));
+    err = MP4NewHandle(0, &sampleEntryVH);
+    err = MP4NewHandle(0, &sampleEntryMH);
+
+    err = MP4NewMovie(&moov, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff);
+
+    // create video track
+    err = MP4NewMovieTrack(moov, MP4NewTrackIsVisual, &trakV);
+    err = MP4NewTrackMedia(trakV, &mediaV, MP4VisualHandlerType, TIMESCALE, NULL);
+    err = ISONewHEVCSampleDescription(trakV, sampleEntryVH, 1, 1, spsHandle, ppsHandle, vpsHandle);
+    err = addHEVCSamples(mediaV, "", 0, sampleEntryVH);
+    err = addHEVCSamples(mediaV, strPattern, repeatPattern);
+
+    // create mebx track
+    err = MP4NewMovieTrack(moov, MP4NewTrackIsMebx, &trakM);
+    err = MP4NewTrackMedia(trakM, &mediaM, MP4MetaHandlerType, TIMESCALE, NULL);
+    err = MP4AddTrackReference(trakM, trakV, MP4DescTrackReferenceType, 0);
+
+    // create mebx sample entry
+    MP4BoxedMetadataSampleEntryPtr mebx;
+    err = ISONewMebxSampleDescription(&mebx, 1);
+
+    MP4Handle dmcvtH;
+    MP4NewHandle(30, &dmcvtH);
+
+    // first 5 bytes: binary prefix according to generic definition
+    (*dmcvtH)[0] = 0xB5;
+    (*dmcvtH)[1] = 0x00;
+    (*dmcvtH)[2] = 0x90;
+    (*dmcvtH)[3] = 0x00;
+    (*dmcvtH)[4] = 0x01;
+
+    // rest: ASCII string "smpte_st_2094_50_dmcvt_v1"
+    const char dmcvStr[] = "smpte_st_2094_50_dmcvt_v1";
+    std::memcpy(&(*dmcvtH)[5], dmcvStr, sizeof(dmcvStr) - 1);
+
+    u32 local_key_id;
+    err = ISOAddMebxMetadataToSampleEntry(mebx, 1, &local_key_id, MP4_FOUR_CHAR_CODE('i', 't', '3', '5'), dmcvtH, 0, 0);
+    CHECK(err == MP4NoErr);
+
+    // add mebx sample entry to track's media
+    err = ISOGetMebxHandle(mebx, sampleEntryMH);
+    CHECK(err == MP4NoErr);
+    err = addMebxSamples(mediaM, "", 0, sampleEntryMH);
+    CHECK(err == MP4NoErr);
+
+    // add samples using local_key_id (hijack red id and use all Ts in pattern)
+    strPattern.assign(strPattern.size(), 'T');
+    err = addMebxSamples(mediaM, strPattern, repeatPattern, 0, local_key_id);
+    CHECK(err == MP4NoErr);
+
+    // write file
+    err = MP4EndMediaEdits(mediaV);
+    err = MP4EndMediaEdits(mediaM);
+    err = MP4WriteMovieToFile(moov, strMebxT35File.c_str());
+    CHECK(err == MP4NoErr);
+  }
 }

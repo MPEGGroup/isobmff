@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file MP4Movies.h
  * @brief API
  * @version 0.1
@@ -53,6 +53,7 @@ extern "C"
     MP4InvalidMediaErr              = -8,   /**< Invalid media */
     MP4InternalErr                  = -9,   /**< Iternal error */
     MP4NotFoundErr                  = -10,  /**< Not found */
+    MP4DuplicateErr                 = -11,  /**< Duplicate match */
     MP4DataEntryTypeNotSupportedErr = -100, /**< Data entity type not supported */
     MP4NoQTAtomErr                  = -500, /**< No QT atom */
     MP4NotImplementedErr            = -1000 /**< Not implemented */
@@ -764,6 +765,16 @@ extern "C"
    */
   MP4_EXTERN(MP4Err) MP4GetMovieIndTrackSampleEntryType(MP4Movie theMovie, u32 idx, u32 *SEType);
 
+  /**
+   * @brief Get number of bytes that is used to signal the length of a NAL unit.
+   *
+   * @note This function only returns the NALU length of the first sample entry.
+   * @param theMovie input movie object
+   * @param idx index of the track ranges between 1 and the number of tracks in theMovie.
+   * @param naluLength [out] number of bytes to signal NAL unit length.
+   */
+  MP4_EXTERN(MP4Err) MP4GetMovieIndTrackNALUnitLength(MP4Movie theMovie, u32 idx, u32 *naluLength);
+
   /*
   MP4_EXTERN ( MP4Err )
   MP4GetMovieInitialBIFSTrack( MP4Movie theMovie, MP4Track *outBIFSTrack );
@@ -1064,6 +1075,19 @@ extern "C"
   MP4AddMediaSamples(MP4Media media, MP4Handle sampleH, u32 sampleCount, MP4Handle durationsH,
                      MP4Handle sizesH, MP4Handle sampleEntryH, MP4Handle decodingOffsetsH,
                      MP4Handle syncSamplesH);
+
+  /**
+   * @brief Update a sample in the media.
+   *
+   * @param media input media object
+   * @param sampleNumber 1-based index of the sample to update
+   * @param sampleH handle containing the new data
+   * @param sampleSize new size of the sample
+   * @return MP4Err error code
+   */
+  MP4_EXTERN(MP4Err)
+  MP4UpdateMediaSample(MP4Movie theMovie, MP4Media media, u32 sampleNumber, MP4Handle sampleH,
+                       u32 sampleSize);
   /**
    * @brief Add media samples by reference with padding bits
    *
@@ -1098,6 +1122,19 @@ extern "C"
    */
   MP4_EXTERN(MP4Err)
   ISOAddGroupDescription(MP4Media media, u32 groupType, MP4Handle description, u32 *index);
+  /**
+   * @brief Adds a T.35 Sample Group Description to the indicated media.
+   *
+   * @param media input media object
+   * @param itu_t_t35_data pre-serialized (big-endian) T.35 data that will go inside sgpd
+   * @param complete_message_flag If set to 1 indicates that the entire T.35 is stored in
+   * itu_t_t35_data
+   * @param index output index of the added group
+   * @return MP4Err error code
+   */
+  MP4_EXTERN(MP4Err)
+  ISOAddT35GroupDescription(MP4Media media, MP4Handle itu_t_t35_data, u32 complete_message_flag,
+                            u32 *index);
   /**
    * @brief Returns in the handle ‘description’ the group description associated with the given
    * group index of the given group type.
@@ -1736,9 +1773,52 @@ extern "C"
    */
   MP4_EXTERN(MP4Err) MP4CreateTrackReader(MP4Track theTrack, MP4TrackReader *outReader);
   /**
-   * @brief Select local_key for reading. Demux mebx track.
+   * @brief Set local_key_id for reading. Demux mebx track.
    */
-  MP4_EXTERN(MP4Err) MP4SetMebxTrackReader(MP4TrackReader theReader, u32 local_key);
+  MP4_EXTERN(MP4Err) MP4SetMebxTrackReaderLocalKeyId(MP4TrackReader theReader, u32 local_key_id);
+  /**
+   * @brief Select the first matching 'mebx' key for a track reader by namespace and value.
+   *
+   * Looks up the first key in the 'mebx' sample description matching @p key_namespace and @p
+   * key_value. If found, sets the corresponding local_key_id on the reader. Optionally returns the
+   * resolved local_key_id.
+   *
+   * If multiple keys match the same namespace and value, this function selects only the first one.
+   * Use MP4FindMebxKeyMatchByIndex to iterate through all matches.
+   *
+   * @param theReader 'mebx' track reader.
+   * @param key_namespace key namespace from MetadataKeyDeclarationBox
+   * @param key_value key value from MetadataKeyDeclarationBox
+   * @param outLocalKeyId Optional; receives local_key_id if non-NULL.
+   *
+   * @return MP4NoErr if found and set, MP4NotFoundErr if not found, or error code.
+   */
+  MP4_EXTERN(MP4Err)
+  MP4SelectFirstMebxTrackReaderKey(MP4TrackReader theReader, u32 key_namespace, MP4Handle key_value,
+                                   u32 *outLocalKeyId);
+
+  /**
+   * @brief Find a specific match of key_namespace + key_value by match index.
+   *
+   * This function searches for all entries matching the given key_namespace and key_value,
+   * and returns information about the match at the specified index (0-based).
+   *
+   * Use this to iterate through all matches when multiple entries have the same
+   * key_namespace and key_value but different setupInfo or other parameters.
+   *
+   * @param sampleEntryH Handle to the mebx sample entry
+   * @param key_namespace Namespace to match
+   * @param key_value Handle containing the key value to match
+   * @param matchIndex Zero-based index of which match to return (0=first match, 1=second, etc.)
+   * @param outAbsoluteIndex Output: absolute index in metadata config array (for use with
+   * ISOGetMebxMetadataConfig)
+   * @param outLocalKeyId Output: local_key_id for this match
+   * @return MP4NoErr if match found, MP4NotFoundErr if matchIndex exceeds available matches
+   */
+  MP4_EXTERN(MP4Err)
+  MP4FindMebxKeyMatchByIndex(MP4Handle sampleEntryH, u32 key_namespace, MP4Handle key_value,
+                             u32 matchIndex, u32 *outAbsoluteIndex, u32 *outLocalKeyId);
+
   /**
    * @brief Frees up resources associated with a track reader.
    */
@@ -2112,6 +2192,14 @@ extern "C"
    * @ingroup SampleDescr
    */
   MP4_EXTERN(MP4Err) ISOGetSampleDescriptionType(MP4Handle sampleEntryH, u32 *type);
+  /**
+   * @brief This function returns the first human-readable description of a stream.
+   *
+   * @attention The caller is responsible for freeing *description with free().
+   * @ingroup SampleDescr
+   */
+  MP4_EXTERN(MP4Err)
+  ISOGetFirstHumanReadableStreamDescription(MP4Handle sampleEntryH, char **description);
 
   /**
    * @brief This starts a new movie fragment.

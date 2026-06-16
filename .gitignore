@@ -82,3 +82,7 @@ doc/
 *.code-workspace
 # Local History for Visual Studio Code
 .history/
+
+# T35 Tool Test Output
+TestData/t35_tool/output_all_modes/
+TestData/t35_tool/output_smpte/

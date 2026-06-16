@@ -632,6 +632,10 @@ SOURCE=..\..\src\BitRateAtom.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\HumanReadableStreamDescriptionAtom.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\AMRWPSpecificInfoAtom.c
 # End Source File
 # Begin Source File

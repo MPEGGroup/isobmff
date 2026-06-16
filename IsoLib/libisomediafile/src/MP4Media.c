@@ -177,7 +177,41 @@ ISOAddGroupDescription(MP4Media media, u32 groupType, MP4Handle description, u32
 
 bail:
   TEST_RETURN(err);
+  return err;
+}
 
+MP4_EXTERN(MP4Err)
+ISOAddT35GroupDescription(MP4Media media, MP4Handle itu_t_t35_data, u32 complete_message_flag,
+                          u32 *index)
+{
+  MP4Err err;
+  MP4MediaAtomPtr mdia;
+  MP4Handle description = NULL;
+  MP4Handle prefix      = NULL;
+
+  if(media == NULL || itu_t_t35_data == NULL)
+  {
+    BAILWITHERROR(MP4BadParamErr);
+  }
+  mdia = (MP4MediaAtomPtr)media;
+
+  err = MP4NewHandle(1, &prefix);
+  if(err) goto bail;
+  (*prefix)[0] = (complete_message_flag ? 0x80 : 0x00);
+
+  err = MP4NewHandle(0, &description);
+  if(err) goto bail;
+  err = MP4HandleCat(description, prefix);
+  if(err) goto bail;
+  err = MP4HandleCat(description, itu_t_t35_data);
+  if(err) goto bail;
+
+  err = mdia->addGroupDescription(mdia, MP4T35SampleGroupEntry, description, index);
+
+bail:
+  if(prefix) MP4DisposeHandle(prefix);
+  if(description) MP4DisposeHandle(description);
+  TEST_RETURN(err);
   return err;
 }
 
@@ -326,6 +360,9 @@ bail:
 
   return err;
 }
+
+/* TODO: add an API that will get sample numbers based on T35 header (if it35 is used for marking
+ * samples) */
 
 MP4_EXTERN(MP4Err)
 ISOSetSampleDependency(MP4Media media, s32 sample_index, MP4Handle dependencies)
@@ -1883,6 +1920,147 @@ MP4GetIndMediaSampleWithPad(MP4Media theMedia, u32 sampleNumber, MP4Handle outSa
 bail:
   TEST_RETURN(err);
 
+  return err;
+}
+
+MP4_EXTERN(MP4Err)
+MP4UpdateMediaSample(MP4Movie theMovie, MP4Media theMedia, u32 sampleNumber, MP4Handle sampleH,
+                     u32 sampleSize)
+{
+  MP4Err err;
+  MP4MediaInformationAtomPtr minf;
+  MP4SampleTableAtomPtr stbl;
+  MP4SampleSizeAtomPtr stsz;
+  MP4SampleToChunkAtomPtr stsc;
+  MP4ChunkOffsetAtomPtr stco;
+
+  MP4PrivateMovieRecordPtr movie = (MP4PrivateMovieRecordPtr)theMovie;
+  MP4MediaDataAtomPtr mdat;
+
+  u32 chunkNumber;
+  u32 sampleDescriptionIndex;
+  u32 firstSampleNumberInChunk;
+  u32 sampleOffsetWithinChunk;
+  u32 oldSize;
+  u64 chunkOffset;
+  u64 computedOffset;
+  s32 deltaSize;
+
+  err = MP4NoErr;
+  if((theMovie == NULL) || (theMedia == NULL) || (sampleH == NULL))
+  {
+    BAILWITHERROR(MP4BadParamErr);
+  }
+
+  mdat = (MP4MediaDataAtomPtr)movie->mdat;
+  if((mdat == NULL) || (mdat->data == NULL))
+  {
+    BAILWITHERROR(MP4NotImplementedErr);
+  }
+
+  minf = (MP4MediaInformationAtomPtr)((MP4MediaAtomPtr)theMedia)->information;
+  if(minf == NULL) BAILWITHERROR(MP4InvalidMediaErr);
+
+  stbl = (MP4SampleTableAtomPtr)minf->sampleTable;
+  if(stbl == NULL) BAILWITHERROR(MP4InvalidMediaErr);
+
+  stsz = (MP4SampleSizeAtomPtr)stbl->SampleSize;
+  stsc = (MP4SampleToChunkAtomPtr)stbl->SampleToChunk;
+  stco = (MP4ChunkOffsetAtomPtr)stbl->ChunkOffset;
+
+  if((stsz == NULL) || (stsc == NULL) || (stco == NULL)) BAILWITHERROR(MP4InvalidMediaErr);
+
+  /* get chunk and offset within chunk */
+  err = stsc->lookupSample(stbl->SampleToChunk, sampleNumber, &chunkNumber, &sampleDescriptionIndex,
+                           &firstSampleNumberInChunk);
+  if(err) goto bail;
+
+  err = stsz->getSampleSizeAndOffset(stbl->SampleSize, sampleNumber, &oldSize,
+                                     firstSampleNumberInChunk, &sampleOffsetWithinChunk);
+  if(err) goto bail;
+
+  err = stco->getChunkOffset(stbl->ChunkOffset, chunkNumber, &chunkOffset);
+  if(err) goto bail;
+
+  computedOffset = chunkOffset + sampleOffsetWithinChunk;
+  deltaSize      = sampleSize - oldSize;
+
+  if(deltaSize != 0)
+  {
+    /* Shift data in mdat */
+    u64 mdatOffset = computedOffset;
+    char *newData;
+
+    newData = (char *)realloc(mdat->data, mdat->dataSize + deltaSize);
+    if(newData == NULL) BAILWITHERROR(MP4NoMemoryErr);
+    mdat->data = newData;
+
+    memmove(mdat->data + mdatOffset + sampleSize, mdat->data + mdatOffset + oldSize,
+            mdat->dataSize - (mdatOffset + oldSize));
+
+    mdat->dataSize += deltaSize;
+
+    /* Update sample size in stsz */
+    if(stsz->sampleSize != 0)
+    {
+      u32 i;
+      stsz->sizes = (u32 *)calloc(stsz->sampleCount, sizeof(u32));
+      if(stsz->sizes == NULL) BAILWITHERROR(MP4NoMemoryErr);
+      for(i = 0; i < stsz->sampleCount; i++)
+        stsz->sizes[i] = stsz->sampleSize;
+      stsz->sampleSize = 0;
+    }
+    stsz->sizes[sampleNumber - 1] = sampleSize;
+
+    /* Update chunk offsets directly for all tracks */
+    {
+      MP4MovieAtomPtr moov = (MP4MovieAtomPtr)movie->moovAtomPtr;
+      u32 trackCount;
+      u32 i;
+      err = MP4GetListEntryCount(moov->trackList, &trackCount);
+      if(err) goto bail;
+
+      for(i = 0; i < trackCount; i++)
+      {
+        MP4TrackAtomPtr trak;
+        err = MP4GetListEntry(moov->trackList, i, (char **)&trak);
+        if(err) goto bail;
+        if(trak && trak->trackMedia)
+        {
+          MP4MediaAtomPtr media = (MP4MediaAtomPtr)trak->trackMedia;
+          if(media->information)
+          {
+            MP4MediaInformationAtomPtr minf_ptr = (MP4MediaInformationAtomPtr)media->information;
+            if(minf_ptr->sampleTable)
+            {
+              MP4SampleTableAtomPtr stbl_ptr = (MP4SampleTableAtomPtr)minf_ptr->sampleTable;
+              MP4ChunkOffsetAtomPtr stco_ptr = (MP4ChunkOffsetAtomPtr)stbl_ptr->ChunkOffset;
+
+              if(stco_ptr)
+              {
+                u32 j;
+                for(j = 0; j < stco_ptr->entryCount; j++)
+                {
+                  if(stco_ptr->offsets[j] >= computedOffset + oldSize)
+                  {
+                    stco_ptr->offsets[j] += deltaSize;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    if(err) goto bail;
+  }
+
+  /* Copy new data */
+  u64 mdatOffset = computedOffset;
+  memcpy(mdat->data + mdatOffset, *sampleH, sampleSize);
+
+bail:
+  TEST_RETURN(err);
   return err;
 }
 
