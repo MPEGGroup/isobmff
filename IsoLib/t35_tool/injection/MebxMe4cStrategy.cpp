@@ -268,50 +268,40 @@ MP4Err MebxMe4cStrategy::inject(const InjectionConfig &config, const MetadataMap
   LOG_DEBUG("Created key_value handle with it35 4CC");
 
   // Build setupInfo with T.35 prefix in binary format:
-  // 1. utf8string description (null-terminated, '\0' if empty)
+  // 1. unsigned int(8) t35_identifier_length
   // 2. unsigned int(8) t35_identifier[] (binary bytes)
   MP4Handle setupInfo = nullptr;
   {
-    const std::string &desc              = prefix.description();
-    std::vector<uint8_t> identifierBytes = prefix.toBytes();
+    LOG_DEBUG("Creating temporary it35 sample entry");
+    MP4T35MetadataSampleEntryPtr it35 = nullptr;
+    u32 dataReferenceIndex            = 0; // unused
+    err = ISONewT35SampleDescription(&it35, dataReferenceIndex, prefix.toString().c_str());
+    if(err)
+    {
+      LOG_ERROR("Failed to create temporary it35 sample description (err={})", err);
+      return err;
+    }
 
-    // Calculate total size: description length + null terminator + identifier bytes
-    u32 descLen   = desc.empty() ? 1 : (u32)desc.size() + 1; // '\0' if empty, or string + '\0'
-    u32 totalSize = descLen + (u32)identifierBytes.size();
-
-    err = MP4NewHandle(totalSize, &setupInfo);
+    err = MP4NewHandle(0, &setupInfo);
     if(err)
     {
       LOG_ERROR("Failed to create setupInfo handle (err={})", err);
       MP4DisposeHandle(key_value);
       return err;
     }
-
-    char *buffer = *setupInfo;
-    u32 offset   = 0;
-
-    // Write description as null-terminated UTF-8 string
-    if(desc.empty())
+    err = atomPtrToSampleEntryH(setupInfo, (MP4AtomPtr)it35);
+    if(err)
     {
-      buffer[offset++] = '\0'; // Just null byte if no description
+      LOG_ERROR("Failed to convert temporary it35 sample entry to  (err={})", err);
+      MP4DisposeHandle(key_value);
+      MP4DisposeHandle(setupInfo);
+      return err;
     }
-    else
-    {
-      memcpy(buffer + offset, desc.c_str(), desc.size());
-      offset += desc.size();
-      buffer[offset++] = '\0'; // Null terminator
-    }
-
-    // Write t35_identifier as binary bytes
-    if(!identifierBytes.empty())
-    {
-      memcpy(buffer + offset, identifierBytes.data(), identifierBytes.size());
-      offset += identifierBytes.size();
-    }
-
-    LOG_DEBUG("Created setupInfo handle: description='{}' ({} bytes), identifier={} bytes",
-              desc.empty() ? "(empty)" : desc, descLen, identifierBytes.size());
   }
+
+  // Skip the box size and 'it35' type, and the reserved and dataReferenceIndex fields
+  err = MP4SetHandleOffset(setupInfo, 4 + 4 + 6 + 2);
+  if(err) return err;
 
   // Add sample entry with me4c namespace
   // For me4c namespace, desired_local_key_id must match the 4CC in key_value
@@ -324,7 +314,7 @@ MP4Err MebxMe4cStrategy::inject(const InjectionConfig &config, const MetadataMap
                                         MP4_FOUR_CHAR_CODE('m', 'e', '4', 'c'), // me4c namespace
                                         key_value,                              // 'it35' 4CC
                                         NULL,       // locale_string (not used)
-                                        setupInfo); // T.35 prefix string
+                                        setupInfo); // T.35 prefix string and optional hrsd box
 
   MP4DisposeHandle(key_value);
   MP4DisposeHandle(setupInfo);

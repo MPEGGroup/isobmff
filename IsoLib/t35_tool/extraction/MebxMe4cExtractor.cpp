@@ -213,41 +213,70 @@ static MP4Err findMebxMe4cTrackReader(MP4Movie moov, const std::string &t35Prefi
 
       if(setupInfoSize > 0)
       {
-        // Parse setupInfo binary format:
-        // 1. utf8string description (null-terminated)
-        // 2. unsigned int(8) t35_identifier[] (remaining bytes)
-
-        char *setupData = (char *)*setupInfoH;
-
-        // Read null-terminated description
-        size_t descLen = 0;
-        for(size_t i = 0; i < setupInfoSize; i++)
+        // Simulate the box size and 4CC type, and the reserved and dataReferenceIndex fields
+        // to reuse ISOGetT35SampleEntryFields() and ISOGetFirstHumanReadableStreamDescription()
+        u32 it35SampleEntryHeaderSize = 4 + 4 + 6 + 2;
+        u32 it35SampleEntrySize       = it35SampleEntryHeaderSize + setupInfoSize;
+        MP4Handle it35SampleEntryH    = nullptr;
+        err                           = MP4NewHandle(it35SampleEntryHeaderSize, &it35SampleEntryH);
+        if(err)
         {
-          if(setupData[i] == '\0')
-          {
-            descLen = i;
-            break;
-          }
+          LOG_ERROR("Failed to create it35SampleEntryH handle (err={})", err);
+          MP4DisposeHandle(setupInfoH);
+          MP4DisposeHandle(read_key_value);
+          continue;
+        }
+        char *it35SampleEntryData = (char *)*it35SampleEntryH;
+        it35SampleEntryData[0]    = (it35SampleEntrySize >> 24) & 0xFF; // box size
+        it35SampleEntryData[1]    = (it35SampleEntrySize >> 16) & 0xFF;
+        it35SampleEntryData[2]    = (it35SampleEntrySize >> 8) & 0xFF;
+        it35SampleEntryData[3]    = (it35SampleEntrySize >> 0) & 0xFF;
+        memcpy(&it35SampleEntryData[4], keyPtr, 4);       // 'it35'
+        memset(&it35SampleEntryData[4 + 4], 0, 6);        // reserved
+        memset(&it35SampleEntryData[4 + 4 + 6], 0, 2);    // dataReferenceIndex
+        err = MP4HandleCat(it35SampleEntryH, setupInfoH); // unsigned int(8) t35_identifier_length
+                                                          // unsigned int(8) t35_identifier[]
+                                                          // Optional hrsd box
+        if(err)
+        {
+          LOG_ERROR("Failed to write to it35SampleEntryH handle (err={})", err);
+          MP4DisposeHandle(it35SampleEntryH);
+          MP4DisposeHandle(setupInfoH);
+          MP4DisposeHandle(read_key_value);
+          continue;
         }
 
-        std::string desc;
-        if(descLen > 0)
-        {
-          desc = std::string(setupData, descLen);
-        }
+        u8 *identifier       = nullptr;
+        u32 identifierLength = 0;
+        char *description    = NULL;
+        MP4Err readErr =
+          ISOGetT35SampleEntryFields(it35SampleEntryH, &identifier, &identifierLength);
+        MP4Err hrsdErr = ISOGetFirstHumanReadableStreamDescription(it35SampleEntryH, &description);
 
-        // Read remaining bytes as t35_identifier
-        u32 identifierStart = descLen + 1; // Skip null terminator
-        u32 identifierSize  = setupInfoSize - identifierStart;
+        MP4DisposeHandle(it35SampleEntryH);
 
         std::vector<uint8_t> identifierBytes;
-        if(identifierSize > 0 && identifierStart < setupInfoSize)
-        {
-          identifierBytes.assign((uint8_t *)(setupData + identifierStart),
-                                 (uint8_t *)(setupData + setupInfoSize));
-        }
+        std::string desc;
 
-        // Convert identifier bytes to hex string
+        if(readErr)
+        {
+          LOG_WARN("Could not read t35_identifier from mebx me4c it35");
+        }
+        else
+        {
+          identifierBytes.assign(identifier, identifier + identifierLength);
+          if(hrsdErr)
+          {
+            LOG_WARN("Could not read HumanReadableStreamDescription");
+          }
+          else if(description)
+          {
+            desc = description;
+          }
+        }
+        free(identifier);
+        free(description);
+
         std::string hexStr = T35Prefix::bytesToHex(identifierBytes);
 
         LOG_DEBUG("  Parsed setupInfo: description='{}', identifier={} ({} bytes)",
