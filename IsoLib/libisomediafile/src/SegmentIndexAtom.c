@@ -196,6 +196,8 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   MP4Err err;
   u32 i;
   u32 tmp32;
+  char debug_buffer[70];
+  u16 tmpReferenceCount = 0;
 
   MP4SegmentIndexAtomPtr self = (MP4SegmentIndexAtomPtr)s;
 
@@ -211,11 +213,10 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
   GET32(firstOffset);
 
   GET16(reserved1);
-  GET16(referenceCount);
+  GET16_V(tmpReferenceCount);
 
-  for(i = 0; i < self->referenceCount; i++)
+  for(i = 0; i < tmpReferenceCount; i++)
   {
-
     u8 referenceType;
     u32 referencedSize;
     u32 subsegmentDuration;
@@ -223,24 +224,37 @@ static MP4Err createFromInputStream(MP4AtomPtr s, MP4AtomPtr proto, MP4InputStre
     u8 SAPType;
     u32 SAPDeltaTime;
 
-    GET32_V(tmp32);
+    snprintf(debug_buffer, sizeof(debug_buffer), "\nEntry %d of %d", i, self->referenceCount);
+    DEBUG_MSG(debug_buffer);
+
+    GET32_V_NOMSG(tmp32);
     referenceType  = (tmp32 >> 31) & 0x01;
-    referencedSize = tmp32 & 0x7FFF;
+    referencedSize = tmp32 & 0x7FFFFFFF;
+    snprintf(debug_buffer, sizeof(debug_buffer), "reference_type = %d", referenceType);
+    DEBUG_MSG(debug_buffer);
+    snprintf(debug_buffer, sizeof(debug_buffer), "referenced_size = %d", referencedSize);
+    DEBUG_MSG(debug_buffer);
     GET32_V(subsegmentDuration);
-    GET32_V(tmp32);
+    GET32_V_NOMSG(tmp32);
     startsWithSAP = (tmp32 >> 31) & 0x01;
     SAPType       = (tmp32 >> 28) & 0x07;
     SAPDeltaTime  = tmp32 & 0x0FFFFFFF;
+    snprintf(debug_buffer, sizeof(debug_buffer), "starts_with_SAP = %d", startsWithSAP);
+    DEBUG_MSG(debug_buffer);
+    snprintf(debug_buffer, sizeof(debug_buffer), "SAP_type = %d", SAPType);
+    DEBUG_MSG(debug_buffer);
+    snprintf(debug_buffer, sizeof(debug_buffer), "SAP_delta_time = %d", SAPDeltaTime);
+    DEBUG_MSG(debug_buffer);
 
     err = addReference(self, referenceType, referencedSize, subsegmentDuration, startsWithSAP,
                        SAPType, SAPDeltaTime);
     if(err) goto bail;
   }
 
+  assert(self->referenceCount == tmpReferenceCount);
   assert(self->bytesRead == self->size);
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 

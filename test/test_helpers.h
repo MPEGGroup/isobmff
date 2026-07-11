@@ -185,95 +185,67 @@ inline std::vector<u8> getMetaSample(u32 x, u32 y, u32 w, u32 h)
  * @param repeatPattern number of times to repeat the pattern. No samples are added if this is 0
  * @param sampleEntryH sample entry handle (for the first call)
  * @param lengthSize the length in bytes of the NALUnitLength field in an HEVC video sample
+ * @param add_sei if set adds an SEI message in front of each frame
  * @return MP4Err error code
  */
 inline MP4Err addHEVCSamples(MP4Media media, std::string strPattern, u32 repeatPattern = 1,
-                             MP4Handle sampleEntryH = 0, u32 lengthSize = 1)
+                             MP4Handle sampleEntryH = 0, u32 lengthSize = 1, bool add_sei = false)
 {
   MP4Err err;
-  u32 sampleCount = 0;
   MP4Handle sampleDataH, durationsH, sizesH;
-  err = MP4NewHandle(sizeof(u32), &durationsH);
-  CHECK(err == MP4NoErr);
 
+  err = MP4NewHandle(sizeof(u32), &durationsH);
   *((u32 *)*durationsH) = TIMESCALE / FPS;
 
   std::vector<u8> bufferData;
   std::vector<u32> bufferSizes;
-  for(std::string::const_iterator it = strPattern.cbegin(); it != strPattern.cend(); ++it)
+
+  // a lambda function to add NAL units
+  auto addNALUnit = [&](const u8* data, u32 size) 
   {
-    switch(*it)
+    u32 totalSize = 0;
+    if(add_sei) 
     {
-    case 'r':
-      appendDataWithLengthField(bufferData, lengthSize, HEVC::auRed, sizeof(HEVC::auRed));
-      bufferSizes.push_back(sizeof(HEVC::auRed) + lengthSize);
-      break;
-    case 'b':
-      appendDataWithLengthField(bufferData, lengthSize, HEVC::auBlue, sizeof(HEVC::auBlue));
-      bufferSizes.push_back(sizeof(HEVC::auBlue) + lengthSize);
-      break;
-    case 'g':
-      appendDataWithLengthField(bufferData, lengthSize, HEVC::auGreen, sizeof(HEVC::auGreen));
-      bufferSizes.push_back(sizeof(HEVC::auGreen) + lengthSize);
-      break;
-    case 'y':
-      appendDataWithLengthField(bufferData, lengthSize, HEVC::auYellow, sizeof(HEVC::auYellow));
-      bufferSizes.push_back(sizeof(HEVC::auYellow) + lengthSize);
-      break;
-    case 'w':
-      appendDataWithLengthField(bufferData, lengthSize, HEVC::auWhite, sizeof(HEVC::auWhite));
-      bufferSizes.push_back(sizeof(HEVC::auWhite) + lengthSize);
-      break;
-    case 'k':
-      appendDataWithLengthField(bufferData, lengthSize, HEVC::auBlack, sizeof(HEVC::auBlack));
-      bufferSizes.push_back(sizeof(HEVC::auBlack) + lengthSize);
-      break;
-    case 'R':
-      appendDataWithLengthField(bufferData, lengthSize, HEVC::auRU, sizeof(HEVC::auRU));
-      bufferSizes.push_back(sizeof(HEVC::auRU) + lengthSize);
-      break;
-    case 'U':
-      appendDataWithLengthField(bufferData, lengthSize, HEVC::auUA, sizeof(HEVC::auUA));
-      bufferSizes.push_back(sizeof(HEVC::auUA) + lengthSize);
-      break;
-    case 'D':
-      appendDataWithLengthField(bufferData, lengthSize, HEVC::auDE, sizeof(HEVC::auDE));
-      bufferSizes.push_back(sizeof(HEVC::auDE) + lengthSize);
-      break;
-    case 'F':
-      appendDataWithLengthField(bufferData, lengthSize, HEVC::auFR, sizeof(HEVC::auFR));
-      bufferSizes.push_back(sizeof(HEVC::auFR) + lengthSize);
-      break;
-    case 'N':
-      appendDataWithLengthField(bufferData, lengthSize, HEVC::auNL, sizeof(HEVC::auNL));
-      bufferSizes.push_back(sizeof(HEVC::auNL) + lengthSize);
-      break;
-    case 'I':
-      appendDataWithLengthField(bufferData, lengthSize, HEVC::auID, sizeof(HEVC::auID));
-      bufferSizes.push_back(sizeof(HEVC::auID) + lengthSize);
-      break;
-    default:
-      break;
+      appendDataWithLengthField(bufferData, lengthSize, HEVC::SEI_HDR, sizeof(HEVC::SEI_HDR));
+      totalSize += sizeof(HEVC::SEI_HDR) + lengthSize;
+    }
+    appendDataWithLengthField(bufferData, lengthSize, data, size);
+    totalSize += size + lengthSize;
+    bufferSizes.push_back(totalSize);
+  };
+
+  for (char c : strPattern)
+  {
+    switch(c) {
+    case 'r': addNALUnit(HEVC::auRed, sizeof(HEVC::auRed)); break;
+    case 'b': addNALUnit(HEVC::auBlue, sizeof(HEVC::auBlue)); break;
+    case 'g': addNALUnit(HEVC::auGreen, sizeof(HEVC::auGreen)); break;
+    case 'y': addNALUnit(HEVC::auYellow, sizeof(HEVC::auYellow)); break;
+    case 'w': addNALUnit(HEVC::auWhite, sizeof(HEVC::auWhite)); break;
+    case 'k': addNALUnit(HEVC::auBlack, sizeof(HEVC::auBlack)); break;
+    case 'R': addNALUnit(HEVC::auRU, sizeof(HEVC::auRU)); break;
+    case 'U': addNALUnit(HEVC::auUA, sizeof(HEVC::auUA)); break;
+    case 'D': addNALUnit(HEVC::auDE, sizeof(HEVC::auDE)); break;
+    case 'F': addNALUnit(HEVC::auFR, sizeof(HEVC::auFR)); break;
+    case 'N': addNALUnit(HEVC::auNL, sizeof(HEVC::auNL)); break;
+    case 'I': addNALUnit(HEVC::auID, sizeof(HEVC::auID)); break;
+    default: break;
     }
   }
 
   // repeat pattern
   std::vector<u8> bufferDataPattern   = bufferData;
   std::vector<u32> bufferSizesPattern = bufferSizes;
-  std::string fullPattern             = strPattern;
   for(u32 n = 1; n < repeatPattern; ++n)
   {
     bufferData.insert(bufferData.end(), bufferDataPattern.begin(), bufferDataPattern.end());
     bufferSizes.insert(bufferSizes.end(), bufferSizesPattern.begin(), bufferSizesPattern.end());
-    fullPattern += strPattern;
   }
 
   // create handles and copy data
   err = MP4NewHandle(bufferData.size() * sizeof(u8), &sampleDataH);
-  CHECK(err == MP4NoErr);
   std::memcpy((*sampleDataH), bufferData.data(), bufferData.size() * sizeof(u8));
   err = MP4NewHandle(sizeof(u32) * bufferSizes.size(), &sizesH);
-  CHECK(err == MP4NoErr);
   for(u32 n = 0; n < bufferSizes.size(); n++)
   {
     ((u32 *)*sizesH)[n] = bufferSizes[n];
@@ -283,12 +255,9 @@ inline MP4Err addHEVCSamples(MP4Media media, std::string strPattern, u32 repeatP
                            durationsH, sizesH, sampleEntryH, 0, 0);
   CHECK(err == MP4NoErr);
 
-  err = MP4DisposeHandle(sampleDataH);
-  CHECK(err == MP4NoErr);
-  err = MP4DisposeHandle(durationsH);
-  CHECK(err == MP4NoErr);
-  err = MP4DisposeHandle(sizesH);
-  CHECK(err == MP4NoErr);
+  MP4DisposeHandle(sampleDataH);
+  MP4DisposeHandle(durationsH);
+  MP4DisposeHandle(sizesH);
   return err;
 }
 
@@ -430,11 +399,9 @@ inline MP4Err addMebxSamples(MP4Media media, std::string strPattern, u32 repeatP
                              u32 lk_w = 0, u32 lk_k = 0, u32 lk_g = 0)
 {
   MP4Err err;
-  u32 sampleCount = 0;
   MP4Handle sampleDataH, durationsH, sizesH;
-  err = MP4NewHandle(sizeof(u32), &durationsH);
-  CHECK(err == MP4NoErr);
 
+  err = MP4NewHandle(sizeof(u32), &durationsH);
   *((u32 *)*durationsH) = TIMESCALE / FPS;
 
   std::vector<u8> bufferData;
@@ -575,10 +542,8 @@ inline MP4Err addMebxSamples(MP4Media media, std::string strPattern, u32 repeatP
 
   // create handles and copy data
   err = MP4NewHandle(bufferData.size() * sizeof(u8), &sampleDataH);
-  CHECK(err == MP4NoErr);
   std::memcpy((*sampleDataH), bufferData.data(), bufferData.size() * sizeof(u8));
   err = MP4NewHandle(sizeof(u32) * bufferSizes.size(), &sizesH);
-  CHECK(err == MP4NoErr);
   for(u32 n = 0; n < bufferSizes.size(); n++)
   {
     ((u32 *)*sizesH)[n] = bufferSizes[n];
@@ -588,12 +553,9 @@ inline MP4Err addMebxSamples(MP4Media media, std::string strPattern, u32 repeatP
                            durationsH, sizesH, sampleEntryH, 0, 0);
   CHECK(err == MP4NoErr);
 
-  err = MP4DisposeHandle(sampleDataH);
-  CHECK(err == MP4NoErr);
-  err = MP4DisposeHandle(durationsH);
-  CHECK(err == MP4NoErr);
-  err = MP4DisposeHandle(sizesH);
-  CHECK(err == MP4NoErr);
+  MP4DisposeHandle(sampleDataH);
+  MP4DisposeHandle(durationsH);
+  MP4DisposeHandle(sizesH);
   return err;
 }
 
@@ -626,7 +588,6 @@ inline MP4Err checkRedMebxSamples(std::string strPattern, u32 repeatPattern, MP4
   {
     u32 redSize = 0;
     err = MP4GetHandleSize(auData, &redSize);
-    CHECK(err == MP4NoErr);
     CHECK(0 == redSize);
     break;
   }

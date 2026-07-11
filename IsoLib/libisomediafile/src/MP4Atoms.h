@@ -169,7 +169,8 @@ enum
   MP4MetadataLocaleBoxType                     = MP4_FOUR_CHAR_CODE('l', 'o', 'c', 'a'),
   MP4MetadataSetupBoxType                      = MP4_FOUR_CHAR_CODE('s', 'e', 't', 'u'),
   MP4GroupsListBoxType                         = MP4_FOUR_CHAR_CODE('g', 'r', 'p', 'l'),
-  MP4AlternativeEntityGroup                    = MP4_FOUR_CHAR_CODE('a', 'l', 't', 'r')
+  MP4AlternativeEntityGroup                    = MP4_FOUR_CHAR_CODE('a', 'l', 't', 'r'),
+  MP4T35SampleGroupEntry                       = MP4_FOUR_CHAR_CODE('i', 't', '3', '5')
 
 };
 

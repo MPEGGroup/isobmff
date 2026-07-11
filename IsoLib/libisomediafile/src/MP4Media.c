@@ -177,7 +177,41 @@ ISOAddGroupDescription(MP4Media media, u32 groupType, MP4Handle description, u32
 
 bail:
   TEST_RETURN(err);
+  return err;
+}
 
+MP4_EXTERN(MP4Err)
+ISOAddT35GroupDescription(MP4Media media, MP4Handle itu_t_t35_data, u32 complete_message_flag,
+                          u32 *index)
+{
+  MP4Err err;
+  MP4MediaAtomPtr mdia;
+  MP4Handle description = NULL;
+  MP4Handle prefix      = NULL;
+
+  if(media == NULL || itu_t_t35_data == NULL)
+  {
+    BAILWITHERROR(MP4BadParamErr);
+  }
+  mdia = (MP4MediaAtomPtr)media;
+
+  err = MP4NewHandle(1, &prefix);
+  if(err) goto bail;
+  (*prefix)[0] = (complete_message_flag ? 0x80 : 0x00);
+
+  err = MP4NewHandle(0, &description);
+  if(err) goto bail;
+  err = MP4HandleCat(description, prefix);
+  if(err) goto bail;
+  err = MP4HandleCat(description, itu_t_t35_data);
+  if(err) goto bail;
+
+  err = mdia->addGroupDescription(mdia, MP4T35SampleGroupEntry, description, index);
+
+bail:
+  if(prefix) MP4DisposeHandle(prefix);
+  if(description) MP4DisposeHandle(description);
+  TEST_RETURN(err);
   return err;
 }
 
@@ -326,6 +360,9 @@ bail:
 
   return err;
 }
+
+/* TODO: add an API that will get sample numbers based on T35 header (if it35 is used for marking
+ * samples) */
 
 MP4_EXTERN(MP4Err)
 ISOSetSampleDependency(MP4Media media, s32 sample_index, MP4Handle dependencies)

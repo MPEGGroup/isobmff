@@ -705,7 +705,7 @@ extern "C"
    * @param extraction_mode if set to 0 - get them all; 1 - hvcC only; 2 - lhvC only
    */
   ISO_EXTERN(ISOErr)
-  ISOGetHEVCNALUs(MP4Handle sampleEntryH, MP4Handle nalus, u32 extraction_mode);
+  ISOGetHEVCNALUsFromSampleEntry(MP4Handle sampleEntryH, MP4Handle nalus, u32 extraction_mode);
   /**
    * @brief Gets a restricted video parameter set (AVC or HEVC), placing it in the given handle
    * @ingroup SampleDescr

@@ -1199,7 +1199,7 @@ bail:
 }
 
 MP4_EXTERN(MP4Err)
-ISOGetHEVCNALUs(MP4Handle sampleEntryH, MP4Handle nalus, u32 extraction_mode)
+ISOGetHEVCNALUsFromSampleEntry(MP4Handle sampleEntryH, MP4Handle nalus, u32 extraction_mode)
 {
   MP4Err err                        = MP4NoErr;
   MP4VisualSampleEntryAtomPtr entry = NULL;
@@ -1210,17 +1210,6 @@ ISOGetHEVCNALUs(MP4Handle sampleEntryH, MP4Handle nalus, u32 extraction_mode)
 
   err = sampleEntryHToAtomPtr(sampleEntryH, (MP4AtomPtr *)&entry, MP4VisualSampleEntryAtomType);
   if(err) goto bail;
-
-  if(entry->type == MP4EncVisualSampleEntryAtomType ||
-     entry->type == MP4RestrictedVideoSampleEntryAtomType)
-  {
-    u32 origFmt = 0;
-    err         = ISOGetOriginalFormat(sampleEntryH, &origFmt);
-    if(origFmt != ISOHEVCSampleEntryAtomType && origFmt != ISOLHEVCSampleEntryAtomType)
-      BAILWITHERROR(MP4BadParamErr);
-  }
-  else if(entry->type != ISOHEVCSampleEntryAtomType && entry->type != ISOLHEVCSampleEntryAtomType)
-    BAILWITHERROR(MP4BadParamErr);
 
   MP4GetListEntryAtom(entry->ExtensionAtomList, ISOHEVCConfigAtomType, (MP4AtomPtr *)&hvcC);
   MP4GetListEntryAtom(entry->ExtensionAtomList, ISOLHEVCConfigAtomType, (MP4AtomPtr *)&lhvC);

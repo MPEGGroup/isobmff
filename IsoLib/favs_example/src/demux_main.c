@@ -182,7 +182,7 @@ ISOErr playMyMovie(struct ParamStruct *parameters, char *filename) {
 
 		/* Write Sample Entry NAL Units in the beginning of the trak output file */
 		MP4NewHandle(0, &sampleEntryNALs);
-		err = ISOGetHEVCNALUs(sampleEntryH, sampleEntryNALs, parameters->hevcExtractionMode);
+		err = ISOGetHEVCNALUsFromSampleEntry(sampleEntryH, sampleEntryNALs, parameters->hevcExtractionMode);
 		if(err)
 		{
 			printf("Failed to extract NAL units with mode %u (err = %d)\n", parameters->hevcExtractionMode, err);

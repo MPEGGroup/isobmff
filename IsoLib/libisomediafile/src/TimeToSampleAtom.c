@@ -150,6 +150,13 @@ static MP4Err extendLastSampleDuration(struct MP4TimeToSampleAtom *self, u32 dur
   err     = MP4NoErr;
   current = (sttsEntryPtr)self->currentEntry;
 
+  if(current == NULL)
+  {
+    /* lets treat it as the first sample */
+    err = addSample(self, duration);
+    goto bail;
+  }
+
   if(current->sampleCount == 1)
   {
     current->sampleDuration += duration;
@@ -163,7 +170,6 @@ static MP4Err extendLastSampleDuration(struct MP4TimeToSampleAtom *self, u32 dur
 
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 

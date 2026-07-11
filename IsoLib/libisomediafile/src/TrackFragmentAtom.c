@@ -691,28 +691,35 @@ static MP4Err mergeSampleAuxiliaryInformation(struct MP4TrackFragmentAtom *self,
 
   for(i = 0; i < self->saizList->entryCount; i++)
   {
-    MP4SampleAuxiliaryInformationSizesAtomPtr saizOfTraf;
-    MP4SampleAuxiliaryInformationOffsetsAtomPtr saioOfTraf;
-    MP4SampleAuxiliaryInformationSizesAtomPtr saizOfStbl;
-    MP4SampleAuxiliaryInformationOffsetsAtomPtr saioOfStbl;
+    MP4SampleAuxiliaryInformationSizesAtomPtr saizOfTraf   = NULL;
+    MP4SampleAuxiliaryInformationOffsetsAtomPtr saioOfTraf = NULL;
+    MP4SampleAuxiliaryInformationSizesAtomPtr saizOfStbl   = NULL;
+    MP4SampleAuxiliaryInformationOffsetsAtomPtr saioOfStbl = NULL;
+
     err = MP4GetListEntry(self->saizList, i, (char **)&saizOfTraf);
+    if(err || !saizOfTraf) continue;
+
     err = MP4GetListEntry(self->saioList, i, (char **)&saioOfTraf);
+    if(err || !saioOfTraf) continue;
 
     err = stbl->getSampleAuxiliaryInformation(
       stbl, (saizOfTraf->flags & 1), saizOfTraf->aux_info_type, saizOfTraf->aux_info_type_parameter,
       &saizOfStbl, &saioOfStbl);
     if(err) goto bail;
 
-    err = saizOfStbl->mergeSizes((MP4AtomPtr)saizOfStbl, (MP4AtomPtr)saizOfTraf);
-    if(err) goto bail;
-    err = saioOfStbl->mergeOffsets((MP4AtomPtr)saioOfStbl, (MP4AtomPtr)saioOfTraf,
-                                   tfhd->base_data_offset);
-    if(err) goto bail;
+    /* Defensive checks: if stbl had no saiz/saio, skip merging */
+    if(saizOfStbl && saioOfStbl)
+    {
+      err = saizOfStbl->mergeSizes((MP4AtomPtr)saizOfStbl, (MP4AtomPtr)saizOfTraf);
+      if(err) goto bail;
+      err = saioOfStbl->mergeOffsets((MP4AtomPtr)saioOfStbl, (MP4AtomPtr)saioOfTraf,
+                                     tfhd->base_data_offset);
+      if(err) goto bail;
+    }
   }
 
 bail:
   TEST_RETURN(err);
-
   return err;
 }
 

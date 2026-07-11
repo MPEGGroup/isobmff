@@ -764,6 +764,16 @@ extern "C"
    */
   MP4_EXTERN(MP4Err) MP4GetMovieIndTrackSampleEntryType(MP4Movie theMovie, u32 idx, u32 *SEType);
 
+  /**
+   * @brief Get number of bytes that is used to signal the length of a NAL unit.
+   *
+   * @note This function only returns the NALU length of the first sample entry.
+   * @param theMovie input movie object
+   * @param idx index of the track ranges between 1 and the number of tracks in theMovie.
+   * @param naluLength [out] number of bytes to signal NAL unit length.
+   */
+  MP4_EXTERN(MP4Err) MP4GetMovieIndTrackNALUnitLength(MP4Movie theMovie, u32 idx, u32 *naluLength);
+
   /*
   MP4_EXTERN ( MP4Err )
   MP4GetMovieInitialBIFSTrack( MP4Movie theMovie, MP4Track *outBIFSTrack );
@@ -1098,6 +1108,19 @@ extern "C"
    */
   MP4_EXTERN(MP4Err)
   ISOAddGroupDescription(MP4Media media, u32 groupType, MP4Handle description, u32 *index);
+  /**
+   * @brief Adds a T.35 Sample Group Description to the indicated media.
+   *
+   * @param media input media object
+   * @param itu_t_t35_data pre-serialized (big-endian) T.35 data that will go inside sgpd
+   * @param complete_message_flag If set to 1 indicates that the entire T.35 is stored in
+   * itu_t_t35_data
+   * @param index output index of the added group
+   * @return MP4Err error code
+   */
+  MP4_EXTERN(MP4Err)
+  ISOAddT35GroupDescription(MP4Media media, MP4Handle itu_t_t35_data, u32 complete_message_flag,
+                            u32 *index);
   /**
    * @brief Returns in the handle ‘description’ the group description associated with the given
    * group index of the given group type.
