@@ -52,7 +52,7 @@ static ISOErr serialize(struct MP4Atom *s, char *buffer)
     PUT16(colour_primaries);
     PUT16(transfer_characteristics);
     PUT16(matrix_coefficients);
-    PUT8(full_range_flag);
+    PUT8(full_range_flag << 7); /* full_range_flag is bit 7; low 7 bits reserved (0) */
   }
   else if(self->colour_type == QTColorParameterTypeNCLC)
   {
