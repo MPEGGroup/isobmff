@@ -109,7 +109,9 @@ MP4Err ISOIFF_NewImage(ISOIFF_ImageCollection collection, ISOIFF_Image *image, u
   *image = calloc(1, sizeof(struct ISOIFF_ImageS));
   err    = ISOAddMetaItem(collection->meta, &(*image)->item, 0, 0);
   if(err) goto bail;
-  err = ISOAddItemExtentUsingItemData((*image)->item, data);
+  /* Store the item body in the MediaDataBox (construction_method 0). MIAF requires coded image
+   * item bodies to be in an 'mdat' rather than the 'idat' (ISO/IEC 23000-22, 7.2.1.x). */
+  err = ISOAddItemExtent((*image)->item, data);
   if(err) goto bail;
   err = ISOSetItemInfo((*image)->item, 0, "image", NULL, NULL);
   if(err) goto bail;

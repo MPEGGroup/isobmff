@@ -482,7 +482,11 @@ ISO_EXTERN(ISOErr) ISOAddItemExtent(ISOMetaItem item, MP4Handle data)
   }
   err = MP4GetListEntryCount(myItem->extentList, &extents);
   if(err) goto bail;
-  if(extents == 0) myItem->base_offset += extent->extent_offset;
+  /* For data referenced in an external file (dref_index != 0) the first extent seeds base_offset.
+   * For data in the local mdat (dref_index == 0) keep base_offset at 0 and let extent_offset carry
+   * the (absolute, after mdatMoved) position, so the reader's extent_offset+base_offset is not
+   * double-counted. */
+  if(extents == 0 && myItem->dref_index) myItem->base_offset += extent->extent_offset;
 
   err = MP4AddListEntry((void *)extent, myItem->extentList);
 

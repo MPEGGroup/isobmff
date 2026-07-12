@@ -298,10 +298,9 @@ static MP4Err mdatMoved(ISOItemLocationAtomPtr self, u64 mdatBase, u64 mdatEnd, 
       err = MP4GetListEntry(self->itemList, i, (char **)&a);
       if(err) goto bail;
 
-      if((a->construction_method == 0) && (a->dref_index == 0) && (a->base_offset >= mdatBase) &&
-         (a->base_offset < mdatEnd))
-        a->base_offset += mdatOffset;
-
+      /* For local-mdat items (construction_method 0, dref 0) base_offset stays 0 and only the
+       * extent offsets are relocated to absolute file positions; shifting base_offset as well would
+       * double-count, since the reader computes extent_offset + base_offset. */
       if((a->construction_method == 0) && (a->dref_index == 0) && (a->extentList))
       {
         u32 list2Size;
