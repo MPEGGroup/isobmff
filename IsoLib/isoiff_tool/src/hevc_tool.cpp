@@ -442,7 +442,10 @@ MP4Err processWriteModeCfen(Options *options)
   files[1] = options->enhFileU;  /* Cb (mono)  */
   files[2] = options->enhFileV;  /* Cr (mono)  */
 
-  err = createHEVC_ImageCollection(&collection); if(err) goto bail;
+  /* A cfen file has a derived (cfen) primary item, so it uses the 'mif2' structural brand (which
+   * supports a derived primary with an 'altr' fallback). 'mif1'/'heic' are not used: 'mif1'
+   * requires the primary to be independently coded, and 'heic' pulls in 'mif1'. */
+  err = ISOIFF_CreateImageCollectionWithBrands(&collection, ISOIFF_4CC_mif2, 0, 0); if(err) goto bail;
 
   /* Build each coded input image via the codec dispatch. Base is the displayable fallback;
    * enhancement inputs are hidden (6.6.2.5.1). Codec is HEVC for now (see buildCfenInputImage). */
@@ -451,9 +454,14 @@ MP4Err processWriteModeCfen(Options *options)
     err = buildCfenInputImage(collection, files[i], "hevc", w, h, nch[i], hidden[i], &images[i],
                               options);
     if(err) goto bail;
-    /* Input colr shall match the cfen item's colr (6.6.2.5.1) -> use the same values. */
-    err = attachNclxColr(images[i], cp, tc, mc, fr);
-    if(err) goto bail;
+    /* colr on inputs is optional (6.6.2.5.1). Attach it only to the base, which is a displayable
+     * 'altr' alternative; when present it must match the cfen item's colr, so use the same values.
+     * The hidden mono enhancement inputs carry no colr. */
+    if(i == 0)
+    {
+      err = attachNclxColr(images[i], cp, tc, mc, fr);
+      if(err) goto bail;
+    }
   }
 
   cins[0].is_packed_flag = 0; cins[0].channel_id = 2; /* Y  */
@@ -487,8 +495,10 @@ MP4Err processWriteModeCfen(Options *options)
 
   err = ISOIFF_SetImageAsCover(cfen); if(err) goto bail; /* cfen is the primary/displayable item */
 
-  /* altr: base 4:2:0 and cfen are alternatives; legacy readers pick the base. */
-  altGroup[0] = images[0]; altGroup[1] = cfen;
+  /* altr: the cfen item and the base 4:2:0 are alternatives. Per 6.6.2.5.1 the cfen item is listed
+   * first (preferred) and the backward-compatible 4:2:0 base second. Both are non-hidden (an 'altr'
+   * group must not mix hidden and non-hidden items). */
+  altGroup[0] = cfen; altGroup[1] = images[0];
   err = ISOIFF_AddImagesToAlternativeGroup(collection, altGroup, 2, 1); if(err) goto bail;
 
   err = ISOIFF_FreeImage(cfen); if(err) goto bail;
