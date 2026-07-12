@@ -162,7 +162,7 @@ MP4Err ISOIFF_ReadCollectionFromFile(ISOIFF_ImageCollection *collection, const c
   logMsg(LOGLEVEL_DEBUG, "Read Image Collection from file: '%s'", filename);
 
   *collection = calloc(1, sizeof(struct ISOIFF_ImageCollectionS));
-  err         = MP4OpenMovieFile(&(*collection)->moov, filename, MP4OpenMovieDebug);
+  err         = MP4OpenMovieFile(&(*collection)->moov, filename, MP4OpenMovieNormal);
   if(err) goto bail;
   err = ISOGetFileMeta((*collection)->moov, &(*collection)->meta, ISOIFF_IMAGE_META_HANDLER_TYPE,
                        &outHandleType);

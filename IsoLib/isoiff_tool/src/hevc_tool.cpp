@@ -324,20 +324,32 @@ MP4Err ISOIFF_GetHEVCDecoderConfigRecordFromProperty(MP4AtomPtr property,
                                                      ISOIFF_HEVCDecoderConfigRecord *decoderConfig)
 {
   MP4Err err;
-  MP4UnknownAtomPtr hvcC;
-  MP4Handle metaDataH;
-  u8 *buffer;
+  MP4Handle boxH = NULL;
+  MP4Handle recH = NULL;
+  u32 boxSize;
   err = MP4NoErr;
 
-  hvcC       = (MP4UnknownAtomPtr)property;
-  char *data = hvcC->data;
-  err        = MP4NewHandle(hvcC->dataSize, &metaDataH);
-  if(err) goto bail;
-  buffer = (u8 *)*metaDataH;
+  /* The hvcC property may be parsed either as a structured HEVCConfigurationBox or as an unknown
+   * atom depending on the atom factory. Serialize it back to bytes and strip the 8-byte box header
+   * to recover the HEVCDecoderConfigurationRecord, which is robust to both representations. */
+  boxSize = (u32)property->size;
+  if(boxSize <= 8) BAILWITHERROR(MP4BadDataErr);
 
-  memcpy(buffer, data, hvcC->dataSize);
-  err = ISOIFF_CreateHEVCDecConfRecFromHandle(metaDataH, decoderConfig);
+  err = MP4NewHandle(boxSize, &boxH);
+  if(err) goto bail;
+  err = property->serialize(property, *boxH);
+  if(err) goto bail;
+
+  err = MP4NewHandle(boxSize - 8, &recH);
+  if(err) goto bail;
+  memcpy(*recH, (u8 *)*boxH + 8, boxSize - 8);
+
+  err = ISOIFF_CreateHEVCDecConfRecFromHandle(recH, decoderConfig);
+  if(err) goto bail;
+
 bail:
+  if(boxH) MP4DisposeHandle(boxH);
+  if(recH) MP4DisposeHandle(recH);
   return err;
 }
 
