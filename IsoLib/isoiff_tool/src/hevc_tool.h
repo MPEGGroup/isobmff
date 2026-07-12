@@ -64,7 +64,25 @@ MP4Err processHEVC_NALUnits(ISOIFF_HEVCDecoderConfigRecord record, ISOIFF_HEVCIt
  */
 MP4Err addHEVCImageToCollection(ISOIFF_ImageCollection collection,
                                 ISOIFF_HEVCDecoderConfigRecord record, ISOIFF_HEVCItemData itemData,
-                                u32 width, u32 height);
+                                u32 width, u32 height, u32 numChannels, ISOIFF_Image *outImage);
+
+/*!
+ * @discussion Builds a colour-format-enhancement ('cfen') image collection from three HEVC
+ *   bitstreams: the 4:2:0 base (-i), and the full-resolution mono Cb (-a) and Cr (-b) planes.
+ *   Adds the cfen derived item (dimg to all three, channel_id 2/3/4) and an 'altr' group.
+ * @param options Tool options (inputFile, enhFileU, enhFileV, outputFile, width, height)
+ */
+MP4Err processWriteModeCfen(Options *options);
+
+/*!
+ * @discussion Reconstruction (extraction) stage for a 'cfen' colour-format-enhancement file:
+ *   parses the cfen item, follows its dimg inputs in order, and writes each input's HEVC bitstream
+ *   to "<outBase>.ch<channel_id>.hevc". Downstream tooling decodes and assembles the 4:4:4 output.
+ * @param collection The image collection read from a cfen file
+ * @param outBase    Output path base for the per-channel bitstreams
+ * @param foundCfen  Set to 1 if a cfen item was found, else 0
+ */
+MP4Err reconstructCfen(ISOIFF_ImageCollection collection, const char *outBase, u32 *foundCfen);
 
 /*!
  * @discussion Collects all HEVC Images from a image collection and provides the results in form of

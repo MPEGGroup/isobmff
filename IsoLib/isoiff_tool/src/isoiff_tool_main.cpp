@@ -86,8 +86,16 @@ MP4Err processWriteMode(Options *options)
 
   if(strcmp(options->inputType, "hevc") == 0)
   {
-    logMsg(LOGLEVEL_INFO, "Processing HEVC Write Mode..");
-    err = processWriteModeHEVC(options);
+    if(options->enhFileU != NULL && options->enhFileV != NULL)
+    {
+      logMsg(LOGLEVEL_INFO, "Processing cfen Write Mode..");
+      err = processWriteModeCfen(options);
+    }
+    else
+    {
+      logMsg(LOGLEVEL_INFO, "Processing HEVC Write Mode..");
+      err = processWriteModeHEVC(options);
+    }
   }
   else if(strcmp(options->inputType, "avc") == 0)
   {
@@ -124,7 +132,7 @@ MP4Err processWriteModeHEVC(Options *options)
   err = createHEVC_ImageCollection(&collection);
   if(err) goto bail;
   err = addHEVCImageToCollection(collection, decoderConfigRecord, hevcImageItemData,
-                                 (u32)options->width, (u32)options->height);
+                                 (u32)options->width, (u32)options->height, 3, NULL);
   if(err) goto bail;
 
   err = ISOIFF_WriteCollectionToFile(collection, options->outputFile);
@@ -256,6 +264,20 @@ MP4Err processReadMode(Options *options)
 
   err = ISOIFF_ReadCollectionFromFile(&collection, options->inputFile);
   if(err) goto bail;
+
+  {
+    /* If this is a 'cfen' colour-format-enhancement file, extract the per-channel input
+     * bitstreams and stop (assembly to 4:4:4 is done by downstream tooling). */
+    u32 foundCfen = 0;
+    err = reconstructCfen(collection, options->outputFile, &foundCfen);
+    if(err) goto bail;
+    if(foundCfen)
+    {
+      logMsg(LOGLEVEL_INFO, "cfen reconstruction: extracted input bitstreams for %s",
+             options->outputFile);
+      goto bail;
+    }
+  }
 
   err = readHEVCImages(collection, bitstreamH, &imgCount);
   if(err) goto bail;

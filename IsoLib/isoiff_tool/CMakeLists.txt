@@ -4,6 +4,16 @@ project(isoiff)
 
 include_directories(../libisomediafile/src)
 
+# nlohmann/json for reading the shared 'heif_cfen' interchange metadata (already used by t35_tool).
+include(FetchContent)
+FetchContent_Declare(
+  json
+  GIT_REPOSITORY https://github.com/nlohmann/json.git
+  GIT_TAG v3.12.0
+  UPDATE_DISCONNECTED TRUE
+)
+FetchContent_MakeAvailable(json)
+
 include_directories(
   ../HM/source/Lib
   ../HM/source/Lib/TLibCommon
@@ -30,6 +40,8 @@ add_library(
   src/HEVCItemData.c
   src/HEVCConfigurationAtom.c
   src/ImageSpatialExtentsPropertyAtom.c
+  src/PixelInformationProperty.c
+  src/isoiff_cfen.c
   src/JPEGConfigurationAtom.c
 )
 
@@ -61,5 +73,6 @@ target_link_libraries(
   libisoiff
   TLibDecoder
   TLibCommon
+  nlohmann_json::nlohmann_json
 )
 

@@ -231,6 +231,41 @@ bail:
   return err;
 }
 
+MP4Err ISOIFF_SetImageHidden(ISOIFF_Image image, u32 hidden)
+{
+  MP4Err err;
+  err = MP4NoErr;
+  if(image == NULL) BAILWITHERROR(MP4BadParamErr)
+  err = ISOSetItemHidden(image->item, hidden);
+  if(err) goto bail;
+bail:
+  return err;
+}
+
+MP4Err ISOIFF_AddImagesToAlternativeGroup(ISOIFF_ImageCollection collection, ISOIFF_Image *images,
+                                          u32 count, u32 group_id)
+{
+  MP4Err err;
+  u32 i;
+  u16 itemID;
+
+  err = MP4NoErr;
+  if(collection == NULL || images == NULL || count == 0) BAILWITHERROR(MP4BadParamErr)
+
+  err = ISONewEntityGroup(collection->meta, MP4_FOUR_CHAR_CODE('a', 'l', 't', 'r'), group_id);
+  if(err) goto bail;
+  for(i = 0; i < count; i++)
+  {
+    err = ISOGetItemID(images[i]->item, &itemID);
+    if(err) goto bail;
+    err = ISOAddEntityIDToGroup(collection->meta, group_id, (u32)itemID);
+    if(err) goto bail;
+  }
+
+bail:
+  return err;
+}
+
 MP4Err ISOIFF_SetImageAsCover(ISOIFF_Image image)
 {
   MP4Err err;

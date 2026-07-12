@@ -69,6 +69,9 @@ typedef struct OptionsStruct
   int width;
   int height;
   char *inputType;
+  char *enhFileU; /* cfen: Cb enhancement bitstream (-a) */
+  char *enhFileV; /* cfen: Cr enhancement bitstream (-b) */
+  char *metaFile; /* cfen: shared heif_cfen interchange metadata JSON (-j) */
 } Options;
 
 /*!
@@ -83,6 +86,9 @@ static inline void setDefaultValues(Options *options)
   options->isJustAskingForHelp = false;
   options->debugLevel          = logLevel;
   options->inputType           = NULL;
+  options->enhFileU            = NULL;
+  options->enhFileV            = NULL;
+  options->metaFile            = NULL;
 }
 
 /*!
@@ -168,6 +174,24 @@ static inline bool parseArguments(int argc, char **argv, Options *options)
     else if(!strcmp(argv[i], "-o"))
     {
       options->outputFile = stringAppend(options->outputFile, argv[i + 1]);
+      i++;
+      continue;
+    }
+    else if(!strcmp(argv[i], "-a"))
+    {
+      options->enhFileU = stringAppend(options->enhFileU, argv[i + 1]);
+      i++;
+      continue;
+    }
+    else if(!strcmp(argv[i], "-b"))
+    {
+      options->enhFileV = stringAppend(options->enhFileV, argv[i + 1]);
+      i++;
+      continue;
+    }
+    else if(!strcmp(argv[i], "-j"))
+    {
+      options->metaFile = stringAppend(options->metaFile, argv[i + 1]);
       i++;
       continue;
     }

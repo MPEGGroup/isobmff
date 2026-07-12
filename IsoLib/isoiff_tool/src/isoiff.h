@@ -31,6 +31,7 @@ enum
 {
   ISOIFF_4CC_init = MP4_FOUR_CHAR_CODE('i', 'n', 'i', 't'),
   ISOIFF_4CC_ispe = MP4_FOUR_CHAR_CODE('i', 's', 'p', 'e'),
+  ISOIFF_4CC_pixi = MP4_FOUR_CHAR_CODE('p', 'i', 'x', 'i'),
   ISOIFF_4CC_mif1 = MP4_FOUR_CHAR_CODE('m', 'i', 'f', '1'),
   ISOIFF_4CC_avcC = MP4_FOUR_CHAR_CODE('a', 'v', 'c', 'C'),
   ISOIFF_4CC_avc1 = MP4_FOUR_CHAR_CODE('a', 'v', 'c', '1')
@@ -71,6 +72,25 @@ typedef struct ISOIFF_ImageSpatialExtentsPropertyAtom
  */
 MP4Err
 ISOIFF_CreateImageSpatialExtentsPropertyAtom(ISOIFF_ImageSpatialExtentsPropertyAtomPtr *outAtom);
+
+/*!
+ * @typedef ISOIFF_PixelInformationPropertyAtom
+ * @brief PixelInformationProperty ('pixi', ISO/IEC 23008-12 clause 6.5.6)
+ */
+typedef struct ISOIFF_PixelInformationPropertyAtom
+{
+  MP4_FULL_ATOM
+  u32 num_channels;
+  u32 bits_per_channel[16];
+} ISOIFF_PixelInformationPropertyAtom, *ISOIFF_PixelInformationPropertyAtomPtr;
+
+/*!
+ * @discussion Creates a PixelInformationProperty ('pixi') atom (allocates and initializes fields).
+ *   Caller sets num_channels and bits_per_channel[] before attaching.
+ * @param outAtom Pointer that will hold a reference to the created PixelInformationPropertyAtom
+ */
+MP4Err
+ISOIFF_CreatePixelInformationPropertyAtom(ISOIFF_PixelInformationPropertyAtomPtr *outAtom);
 
 /*!
  * @discussion Parses an ImageSpatialExtentsProperty from a property atom and prints width and
@@ -176,6 +196,24 @@ MP4Err ISOIFF_GetMetaData(ISOIFF_Meta meta, MP4Handle data);
  * @param image Image, which will be set as cover image
  */
 MP4Err ISOIFF_SetImageAsCover(ISOIFF_Image image);
+
+/*!
+ * @discussion Sets or clears an image item's "hidden" flag (ItemInfoEntry flags bit 0).
+ * @param image  Image to modify
+ * @param hidden Non-zero to mark hidden, zero to clear
+ */
+MP4Err ISOIFF_SetImageHidden(ISOIFF_Image image, u32 hidden);
+
+/*!
+ * @discussion Creates an 'altr' EntityToGroup and adds the given images to it, marking them as
+ *   interchangeable alternatives (e.g. a base 4:2:0 image and a 'cfen' derived item).
+ * @param collection The image collection
+ * @param images     Array of images to place in the alternative group
+ * @param count      Number of images (>= 1)
+ * @param group_id   Identifier for the entity group
+ */
+MP4Err ISOIFF_AddImagesToAlternativeGroup(ISOIFF_ImageCollection collection, ISOIFF_Image *images,
+                                          u32 count, u32 group_id);
 
 /*!
  * @discussion Adds a relation between two images to their collection.

@@ -1250,6 +1250,12 @@ extern "C"
    */
   ISO_EXTERN(ISOErr) ISOIsItemHidden(ISOMetaItem item);
   /**
+   * @brief Set or clear an item's "hidden" flag (bit 0 of the ItemInfoEntry flags).
+   * @param item Item to modify
+   * @param hidden Non-zero to mark hidden, zero to clear
+   */
+  ISO_EXTERN(ISOErr) ISOSetItemHidden(ISOMetaItem item, u32 hidden);
+  /**
    * @brief Gets an item info item type from an existing item info entry.
    * @param item_uri_type could be NULL, if the item_type is not ‘uri ‘.
    */

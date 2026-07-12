@@ -1237,6 +1237,38 @@ bail:
   return err;
 }
 
+ISO_EXTERN(ISOErr) ISOSetItemHidden(ISOMetaItem item, u32 hidden)
+{
+  MP4Err err;
+  ISOMetaAtomPtr myMeta;
+  MetaItemLocationPtr myItem;
+  ISOItemInfoAtomPtr iinf;
+  ISOItemInfoEntryAtomPtr infe;
+
+  err    = MP4NoErr;
+  myItem = (MetaItemLocationPtr)item;
+  myMeta = (ISOMetaAtomPtr)myItem->meta;
+  iinf   = (ISOItemInfoAtomPtr)myMeta->iinf;
+
+  if(!iinf) BAILWITHERROR(MP4InvalidMediaErr);
+
+  infe = NULL;
+  err  = iinf->getEntry(iinf, myItem->item_ID, &infe);
+  if(err) goto bail;
+
+  if(infe == NULL) BAILWITHERROR(MP4InvalidMediaErr);
+
+  /* "hidden" is bit 0 of the ItemInfoEntry FullBox flags (honored for infe version >= 2). */
+  if(hidden)
+    infe->flags |= 1U;
+  else
+    infe->flags &= ~1U;
+
+bail:
+  TEST_RETURN(err);
+  return err;
+}
+
 ISO_EXTERN(ISOErr) ISOGetItemInfoItemType(ISOMetaItem item, u32 *item_type, char **item_uri_type)
 {
   MP4Err err;
