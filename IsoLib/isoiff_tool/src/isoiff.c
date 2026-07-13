@@ -99,6 +99,15 @@ MP4Err ISOIFF_CreateImageCollection(ISOIFF_ImageCollection *collection, u32 bran
                                                 minorVersion);
 }
 
+/* Selects where new image item bodies are stored: 0 = MediaDataBox ('mdat', construction_method 0,
+ * MIAF-conformant, default); 1 = ItemDataBox ('idat', construction_method 1). */
+static int gISOIFFUseItemDataBox = 0;
+
+void ISOIFF_SetUseItemDataBox(int useIdat)
+{
+  gISOIFFUseItemDataBox = useIdat;
+}
+
 MP4Err ISOIFF_NewImage(ISOIFF_ImageCollection collection, ISOIFF_Image *image, u32 type,
                        MP4Handle data)
 {
@@ -109,9 +118,13 @@ MP4Err ISOIFF_NewImage(ISOIFF_ImageCollection collection, ISOIFF_Image *image, u
   *image = calloc(1, sizeof(struct ISOIFF_ImageS));
   err    = ISOAddMetaItem(collection->meta, &(*image)->item, 0, 0);
   if(err) goto bail;
-  /* Store the item body in the MediaDataBox (construction_method 0). MIAF requires coded image
-   * item bodies to be in an 'mdat' rather than the 'idat' (ISO/IEC 23000-22, 7.2.1.x). */
-  err = ISOAddItemExtent((*image)->item, data);
+  /* Store the item body in the MediaDataBox (construction_method 0) by default. MIAF requires coded
+   * image item bodies to be in an 'mdat' rather than the 'idat'. ISOIFF_SetUseItemDataBox(1) selects
+   * the legacy ItemDataBox (construction_method 1) instead, e.g. for comparison. */
+  if(gISOIFFUseItemDataBox)
+    err = ISOAddItemExtentUsingItemData((*image)->item, data);
+  else
+    err = ISOAddItemExtent((*image)->item, data);
   if(err) goto bail;
   err = ISOSetItemInfo((*image)->item, 0, "image", NULL, NULL);
   if(err) goto bail;

@@ -123,6 +123,14 @@ MP4Err ISOIFF_CreateImageCollectionWithBrands(ISOIFF_ImageCollection *collection
                                               u32 compatibleBrand, u32 minorVersion);
 
 /*!
+ * @discussion Selects where subsequently created image item bodies are stored:
+ *   0 = MediaDataBox ('mdat', construction_method 0, MIAF-conformant, default);
+ *   1 = ItemDataBox ('idat', construction_method 1).
+ * @param useIdat Non-zero to use the ItemDataBox, zero for the MediaDataBox
+ */
+void ISOIFF_SetUseItemDataBox(int useIdat);
+
+/*!
  * @discussion Creates and adds an image with a given type and data to an image collection
  * @param collection The collection to which the image will be added to
  * @param image The image that will be allocated and created

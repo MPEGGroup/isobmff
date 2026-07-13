@@ -72,6 +72,7 @@ typedef struct OptionsStruct
   char *enhFileU; /* cfen: Cb enhancement bitstream (-a) */
   char *enhFileV; /* cfen: Cr enhancement bitstream (-b) */
   char *metaFile; /* cfen: shared heif_cfen interchange metadata JSON (-j) */
+  int useIdat;    /* item body storage: 0 = mdat (default), 1 = idat (-c) */
 } Options;
 
 /*!
@@ -89,6 +90,7 @@ static inline void setDefaultValues(Options *options)
   options->enhFileU            = NULL;
   options->enhFileV            = NULL;
   options->metaFile            = NULL;
+  options->useIdat             = 0;
 }
 
 /*!
@@ -192,6 +194,12 @@ static inline bool parseArguments(int argc, char **argv, Options *options)
     else if(!strcmp(argv[i], "-j"))
     {
       options->metaFile = stringAppend(options->metaFile, argv[i + 1]);
+      i++;
+      continue;
+    }
+    else if(!strcmp(argv[i], "-c"))
+    {
+      options->useIdat = atoi(argv[i + 1]); /* 0 = mdat (default), 1 = idat */
       i++;
       continue;
     }

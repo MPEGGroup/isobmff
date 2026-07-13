@@ -84,6 +84,9 @@ MP4Err processWriteMode(Options *options)
   MP4Err err;
   err = MP4NoErr;
 
+  /* Select item body storage: mdat (default, MIAF) or idat (-c 1). */
+  ISOIFF_SetUseItemDataBox(options->useIdat);
+
   if(strcmp(options->inputType, "hevc") == 0)
   {
     if(options->enhFileU != NULL && options->enhFileV != NULL)
