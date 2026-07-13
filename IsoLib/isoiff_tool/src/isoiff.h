@@ -33,7 +33,7 @@ enum
   ISOIFF_4CC_ispe = MP4_FOUR_CHAR_CODE('i', 's', 'p', 'e'),
   ISOIFF_4CC_pixi = MP4_FOUR_CHAR_CODE('p', 'i', 'x', 'i'),
   ISOIFF_4CC_mif1 = MP4_FOUR_CHAR_CODE('m', 'i', 'f', '1'),
-  ISOIFF_4CC_mif2 = MP4_FOUR_CHAR_CODE('m', 'i', 'f', '2'),
+  ISOIFF_4CC_miaf = MP4_FOUR_CHAR_CODE('m', 'i', 'a', 'f'),
   ISOIFF_4CC_avcC = MP4_FOUR_CHAR_CODE('a', 'v', 'c', 'C'),
   ISOIFF_4CC_avc1 = MP4_FOUR_CHAR_CODE('a', 'v', 'c', '1')
 };
@@ -110,25 +110,19 @@ MP4Err ISOIFF_CreateImageCollection(ISOIFF_ImageCollection *collection, u32 bran
                                     u32 minorVersion);
 
 /*!
- * @discussion Creates an image collection with an explicit major and compatible brand. Use this
- *   when the default structural brand (mif1) is not appropriate, e.g. when the primary item is a
- *   derived image item (mif1 requires the primary item to be independently coded, whereas mif2
- *   supports a derived primary item with an 'altr' fallback).
- * @param collection      Allocated and initialized on success
- * @param majorBrand      Major brand written to the FileTypeBox
- * @param compatibleBrand Additional compatible brand to add (0 to add none)
- * @param minorVersion    Minor version
- */
-MP4Err ISOIFF_CreateImageCollectionWithBrands(ISOIFF_ImageCollection *collection, u32 majorBrand,
-                                              u32 compatibleBrand, u32 minorVersion);
-
-/*!
  * @discussion Selects where subsequently created image item bodies are stored:
  *   0 = MediaDataBox ('mdat', construction_method 0, MIAF-conformant, default);
  *   1 = ItemDataBox ('idat', construction_method 1).
  * @param useIdat Non-zero to use the ItemDataBox, zero for the MediaDataBox
  */
 void ISOIFF_SetUseItemDataBox(int useIdat);
+
+/*!
+ * @discussion Adds one compatible brand to the file's FileTypeBox.
+ * @param collection The image collection
+ * @param brand The four-character brand to add to the compatible brands
+ */
+MP4Err ISOIFF_AddCompatibleBrand(ISOIFF_ImageCollection collection, u32 brand);
 
 /*!
  * @discussion Creates and adds an image with a given type and data to an image collection

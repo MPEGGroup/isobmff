@@ -442,21 +442,26 @@ MP4Err processWriteModeCfen(Options *options)
   files[1] = options->enhFileU;  /* Cb (mono)  */
   files[2] = options->enhFileV;  /* Cr (mono)  */
 
-  /* A cfen file has a derived (cfen) primary item, so it uses the 'mif2' structural brand (which
-   * supports a derived primary with an 'altr' fallback). 'mif1'/'heic' are not used: 'mif1'
-   * requires the primary to be independently coded, and 'heic' pulls in 'mif1'. */
-  err = ISOIFF_CreateImageCollectionWithBrands(&collection, ISOIFF_4CC_mif2, 0, 0); if(err) goto bail;
+  /* Brands and primary item. The 4:2:0 base is the primary item (an independently coded master
+   * image item); the cfen derived item is a displayable alternative. Brands are heic/mif1 and the
+   * cfen item is an extra item that cfen-unaware readers ignore, so the file opens in current
+   * readers. 'miaf' is added when the item bodies are in the mdat (MIAF requires mdat, not idat). */
+  err = createHEVC_ImageCollection(&collection); if(err) goto bail;  /* major heic, compatible mif1 */
+  if(!options->useIdat)
+  {
+    err = ISOIFF_AddCompatibleBrand(collection, ISOIFF_4CC_miaf); if(err) goto bail;
+  }
 
-  /* Build each coded input image via the codec dispatch. Base is the displayable fallback;
-   * enhancement inputs are hidden (6.6.2.5.1). Codec is HEVC for now (see buildCfenInputImage). */
+  /* Build each coded input image via the codec dispatch. The base (added first) is the primary and
+   * displayable; the Cb/Cr enhancement inputs are hidden (6.6.2.5.1). */
   for(i = 0; i < 3; i++)
   {
     err = buildCfenInputImage(collection, files[i], "hevc", w, h, nch[i], hidden[i], &images[i],
                               options);
     if(err) goto bail;
-    /* colr on inputs is optional (6.6.2.5.1). Attach it only to the base, which is a displayable
-     * 'altr' alternative; when present it must match the cfen item's colr, so use the same values.
-     * The hidden mono enhancement inputs carry no colr. */
+    /* colr on inputs is optional (6.6.2.5.1). Attach it only to the base, which is the displayable
+     * primary; when present it must match the cfen item's colr, so use the same values. The hidden
+     * mono enhancement inputs carry no colr. */
     if(i == 0)
     {
       err = attachNclxColr(images[i], cp, tc, mc, fr);
@@ -493,7 +498,7 @@ MP4Err processWriteModeCfen(Options *options)
 
   err = attachNclxColr(cfen, cp, tc, mc, fr); if(err) goto bail;
 
-  err = ISOIFF_SetImageAsCover(cfen); if(err) goto bail; /* cfen is the primary/displayable item */
+  /* The base image (added first) is the primary item; the cfen item is not made the cover. */
 
   /* altr: the cfen item and the base 4:2:0 are alternatives. Per 6.6.2.5.1 the cfen item is listed
    * first (preferred) and the backward-compatible 4:2:0 base second. Both are non-hidden (an 'altr'

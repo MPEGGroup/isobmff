@@ -68,35 +68,24 @@ static void logType(int debugLevel, const char *text, u32 type)
   logMsg(debugLevel, "%s :'%s'", text, typeString);
 }
 
-MP4Err ISOIFF_CreateImageCollectionWithBrands(ISOIFF_ImageCollection *collection, u32 majorBrand,
-                                              u32 compatibleBrand, u32 minorVersion)
+MP4Err ISOIFF_CreateImageCollection(ISOIFF_ImageCollection *collection, u32 brand, u32 minorVersion)
 {
   MP4Err err;
   u32 tmp;
 
   *collection = calloc(1, sizeof(struct ISOIFF_ImageCollectionS));
 
-  err = ISONewMetaMovie(&(*collection)->moov, ISOIFF_IMAGE_META_HANDLER_TYPE, majorBrand,
-                        minorVersion);
+  err = ISONewMetaMovie(&(*collection)->moov, ISOIFF_IMAGE_META_HANDLER_TYPE, brand, minorVersion);
   if(err) goto bail;
   err =
     ISOGetFileMeta((*collection)->moov, &(*collection)->meta, ISOIFF_IMAGE_META_HANDLER_TYPE, &tmp);
   if(err) goto bail;
-  if(compatibleBrand != 0)
-  {
-    err = ISOSetMovieCompatibleBrand((*collection)->moov, compatibleBrand);
-    if(err) goto bail;
-  }
+  err = ISOSetMovieCompatibleBrand((*collection)->moov, ISOIFF_IMAGE_COLLECTION_BRAND);
+  if(err) goto bail;
 
   (*collection)->isPrimaryImageSet = 0;
 bail:
   return err;
-}
-
-MP4Err ISOIFF_CreateImageCollection(ISOIFF_ImageCollection *collection, u32 brand, u32 minorVersion)
-{
-  return ISOIFF_CreateImageCollectionWithBrands(collection, brand, ISOIFF_IMAGE_COLLECTION_BRAND,
-                                                minorVersion);
 }
 
 /* Selects where new image item bodies are stored: 0 = MediaDataBox ('mdat', construction_method 0,
@@ -106,6 +95,17 @@ static int gISOIFFUseItemDataBox = 0;
 void ISOIFF_SetUseItemDataBox(int useIdat)
 {
   gISOIFFUseItemDataBox = useIdat;
+}
+
+MP4Err ISOIFF_AddCompatibleBrand(ISOIFF_ImageCollection collection, u32 brand)
+{
+  MP4Err err;
+  err = MP4NoErr;
+  if(collection == NULL) BAILWITHERROR(MP4BadParamErr)
+  err = ISOSetMovieCompatibleBrand(collection->moov, brand);
+  if(err) goto bail;
+bail:
+  return err;
 }
 
 MP4Err ISOIFF_NewImage(ISOIFF_ImageCollection collection, ISOIFF_Image *image, u32 type,

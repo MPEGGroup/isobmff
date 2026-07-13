@@ -71,8 +71,8 @@ typedef struct OptionsStruct
   char *inputType;
   char *enhFileU; /* cfen: Cb enhancement bitstream (-a) */
   char *enhFileV; /* cfen: Cr enhancement bitstream (-b) */
-  char *metaFile; /* cfen: shared heif_cfen interchange metadata JSON (-j) */
-  int useIdat;    /* item body storage: 0 = mdat (default), 1 = idat (-c) */
+  char *metaFile;   /* cfen: shared heif_cfen interchange metadata JSON (-j) */
+  int useIdat;      /* item body storage: 0 = mdat (default), 1 = idat (-c) */
 } Options;
 
 /*!
